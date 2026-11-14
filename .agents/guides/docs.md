@@ -101,7 +101,7 @@ three carriers:
 
 1. The component — `emits('<name>', …)` in `index.vue`.
 2. A composable it calls — `useModelValue` dispatches `change` / `update:model-value`,
-   `use-countdown` dispatches `change` / `reset` / `finish`. Calling one for its **getter only**
+   `use-countdown` reports `change` / `reset` / `finish` through its `onChange` / `onReset` / `onFinish` callbacks. Calling one for its **getter only**
    (`useModelValue(props, emits, { get })`, result never assigned) dispatches nothing.
 3. A child through an injected context — `checkbox-group` passes `emits` into
    `provideCheckboxGroupContext({ props, emits })` and the child dispatches.

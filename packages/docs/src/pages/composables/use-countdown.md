@@ -1,14 +1,11 @@
 # useCountdown
 
-Manages countdown/count-up timers and their event emission.
+Manages countdown/count-up timers and reports lifecycle events through callbacks.
 
 ## Exports
 
 ```ts
-function useCountdown<T extends Record<string, any>>(
-  props: CountdownOptions,
-  emits: EmitFn<T>,
-): {
+function useCountdown(options?: CountdownOptions): {
   stop: () => void
   reset: () => void
   timestamp: Ref<number>
@@ -19,14 +16,17 @@ function useCountdown<T extends Record<string, any>>(
 
 ```ts
 interface CountdownOptions {
-  inverted?: boolean
-  enabled?: boolean
-  startAt?: number
-  endTime?: number
-  autoReset?: boolean
-  duration?: number
-  millisecond?: boolean
-  intuitive?: boolean
+  inverted?: MaybeRefOrGetter<boolean>
+  enabled?: MaybeRefOrGetter<boolean>
+  startAt?: MaybeRefOrGetter<number>
+  endTime?: MaybeRefOrGetter<number>
+  autoReset?: MaybeRefOrGetter<boolean>
+  duration?: MaybeRefOrGetter<number>
+  millisecond?: MaybeRefOrGetter<boolean>
+  intuitive?: MaybeRefOrGetter<boolean>
+  onFinish?: () => void
+  onReset?: () => void
+  onChange?: (enabled: boolean) => void
 }
 ```
 
@@ -34,5 +34,14 @@ interface CountdownOptions {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `props` | `CountdownOptions` | Countdown configuration options |
-| `emits` | `EmitFn<T>` | Event emit function |
+| `options.inverted` | `MaybeRefOrGetter<boolean>` | Count up instead of down |
+| `options.enabled` | `MaybeRefOrGetter<boolean>` | Start the timer; switching it off pauses, switching it back on resumes |
+| `options.startAt` | `MaybeRefOrGetter<number>` | Time already elapsed when the timer starts; in count-up mode the starting value |
+| `options.endTime` | `MaybeRefOrGetter<number>` | Absolute end timestamp; takes precedence over `duration` |
+| `options.duration` | `MaybeRefOrGetter<number>` | Timer length; in count-up mode `0` counts up indefinitely |
+| `options.autoReset` | `MaybeRefOrGetter<boolean>` | Restart from the initial time when `enabled` turns on after finish |
+| `options.millisecond` | `MaybeRefOrGetter<boolean>` | Interpret `startAt`, `endTime` and `duration` as milliseconds; `false` means seconds |
+| `options.intuitive` | `MaybeRefOrGetter<boolean>` | Round the remaining time up to whole seconds |
+| `options.onFinish` | `() => void` | Called when the countdown reaches its end |
+| `options.onReset` | `() => void` | Called when the countdown is restarted from its initial time |
+| `options.onChange` | `(enabled: boolean) => void` | Called when the running state changes |

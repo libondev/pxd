@@ -23,7 +23,19 @@ const emits = defineEmits<CountdownEmits>()
 dayjs.extend(dayjsDurationPlugin)
 dayjs.extend(dayjsMillisecondTokenPlugin)
 
-const { stop, reset, timestamp } = useCountdown<typeof emits>(props, emits)
+const { stop, reset, timestamp } = useCountdown({
+  inverted: () => props.inverted,
+  enabled: () => props.enabled,
+  startAt: () => props.startAt ?? 0,
+  endTime: () => props.endTime,
+  autoReset: () => props.autoReset,
+  duration: () => props.duration,
+  millisecond: () => props.millisecond,
+  intuitive: () => props.intuitive,
+  onChange: (enabled) => emits('change', enabled),
+  onReset: () => emits('reset'),
+  onFinish: () => emits('finish'),
+})
 
 const timestampDuration = computed(() => {
   return dayjs.duration(timestamp.value)

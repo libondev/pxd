@@ -1,5 +1,5 @@
-import type { EmitFn, Ref } from 'vue'
-import { computed, onScopeDispose, shallowRef, watch } from 'vue'
+import type { MaybeRefOrGetter, Ref } from 'vue'
+import { computed, onScopeDispose, shallowRef, toValue, watch } from 'vue'
 import { caf, raf } from '../utils/event.js'
 
 const UPDATE_INTERVAL = 100 // 100ms = 10fps
@@ -9,40 +9,52 @@ export interface CountdownOptions {
    * Whether to enable count up mode.
    * @default false
    */
-  inverted?: boolean
+  inverted?: MaybeRefOrGetter<boolean>
   /**
    * Whether the countdown is running.
    * @default false
    */
-  enabled?: boolean
+  enabled?: MaybeRefOrGetter<boolean>
   /**
    * The start time of the countdown.
    */
-  startAt?: number
+  startAt?: MaybeRefOrGetter<number>
   /**
    * The end time of the countdown.
    */
-  endTime?: number
+  endTime?: MaybeRefOrGetter<number>
   /**
    * Whether to automatically reset.
    * @default true
    */
-  autoReset?: boolean
+  autoReset?: MaybeRefOrGetter<boolean>
   /**
    * The duration of the countdown.
    * @default 0
    */
-  duration?: number
+  duration?: MaybeRefOrGetter<number>
   /**
    * Whether the time stamp is in milliseconds.
    * @default true
    */
-  millisecond?: boolean
+  millisecond?: MaybeRefOrGetter<boolean>
   /**
    * Whether to enable human-friendly time display (ceil to seconds).
    * @default false
    */
-  intuitive?: boolean
+  intuitive?: MaybeRefOrGetter<boolean>
+  /**
+   * Called when the countdown finishes.
+   */
+  onFinish?: () => void
+  /**
+   * Called when the countdown is reset.
+   */
+  onReset?: () => void
+  /**
+   * Called when the running state changes.
+   */
+  onChange?: (enabled: boolean) => void
 }
 
 interface Results {
@@ -51,10 +63,11 @@ interface Results {
   timestamp: Ref<number>
 }
 
-export function useCountdown<T extends Record<string, any>>(
-  props: CountdownOptions,
-  emits: EmitFn<T>,
-): Results {
+function read<T>(value: MaybeRefOrGetter<T | undefined>, fallback: T): T {
+  return toValue(value) ?? fallback
+}
+
+export function useCountdown(options: CountdownOptions = {}): Results {
   let startTimestamp = -1
   let isFinished = false
   let isPaused = false
@@ -63,8 +76,11 @@ export function useCountdown<T extends Record<string, any>>(
 
   const timeRef = shallowRef<number>(0)
 
+  const isInverted = () => read(options.inverted, false)
+  const isIntuitive = () => read(options.intuitive, false)
+
   const totalDuration = computed(() => {
-    const { endTime, duration } = props
+    const endTime = toValue(options.endTime)
 
     if (endTime) {
       const end = formatTime(endTime) - Date.now()
@@ -72,27 +88,27 @@ export function useCountdown<T extends Record<string, any>>(
     }
 
     // In count-up mode with no duration, count up indefinitely.
-    if (props.inverted && [undefined, 0].includes(duration)) {
+    if (isInverted() && [undefined, 0].includes(toValue(options.duration))) {
       return Infinity
     }
 
-    return Math.max(0, formatTime(duration ?? 0))
+    return Math.max(0, formatTime(read(options.duration, 0)))
   })
 
-  const isInfiniteCountup = computed(() => props.inverted && totalDuration.value === Infinity)
+  const isInfiniteCountup = computed(() => isInverted() && totalDuration.value === Infinity)
 
   function formatTime(time: number = 0): number {
-    return props.millisecond ? Math.round(time) : Math.round(time * 1000)
+    return read(options.millisecond, true) ? Math.round(time) : Math.round(time * 1000)
   }
 
   // Get the current elapsed time.
   function getCurrent(now: DOMHighResTimeStamp): number {
-    const rawCurrent = props.inverted
+    const rawCurrent = isInverted()
       ? now - startTimestamp
       : totalDuration.value + startTimestamp - now
 
     // Convert milliseconds to seconds, round up, then back to milliseconds.
-    if (props.intuitive && !props.inverted && rawCurrent > 0) {
+    if (isIntuitive() && !isInverted() && rawCurrent > 0) {
       const seconds = Math.ceil(rawCurrent / 1000)
       return Math.max(0, seconds * 1000)
     }
@@ -101,9 +117,9 @@ export function useCountdown<T extends Record<string, any>>(
   }
 
   function setCurrent(): void {
-    const startAtValue = formatTime(props.startAt)
+    const startAtValue = formatTime(toValue(options.startAt))
 
-    if (props.inverted) {
+    if (isInverted()) {
       // Count-up mode: start counting from startAt.
       timeRef.value = isInfiniteCountup.value
         ? startAtValue
@@ -113,7 +129,7 @@ export function useCountdown<T extends Record<string, any>>(
       const rawTime = Math.max(0, totalDuration.value - startAtValue)
 
       // Round the initial value up as well when intuitive is set.
-      if (props.intuitive && rawTime > 0) {
+      if (isIntuitive() && rawTime > 0) {
         const seconds = Math.ceil(rawTime / 1000)
         timeRef.value = Math.max(0, seconds * 1000)
       } else {
@@ -123,8 +139,8 @@ export function useCountdown<T extends Record<string, any>>(
   }
 
   function shouldFinish(current: number): boolean {
-    if (!props.inverted) {
-      if (props.intuitive) {
+    if (!isInverted()) {
+      if (isIntuitive()) {
         const actualCurrent = totalDuration.value + startTimestamp - performance.now()
         return actualCurrent <= 0
       }
@@ -136,19 +152,19 @@ export function useCountdown<T extends Record<string, any>>(
   }
 
   function finish(): void {
-    timeRef.value = props.inverted ? totalDuration.value : 0
+    timeRef.value = isInverted() ? totalDuration.value : 0
     isFinished = true
-    emits('finish')
+    options.onFinish?.()
   }
 
   function reset(): void {
-    startTimestamp = performance.now() - formatTime(props.startAt)
+    startTimestamp = performance.now() - formatTime(toValue(options.startAt))
     isFinished = false
     isPaused = false
     setCurrent()
-    emits('reset')
+    options.onReset?.()
 
-    if (props.enabled) {
+    if (read(options.enabled, false)) {
       frame()
     }
   }
@@ -179,7 +195,7 @@ export function useCountdown<T extends Record<string, any>>(
       return
     }
 
-    if (props.inverted) {
+    if (isInverted()) {
       timeRef.value = isInfiniteCountup.value ? current : Math.min(current, totalDuration.value)
     } else {
       timeRef.value = Math.max(0, current)
@@ -190,21 +206,21 @@ export function useCountdown<T extends Record<string, any>>(
   }
 
   const unwatchActive = watch(
-    () => props.enabled,
+    () => read(options.enabled, false),
     (isEnabled) => {
-      emits('change', isEnabled)
+      options.onChange?.(isEnabled)
 
       if (isEnabled) {
         if (isPaused) {
-          const elapsed = props.inverted ? timeRef.value : totalDuration.value - timeRef.value
+          const elapsed = isInverted() ? timeRef.value : totalDuration.value - timeRef.value
           startTimestamp = performance.now() - elapsed
         } else {
-          startTimestamp = performance.now() - formatTime(props.startAt)
+          startTimestamp = performance.now() - formatTime(toValue(options.startAt))
         }
 
         isPaused = false
 
-        if (isFinished && props.autoReset) {
+        if (isFinished && read(options.autoReset, true)) {
           reset()
         } else if (isFinished) {
           return
@@ -218,11 +234,11 @@ export function useCountdown<T extends Record<string, any>>(
   )
 
   const unwatchTimes = watch(
-    () => [props.duration, props.endTime, props.startAt],
+    () => [toValue(options.duration), toValue(options.endTime), toValue(options.startAt)],
     () => {
       setCurrent()
       isFinished = false
-      if (props.enabled) {
+      if (read(options.enabled, false)) {
         reset()
       }
     },
