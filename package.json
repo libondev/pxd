@@ -84,7 +84,7 @@
   },
   "scripts": {
     "dev": "run-s dev:lib dev:docs",
-    "dev:lib": "unbuild --stub",
+    "dev:lib": "node scripts/dev-stub.js",
     "dev:docs": "pnpm --filter docs dev",
     "build": "run-s build:lib build:docs",
     "build:lib": "run-s update-exports build:core build:style",
@@ -105,6 +105,7 @@
     "preview": "pnpm --filter docs preview",
     "bump": "pnpx bumpp",
     "postversion": "pnpm update-exports",
+    "prepare": "vp hooks enable",
     "prepublishOnly": "pnpm build:lib"
   },
   "dependencies": {

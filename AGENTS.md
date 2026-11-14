@@ -96,8 +96,7 @@ After discovering a reusable pattern, append to `.agents/guides/patterns.md`.
 
 ## Skills (.agents/skills/)
 
-`scripts/sync-skills.js` links each skill directory into `.github/`, `.claude/` and `.opencode/`.
-Always edit skills under `.agents/skills/`, never in the linked copies.
+Always edit skills under `.agents/skills/`.
 
 - `vue-best-practices` — vue-tsc, Volar, props typing (`withDefaults` union defaults first)
 - `web-design-guidelines` — UI / accessibility review against the Web Interface Guidelines

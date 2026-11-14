@@ -4,8 +4,7 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
     "lib": ["ESNext", "DOM"],
     "rootDir": "./",
-    "types": ["node"],
-    "skipLibCheck": true
+    "types": ["node"]
   },
   "include": ["tests/**/*.ts", "env.d.ts"],
   "exclude": []

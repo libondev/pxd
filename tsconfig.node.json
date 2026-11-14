@@ -8,5 +8,5 @@
     "types": ["node"],
     "noEmit": true
   },
-  "include": ["vite.config.*", "cypress.config.*", "nightwatch.conf.*", "playwright.config.*"]
+  "include": ["vite.config.*", "build.config.ts"]
 }

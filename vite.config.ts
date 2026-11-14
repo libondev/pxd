@@ -36,7 +36,7 @@ export default defineConfig({
       'node_modules',
       '.vscode',
       '.zed',
-      '.agent',
+      '.agents',
       '.claude',
       '.codex',
       '.cursor',

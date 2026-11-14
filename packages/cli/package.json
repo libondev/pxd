@@ -1,6 +1,7 @@
 {
   "name": "@pxd-ui/cli",
   "version": "0.0.1",
+  "private": true,
   "description": "pxd cli",
   "homepage": "https://github.com/libondev/pxd#readme",
   "bugs": {
