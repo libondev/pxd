@@ -140,7 +140,6 @@ const spinnerStyle = computed(() => {
     class="pxd-spinner-dots inline-block h-lh w-max max-w-full shrink-0 overflow-hidden align-baseline text-foreground-secondary"
     :style="spinnerStyle"
     aria-hidden="true"
-    aria-label="Loading"
     v-bind="$attrs"
   >
     <span class="pxd-spinner-dots--track block backface-hidden motion-reduce:animate-none!">
