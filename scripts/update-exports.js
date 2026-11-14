@@ -84,6 +84,17 @@ function updateComposablesIndex() {
   fs.writeFileSync(path.join(process.cwd(), 'src', 'composables', 'index.ts'), fileContent)
 }
 
+// Native ESM cannot import a JSON file without an import attribute, so the version lives in a
+// generated module instead of being re-exported from package.json.
+function updateVersionModule() {
+  const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf-8'))
+
+  fs.writeFileSync(
+    path.join(process.cwd(), 'src', 'version.ts'),
+    `export const version = '${version}'\n`,
+  )
+}
+
 // Generate the root `volar.d.ts` from component dirs so Volar picks up global component types.
 function updateVolarDts() {
   const root = process.cwd()
@@ -187,11 +198,12 @@ updateDocsComposables()
 updateComponentsIndex()
 updateComposablesIndex()
 updateVolarDts()
+updateVersionModule()
 
 if (isNeedStageChange) {
   try {
     execSync(
-      'git add volar.d.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json packages/docs/src/consts/composables.json',
+      'git add volar.d.ts src/version.ts src/components/index.ts src/composables/index.ts packages/docs/src/consts/components.json packages/docs/src/consts/composables.json',
     )
     execSync('git commit -m "chore: update pkg exports"')
   } catch {

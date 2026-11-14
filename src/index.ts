@@ -1,7 +1,7 @@
 import type { App } from 'vue'
 import * as components from './components/index.js'
 
-export { version } from '../package.json'
+export { version } from './version.js'
 
 export * from './components/index.js'
 export * from './composables/index.js'
