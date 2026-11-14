@@ -445,21 +445,26 @@ function onThumbKeydown(ev: KeyboardEvent, index: ThumbIndex) {
   }
 
   const { code } = ev
-  const isNegative = code === 'ArrowLeft'
+  const isNegative = code === 'ArrowLeft' || code === 'ArrowDown'
+  const isPositive = code === 'ArrowRight' || code === 'ArrowUp'
+  const isToMin = code === 'Home'
+  const isToMax = code === 'End'
 
-  if (!isNegative && code !== 'ArrowRight') {
+  if (!isNegative && !isPositive && !isToMin && !isToMax) {
     return
   }
 
   ev.preventDefault()
 
+  const lower = index === 0 ? props.min : valueRange.value[0]
+  const upper = index === 0 ? valueRange.value[1] : props.max
   const next = [...valueRange.value] as [number, number]
   // A thumb never crosses the other one; outside range mode the start slot is pinned to
   // `min`, which leaves the full [min, max] span.
   next[index] = clamp(
-    toKeyboardValue(next[index], isNegative),
-    index === 0 ? props.min : next[0],
-    index === 0 ? next[1] : props.max,
+    isToMin ? lower : isToMax ? upper : toKeyboardValue(next[index], isNegative),
+    lower,
+    upper,
   )
 
   if (next[index] === valueRange.value[index]) {
@@ -507,7 +512,7 @@ onBeforeUnmount(stopDragging)
   >
     <div
       ref="sliderRef"
-      :role="range ? 'group' : 'slider'"
+      :role="range ? 'group' : undefined"
       :class="classes"
       @pointerdown.prevent="onTrackPointerdown"
     >
@@ -523,7 +528,13 @@ onBeforeUnmount(stopDragging)
       <div
         v-for="thumb in thumbList"
         :key="thumb.index"
+        role="slider"
         tabindex="0"
+        :aria-valuemin="thumb.index === 0 ? min : valueRange[0]"
+        :aria-valuemax="thumb.index === 0 ? valueRange[1] : max"
+        :aria-valuenow="thumb.value"
+        aria-orientation="horizontal"
+        :aria-disabled="disabled"
         :data-dragging="activeThumb === thumb.index"
         :class="thumb.classes"
         :style="{ left: `${thumb.percentage}%` }"
