@@ -6,11 +6,13 @@ export const MAX_HIGHLIGHT_LENGTH = 20000
 type HighlightModule = typeof import('microlighter')
 
 const IMPORT_RETRY_DELAY = 30_000
+const MAX_IMPORT_ATTEMPTS = 3
 
 let modulePromise: Promise<HighlightModule | null> | null = null
 let pending = false
 let flushing = false
 let retryAfter = 0
+let importAttempts = 0
 
 function isHighlightSupported() {
   return typeof CSS !== 'undefined' && 'highlights' in CSS && 'Highlight' in globalThis
@@ -22,10 +24,13 @@ function loadModule(): Promise<HighlightModule | null> {
   }
 
   // A transient network failure must not disable highlighting for the rest of the session,
-  // but retrying on every keystroke would spam the import. Back off briefly instead.
-  if (Date.now() < retryAfter) {
+  // but a permanently missing module must not be re-requested forever either: allow a few
+  // spaced attempts, then stop importing for the rest of the page lifetime.
+  if (importAttempts >= MAX_IMPORT_ATTEMPTS || Date.now() < retryAfter) {
     return Promise.resolve(null)
   }
+
+  importAttempts++
 
   modulePromise = import('microlighter').catch(() => {
     modulePromise = null
