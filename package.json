@@ -79,6 +79,9 @@
     "./utils/*": {
       "types": "./dist/utils/*.d.ts",
       "default": "./dist/utils/*.js"
+    },
+    "./types/components/*": {
+      "types": "./dist/types/components/*.d.ts"
     }
   },
   "scripts": {
