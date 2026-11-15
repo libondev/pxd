@@ -104,7 +104,7 @@ function increase() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| to | `string \| object` | - | Teleport target selector or element, switches the bar to `absolute` |
+| to | `string \| object` | `body` | Teleport target selector or element, switches the bar to `absolute` |
 | group | `string` | `default` | Listens only to `useLoadingBar` calls with the same group |
 | minimum | `number` | `0.08` | Progress ratio the bar starts from, `0.08` means 8% |
 | trickle | `boolean` | `true` | Auto-increase progress with a shrinking step, capped at 99.4% |

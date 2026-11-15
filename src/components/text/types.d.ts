@@ -1,4 +1,4 @@
-import type { ComponentAs, ResponsiveValue } from '../../types/shared/props'
+import type { ComponentAs, ComponentText, ResponsiveValue } from '../../types/shared/props'
 
 export interface TextProps {
   as?: ComponentAs

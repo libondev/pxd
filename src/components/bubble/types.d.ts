@@ -1,3 +1,5 @@
+import type { ComponentText } from '../../types/shared/props'
+
 export interface BubbleProps {
   role?: 'user' | 'system' | 'assistant'
   text?: ComponentText

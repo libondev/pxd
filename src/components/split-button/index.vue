@@ -64,7 +64,7 @@ const computedSize = computed(() => props.size || configProvider.size)
       <slot name="item" v-bind="itemSlotProps" />
     </template>
 
-    <template v-if="$slots.footer">
+    <template v-if="$slots.footer" #footer>
       <slot name="footer" />
     </template>
   </PMenu>

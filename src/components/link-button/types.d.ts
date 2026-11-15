@@ -1,3 +1,5 @@
+import type { ComponentText } from '../../types/shared/props'
+
 export interface LinkButtonProps {
   href: string
   text?: ComponentText

@@ -25,7 +25,7 @@ const uniqueId = getUniqueId()
 
 const isComposing = shallowRef(false)
 
-const modelValue = useModelValue(props, emits)
+const modelValue = useModelValue(props, emits, { withChange: false })
 
 const configProvider = useConfigProvider()
 const {

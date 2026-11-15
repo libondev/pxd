@@ -33,6 +33,7 @@ const computedStyle = computed(() => {
 <style>
 .pxd-placeholder {
   --placeholder-deg: -45deg;
+  --placeholder-color: currentColor;
   background-image: linear-gradient(
     var(--placeholder-deg),
     var(--placeholder-color) 12.5%,

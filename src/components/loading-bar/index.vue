@@ -6,7 +6,6 @@ import { useLoadingBarProgress } from '../../composables/_internal/use-loading-b
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { UPDATE_LOADING_BAR_EVENT_NAME } from '../../composables/use-loading-bar.js'
 import { cachedOff, cachedOn } from '../../utils/event.js'
-import { isTruthyProp } from '../../utils/format.js'
 import { isServer } from '../../utils/is.js'
 
 defineOptions({
@@ -51,7 +50,7 @@ const { attrs, classes } = useTailwindVariant(
     },
   },
   {
-    selection: () => ({ locally: isTruthyProp(props.to) }),
+    selection: () => ({ locally: props.to !== 'body' }),
   },
 )
 const { classes: innerClasses } = useTailwindVariant(

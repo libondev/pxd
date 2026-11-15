@@ -35,7 +35,13 @@ const uniqueId = getUniqueId()
 const inputRef = shallowRef<HTMLInputElement>()
 const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
-const inputType = computed(() => (props.inputType || isPasswordVisible.value ? 'text' : 'password'))
+const inputType = computed(() => {
+  if (props.inputType) {
+    return props.inputType
+  }
+
+  return isPasswordVisible.value ? 'text' : 'password'
+})
 
 const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits, { withChange: false })

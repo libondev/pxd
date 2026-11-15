@@ -19,8 +19,8 @@ provideChoiceboxContext({ props, emits, name: getUniqueId() })
 <template>
   <PStack
     data-choicebox
-    aria-label="Choicebox Group"
     :gap="gap"
+    :aria-label="label ?? 'Choicebox Group'"
     :aria-multiselectable="multiple"
     :role="multiple ? 'group' : 'radiogroup'"
     class="pxd-choicebox"

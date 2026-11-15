@@ -119,7 +119,6 @@ const { attrs, classes } = useTailwindVariant(
     data-button
     :is="as"
     tabindex="0"
-    aria-label="Action"
     :aria-busy="loading"
     :aria-disabled="isDisabled"
     :class="classes"
