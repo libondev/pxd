@@ -27,6 +27,7 @@ let startTime = -1
 let startValue = 0
 let targetValue = 0
 let finishTimer: ReturnType<typeof setTimeout> | null = null
+let isUnmounted = false
 
 const displayValue = ref(0)
 const scrollTransition = ref(false)
@@ -171,6 +172,10 @@ async function startScrollAnimation(target: number, fromMasked = false) {
     scrollTransition.value = false
     scrollText.value = maskDigitsAsZero(targetText)
     await nextTick()
+
+    if (isUnmounted) {
+      return
+    }
   }
 
   scrollTransition.value = true
@@ -218,6 +223,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  isUnmounted = true
   stopAnimation()
 })
 

@@ -31,7 +31,7 @@ export const PRESET_MEDIA_QUERIES = {
   XXL_UP: '(width >= 96rem)',
 }
 
-const CACHED_QUERIES: Record<string, CacheEntry> = {}
+const CACHED_QUERIES = new Map<string, CacheEntry>()
 
 function createEntry(condition: string): CacheEntry {
   const query = window.matchMedia(condition)
@@ -59,7 +59,14 @@ export function useMediaQuery(condition: string, callback?: QueryCallback): Ref<
     return shallowRef(false)
   }
 
-  const entry = (CACHED_QUERIES[condition] ??= createEntry(condition))
+  let cached = CACHED_QUERIES.get(condition)
+
+  if (!cached) {
+    cached = createEntry(condition)
+    CACHED_QUERIES.set(condition, cached)
+  }
+
+  const entry: CacheEntry = cached
   const handler = callback ? () => callback(entry.query) : null
 
   entry.count++
@@ -79,7 +86,7 @@ export function useMediaQuery(condition: string, callback?: QueryCallback): Ref<
 
     entry.unbind()
 
-    delete CACHED_QUERIES[condition]
+    CACHED_QUERIES.delete(condition)
   })
 
   return entry.matches

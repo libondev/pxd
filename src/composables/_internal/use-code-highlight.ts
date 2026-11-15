@@ -5,18 +5,31 @@ export const MAX_HIGHLIGHT_LENGTH = 20000
 
 type HighlightModule = typeof import('microlighter')
 
+const IMPORT_RETRY_DELAY = 30_000
+
 let modulePromise: Promise<HighlightModule | null> | null = null
 let pending = false
 let flushing = false
-let unavailable = false
+let retryAfter = 0
 
 function isHighlightSupported() {
   return typeof CSS !== 'undefined' && 'highlights' in CSS && 'Highlight' in globalThis
 }
 
 function loadModule(): Promise<HighlightModule | null> {
-  modulePromise ??= import('microlighter').catch(() => {
-    unavailable = true
+  if (modulePromise) {
+    return modulePromise
+  }
+
+  // A transient network failure must not disable highlighting for the rest of the session,
+  // but retrying on every keystroke would spam the import. Back off briefly instead.
+  if (Date.now() < retryAfter) {
+    return Promise.resolve(null)
+  }
+
+  modulePromise = import('microlighter').catch(() => {
+    modulePromise = null
+    retryAfter = Date.now() + IMPORT_RETRY_DELAY
 
     return null
   })
@@ -48,15 +61,16 @@ async function flush() {
       })
     }
   } catch {
-    // A failed run has already cleared the registered ranges; retrying on every edit only spams.
-    unavailable = true
+    // A failed run has already cleared its registered ranges. Keep later edits able to retry
+    // instead of disabling highlighting for every block in the session.
+    return
   } finally {
     flushing = false
   }
 }
 
 function scheduleHighlight() {
-  if (pending || unavailable || !isHighlightSupported()) {
+  if (pending || !isHighlightSupported()) {
     return
   }
 

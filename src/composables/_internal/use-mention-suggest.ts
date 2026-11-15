@@ -1,7 +1,7 @@
 import type { ListFilterMethodFn, ListOptions } from '../../components/list/types'
 import type { MentionRemoteFilterFn } from '../../components/mention/types'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
-import { computed, shallowRef, watch } from 'vue'
+import { computed, onScopeDispose, shallowRef, watch } from 'vue'
 import { debounce } from '../../utils/timing.js'
 import { filterListOptions } from './use-list-search.js'
 import { isListOptionGroup } from './use-selected-list-item.js'
@@ -171,6 +171,10 @@ export function useMentionSuggest({
       cancelPendingFilter()
     }
   })
+
+  // An unmount while the popover is open never flips `visible` to false, so the watch above
+  // cannot fire. Drop the debounce and invalidate any in-flight remote filter here.
+  onScopeDispose(cancelPendingFilter)
 
   return {
     activeTrigger,

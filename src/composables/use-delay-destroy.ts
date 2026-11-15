@@ -27,6 +27,13 @@ export function useDelayDestroy(
 
   let destroyTimeoutId: ReturnType<typeof setTimeout>
   let visibleRafId = 0
+  const pendingResolvers = new Set<(value: boolean) => void>()
+
+  function settlePending(resolve: (value: boolean) => void, value: boolean) {
+    if (pendingResolvers.delete(resolve)) {
+      resolve(value)
+    }
+  }
 
   function getDelay() {
     return toValue(delay) ?? 1000
@@ -43,17 +50,19 @@ export function useDelayDestroy(
 
       if (visible.value) {
         resolve(visible.value)
-      } else {
-        caf(visibleRafId)
-        visibleRafId = raf(() => {
-          visibleRafId = raf(() => {
-            visibleRafId = 0
-            visible.value = true
-            resolve(visible.value)
-            visibleChange?.(visible.value)
-          })
-        })
+        return
       }
+
+      pendingResolvers.add(resolve)
+      caf(visibleRafId)
+      visibleRafId = raf(() => {
+        visibleRafId = raf(() => {
+          visibleRafId = 0
+          visible.value = true
+          settlePending(resolve, visible.value)
+          visibleChange?.(visible.value)
+        })
+      })
     })
   }
 
@@ -68,13 +77,14 @@ export function useDelayDestroy(
       }
 
       clearTimeout(destroyTimeoutId)
+      pendingResolvers.add(resolve)
       destroyTimeoutId = setTimeout(() => {
         if (render.value) {
           render.value = false
           renderChange?.(render.value)
         }
 
-        resolve(render.value)
+        settlePending(resolve, render.value)
       }, getDelay())
     })
   }
@@ -82,6 +92,14 @@ export function useDelayDestroy(
   onScopeDispose(() => {
     clearTimeout(destroyTimeoutId)
     caf(visibleRafId)
+
+    // `show`/`hide` only resolve from the frame/timer above; without this they stay pending
+    // forever and any awaiting caller keeps the whole setup scope alive.
+    for (const resolve of pendingResolvers) {
+      resolve(false)
+    }
+
+    pendingResolvers.clear()
   })
 
   return {

@@ -45,6 +45,7 @@ const {
   pauseAll,
   resumeAll,
   handlePromiseMessage,
+  dispose: disposeMessageGroup,
 } = useMessageGroup({
   messages: groupMessages,
   expand: () => props.expand,
@@ -178,6 +179,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  disposeMessageGroup()
   clearMessage()
 
   cachedOff(window, UPDATE_MESSAGE_EVENT_NAME, onUpdateMessage)

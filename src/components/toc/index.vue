@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { TocEmits, TocItem, TocProps } from './types'
-import { computed, onScopeDispose, ref, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useMotionReduced } from '../../composables/use-motion-reduce.js'
 import { useMutationObserver } from '../../composables/use-mutation-observer.js'
@@ -39,7 +39,7 @@ const ITEM_IDLE_CLASS = 'text-foreground-secondary hover:bg-gray-100 hover:text-
 let revealFrame = 0
 const scheduleRead = scheduleByRaf(readOutline)
 
-const listEl = ref<HTMLElement | null>(null)
+const listEl = shallowRef<HTMLElement | null>(null)
 
 const entries = shallowRef<TocEntry[]>([])
 const isDataMode = computed(() => props.data != null)
@@ -277,13 +277,13 @@ if (!isServer()) {
     { flush: 'post' },
   )
 
-  onScopeDispose(() => {
-    if (!revealFrame) {
-      return
-    }
+  onBeforeUnmount(() => {
+    scheduleRead.cancel()
 
-    caf(revealFrame)
-    revealFrame = 0
+    if (revealFrame) {
+      caf(revealFrame)
+      revealFrame = 0
+    }
   })
 }
 

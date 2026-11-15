@@ -20,6 +20,17 @@ export function useMessageGroup({ messages, expand, onTimeout }: UseMessageGroup
 
   let leaveTimeoutId: ReturnType<typeof setTimeout> | undefined
   let isTransitioning = false
+  const pendingDisposers = new Set<() => void>()
+
+  function dispose() {
+    clearTimeout(leaveTimeoutId)
+
+    for (const resolve of pendingDisposers) {
+      resolve()
+    }
+
+    pendingDisposers.clear()
+  }
 
   function lockTransition() {
     isTransitioning = true
@@ -130,35 +141,67 @@ export function useMessageGroup({ messages, expand, onTimeout }: UseMessageGroup
   }
 
   async function handlePromiseMessage(message: MessageItemConfig) {
-    if (!message.promise) {
+    const promise = message.promise
+
+    if (!promise) {
       return
     }
 
-    let result: unknown
+    // Each message owns its own cancellation promise. A single shared promise would accumulate
+    // one reaction per loading message for the whole lifetime of the group.
+    let resolveDispose!: () => void
+    const disposed = new Promise<void>((resolve) => {
+      resolveDispose = resolve
+    })
+
+    pendingDisposers.add(resolveDispose)
 
     try {
-      result = await message.promise
-      message.type = 'success'
-      applyHandlerMessage(message, message.success, result)
-    } catch (err) {
-      result = err
-      message.type = 'error'
-      applyHandlerMessage(message, message.error, err)
-    } finally {
-      applyHandlerMessage(message, message.finally, result)
+      const outcome = await Promise.race([
+        Promise.resolve(promise).then(
+          (value) => ({ status: 'fulfilled' as const, value }),
+          (reason) => ({ status: 'rejected' as const, reason }),
+        ),
+        disposed.then(() => ({ status: 'disposed' as const })),
+      ])
 
-      message.promise = undefined
-      message.success = undefined
-      message.error = undefined
-      message.finally = undefined
-
-      // it may have been closed or cleared while the promise was pending
-      const isAlive = toValue(messages).includes(message)
-
-      if (isAlive && message.duration && message.duration > 0) {
-        message._remainingMs = message.duration
-        startTimer(message)
+      if (outcome.status === 'disposed') {
+        return
       }
+
+      let result: unknown
+
+      try {
+        if (outcome.status === 'rejected') {
+          throw outcome.reason
+        }
+
+        result = outcome.value
+        message.type = 'success'
+        applyHandlerMessage(message, message.success, result)
+      } catch (err) {
+        result = err
+        message.type = 'error'
+        applyHandlerMessage(message, message.error, err)
+      } finally {
+        applyHandlerMessage(message, message.finally, result)
+
+        message.promise = undefined
+        message.success = undefined
+        message.error = undefined
+        message.finally = undefined
+
+        // it may have been closed or cleared while the promise was pending
+        const isAlive = toValue(messages).includes(message)
+
+        if (isAlive && message.duration && message.duration > 0) {
+          message._remainingMs = message.duration
+          startTimer(message)
+        }
+      }
+    } finally {
+      pendingDisposers.delete(resolveDispose)
+      resolveDispose()
     }
   }
 
@@ -194,5 +237,6 @@ export function useMessageGroup({ messages, expand, onTimeout }: UseMessageGroup
     pauseAll,
     resumeAll,
     handlePromiseMessage,
+    dispose,
   }
 }

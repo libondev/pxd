@@ -214,7 +214,13 @@ export function useSwipeGesture(
       }
 
       if (verdict === 'pending' && gate) {
-        void gate.then((allowed) => onTap?.({ event, startEvent, vetoed: !allowed }))
+        void gate.then((allowed) => {
+          if (stopped) {
+            return
+          }
+
+          onTap?.({ event, startEvent, vetoed: !allowed })
+        })
         return
       }
 
@@ -235,7 +241,7 @@ export function useSwipeGesture(
       if (isThenable(verdict)) {
         startGate = verdict
         void verdict.then((allowed) => {
-          if (released) {
+          if (stopped || released) {
             return
           }
 
