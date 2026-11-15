@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { RadialBurstProps } from './types'
 import { computed, type CSSProperties } from 'vue'
 import { getCssUnitValue } from '../../utils/format.js'

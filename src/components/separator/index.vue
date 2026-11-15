@@ -6,7 +6,7 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<SeparatorProps>(), {
+withDefaults(defineProps<SeparatorProps>(), {
   direction: 'vertical',
 })
 </script>

@@ -26,6 +26,14 @@ const SCROLL_EPSILON = 2
 const uid = getUniqueId('pxd-tabs')
 let resizeObserver: ResizeObserver | null = null
 const tabRefs = new Map<ComponentValue, HTMLElement>()
+const tabCallbacks = new WeakMap<
+  TabsOptions,
+  {
+    setRef: (el: unknown) => void
+    label: () => ReturnType<typeof renderLabel>
+    item: () => ReturnType<typeof renderItem>
+  }
+>()
 
 const scrollRef = shallowRef<HTMLElement>()
 const innerNavRef = shallowRef<HTMLElement>()
@@ -117,6 +125,21 @@ function renderItem(option: TabsOptions) {
   return slots.item?.({ active: isActiveOption(option), option })
 }
 
+function getTabCallbacks(option: TabsOptions) {
+  let callbacks = tabCallbacks.get(option)
+
+  if (!callbacks) {
+    callbacks = {
+      setRef: (el: unknown) => setTabRef(option.value, el),
+      label: () => renderLabel(option),
+      item: () => renderItem(option),
+    }
+    tabCallbacks.set(option, callbacks)
+  }
+
+  return callbacks
+}
+
 function updateScrollState() {
   const el = scrollRef.value
 
@@ -187,8 +210,6 @@ function focusTab(index: number) {
   if (option) {
     tabRefs.get(option.value)?.focus()
   }
-
-  scrollActiveTabIntoView()
 }
 function teardownScrollObservers() {
   resizeObserver?.disconnect()
@@ -311,7 +332,7 @@ onBeforeUnmount(() => {
             v-for="(option, index) in options"
             :key="option.value"
             role="tab"
-            :ref="(el: unknown) => setTabRef(option.value, el)"
+            :ref="getTabCallbacks(option).setRef"
             :id="tabId(index)"
             :disabled="option.disabled"
             :tabindex="isActiveOption(option) ? 0 : -1"
@@ -320,7 +341,7 @@ onBeforeUnmount(() => {
             class="pxd-tabs--nav-item flex cursor-pointer items-center justify-center self-focus-ring outline-none enabled:hover:text-foreground disabled:cursor-not-allowed disabled:text-foreground-secondary motion-safe:transition-colors"
             @click="select(option.value)"
           >
-            <PTabSlot v-if="slots.label" :render="() => renderLabel(option)" />
+            <PTabSlot v-if="slots.label" :render="getTabCallbacks(option).label" />
             <template v-else>
               {{ option.label }}
             </template>
@@ -351,9 +372,9 @@ onBeforeUnmount(() => {
         class="pxd-tabs--panel"
       >
         <KeepAlive v-if="keepAlive">
-          <PTabSlot v-if="isActivated(option)" :render="() => renderItem(option)" />
+          <PTabSlot v-if="isActivated(option)" :render="getTabCallbacks(option).item" />
         </KeepAlive>
-        <PTabSlot v-else-if="isActiveOption(option)" :render="() => renderItem(option)" />
+        <PTabSlot v-else-if="isActiveOption(option)" :render="getTabCallbacks(option).item" />
       </div>
     </div>
   </div>

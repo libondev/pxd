@@ -46,6 +46,11 @@ let stopMoveListener: (() => void) | null = null
 
 const PARTICLE_COUNT = 16
 const PARTICLE_DURATION = 2
+// Deterministic `fract(sin(x))` hash for particle styles; depends only on
+// index/salt, so particleList re-evaluations keep an identical sequence.
+const HASH_X = 127.1
+const HASH_Y = 311.7
+const HASH_SCALE = 43758.5453
 const scheduleUpdate = throttleByRaf(() => {
   if (lastClientX !== null) {
     updateFromPosition(lastClientX)
@@ -161,7 +166,7 @@ const { attrs, classes } = useTailwindVariant(
 )
 
 function particleSeed(index: number, salt: number) {
-  const value = Math.sin(index * 127.1 + salt * 311.7) * 43758.5453
+  const value = Math.sin(index * HASH_X + salt * HASH_Y) * HASH_SCALE
 
   return value - Math.floor(value)
 }

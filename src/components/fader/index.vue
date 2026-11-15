@@ -18,6 +18,9 @@ const props = withDefaults(defineProps<FaderProps>(), {
   threshold: 16,
 })
 
+const FADER_ITEM_BASE =
+  'inset-0 absolute rounded-inherit before:default-transition-duration before:default-transition-timing-function after:default-transition-duration after:default-transition-timing-function'
+
 const showTop = shallowRef(false)
 const showLeft = shallowRef(false)
 const showRight = shallowRef(false)
@@ -109,13 +112,13 @@ onBeforeUnmount(() => {
   >
     <div
       v-if="direction !== 'vertical'"
-      class="pxd-fader--item horizontal inset-0 absolute rounded-inherit before:default-transition-duration before:default-transition-timing-function after:default-transition-duration after:default-transition-timing-function"
-      :class="{ left: showLeft, right: showRight }"
+      class="pxd-fader--item horizontal"
+      :class="[FADER_ITEM_BASE, { left: showLeft, right: showRight }]"
     />
     <div
       v-if="direction !== 'horizontal'"
-      class="pxd-fader--item vertical inset-0 absolute rounded-inherit before:default-transition-duration before:default-transition-timing-function after:default-transition-duration after:default-transition-timing-function"
-      :class="{ top: showTop, bottom: showBottom }"
+      class="pxd-fader--item vertical"
+      :class="[FADER_ITEM_BASE, { top: showTop, bottom: showBottom }]"
     />
   </div>
 </template>

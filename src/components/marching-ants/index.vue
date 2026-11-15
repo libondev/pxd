@@ -58,6 +58,13 @@ const props = withDefaults(defineProps<MarchingAntsProps>(), {
   gap: 4,
 })
 
+const SAMPLE_COUNT = 720
+const POINT_EPSILON = 0.01
+const EDGE_TOLERANCE = 0.5
+const CURVE_TENSION = 6
+const STROKE_INSET = 1
+const CIRCLE_TOLERANCE = 1
+
 const targetRef = shallowRef<HTMLElement | ComponentPublicInstance>()
 const outline = shallowRef<Outline>()
 
@@ -76,7 +83,9 @@ const strokeStyle = computed(() => ({
 
 const circleOutline = computed<EllipseOutline | undefined>(() => {
   const value = outline.value
-  return value?.type === 'ellipse' && Math.abs(value.rx - value.ry) < 0.5 ? value : undefined
+  return value?.type === 'ellipse' && Math.abs(value.rx - value.ry) < EDGE_TOLERANCE
+    ? value
+    : undefined
 })
 
 const ellipseOutline = computed<EllipseOutline | undefined>(() => {
@@ -128,7 +137,7 @@ function ellipseRectIntersect(
     return createEllipseOutline(cx, cy, rx, ry, width, height)
   }
 
-  const sampleCount = 720
+  const sampleCount = SAMPLE_COUNT
   const rawPoints: Point[] = []
   for (let index = 0; index < sampleCount; index++) {
     const angle = (index / sampleCount) * Math.PI * 2
@@ -198,13 +207,16 @@ function ellipseRectIntersect(
   for (let index = 1; index < points.length; index++) {
     const previous = uniquePoints[uniquePoints.length - 1]
     const current = points[index]
-    if ((current.x - previous.x) ** 2 + (current.y - previous.y) ** 2 > 0.01) {
+    if ((current.x - previous.x) ** 2 + (current.y - previous.y) ** 2 > POINT_EPSILON) {
       uniquePoints.push(current)
     }
   }
 
   const isOnEdge = (point: Point) =>
-    point.x < 0.5 || point.x > width - 0.5 || point.y < 0.5 || point.y > height - 0.5
+    point.x < EDGE_TOLERANCE ||
+    point.x > width - EDGE_TOLERANCE ||
+    point.y < EDGE_TOLERANCE ||
+    point.y > height - EDGE_TOLERANCE
   const format = (value: number) => value.toFixed(2)
   const count = uniquePoints.length
   let d = `M ${format(uniquePoints[0].x)} ${format(uniquePoints[0].y)}`
@@ -219,7 +231,7 @@ function ellipseRectIntersect(
 
     const previous = uniquePoints[(index - 1 + count) % count]
     const afterNext = uniquePoints[(index + 2) % count]
-    const tension = 6
+    const tension = CURVE_TENSION
     d += ` C ${format(current.x + (next.x - previous.x) / tension)},${format(
       current.y + (next.y - previous.y) / tension,
     )} ${format(next.x - (afterNext.x - current.x) / tension)},${format(
@@ -249,13 +261,15 @@ function parseBorderRadius({ style, width, height }: ElementRect): PathOutline |
 
   if (
     [topLeft, topRight, bottomRight, bottomLeft].every(
-      (radius) => Math.abs(radius.rx - width / 2) < 1 && Math.abs(radius.ry - height / 2) < 1,
+      (radius) =>
+        Math.abs(radius.rx - width / 2) < CIRCLE_TOLERANCE &&
+        Math.abs(radius.ry - height / 2) < CIRCLE_TOLERANCE,
     )
   ) {
     return createEllipseOutline(width / 2, height / 2, width / 2 - 1, height / 2 - 1, width, height)
   }
 
-  const offset = 1
+  const offset = STROKE_INSET
   const arc = (radius: { rx: number; ry: number }, x: number, y: number) =>
     radius.rx > 0 || radius.ry > 0
       ? `A ${Math.max(0, radius.rx - offset)} ${Math.max(0, radius.ry - offset)} 0 0 1 ${x} ${y}`

@@ -121,7 +121,7 @@ const spinners = computed(() => {
     return props.data
   }
 
-  return spinnerPresets[props.variant as keyof typeof spinnerPresets] || spinnerPresets.dots0
+  return spinnerPresets[props.variant]
 })
 
 const spinnerStyle = computed(() => {

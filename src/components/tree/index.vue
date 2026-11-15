@@ -113,9 +113,7 @@ const containerStyle = computed(() => {
 
 const focused = shallowRef(false)
 const dragEnabled = computed(() => props.draggable && !props.disabled && !searching.value)
-const rowsTransition = computed(() =>
-  props.virtual || searchValue.value ? 'pxd-tree-transition-none' : 'pxd-tree-transition',
-)
+const rowsTransitionEnabled = computed(() => !(props.virtual || searchValue.value))
 
 const slots = useSlots()
 
@@ -745,7 +743,8 @@ defineExpose({
     >
       <TransitionGroup
         tag="div"
-        :name="rowsTransition"
+        name="pxd-tree-transition"
+        :css="rowsTransitionEnabled"
         class="pxd-tree--content w-full"
         :class="{ relative: virtual }"
         :style="contentStyle"

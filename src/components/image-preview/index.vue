@@ -218,7 +218,6 @@ function switchTo(index: number) {
   }
 
   activeIndex.value = nextIndex
-  resetTransform()
   emits('index-change', nextIndex)
 }
 

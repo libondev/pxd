@@ -27,13 +27,14 @@ const VARIANTS_ICON = {
   primary: InformationIcon,
   violet: InformationIcon,
   cyan: InformationIcon,
+  ghost: InformationIcon,
 } as const
 
 const computedLabel = computed(() => {
   const { label } = props
 
   if (isTruthyProp(label)) {
-    return VARIANTS_ICON[props.variant as keyof typeof VARIANTS_ICON] || InformationIcon
+    return VARIANTS_ICON[props.variant]
   }
 
   if (typeof label === 'string' && label) {

@@ -188,7 +188,11 @@ function onItemClick(index: number, item: TodoOption) {
 function resolveIndex(target: TodoItemKey): number {
   const byId = currentOptions.value.findIndex((item) => item.id === target)
 
-  return byId > -1 ? byId : (target as number)
+  if (byId > -1) {
+    return byId
+  }
+
+  return typeof target === 'number' ? target : -1
 }
 
 function setStatus(target: TodoItemKey, status: TodoStatus) {

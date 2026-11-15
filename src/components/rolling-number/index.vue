@@ -88,7 +88,7 @@ function formatNumber(rawValue: number): string {
 function maskDigitsAsZero(formatted: string): string {
   return formatted.replace(/\d/g, '0')
 }
-function easeOutCubic(t: number): number {
+function easeOutExpo(t: number): number {
   return t === 1 ? 1 : 1 - 2 ** (-10 * t)
 }
 
@@ -113,7 +113,7 @@ function animate(timestamp: number) {
 
   const elapsed = timestamp - startTime
   const progress = Math.min(elapsed / props.duration, 1)
-  const eased = easeOutCubic(progress)
+  const eased = easeOutExpo(progress)
 
   displayValue.value = startValue + (targetValue - startValue) * eased
 

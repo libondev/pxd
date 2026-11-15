@@ -60,14 +60,17 @@ const formattedCols = computed(() => {
 
 const computedClasses = computed(() => {
   const classes = [
-    ...Object.keys(formattedRows.value).map(
-      (bp) => presetGridRows[bp as keyof typeof presetGridRows],
-    ),
-    ...Object.keys(formattedCols.value).map(
-      (bp) => presetGridCols[bp as keyof typeof presetGridCols],
-    ),
-    props.debug ? 'debug' : '',
+    ...Object.keys(formattedRows.value)
+      .filter((bp) => bp in presetGridRows)
+      .map((bp) => presetGridRows[bp as keyof typeof presetGridRows]),
+    ...Object.keys(formattedCols.value)
+      .filter((bp) => bp in presetGridCols)
+      .map((bp) => presetGridCols[bp as keyof typeof presetGridCols]),
   ]
+
+  if (props.debug) {
+    classes.push('debug')
+  }
 
   return classes
 })

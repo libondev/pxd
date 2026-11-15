@@ -22,7 +22,7 @@ onBeforeUnmount(unlockScroll)
 </script>
 
 <template>
-  <Transition name="pxd-transition--fade" mode="out-in" appear>
+  <Transition name="pxd-transition--fade" appear>
     <div
       ref="maskRef"
       aria-hidden="true"

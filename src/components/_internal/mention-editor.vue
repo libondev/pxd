@@ -54,7 +54,7 @@ const emits = defineEmits<{
 const SIZES = {
   sm: { height: `${BASIC_MIN_HEIGHTS.sm} py-[0.3125rem]`, pad: '0.3125rem' },
   md: { height: `${BASIC_MIN_HEIGHTS.md} py-[0.46875rem]`, pad: '0.46875rem' },
-  lg: { height: `${BASIC_MIN_HEIGHTS.lg} py-2.75`, pad: '0.6875rem' },
+  lg: { height: `${BASIC_MIN_HEIGHTS.lg} py-[0.6875rem]`, pad: '0.6875rem' },
 } as const
 
 const editorRef = shallowRef<HTMLElement>()

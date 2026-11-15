@@ -70,6 +70,9 @@ const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
 
+const prefixClasses = computed(() => iconSlotClasses({ size: computedSize.value, slot: 'prefix' }))
+const suffixClasses = computed(() => iconSlotClasses({ size: computedSize.value, slot: 'suffix' }))
+
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'pxd-badge font-medium gap-1 font-sans inline-flex items-center justify-center leading-none text-nowrap whitespace-nowrap no-underline! outline-none text-trim-both motion-safe:transition-appearance',
@@ -128,11 +131,7 @@ function onClose(ev: Event) {
 
 <template>
   <Component data-badge :is="as" :class="classes" :data-variant="variant" v-bind="attrs">
-    <span
-      v-if="$slots.prefix"
-      class="pxd-badge--prefix"
-      :class="iconSlotClasses({ size: computedSize, slot: 'prefix' })"
-    >
+    <span v-if="$slots.prefix" class="pxd-badge--prefix" :class="prefixClasses">
       <slot name="prefix" />
     </span>
 
@@ -141,7 +140,7 @@ function onClose(ev: Event) {
     <button
       v-if="closeable"
       class="pxd-badge--close relative cursor-pointer appearance-none rounded-sm text-foreground-secondary self-focus-ring hover:bg-gray-alpha-200 hover:text-foreground active:bg-gray-alpha-300 motion-safe:transition-colors"
-      :class="iconSlotClasses({ size: computedSize, slot: 'suffix' })"
+      :class="suffixClasses"
       @click.stop="onClose"
     >
       <CrossIcon />

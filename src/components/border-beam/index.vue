@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { BorderBeamProps } from './types'
 import { computed } from 'vue'
-import { toArray } from '../../utils/format.js'
+import { clampValue, toArray } from '../../utils/format.js'
 
 defineOptions({
   name: 'PBorderBeam',
@@ -19,7 +19,7 @@ const COLOR_SPOT_COUNT = 9
 
 const computedStyle = computed(() => {
   const style: Record<string, string | number> = {
-    '--border-beam-strength': Math.max(0, Math.min(1, props.strength)),
+    '--border-beam-strength': clampValue(props.strength, 0, 1),
   }
 
   const colors = toArray(props.color)

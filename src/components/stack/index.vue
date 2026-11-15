@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { ComponentDirection } from '../../types/shared/props'
 import type { StackProps } from './types'
 import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
@@ -56,7 +55,7 @@ const formattedDirection = computed(() => {
     props.direction,
     (typeof direction === 'object' ? direction.xs : direction) ?? 'horizontal',
     (acc, bp, value) => {
-      acc[bp] = presetDir[`--${bp}:${value}` as keyof typeof presetDir] as ComponentDirection
+      acc[bp] = value
     },
   )
 })
@@ -100,7 +99,9 @@ const { attrs, classes: variantClasses } = useTailwindVariant(
 const computedClasses = computed(() => {
   const classes = [
     variantClasses.value,
-    ...Object.values(formattedDirection.value),
+    ...Object.entries(formattedDirection.value).map(
+      ([bp, dir]) => presetDir[`--${bp}:${dir}` as keyof typeof presetDir],
+    ),
     ...Object.keys(formattedGap.value).map((bp) => presetGap[bp as keyof typeof presetGap]),
   ].filter(Boolean)
 

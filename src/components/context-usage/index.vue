@@ -52,12 +52,9 @@ const items = computed(() =>
 
 const viewItems = computed(() =>
   items.value.map((item, index) => {
-    const isDimmed = hoveredIndex.value !== null && hoveredIndex.value !== index
-
     return {
       ...item,
       color: SEGMENT_COLORS[index % SEGMENT_COLORS.length],
-      opacity: isDimmed ? DIM_OPACITY : 1,
     }
   }),
 )
@@ -108,7 +105,7 @@ function onItemLeave() {
         :style="{
           '--context-usage-color': item.color,
           flexGrow: item.tokens,
-          opacity: item.opacity,
+          opacity: hoveredIndex !== null && hoveredIndex !== index ? DIM_OPACITY : 1,
         }"
         @pointerenter="onItemEnter(index)"
         @pointerleave="onItemLeave()"
@@ -124,7 +121,7 @@ function onItemLeave() {
         v-for="(item, index) in viewItems"
         :key="item.name"
         class="min-w-0 gap-2 sibling:pbs-1 text-sm m-0! flex cursor-default items-center leading-none motion-safe:transition-opacity"
-        :style="{ opacity: item.opacity }"
+        :style="{ opacity: hoveredIndex !== null && hoveredIndex !== index ? DIM_OPACITY : 1 }"
         @pointerenter="onItemEnter(index)"
         @pointerleave="onItemLeave()"
       >

@@ -20,19 +20,11 @@ const ITEM_STYLE_CACHE_LIMIT = 512
 const itemStyles = new Map<number, CSSProperties>()
 let domOffsets: number[] = []
 let stopScroll: (() => void) | null = null
+const bumpScroll = throttleByRaf(refreshDomOffsets)
 
 const stickRef = shallowRef<InstanceType<typeof PStickToBottom>>()
 const scrollVersion = shallowRef(0)
 const isVirtual = computed(() => props.virtual === true && !!props.data)
-
-const bumpScroll = throttleByRaf(() => {
-  if (isVirtual.value) {
-    return
-  }
-
-  measureDomOffsets()
-  scrollVersion.value++
-})
 
 const {
   totalSize,
@@ -110,17 +102,16 @@ const contentStyle = computed(() => {
   }
 })
 
-useResizeObserver(
-  () => stickRef.value?.contentRef ?? null,
-  () => {
-    if (isVirtual.value) {
-      return
-    }
+useResizeObserver(() => stickRef.value?.contentRef ?? null, refreshDomOffsets)
 
-    measureDomOffsets()
-    scrollVersion.value++
-  },
-)
+function refreshDomOffsets() {
+  if (isVirtual.value) {
+    return
+  }
+
+  measureDomOffsets()
+  scrollVersion.value++
+}
 
 function getItemStyle(start: number): CSSProperties {
   let style = itemStyles.get(start)

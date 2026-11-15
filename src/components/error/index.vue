@@ -2,6 +2,7 @@
 import type { ErrorProps } from './types'
 import ExternalIcon from '@gdsicon/vue/external'
 import StopIcon from '@gdsicon/vue/stop'
+import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isExternalLink } from '../../utils/format.js'
@@ -14,6 +15,13 @@ defineOptions({
 const props = withDefaults(defineProps<ErrorProps>(), {
   variant: 'default',
 })
+
+const isExternal = computed(() => {
+  const link = props.error?.link
+  return link ? isExternalLink(link) : false
+})
+
+const resolvedLabel = computed(() => props.label || props.error?.label)
 
 const configProvider = useConfigProvider()
 
@@ -47,9 +55,7 @@ const { attrs, classes } = useTailwindVariant(
     <StopIcon class="me-2 mbs-(--mt) size-em shrink-0" />
 
     <div class="flex-1 shrink-0">
-      <b v-if="label || error?.label" class="font-medium whitespace-nowrap"
-        >{{ label || error?.label }}:</b
-      >
+      <b v-if="resolvedLabel" class="font-medium whitespace-nowrap">{{ resolvedLabel }}:</b>
 
       <slot>
         {{ error?.message }}
@@ -58,11 +64,11 @@ const { attrs, classes } = useTailwindVariant(
           <a
             :href="error.link"
             class="font-medium gap-1 inline-flex items-center text-red-900 underline"
-            :target="isExternalLink(error.link) ? '_blank' : '_self'"
+            :target="isExternal ? '_blank' : '_self'"
           >
             {{ error.action }}
 
-            <ExternalIcon v-if="isExternalLink(error.link)" class="text-sm" />
+            <ExternalIcon v-if="isExternal" class="text-sm" />
           </a>
         </span>
       </slot>

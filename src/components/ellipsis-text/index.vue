@@ -88,22 +88,14 @@ const updateEllipsis = scheduleByRaf(async () => {
   const actionFont = actionRef.value ? getFontShorthand(getStyle(actionRef.value)) : textFont
   const dots = props.dots ?? ''
 
-  if (props.position === 'end') {
-    const prepared = prepareWithSegments(sourceText, textFont)
-    const { lines } = layoutWithLines(prepared, availableWidth, lineHeight)
-    const baseText = lines
-      .slice(0, maxRows.value)
-      .map((l) => l.text)
-      .join('')
-    const baseChars = [...baseText]
-
+  function bisect(makeCandidate: (keep: number) => string, length: number): string {
     let low = 0
-    let high = baseChars.length
+    let high = length
     let best = ''
 
     while (low <= high) {
       const mid = Math.floor((low + high) / 2)
-      const candidate = `${joinChars(baseChars, 0, mid)}${dots}`
+      const candidate = makeCandidate(mid)
 
       if (
         measureLineCount(
@@ -121,31 +113,29 @@ const updateEllipsis = scheduleByRaf(async () => {
       }
     }
 
-    ellipsisText.value = best || dots
+    return best || dots
+  }
+
+  if (props.position === 'end') {
+    const prepared = prepareWithSegments(sourceText, textFont)
+    const { lines } = layoutWithLines(prepared, availableWidth, lineHeight)
+    const baseText = lines
+      .slice(0, maxRows.value)
+      .map((l) => l.text)
+      .join('')
+    const baseChars = [...baseText]
+
+    ellipsisText.value = bisect(
+      (keep) => `${joinChars(baseChars, 0, keep)}${dots}`,
+      baseChars.length,
+    )
     return
   }
 
   const chars = [...sourceText]
-  let low = 0
-  let high = chars.length
-  let best = ''
+  const position = props.position
 
-  while (low <= high) {
-    const mid = Math.floor((low + high) / 2)
-    const candidate = buildCandidate(chars, mid, dots, props.position)
-
-    if (
-      measureLineCount(candidate, textFont, availableWidth, String(actionText ?? ''), actionFont) <=
-      maxRows.value
-    ) {
-      best = candidate
-      low = mid + 1
-    } else {
-      high = mid - 1
-    }
-  }
-
-  ellipsisText.value = best || dots
+  ellipsisText.value = bisect((keep) => buildCandidate(chars, keep, dots, position), chars.length)
 })
 
 const computedActionClass = computed(() => {

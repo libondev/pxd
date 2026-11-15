@@ -22,7 +22,6 @@ provideRadioGroupContext({ props, emits, name: getUniqueId() })
     class="pxd-radio-group"
     role="radiogroup"
     aria-label="Radio Group"
-    aria-multiselectable="false"
     v-bind="$attrs"
   >
     <slot>

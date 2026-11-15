@@ -124,7 +124,7 @@ function toPrecision(value: number | null) {
     return value
   }
 
-  const p = Math.max(0, valuePrecision.value ?? 0)
+  const p = Math.max(0, valuePrecision.value)
   const factor = 10 ** p
 
   return Math.round(value * factor) / factor

@@ -77,7 +77,7 @@ function resolveStatus(option: StepsOption, index: number): StepsStatus {
   }
 
   if (index === activeIndex.value) {
-    return props.status ?? 'process'
+    return props.status
   }
 
   return 'wait'

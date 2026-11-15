@@ -1,11 +1,5 @@
 import type { ComponentDateTimeValue } from '../../types/shared/props'
 
-export interface CalendarDateInfo {
-  year: number
-  month: number
-  date: number
-}
-
 export interface CalendarPanelInfo {
   year: number
   month: number

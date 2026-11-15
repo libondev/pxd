@@ -25,7 +25,7 @@ const isMultiple = computed(() => {
 })
 
 const isDisabled = computed(() => {
-  return props.disabled || !!choiceboxGroupContext?.props.disabled || false
+  return props.disabled || !!choiceboxGroupContext?.props.disabled
 })
 const inputName = computed(() => {
   if (isMultiple.value) {
@@ -89,11 +89,6 @@ const { classes: innerClasses } = useTailwindVariant(
       },
     },
     compoundVariants: [
-      {
-        multiple: false,
-        selected: false,
-        class: '',
-      },
       {
         disabled: true,
         multiple: true,

@@ -10,22 +10,6 @@ defineOptions({
 
 const props = defineProps<GridItemProps>()
 
-const presetGridRow = {
-  '--xs-row': 'row-(--xs-row)',
-  '--sm-row': 'sm:row-(--sm-row)',
-  '--md-row': 'md:row-(--md-row)',
-  '--lg-row': 'lg:row-(--lg-row)',
-  '--xl-row': 'xl:row-(--xl-row)',
-}
-
-const presetGridCol = {
-  '--xs-col': 'col-(--xs-col)',
-  '--sm-col': 'sm:col-(--sm-col)',
-  '--md-col': 'md:col-(--md-col)',
-  '--lg-col': 'lg:col-(--lg-col)',
-  '--xl-col': 'xl:col-(--xl-col)',
-}
-
 const formattedRow = computed(() => {
   const { row } = props
   return getResponsiveValue(
@@ -49,10 +33,15 @@ const formattedCol = computed(() => {
 })
 
 const computedClasses = computed(() => {
-  const classes = [
-    ...Object.keys(formattedRow.value).map((bp) => presetGridRow[bp as keyof typeof presetGridRow]),
-    ...Object.keys(formattedCol.value).map((bp) => presetGridCol[bp as keyof typeof presetGridCol]),
-  ]
+  const toClasses = (formatted: object, axis: 'row' | 'col') =>
+    Object.keys(formatted).map((key) => {
+      const bp = key.split('-')[2]
+      const prefix = bp === 'xs' ? '' : bp + ':'
+
+      return `${prefix}${axis}-(${key})`
+    })
+
+  const classes = [...toClasses(formattedRow.value, 'row'), ...toClasses(formattedCol.value, 'col')]
 
   return classes
 })

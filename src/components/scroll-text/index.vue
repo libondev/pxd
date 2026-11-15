@@ -142,12 +142,14 @@ onBeforeUnmount(() => {
 
 <style>
 .pxd-scroll-text[data-overflow='true']:hover .pxd-scroll-text--content {
+  --scroll-text-pause-factor: 1.6667;
   display: inline-block;
   width: max-content;
   max-width: none;
   overflow: visible;
   text-overflow: clip;
-  animation: pxd-scroll-text-shift calc(var(--scroll-text-duration) * 1.6667) linear infinite;
+  animation: pxd-scroll-text-shift
+    calc(var(--scroll-text-duration) * var(--scroll-text-pause-factor)) linear infinite;
 }
 
 @keyframes pxd-scroll-text-shift {

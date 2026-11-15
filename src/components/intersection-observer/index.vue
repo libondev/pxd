@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { IntersectionObserverEmits, IntersectionObserverProps } from './types'
-import { nextTick, shallowRef } from 'vue'
+import { computed, nextTick, shallowRef } from 'vue'
 import { useIntersectionObserver } from '../../composables/use-intersection-observer.js'
 import { getCssUnitValue } from '../../utils/format.js'
 import PFragmentContainer from '../_internal/fragment-container.vue'
@@ -20,17 +20,22 @@ const emits = defineEmits<IntersectionObserverEmits>()
 const isVisible = shallowRef(false)
 const containerRef = shallowRef<HTMLElement>()
 const containerSize = shallowRef({
-  'contain-intrinsic-size': `auto ${getCssUnitValue(props.height)}`,
-  '--slot-estimated-width': getCssUnitValue(props.width),
-  '--slot-estimated-height': getCssUnitValue(props.height),
+  'contain-intrinsic-size': `auto ${getCssUnitValue(props.height, 'auto')}`,
+  '--slot-estimated-width': getCssUnitValue(props.width, 'auto'),
+  '--slot-estimated-height': getCssUnitValue(props.height, 'auto'),
 })
+const observerOptions = computed(() => ({
+  root: props.root,
+  rootMargin: props.rootMargin,
+  threshold: props.threshold,
+}))
 
 useIntersectionObserver(
   containerRef,
   ([{ entry }]) => {
     onVisibleChange(entry.isIntersecting)
   },
-  props,
+  observerOptions,
 )
 
 function getRenderedSlotSize() {

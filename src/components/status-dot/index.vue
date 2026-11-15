@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { StatusDotProps } from './types'
+import { computed } from 'vue'
 import { capitalize as capitalizeText } from '../../utils/format.js'
 
 defineOptions({
@@ -20,19 +21,11 @@ const stateClassNames = {
   BUILDING: 'is-building bg-amber-600',
 }
 
-function getLabelText() {
-  const { label, state } = props
-
-  if (!label) {
-    return ''
-  }
-
-  if (typeof label === 'boolean') {
-    return capitalizeText(state)
-  }
-
-  return label
-}
+const labelText = computed(() =>
+  typeof props.label === 'string' || typeof props.label === 'number'
+    ? props.label
+    : capitalizeText(props.state),
+)
 </script>
 
 <template>
@@ -43,8 +36,8 @@ function getLabelText() {
       :class="stateClassNames[state]"
     />
 
-    <span v-if="label" class="ps-2 pe-1 min-w-0 text-sm truncate after:content-[attr(aria-label)]">
-      {{ getLabelText() }}
+    <span v-if="label" class="ps-2 pe-1 min-w-0 text-sm truncate">
+      {{ labelText }}
     </span>
   </span>
 </template>

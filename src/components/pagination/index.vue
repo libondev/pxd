@@ -26,7 +26,6 @@ const configProvider = useConfigProvider()
       class="pxd-pagination--prev group py-1 pe-2 ps-6 rounded-md no-underline! self-focus-ring outline-none"
     >
       <span
-        secondary
         class="text-xs text-foreground-secondary group-hover:text-foreground motion-safe:transition-colors"
       >
         {{ configProvider.locale.pagination.prev }}
@@ -48,7 +47,6 @@ const configProvider = useConfigProvider()
       class="pxd-pagination--next group py-1 ps-2 pe-6 rounded-md text-right no-underline! self-focus-ring outline-none"
     >
       <span
-        secondary
         class="text-xs text-foreground-secondary group-hover:text-foreground motion-safe:transition-colors"
       >
         {{ configProvider.locale.pagination.next }}

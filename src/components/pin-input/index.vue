@@ -32,8 +32,6 @@ const computedInputType = computed(() => {
 
   if (type.includes('password')) {
     return 'password'
-  } else if (type === 'numeric') {
-    return 'numeric'
   }
 
   return 'text'
@@ -124,8 +122,6 @@ function getFirstEmptyIndex() {
 }
 
 function onInputElFocus(ev: FocusEvent) {
-  ev.preventDefault()
-
   const inputEl = ev.target as HTMLInputElement
   inputEl.select?.()
 }

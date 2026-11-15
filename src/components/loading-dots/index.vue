@@ -3,6 +3,9 @@ defineOptions({
   name: 'PLoadingDots',
   inheritAttrs: false,
 })
+
+const DOT_CLASS =
+  'pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-current default-animation-timing-function! motion-reduce:animate-none!'
 </script>
 
 <template>
@@ -12,17 +15,9 @@ defineOptions({
     class="pxd-loading-dots inline-flex items-center text-foreground-secondary"
     v-bind="$attrs"
   >
-    <span
-      class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-current opacity-20 default-animation-timing-function! motion-reduce:animate-none!"
-    />
-    <span
-      class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-current opacity-50 default-animation-timing-function! motion-reduce:animate-none!"
-      style="animation-delay: 0.2s"
-    />
-    <span
-      class="pxd-loading--dot mx-px size-[calc(1em/4)] rounded-full bg-current opacity-80 default-animation-timing-function! motion-reduce:animate-none!"
-      style="animation-delay: 0.4s"
-    />
+    <span :class="[DOT_CLASS, 'opacity-20']" />
+    <span :class="[DOT_CLASS, 'opacity-50']" style="animation-delay: 0.2s" />
+    <span :class="[DOT_CLASS, 'opacity-80']" style="animation-delay: 0.4s" />
   </span>
 </template>
 

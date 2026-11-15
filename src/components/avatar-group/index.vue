@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<AvatarGroupProps>(), {
 })
 
 const slicedOptions = computed(() => {
-  const { max, options = [] } = props
+  const { max, options } = props
   const maxCount = Math.max(Math.min(max, options.length), 1)
 
   return options.slice(0, maxCount)
@@ -26,7 +26,11 @@ provideAvatarGroupContext({ props })
 
 <template>
   <div data-avatar-group class="pxd-avatar-group flex flex-wrap items-center" v-bind="$attrs">
-    <div v-for="(option, index) in slicedOptions" :key="index" class="group nth-[n+2]:-ms-2.5">
+    <div
+      v-for="(option, index) in slicedOptions"
+      :key="`${option.src}-${index}`"
+      class="group nth-[n+2]:-ms-2.5"
+    >
       <PAvatar
         :size="size"
         :src="option.src"

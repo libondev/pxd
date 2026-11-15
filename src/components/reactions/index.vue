@@ -22,10 +22,10 @@ const labelId = getUniqueId('pxd-reactions-label')
 
 const visible = shallowRef(false)
 
-const reactions = computed(() => props.modelValue ?? [])
+const reactions = computed(() => props.modelValue)
 
-function commit(next: Reaction[], event: 'add' | 'remove', emoji: string) {
-  if (event === 'add') {
+function commit(next: Reaction[], action: 'add' | 'remove', emoji: string) {
+  if (action === 'add') {
     emits('add', emoji)
   } else {
     emits('remove', emoji)

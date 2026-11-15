@@ -8,7 +8,6 @@ import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed, shallowRef } from 'vue'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { isNil } from '../../utils/is.js'
 import PCodeBlock from '../code-block/index.vue'
 
 interface PayloadView {
@@ -47,7 +46,7 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
 )
 
 function formatPayload(value: unknown): PayloadView {
-  if (isNil(value) || !value) {
+  if (!value) {
     return { text: '', isJson: false }
   }
 

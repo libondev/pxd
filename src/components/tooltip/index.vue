@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<TooltipProps>(), {
   hideDelay: 300,
 })
 
-const computedVariant = computed(() => getFallbackValue(props.variant, TOOLTIP_VARIANTS, 'default'))
+const computedVariant = computed(() => getFallbackValue(props.variant, TOOLTIP_VARIANTS))
 
 const isDisabled = computed(() => {
   return props.disabled || (props.desktopOnly && isTouchDevice())
