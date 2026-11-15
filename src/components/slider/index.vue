@@ -6,6 +6,7 @@ import {
   createTailwindVariant,
   useTailwindVariant,
 } from '../../composables/_internal/use-tailwind-variant.js'
+import { VARIANT_COLORS } from '../../constants/variant-colors.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getLabelShift, getPercentage, getRelativePosition } from '../../utils/_internal/slider.js'
 import { cachedOn, once, throttleByRaf } from '../../utils/event.js'
@@ -62,14 +63,6 @@ const sliderMarkClasses = createTailwindVariant({
     },
   },
 })
-
-const VARIANTS = {
-  primary: 'var(--color-primary)',
-  success: 'hsl(var(--color-blue-700-value))',
-  warning: 'hsl(var(--color-amber-700-value))',
-  secondary: 'hsl(var(--color-gray-700-value))',
-  error: 'hsl(var(--color-red-700-value))',
-}
 
 const activeMarkClasses = sliderMarkClasses({ active: true })
 const inactiveMarkClasses = sliderMarkClasses({ active: false })
@@ -173,7 +166,7 @@ const trackStyle = computed(() => ({
   width: `${endPercentage.value - startPercentage.value}%`,
   backgroundColor: props.disabled
     ? 'var(--color-gray-alpha-400)'
-    : getFallbackValue(props.variant, VARIANTS, 'primary'),
+    : getFallbackValue(props.variant, VARIANT_COLORS, 'primary'),
 }))
 
 const configProvider = useConfigProvider()

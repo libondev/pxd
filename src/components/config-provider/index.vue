@@ -7,12 +7,8 @@ import enUS from '../../locales/en-us.js'
 import { NOOP } from '../../utils/event.js'
 import { mergeDeep } from '../../utils/merge.js'
 
-interface Props {
+interface Props extends ConfigProviderProps {
   as?: ComponentAs
-  size?: ConfigProviderProps['size']
-  locale?: ConfigProviderProps['locale']
-  enterMotion?: ConfigProviderProps['enterMotion']
-  leaveMotion?: ConfigProviderProps['leaveMotion']
 }
 
 defineOptions({

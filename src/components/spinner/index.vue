@@ -7,6 +7,18 @@ defineOptions({
 const ITEMS_COUNT = 12
 const ROTATE_STEP = 360 / ITEMS_COUNT
 const OPACITY_STEP = 1 / ITEMS_COUNT
+const ITEMS = Array.from({ length: ITEMS_COUNT }, (_, k) => {
+  const step = k + 1
+
+  return {
+    left: '38%',
+    top: '46%',
+    width: '24%',
+    height: '8%',
+    opacity: step * OPACITY_STEP,
+    transform: `rotate(${step * ROTATE_STEP}deg) translate(146%)`,
+  }
+})
 </script>
 
 <template>
@@ -18,17 +30,10 @@ const OPACITY_STEP = 1 / ITEMS_COUNT
   >
     <span class="pxd-spinner-container top-0 left-0 absolute size-full">
       <span
-        v-for="i of ITEMS_COUNT"
-        :key="i"
+        v-for="(item, index) in ITEMS"
+        :key="index"
         class="pxd-spinner-item absolute rounded-sm bg-current"
-        :style="{
-          left: '38%',
-          top: '46%',
-          width: '24%',
-          height: '8%',
-          opacity: i * OPACITY_STEP,
-          transform: `rotate(${i * ROTATE_STEP}deg) translate(146%)`,
-        }"
+        :style="item"
       />
     </span>
   </span>

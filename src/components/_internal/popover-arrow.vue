@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentPosition } from '../../types/shared/props'
+import { getUniqueId } from '../../utils/helper.js'
 
 interface Props {
   position?: ComponentPosition
@@ -13,6 +14,8 @@ defineOptions({
 withDefaults(defineProps<Props>(), {
   position: 'bottom',
 })
+
+const clipId = getUniqueId('pxd-popover-arrow-clip')
 </script>
 
 <template>
@@ -26,7 +29,7 @@ withDefaults(defineProps<Props>(), {
     :data-position="position"
     v-bind="$attrs"
   >
-    <g clip-path="url(#popover_arrow_clip)">
+    <g :clip-path="`url(#${clipId})`">
       <path
         d="M15 -0.5V0.5H12.9834L12.8184 0.508789C12.4377 0.550822 12.0853 0.738056 11.8359 1.03418L8.53027 4.95996C7.73114 5.90893 6.26886 5.90892 5.46973 4.95996L2.16406 1.03418C1.87905 0.695733 1.45907 0.5 1.0166 0.5H-1V-0.5H15Z"
         fill="inherit"
@@ -34,7 +37,7 @@ withDefaults(defineProps<Props>(), {
       />
     </g>
     <defs>
-      <clipPath id="popover_arrow_clip">
+      <clipPath :id="clipId">
         <rect width="14" height="7" fill="inherit" />
       </clipPath>
     </defs>

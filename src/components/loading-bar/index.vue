@@ -6,7 +6,6 @@ import { useLoadingBarProgress } from '../../composables/_internal/use-loading-b
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { UPDATE_LOADING_BAR_EVENT_NAME } from '../../composables/use-loading-bar.js'
 import { cachedOff, cachedOn } from '../../utils/event.js'
-import { isServer } from '../../utils/is.js'
 
 defineOptions({
   name: 'PLoadingBar',
@@ -16,7 +15,6 @@ defineOptions({
 const props = withDefaults(defineProps<LoadingBarProps>(), {
   to: 'body',
   group: 'default',
-  speed: 300,
   minimum: 0.08,
   trickle: true,
   hideDelay: 500,
@@ -92,10 +90,6 @@ function onUpdateLoadingBar({ detail }: CustomEvent<LoadingBarEventParams>) {
 }
 
 onMounted(() => {
-  if (isServer()) {
-    return
-  }
-
   cachedOn(window, UPDATE_LOADING_BAR_EVENT_NAME, onUpdateLoadingBar)
 })
 

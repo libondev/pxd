@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentPosition } from '../../types/shared/props'
-import { shallowRef, computed } from 'vue'
+import { shallowRef, computed, onScopeDispose } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
 import { caf, raf } from '../../utils/event.js'
@@ -36,7 +36,9 @@ const containerRef = shallowRef<HTMLElement>()
 
 const gestureMoveOffset = shallowRef(0)
 
-const isHorizontal = computed(() => ['left', 'right'].find((d) => props.position.startsWith(d)))
+const isHorizontal = computed(
+  () => props.position.startsWith('left') || props.position.startsWith('right'),
+)
 const gestureAxis = computed(() => (isHorizontal.value ? 'horizontal' : 'vertical'))
 
 const computedStyle = computed(() => {
@@ -101,6 +103,8 @@ function animateRelease(from: number, decayRate = 0.88) {
 
   releaseAnimationId = raf(step)
 }
+
+onScopeDispose(() => caf(releaseAnimationId))
 </script>
 
 <template>

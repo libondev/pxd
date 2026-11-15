@@ -1,5 +1,4 @@
 import type { ComponentText, ComponentSizeWithXxs, ComponentValue } from '../../types/shared/props'
-import type { CheckboxProps } from '../checkbox/types'
 
 type ToggleButtonModelValue = ComponentValue | boolean
 
@@ -14,6 +13,6 @@ export interface ToggleButtonProps {
 }
 
 export interface ToggleButtonEmits {
-  change: [NonNullable<CheckboxProps['modelValue']>]
-  'update:model-value': [NonNullable<CheckboxProps['modelValue']>]
+  change: [NonNullable<ToggleButtonProps['modelValue']>]
+  'update:model-value': [NonNullable<ToggleButtonProps['modelValue']>]
 }

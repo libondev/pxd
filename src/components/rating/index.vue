@@ -27,9 +27,21 @@ const emits = defineEmits<RatingEmits>()
 let activePointerId: number | null = null
 let ratingRect: DOMRect | null = null
 let lastClientX: number | null = null
+let lastHoverClientX: number | null = null
 
 const ratingRef = shallowRef<HTMLElement>()
 const hoverValue = shallowRef<number | null>(null)
+
+const scheduleHoverUpdate = throttleByRaf(() => {
+  if (lastHoverClientX !== null) {
+    const value = getValueFromPosition(lastHoverClientX)
+
+    if (hoverValue.value !== value) {
+      hoverValue.value = value
+    }
+  }
+})
+
 const dragValue = shallowRef<number | null>(null)
 
 const scheduleDragUpdate = throttleByRaf(() => {
@@ -142,6 +154,8 @@ function handlePointerDown(event: PointerEvent) {
   activePointerId = event.pointerId
   ratingRect = ratingRef.value.getBoundingClientRect()
   lastClientX = event.clientX
+  scheduleHoverUpdate.cancel()
+  lastHoverClientX = null
   hoverValue.value = null
   dragValue.value = getValueFromPosition(event.clientX)
 
@@ -177,18 +191,29 @@ function handleDocumentPointerCancel(event: PointerEvent) {
   resetDragging()
 }
 
+function handlePointerEnter() {
+  if (ratingRef.value) {
+    ratingRect = ratingRef.value.getBoundingClientRect()
+  }
+}
+
 function handlePointerMove(event: PointerEvent) {
   if (props.readonly || props.disabled || isDragging.value || event.pointerType !== 'mouse') {
     return
   }
 
-  hoverValue.value = getValueFromPosition(event.clientX)
+  lastHoverClientX = event.clientX
+  scheduleHoverUpdate()
 }
 
 function handlePointerLeave() {
   if (isDragging.value) {
     return
   }
+
+  scheduleHoverUpdate.cancel()
+  lastHoverClientX = null
+  ratingRect = null
   hoverValue.value = null
 }
 
@@ -208,6 +233,7 @@ function handleKeydown(event: KeyboardEvent) {
 }
 
 onBeforeUnmount(() => {
+  scheduleHoverUpdate.cancel()
   resetDragging()
 })
 </script>
@@ -222,6 +248,7 @@ onBeforeUnmount(() => {
     v-bind="attrs"
     @keydown="handleKeydown"
     @pointerdown.prevent="handlePointerDown"
+    @pointerenter="handlePointerEnter"
     @pointermove="handlePointerMove"
     @pointerleave="handlePointerLeave"
   >

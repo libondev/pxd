@@ -274,15 +274,11 @@ function onFreeformInputChange() {
 
 function getFinalAnswers() {
   return Object.entries(totalAnswers).reduce((answers, [header, answer]) => {
-    if (answer.selected.length || answer.freeText?.trim().length) {
-      answer.skipped = false
-    } else {
-      answer.skipped = true
-    }
+    const freeTextLength = answer.freeText?.trim().length
 
     answers[header] = {
       ...answer,
-      skipped: !answer.selected.length && !answer.freeText?.trim().length,
+      skipped: !answer.selected.length && !freeTextLength,
     }
 
     return answers

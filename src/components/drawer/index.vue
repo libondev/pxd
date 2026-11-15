@@ -29,14 +29,7 @@ const props = withDefaults(defineProps<DrawerProps>(), {
 const emits = defineEmits<DrawerEmits>()
 
 const drawerRef = shallowRef<HTMLElement>()
-const ensurePosition = computed(() => {
-  const { position } = props
-  if (['top', 'bottom', 'left', 'right'].includes(position)) {
-    return position
-  }
-
-  return 'right'
-})
+const ensurePosition = computed(() => props.position)
 
 const defaultStyles = computed(() => ({
   headerClass: props.defaultHeaderStyle

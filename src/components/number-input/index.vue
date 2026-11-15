@@ -74,7 +74,7 @@ const increaseDisabled = computed(
   () => props.disabled || (isNumber(props.modelValue) && props.modelValue >= props.max),
 )
 const valuePrecision = computed(() => {
-  if (props.precision) {
+  if (!isUndefined(props.precision)) {
     return props.precision
   }
 

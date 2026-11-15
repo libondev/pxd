@@ -66,6 +66,11 @@ const checkboxClass = computed(() => {
 
 const indentSize = computed(() => Math.max(props.depth * props.indent, 8))
 
+const nodeStyle = computed(() => ({
+  paddingInlineStart: `${indentSize.value}px`,
+  '--node-indent': `${indentSize.value}px`,
+}))
+
 const parts = computed<TreeHighlightPart[] | undefined>(() => {
   const query = props.highlightQuery
 
@@ -128,7 +133,7 @@ function onSwitcherClick(event: MouseEvent): void {
     :aria-setsize="setSize"
     :aria-posinset="index + 1"
     :aria-disabled="disabled || undefined"
-    :style="{ paddingInlineStart: indentSize + 'px', '--node-indent': indentSize + 'px' }"
+    :style="nodeStyle"
     class="pxd-tree--node group/row min-h-8 py-1 pe-2 gap-1 text-sm relative flex w-full max-w-full cursor-pointer items-center rounded-md text-foreground outline-none select-none hover:bg-gray-100 motion-safe:transition-[border-radius]"
     :class="[
       itemClass,

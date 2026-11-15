@@ -72,7 +72,7 @@ async function onCheckboxChange(e: Event) {
       :disabled="isDisabled"
       :checked="isChecked"
       :aria-checked="isChecked"
-      :aria-label="modelValue ? activeLabel : inactiveLabel"
+      :aria-label="isChecked ? activeLabel : inactiveLabel"
       class="pxd-toggle--input peer visually-hidden"
       @change.prevent="onCheckboxChange"
     />
@@ -99,7 +99,7 @@ async function onCheckboxChange(e: Event) {
         <div class="inset-0 absolute flex items-center justify-center">
           <Transition name="pxd-transition--fade" mode="out-in">
             <LoaderCircleIcon v-if="loading" class="motion-safe:animate-spin" />
-            <slot v-else-if="modelValue" name="checked" />
+            <slot v-else-if="isChecked" name="checked" />
             <slot v-else name="unchecked" />
           </Transition>
         </div>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CountdownEmits, CountdownProps } from './types'
-import { computed, onBeforeUnmount } from 'vue'
+import { computed } from 'vue'
 import { useCountdown } from '../../composables/use-countdown.js'
 import { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin } from '../../utils/date.js'
 
@@ -23,7 +23,7 @@ const emits = defineEmits<CountdownEmits>()
 dayjs.extend(dayjsDurationPlugin)
 dayjs.extend(dayjsMillisecondTokenPlugin)
 
-const { stop, reset, timestamp } = useCountdown({
+const { reset, timestamp } = useCountdown({
   inverted: () => props.inverted,
   enabled: () => props.enabled,
   startAt: () => props.startAt ?? 0,
@@ -57,10 +57,6 @@ const displayTimes = computed(() => {
   const time = timestampDuration.value.format(props.format)
 
   return time
-})
-
-onBeforeUnmount(() => {
-  stop()
 })
 
 defineExpose({

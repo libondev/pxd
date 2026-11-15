@@ -208,8 +208,8 @@ function onInputValueChange(value: string) {
 }
 
 function onCalendarChange(value: ComponentDateTimeValue) {
-  const date = dayjs(value as number)
-  if (!date.isValid()) {
+  const date = parseIncomingValue(value)
+  if (!date) {
     return
   }
 

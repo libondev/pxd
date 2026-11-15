@@ -55,7 +55,14 @@ const nextText = computed(() => {
 const prevText = computed(() => activeStep.value?.prevText || configProvider.locale.tour.prev)
 
 const motionReduced = useMotionReduced()
-const { rect, targetRadius, isCentered, isLoading, goTo, cancel } = useTourTarget({
+const {
+  rect,
+  targetRadius,
+  isCentered,
+  isLoading,
+  goTo: resolveTarget,
+  cancel,
+} = useTourTarget({
   step: activeStep,
   motionReduced,
   onMissingTarget,
@@ -108,7 +115,7 @@ function goToStep(index: number) {
   const nextIndex = normalizeCurrent(index)
 
   if (nextIndex === localCurrent.value) {
-    goTo(nextIndex)
+    resolveTarget(nextIndex)
 
     return
   }
@@ -116,7 +123,7 @@ function goToStep(index: number) {
   localCurrent.value = nextIndex
   emits('update:current', nextIndex)
   emits('change', nextIndex, props.steps[nextIndex]!)
-  goTo(nextIndex)
+  resolveTarget(nextIndex)
 }
 
 function next() {
@@ -194,7 +201,7 @@ watch(
     }
 
     cachedOn(window, 'keydown', onKeydown)
-    goTo(localCurrent.value)
+    resolveTarget(localCurrent.value)
   },
   { immediate: true },
 )
@@ -221,7 +228,7 @@ watch(
       return
     }
 
-    goTo(nextIndex)
+    resolveTarget(nextIndex)
   },
 )
 
@@ -247,7 +254,7 @@ watch(
     }
 
     if (props.modelValue) {
-      goTo(nextIndex)
+      resolveTarget(nextIndex)
     }
   },
 )

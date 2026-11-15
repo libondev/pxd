@@ -100,6 +100,7 @@ async function onConfirm() {
     close()
     emits('confirm')
   } catch {
+    // A throwing beforeConfirm is deliberately treated as a cancel; finally resets isPending.
     return
   } finally {
     isPending.value = false

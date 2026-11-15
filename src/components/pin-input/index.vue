@@ -40,7 +40,7 @@ const computedInputType = computed(() => {
 })
 
 const computedInputMode = computed(() => {
-  return props.type.includes('numeric') ? 'numeric' : 'text'
+  return props.type.startsWith('numeric') ? 'numeric' : 'text'
 })
 
 const configProvider = useConfigProvider()

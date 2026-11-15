@@ -205,17 +205,20 @@ watch(
   () => [
     props.code,
     props.language,
-    props.size,
-    props.maxHeight,
-    props.collapsible,
     props.lineNumbers,
     props.highlightedLines,
     props.addedLines,
     props.removedLines,
-    expanded.value,
   ],
   () => {
     scheduleHighlight()
+  },
+  { flush: 'post' },
+)
+
+watch(
+  () => [props.maxHeight, props.collapsible, expanded.value, props.code, props.size],
+  () => {
     measureOverflow()
   },
   { flush: 'post' },

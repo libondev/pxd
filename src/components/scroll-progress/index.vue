@@ -9,7 +9,6 @@ import {
   getScrollPosition,
 } from '../../utils/dom.js'
 import { off, on, scheduleByRaf } from '../../utils/event.js'
-import { isServer } from '../../utils/is.js'
 
 defineOptions({
   name: 'PScrollProgress',
@@ -22,6 +21,9 @@ const props = withDefaults(defineProps<ScrollProgressProps>(), {
 
 const emits = defineEmits<ScrollProgressEmits>()
 
+const scheduleUpdate = scheduleByRaf(update)
+let currentListener: EventTarget | null = null
+
 const scrollTop = shallowRef(0)
 const maxScrollTop = shallowRef(0)
 
@@ -33,62 +35,55 @@ const percentage = computed(() => {
   return Math.min(100, Math.max(0, Math.round((scrollTop.value / maxScrollTop.value) * 100)))
 })
 
-if (!isServer()) {
-  const scrollElement = shallowRef<HTMLElement | null>(null)
+const scrollElement = shallowRef<HTMLElement | null>(null)
 
-  function update() {
-    const el = scrollElement.value
+useResizeObserver(() => scrollElement.value, scheduleUpdate)
 
-    if (!el) {
-      return
-    }
+function update() {
+  const el = scrollElement.value
 
-    const { scrollTop: top, scrollHeight, clientHeight } = getScrollPosition(el)
-
-    scrollTop.value = top
-    maxScrollTop.value = Math.max(0, scrollHeight - clientHeight)
+  if (!el) {
+    return
   }
 
-  const scheduleUpdate = scheduleByRaf(update)
+  const { scrollTop: top, scrollHeight, clientHeight } = getScrollPosition(el)
 
-  useResizeObserver(() => scrollElement.value, scheduleUpdate)
-
-  let currentListener: EventTarget | null = null
-
-  function bindListener() {
-    const el = getElement(props.scrollTarget)
-    const listener = getScrollListener(el)
-
-    scrollElement.value = getScrollElement(el)
-
-    if (listener !== currentListener) {
-      off(currentListener, 'scroll', scheduleUpdate)
-
-      currentListener = listener
-
-      on(listener, 'scroll', scheduleUpdate, { passive: true })
-    }
-
-    scheduleUpdate()
-  }
-
-  const stopListener = watch(() => props.scrollTarget, bindListener, { flush: 'post' })
-
-  watch(
-    () => percentage.value,
-    (value) => {
-      emits('change', value)
-    },
-  )
-
-  onMounted(bindListener)
-
-  onBeforeUnmount(() => {
-    scheduleUpdate.cancel()
-    off(currentListener, 'scroll', scheduleUpdate)
-    stopListener()
-  })
+  scrollTop.value = top
+  maxScrollTop.value = Math.max(0, scrollHeight - clientHeight)
 }
+function bindListener() {
+  const el = getElement(props.scrollTarget)
+  const listener = getScrollListener(el)
+
+  scrollElement.value = getScrollElement(el)
+
+  if (listener !== currentListener) {
+    off(currentListener, 'scroll', scheduleUpdate)
+
+    currentListener = listener
+
+    on(listener, 'scroll', scheduleUpdate, { passive: true })
+  }
+
+  scheduleUpdate()
+}
+
+const stopListener = watch(() => props.scrollTarget, bindListener, { flush: 'post' })
+
+watch(
+  () => percentage.value,
+  (value) => {
+    emits('change', value)
+  },
+)
+
+onMounted(bindListener)
+
+onBeforeUnmount(() => {
+  scheduleUpdate.cancel()
+  off(currentListener, 'scroll', scheduleUpdate)
+  stopListener()
+})
 </script>
 
 <template>

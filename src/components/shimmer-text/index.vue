@@ -60,7 +60,7 @@ const shimmerStyle = computed(() => {
 
   if (Array.isArray(props.color) && props.color.length > 0) {
     backgroundImage = buildBandGradient(props.color)
-  } else if (props.variant && props.variant in shimmerPresets) {
+  } else if (props.variant) {
     backgroundImage = buildBandGradient(shimmerPresets[props.variant])
   } else {
     backgroundImage = buildDefaultBandGradient(props.color as string)
@@ -72,7 +72,7 @@ const shimmerStyle = computed(() => {
   }
 })
 
-function buildDefaultBandGradient(color: string = 'var(--color-gray-100)') {
+function buildDefaultBandGradient(color: string) {
   return buildBandGradient([{ color, position: 0.5 }])
 }
 

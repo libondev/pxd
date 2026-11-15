@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ChipProps } from './types'
+import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { getCssUnitValue } from '../../utils/format.js'
 import { isNil } from '../../utils/is.js'
@@ -12,6 +13,8 @@ defineOptions({
 const props = withDefaults(defineProps<ChipProps>(), {
   variant: 'primary',
 })
+
+const labelStyle = computed(() => ({ '--chip-size': getCssUnitValue(props.size) }))
 
 const { classes } = useTailwindVariant(
   {
@@ -52,7 +55,7 @@ const { classes } = useTailwindVariant(
   >
     <slot />
 
-    <span :data-label="label" :class="classes" :style="{ '--chip-size': getCssUnitValue(size) }" />
+    <span :data-label="label" :class="classes" :style="labelStyle" />
   </div>
 </template>
 

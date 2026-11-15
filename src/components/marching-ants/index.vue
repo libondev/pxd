@@ -62,8 +62,8 @@ const targetRef = shallowRef<HTMLElement | ComponentPublicInstance>()
 const outline = shallowRef<Outline>()
 
 const dashArray = computed(() => {
-  const dash = parseFloat(getCssUnitValue(props.dashSize, '8') || '8')
-  const gap = parseFloat(getCssUnitValue(props.gap, '4') || '4')
+  const dash = parseFloat(getCssUnitValue(props.dashSize, '8'))
+  const gap = parseFloat(getCssUnitValue(props.gap, '4'))
   return { value: `${dash} ${gap}`, offset: `-${dash + gap}` }
 })
 

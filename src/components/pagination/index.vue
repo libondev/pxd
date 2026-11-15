@@ -29,7 +29,7 @@ const configProvider = useConfigProvider()
         secondary
         class="text-xs text-foreground-secondary group-hover:text-foreground motion-safe:transition-colors"
       >
-        {{ configProvider.locale.compare.prev }}
+        {{ configProvider.locale.pagination.prev }}
       </span>
 
       <div class="pxd-pagination--label prev relative flex items-center text-foreground">
@@ -51,7 +51,7 @@ const configProvider = useConfigProvider()
         secondary
         class="text-xs text-foreground-secondary group-hover:text-foreground motion-safe:transition-colors"
       >
-        {{ configProvider.locale.compare.next }}
+        {{ configProvider.locale.pagination.next }}
       </span>
 
       <div class="pxd-pagination--label next relative flex items-center text-foreground">

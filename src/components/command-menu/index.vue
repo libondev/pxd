@@ -78,11 +78,6 @@ function onListItemSelect() {
   }
 }
 
-function onInputKeyword(event: Event) {
-  const input = event.target as HTMLInputElement
-  filterKeyword.value = input.value.replaceAll("'", '')
-}
-
 watch(listOptions, async () => {
   await nextTick()
   listRef.value?.setFirstAsActive()
@@ -112,7 +107,7 @@ watch(listOptions, async () => {
       >
         <input
           :id="uniqueId"
-          :value="filterKeyword"
+          v-model="filterKeyword"
           :placeholder="placeholder"
           aria-autocomplete="list"
           :aria-controls="listId"
@@ -126,7 +121,6 @@ watch(listOptions, async () => {
           type="text"
           name="command-menu-filter-input"
           class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
-          @input="onInputKeyword"
           @keydown="onListKeydown"
         />
 

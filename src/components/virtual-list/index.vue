@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VirtualListProps, VirtualListEmits } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
-import { shallowRef } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useVirtualList, type VirtualListItem } from '../../composables/use-virtual-list.js'
 
 defineOptions({
@@ -24,6 +24,9 @@ const emits = defineEmits<VirtualListEmits>()
 
 const containerRef = shallowRef<HTMLElement>()
 
+const lanes = computed(() => Math.max(1, Math.floor(props.columnCount)))
+const gap = computed(() => props.columnGap)
+
 const {
   totalSize,
   virtualItems,
@@ -36,17 +39,15 @@ const {
 } = useVirtualList(containerRef, props)
 
 function getItemStyle(virtualItem: VirtualListItem) {
-  const lanes = Math.max(1, Math.floor(props.columnCount))
-  const gap = props.columnGap
   const y = `translateY(${virtualItem.start}px)`
 
-  if (lanes <= 1) {
+  if (lanes.value <= 1) {
     return { transform: y }
   }
 
   const lane = virtualItem.lane
-  const width = `calc((100% - ${(lanes - 1) * gap}px) / ${lanes})`
-  const left = `calc(${lane} * ((100% - ${(lanes - 1) * gap}px) / ${lanes} + ${gap}px))`
+  const width = `calc((100% - ${(lanes.value - 1) * gap.value}px) / ${lanes.value})`
+  const left = `calc(${lane} * ((100% - ${(lanes.value - 1) * gap.value}px) / ${lanes.value} + ${gap.value}px))`
 
   return {
     width,
@@ -89,7 +90,7 @@ defineExpose({
       <div
         v-for="virtualItem in virtualItems"
         :key="virtualItem.key"
-        :ref="(el) => measureElement(el)"
+        :ref="measureElement"
         :data-index="virtualItem.index"
         class="pxd-virtual-list--item left-0 top-0 absolute w-full"
         :class="itemClass"

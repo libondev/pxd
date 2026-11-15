@@ -6,7 +6,6 @@ import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { dayjs } from '../../utils/date.js'
-import { throttleByRaf } from '../../utils/event.js'
 import { clampValue } from '../../utils/format.js'
 import { isNil } from '../../utils/is.js'
 import PButton from '../button/index.vue'
@@ -51,8 +50,18 @@ const timeSecondsRef = shallowRef<HTMLElement>()
 const popoverVisible = shallowRef(false)
 
 const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
+const committedValue = shallowRef<string | number>('')
 
-const onTimeListScroll = throttleByRaf((ev: Event) => {
+const configProvider = useConfigProvider()
+
+const { isAdaptive, responsiveClasses } = usePopoverResponsive()
+const modelValue = useModelValue(props, emits, {
+  get() {
+    return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
+  },
+})
+
+const onTimeListScroll = (ev: Event) => {
   const target = ev.target as HTMLElement
   const value = Math.round(target.scrollTop / HEIGHT)
   const type = target.dataset.type as keyof typeof VALUE_POSITION_MAP
@@ -72,19 +81,7 @@ const onTimeListScroll = throttleByRaf((ev: Event) => {
 
     dayjsDateTime.value = dayjsDateTime.value.set(type, clampedValue)
   }, 100)
-})
-
-const committedValue = shallowRef<string | number>('')
-
-const configProvider = useConfigProvider()
-
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
-const modelValue = useModelValue(props, emits, {
-  get() {
-    return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
-  },
-})
-
+}
 function padStringZero(value: number | string): string {
   return String(value).padStart(2, '0')
 }
@@ -253,7 +250,6 @@ watch(() => props.modelValue, syncFromModelValue, { immediate: true })
 
 onBeforeUnmount(() => {
   scrollTimers.forEach((timer) => clearTimeout(timer))
-  onTimeListScroll.cancel()
 })
 </script>
 

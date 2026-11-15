@@ -26,7 +26,7 @@ const formattedWidth = computed(() => {
   return getResponsiveValue(
     width,
     (typeof width === 'object' ? width.xs : width) ?? 196,
-    (acc, bp, value) => (acc[bp] = acc[`--${bp}`] = value),
+    (acc, bp, value) => (acc[`--${bp}`] = value),
   )
 })
 
@@ -44,7 +44,7 @@ const computedClasses = computed(() => {
     (bp) => presetWidth[bp as keyof typeof presetWidth],
   )
 
-  return classes
+  return classes.filter(Boolean)
 })
 </script>
 

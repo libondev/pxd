@@ -7,7 +7,6 @@ import { useDocumentHidden } from '../../composables/use-document-hidden.js'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../composables/use-message.js'
 import { cachedOff, cachedOn } from '../../utils/event.js'
 import { getCssUnitValue } from '../../utils/format.js'
-import { isServer } from '../../utils/is.js'
 import PMessageItem from '../message-item/index.vue'
 
 defineOptions({
@@ -175,10 +174,6 @@ function onUpdateMessage({ detail }: CustomEvent<MessageUpdateParams>) {
 }
 
 onMounted(() => {
-  if (isServer()) {
-    return
-  }
-
   cachedOn(window, UPDATE_MESSAGE_EVENT_NAME, onUpdateMessage)
 })
 

@@ -103,7 +103,7 @@ function onItemLeave() {
     <div :class="classes" aria-hidden="true">
       <div
         v-for="(item, index) in viewItems"
-        :key="index"
+        :key="item.name"
         class="pxd-context-usage--segment basis-0 min-w-[2%] border-l bg-(--context-usage-color) motion-safe:transition-opacity"
         :style="{
           '--context-usage-color': item.color,
@@ -122,7 +122,7 @@ function onItemLeave() {
     <ul v-if="legend" class="pxd-context-usage--legend px-0.5 flex flex-col">
       <li
         v-for="(item, index) in viewItems"
-        :key="index"
+        :key="item.name"
         class="min-w-0 gap-2 sibling:pbs-1 text-sm m-0! flex cursor-default items-center leading-none motion-safe:transition-opacity"
         :style="{ opacity: item.opacity }"
         @pointerenter="onItemEnter(index)"

@@ -11,6 +11,8 @@ defineOptions({
 })
 
 defineProps<BrowserProps>()
+
+const SLOT_CLASS = 'gap-4 min-w-0 flex flex-1 items-center justify-center'
 </script>
 
 <template>
@@ -20,9 +22,7 @@ defineProps<BrowserProps>()
     v-bind="$attrs"
   >
     <div class="py-2.5 px-5 gap-4 md:gap-6 flex justify-between border-b bg-background-100">
-      <div
-        class="gap-4 min-w-0 md:first:max-w-35 md:last:max-w-35 max-md:first:flex-none flex flex-1 items-center justify-center first:justify-start last:justify-end"
-      >
+      <div :class="[SLOT_CLASS, 'md:first:max-w-35 max-md:first:flex-none first:justify-start']">
         <div class="gap-2 flex items-center">
           <div class="w-3 h-3 rounded-full bg-[#FE5F57]" />
           <div class="w-3 h-3 rounded-full bg-[#FEBB2E]" />
@@ -36,9 +36,7 @@ defineProps<BrowserProps>()
         </div>
       </div>
 
-      <div
-        class="gap-4 min-w-0 md:first:max-w-35 md:last:max-w-35 max-md:first:flex-none flex flex-1 shrink-0 items-center justify-center first:justify-start last:justify-end"
-      >
+      <div :class="[SLOT_CLASS, 'shrink-0']">
         <div
           class="lg:max-w-xs ps-2.5 pe-1 py-1 flex w-full items-center justify-between rounded-full border border-gray-400 bg-background-200"
         >
@@ -52,9 +50,7 @@ defineProps<BrowserProps>()
         </div>
       </div>
 
-      <div
-        class="gap-4 min-w-0 md:first:max-w-35 md:last:max-w-35 max-md:first:flex-none max-lg:hidden flex flex-1 items-center justify-center first:justify-start last:justify-end"
-      />
+      <div :class="[SLOT_CLASS, 'md:last:max-w-35 max-lg:hidden last:justify-end']" />
     </div>
 
     <slot />

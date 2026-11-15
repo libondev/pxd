@@ -347,7 +347,7 @@ function markMonthRows(rows: ActiveGraphRowData[]): ActiveGraphRowData[] {
 
 refreshTableBodyList()
 
-let tbodyRect: DOMRect
+let tbodyRect: DOMRect | null = null
 const pendingTooltip = {
   target: null as HTMLTableCellElement | null,
   date: '',
@@ -408,7 +408,7 @@ function onPointerLeave() {
   scheduleTooltipUpdate.cancel()
   setShowTooltip(false, true)
   tooltipInfo.value = {} as ActiveGraphTooltipInfo
-  tbodyRect = null!
+  tbodyRect = null
 }
 // when pointer hovers over a cell, show the tooltip
 function onPointerOver(ev: MouseEvent) {
@@ -502,8 +502,8 @@ onBeforeUnmount(() => {
           </td>
 
           <td
-            v-for="col of row"
-            :key="col.date"
+            v-for="(col, colIndex) of row"
+            :key="col.date ?? `hidden-${i}-${colIndex}`"
             class="pxd-active-graph--item max-w-3 min-w-3 rounded-(--active-graph-item-radius) border border-transparent bg-gray-alpha-100 hover:border-primary motion-safe:transition-colors"
             :data-date="col.date"
             :class="{

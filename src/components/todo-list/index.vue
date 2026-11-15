@@ -106,11 +106,10 @@ const stats = computed<TodoStats>(() => {
   return result
 })
 const summaryText = computed(() => {
-  const { inProgress, pending, total, canceled } = stats.value
-  const totalCount = total - canceled
-  const currentCount = totalCount - inProgress - pending
+  const { completed, canceled, total } = stats.value
+  const active = total - canceled
 
-  return totalCount > 0 ? `${currentCount}/${totalCount}` : ''
+  return active > 0 ? `${completed}/${active}` : ''
 })
 
 const configProvider = useConfigProvider()

@@ -3,7 +3,7 @@ import type { RollingNumberEmits, RollingNumberProps } from './types'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { caf, raf } from '../../utils/event.js'
 import { parseUnitValue } from '../../utils/format.js'
-import { isServer, isUndefined } from '../../utils/is.js'
+import { isUndefined } from '../../utils/is.js'
 
 defineOptions({
   name: 'PRollingNumber',
@@ -202,10 +202,6 @@ watch(
 )
 
 onMounted(() => {
-  if (isServer()) {
-    return
-  }
-
   const numberValue = parsedValueWithUnit.value.number
 
   if (props.animateOnMount) {

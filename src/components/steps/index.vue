@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { StepsOption, StepsEmits, StepsProps, StepsStatus } from './types'
-import { computed, shallowRef } from 'vue'
+import { computed } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getFallbackValue } from '../../utils/helper.js'
@@ -45,9 +45,10 @@ const SIZES = {
   },
 }
 
-/** Uncontrolled fallback: a bound `modelValue` always wins. */
-const innerValue = shallowRef<number | undefined>(props.defaultValue)
-const activeIndex = computed(() => props.modelValue ?? innerValue.value ?? 0)
+const activeValue = useModelValue(props, emits, {
+  defaultValue: () => props.defaultValue,
+})
+const activeIndex = computed(() => activeValue.value ?? 0)
 
 const configProvider = useConfigProvider()
 
@@ -65,8 +66,6 @@ const computedStyle = computed(() => {
     '--steps-gap': size.gap,
   }
 })
-
-const modelValue = useModelValue(props, emits)
 
 function resolveStatus(option: StepsOption, index: number): StepsStatus {
   if (option.status) {
@@ -91,8 +90,7 @@ function select(index: number) {
     return
   }
 
-  innerValue.value = index
-  modelValue.value = index
+  activeValue.value = index
 }
 </script>
 

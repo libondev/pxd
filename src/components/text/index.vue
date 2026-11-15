@@ -29,7 +29,9 @@ const computedStyle = computed(() => {
   return getResponsiveValue(
     size,
     (typeof size === 'object' ? size.xs : size) ?? '0.875rem',
-    (acc, bp, value) => (acc[bp] = acc[`--text-${bp}`] = getCssUnitValue(value)),
+    (acc, bp, value) => {
+      acc[`--text-${bp}`] = getCssUnitValue(value)
+    },
   )
 })
 

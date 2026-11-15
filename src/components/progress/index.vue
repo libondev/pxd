@@ -2,6 +2,7 @@
 import type { ProgressProps } from './types'
 import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { VARIANT_COLORS } from '../../constants/variant-colors.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isTruthyProp } from '../../utils/format.js'
 import { getColorByThreshold } from '../../utils/helper.js'
@@ -17,14 +18,6 @@ const props = withDefaults(defineProps<ProgressProps>(), {
   label: false,
   variant: 'primary',
 })
-
-const VARIANTS_COLORS = {
-  primary: 'var(--color-primary)',
-  success: 'hsl(var(--color-blue-700-value))',
-  warning: 'hsl(var(--color-amber-700-value))',
-  secondary: 'hsl(var(--color-gray-700-value))',
-  error: 'hsl(var(--color-red-700-value))',
-}
 
 const progress = computed(() => props.modelValue || 0)
 
@@ -52,16 +45,16 @@ const computedColors = computed(() => {
   const { colors, variant } = props
 
   if (colors) {
-    return getColorByThreshold(percentage.value, colors) || VARIANTS_COLORS[variant]
+    return getColorByThreshold(percentage.value, colors) || VARIANT_COLORS[variant]
   }
 
-  return VARIANTS_COLORS[variant]
+  return VARIANT_COLORS[variant]
 })
 
 const computedProgressBarStyles = computed(() => {
   return {
     width: `${percentage.value}%`,
-    backgroundColor: computedColors.value || VARIANTS_COLORS.primary,
+    backgroundColor: computedColors.value || VARIANT_COLORS.primary,
   }
 })
 

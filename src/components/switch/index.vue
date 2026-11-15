@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { SwitchProps, SwitchEmits } from './types'
 import { computed } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { provideSwitchContext } from '../../contexts/switch.js'
@@ -30,8 +29,6 @@ const configProvider = useConfigProvider()
 
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 
-const modelValue = useModelValue(props, emits)
-
 provideSwitchContext({ props, emits, name: getUniqueId() })
 </script>
 
@@ -47,7 +44,6 @@ provideSwitchContext({ props, emits, name: getUniqueId() })
       <PSwitchItem
         v-for="option in options"
         :key="option.value"
-        v-model="modelValue"
         :label="option.label"
         :value="option.value"
         :disabled="option.disabled"

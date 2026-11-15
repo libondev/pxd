@@ -3,7 +3,7 @@ import type { SkeletonProps } from './types'
 import type { CSSProperties } from 'vue'
 import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { getCssUnitValue, increaseWithUnit } from '../../utils/format.js'
+import { getCssUnitValue } from '../../utils/format.js'
 
 defineOptions({
   name: 'PSkeleton',
@@ -26,7 +26,7 @@ const computedStyle = computed(() => {
   } as CSSProperties
 
   if (boxHeight) {
-    styles['margin-bottom'] = getCssUnitValue(increaseWithUnit(boxHeight, -Number(height)))
+    styles['margin-bottom'] = `calc(${getCssUnitValue(boxHeight)} - ${getCssUnitValue(height)})`
   }
 
   return styles

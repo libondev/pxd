@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CalendarDay } from '../calendar/types'
-import { createTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 
 defineOptions({
   name: 'PCalendarDay',
@@ -17,38 +17,58 @@ const emits = defineEmits<{
   change: [day: CalendarDay]
 }>()
 
-const cellClasses = createTailwindVariant({
-  base: 'pxd-calendar--grid-cell shrink-0 self-focus-ring outline-none motion-safe:transition-colors',
-  variants: {
-    compact: {
-      true: 'min-h-8 sm:text-sm flex aspect-square items-center justify-center justify-self-center rounded-md',
-      false: 'min-h-14 p-2 border-r border-b text-left',
-    },
-    selected: {
-      true: 'bg-primary text-primary-foreground',
-      false: 'hover:bg-background-hover active:bg-background-active',
-    },
-    disabled: {
-      true: 'cursor-not-allowed',
-      false: 'cursor-pointer',
+const { attrs, classes: cellClasses } = useTailwindVariant(
+  {
+    base: 'pxd-calendar--grid-cell shrink-0 self-focus-ring outline-none motion-safe:transition-colors',
+    variants: {
+      compact: {
+        true: 'min-h-8 sm:text-sm flex aspect-square items-center justify-center justify-self-center rounded-md',
+        false: 'min-h-14 p-2 border-r border-b text-left',
+      },
+      selected: {
+        true: 'bg-primary text-primary-foreground',
+        false: 'hover:bg-background-hover active:bg-background-active',
+      },
+      disabled: {
+        true: 'cursor-not-allowed',
+        false: 'cursor-pointer',
+      },
     },
   },
-})
+  {
+    mergeAttrsClass: false,
+    selection: () => ({
+      compact: props.compact,
+      selected: props.selected,
+      disabled: props.day.isDisabled,
+    }),
+  },
+)
 
-const dateClasses = createTailwindVariant({
-  base: 'min-w-8 min-h-8 inline-flex items-center justify-center rounded-md',
-  variants: {
-    today: {
-      true: 'bg-background-active',
-    },
-    outsideMonth: {
-      true: 'text-foreground-secondary opacity-60',
-    },
-    disabled: {
-      true: 'opacity-35',
+const { classes: dateClasses } = useTailwindVariant(
+  {
+    base: 'min-w-8 min-h-8 inline-flex items-center justify-center rounded-md',
+    variants: {
+      today: {
+        true: 'bg-background-active',
+      },
+      outsideMonth: {
+        true: 'text-foreground-secondary opacity-60',
+      },
+      disabled: {
+        true: 'opacity-35',
+      },
     },
   },
-})
+  {
+    mergeAttrsClass: false,
+    selection: () => ({
+      today: props.day.isToday && !props.selected,
+      outsideMonth: !props.day.isCurrentMonth && !props.selected,
+      disabled: props.day.isDisabled,
+    }),
+  },
+)
 
 function selectDate() {
   if (props.day.isDisabled) {
@@ -64,28 +84,14 @@ function selectDate() {
     data-calendar-day
     type="button"
     role="gridcell"
-    :class="
-      cellClasses({
-        compact,
-        selected,
-        disabled: day.isDisabled,
-      })
-    "
+    :class="cellClasses"
     :aria-current="day.isToday ? 'date' : undefined"
     :aria-selected="selected"
     :disabled="day.isDisabled"
-    v-bind="$attrs"
+    v-bind="attrs"
     @click="selectDate"
   >
-    <span
-      :class="
-        dateClasses({
-          today: day.isToday && !selected,
-          outsideMonth: !day.isCurrentMonth && !selected,
-          disabled: day.isDisabled,
-        })
-      "
-    >
+    <span :class="dateClasses">
       <slot v-bind="day" :is-selected="selected">{{ day.date }}</slot>
     </span>
   </button>
