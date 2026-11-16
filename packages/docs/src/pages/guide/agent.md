@@ -115,6 +115,8 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `color-selector` | `setValue` |
 | `drawer` | `setOpen` |
 | `input` | `setValue`, `focus`, `blur`, `select` |
+| `list` | `setValue`, `focus`, `dispatch` |
+| `menu` | `setValue`, `setOpen`, `toggle` |
 | `modal` | `setOpen` |
 | `more-button` | `setValue`, `toggle` |
 | `number-input` | `setValue`, `increment`, `decrement` |

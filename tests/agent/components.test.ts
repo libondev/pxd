@@ -7,6 +7,8 @@ import Button from '../../src/components/button/index.vue'
 import CheckboxGroup from '../../src/components/checkbox-group/index.vue'
 import Choicebox from '../../src/components/choicebox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
+import List from '../../src/components/list/index.vue'
+import Menu from '../../src/components/menu/index.vue'
 import Modal from '../../src/components/modal/index.vue'
 import MoreButton from '../../src/components/more-button/index.vue'
 import NumberInput from '../../src/components/number-input/index.vue'
@@ -186,6 +188,58 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'select')).toMatchObject({ value: 2, open: false })
+  })
+
+  it('should pick an option in a list', async () => {
+    const bound = mountBound(
+      List,
+      {
+        'aria-label': 'Members',
+        options: [
+          { label: 'Ada', value: 1 },
+          { label: 'Bo', value: 2 },
+        ],
+      },
+      null,
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'list')).toMatchObject({
+      label: 'Members',
+      value: null,
+      actions: ['setValue', 'focus', 'dispatch'],
+    })
+
+    const result = await agent.act({ steps: [{ ref: 'Members', action: 'setValue', args: [2] }] })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe(2)
+  })
+
+  it('should pick an option in a menu', async () => {
+    const bound = mountBound(
+      Menu,
+      {
+        'aria-label': 'Actions',
+        options: [
+          { label: 'Edit', value: 'edit' },
+          { label: 'Delete', value: 'delete' },
+        ],
+      },
+      null,
+    )
+    const agent = createAgent()
+
+    const entry = find(agent.snapshot(), 'menu')
+
+    expect(entry).toMatchObject({ label: 'Actions', value: null, open: false })
+
+    const result = await agent.act({
+      steps: [{ ref: entry.ref, action: 'setValue', args: ['delete'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe('delete')
   })
 
   it('should clamp a rating to its count', async () => {

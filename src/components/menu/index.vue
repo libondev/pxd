@@ -2,6 +2,7 @@
 import type { ListModelValue } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
 import { computed, nextTick, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
@@ -54,6 +55,27 @@ const { onKeydown } = useListKeyboardController({
     Enter: 'activate',
     Home: 'first',
     ' ': 'activate',
+  },
+})
+
+useAgentNode({
+  name: 'menu',
+  state: () => ({ value: selected.value ?? null, open: popoverVisible.value }),
+  actions: {
+    setValue: (value) => {
+      if (apply((value ?? null) as NonNullable<ListModelValue>)) {
+        popoverVisible.value = false
+        return
+      }
+
+      commit()
+    },
+    setOpen: (open) => {
+      popoverVisible.value = Boolean(open)
+    },
+    toggle: () => {
+      popoverVisible.value = !popoverVisible.value
+    },
   },
 })
 

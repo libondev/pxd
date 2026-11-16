@@ -3,6 +3,8 @@ import type { ListNavigationCommand } from '../../composables/_internal/use-list
 import type { ListItemRow, ListRow } from '../../composables/_internal/use-list-rows'
 import type { ListProps, ListOption, ListOptionSelected, ListEmits } from './types'
 import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import { flattenListOptions } from '../../composables/_internal/use-list-rows.js'
@@ -102,6 +104,37 @@ const renderEntries = computed<RenderEntry[]>(() => {
   }))
 })
 
+useAgentNode({
+  name: 'list',
+  state: () => ({ value: props.modelValue ?? null, multiple: props.multiple ?? false }),
+  actions: {
+    setValue: (value) => {
+      const values = Array.isArray(value) ? value : [value]
+      const options = values
+        .map((item) => resolveOptionByValue(props.options, item as ListOptionSelected['value']))
+        .filter((option): option is ListOption => !!option && !option.disabled)
+
+      if (!options.length) {
+        return
+      }
+
+      const details = cancelableChangeDetails()
+
+      for (const option of options) {
+        emits('change', toSelectedOption(option), details)
+      }
+
+      if (details.canceled) {
+        return
+      }
+
+      emits('update:model-value', props.multiple ? values : values[0])
+    },
+    focus: () => containerRef.value?.focus(),
+    dispatch: (command) => dispatchCommand(command as ListNavigationCommand),
+  },
+})
+
 function isNavDisabled(index: number): boolean {
   return itemRows.value[index]?.option.disabled === true
 }
@@ -127,7 +160,6 @@ function toSelectedOption(option: ListOption): ListOptionSelected {
 
   return selectedOption
 }
-
 function onItemSelect(value: ListOptionSelected['value']): void {
   if (props.loading) {
     return
