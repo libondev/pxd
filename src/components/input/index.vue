@@ -256,6 +256,7 @@ defineExpose({
       :autofocus="autofocus"
       :aria-disabled="disabled"
       :placeholder="placeholder"
+      v-bind="inputAttrs"
       @blur="onBlur"
       @focus="onFocus"
       @input="onInput"

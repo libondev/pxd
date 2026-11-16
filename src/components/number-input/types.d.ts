@@ -22,6 +22,6 @@ export interface NumberInputEmits {
 }
 
 export interface NumberInputData {
-  currentValue: NumberInputProps['modelValue']
+  currentValue: number | null
   userInput: string | null
 }

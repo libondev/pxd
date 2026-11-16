@@ -31,12 +31,15 @@ const emits = defineEmits<NumberInputEmits>()
 const REGEXPS = {
   'remove-leading-zeros': /^(-?)0+(?=\d)/,
   'thousands-separator': /\B(?=(\d{3})+(?!\d))/g,
+  'invalid-char': /[^\d.eE+-]/g,
+  'invalid-char-plain': /[^\d.+-]/g,
+  'number-prefix': /^[-+]?\d*\.?\d*(?:[eE][-+]?\d*)?/,
 }
 
 const isFocused = shallowRef(false)
 
 const inputData = reactive<NumberInputData>({
-  currentValue: props.modelValue,
+  currentValue: props.modelValue ?? null,
   userInput: null,
 })
 const inputValue = computed(() => {
@@ -88,6 +91,12 @@ const valuePrecision = computed(() => {
 
   return stringValue.length - decimalIndex - 1
 })
+const inputAttrs = computed(() => ({
+  role: 'spinbutton',
+  'aria-valuenow': isNil(inputData.currentValue) ? undefined : inputData.currentValue,
+  'aria-valuemin': props.min,
+  'aria-valuemax': props.max,
+}))
 
 const modelValue = useModelValue(props, emits, { withChange: false })
 const { start: startDecrease, stop: stopDecrease } = useRepeatAction({
@@ -111,15 +120,15 @@ function parseInputValue(value: string) {
 
   return Number.parseFloat(plain)
 }
-function toPrecision(value: number | null) {
-  if (!value) {
-    return value
-  }
+function normalizeInputValue(value: string) {
+  const str = String(value)
+  const plain = props.thousands ? str.split(props.thousandsSeparator).join('') : str
+  const chars = plain.replace(REGEXPS[props.scientific ? 'invalid-char' : 'invalid-char-plain'], '')
+  const prefix = chars.match(REGEXPS['number-prefix'])?.[0] ?? ''
 
-  if (Number.isNaN(value)) {
-    return 0
-  }
-
+  return prefix.replace(REGEXPS['remove-leading-zeros'], '$1')
+}
+function toPrecision(value: number) {
   if (!Number.isFinite(value)) {
     return value
   }
@@ -141,17 +150,23 @@ function clampToRange(value: number) {
 
   return value
 }
+function commit(value: number | null) {
+  if (!isNumber(value)) {
+    return value
+  }
+
+  return clampToRange(toPrecision(value))
+}
 
 function increaseValue() {
   if (props.readonly || props.disabled || increaseDisabled.value) {
     return
   }
 
-  const numeric = toNumber(inputData.currentValue)
-  const value = toPrecision(numeric + props.step)
+  const value = commit(toNumber(inputData.currentValue) + props.step)
 
   inputData.currentValue = value
-  modelValue.value = clampToRange(value ?? 0)
+  modelValue.value = value
 }
 
 function decreaseValue() {
@@ -159,11 +174,10 @@ function decreaseValue() {
     return
   }
 
-  const numeric = toNumber(inputData.currentValue)
-  const value = toPrecision(numeric - props.step)
+  const value = commit(toNumber(inputData.currentValue) - props.step)
 
   inputData.currentValue = value
-  modelValue.value = clampToRange(value ?? 0)
+  modelValue.value = value
 }
 
 function onInputKeydown(ev: KeyboardEvent) {
@@ -184,6 +198,25 @@ function onInputKeydown(ev: KeyboardEvent) {
   } else if (ev.key === 'ArrowDown') {
     ev.preventDefault()
     decreaseValue()
+  } else if (ev.key === 'Escape') {
+    clearInput(ev)
+  }
+}
+
+function clearInput(ev: KeyboardEvent) {
+  const hadValue = !isNil(inputData.currentValue)
+
+  inputData.userInput = null
+
+  if (props.clearValue !== inputData.currentValue) {
+    inputData.currentValue = props.clearValue
+    modelValue.value = props.clearValue
+  }
+
+  emits('change', props.clearValue, ev)
+
+  if (hadValue) {
+    ev.preventDefault()
   }
 }
 
@@ -196,12 +229,11 @@ function onInputBlur(event: FocusEvent) {
   isFocused.value = false
   inputData.userInput = null
 
-  if (isNumber(inputData.currentValue)) {
-    const clamped = clampToRange(inputData.currentValue)
-    if (clamped !== inputData.currentValue) {
-      inputData.currentValue = clamped
-      modelValue.value = clamped
-    }
+  const value = commit(inputData.currentValue)
+
+  if (value !== inputData.currentValue) {
+    inputData.currentValue = value
+    modelValue.value = value
   }
 
   if (inputData.currentValue === null) {
@@ -211,31 +243,43 @@ function onInputBlur(event: FocusEvent) {
   emits('blur', event)
 }
 
-function onInputInput(value: string) {
-  const normalized = value.replace(REGEXPS['remove-leading-zeros'], '$1')
+function onInputInput(text: string) {
+  const normalized = normalizeInputValue(text)
+  const value = normalized === '' ? null : parseInputValue(normalized)
+
   inputData.userInput = normalized
 
-  const newValue = normalized === '' ? null : parseInputValue(normalized)
-
-  inputData.currentValue = toPrecision(newValue ?? 0)
-  modelValue.value = inputData.currentValue
-}
-
-function onInputChange(value: string, event: Event) {
-  let newValue = toPrecision(value === '' ? null : parseInputValue(value))
-
-  if (isNumber(newValue)) {
-    newValue = clampToRange(newValue)
+  if (value !== null && Number.isNaN(value)) {
+    return
   }
 
-  emits('change', newValue, event)
+  inputData.currentValue = value
+  modelValue.value = value
+}
+
+function onInputChange(text: string, event: Event) {
+  const normalized = normalizeInputValue(text)
+  const parsed = normalized === '' ? null : parseInputValue(normalized)
+
+  if (parsed !== null && Number.isNaN(parsed)) {
+    return
+  }
+
+  const value = commit(parsed)
+
+  if (value !== inputData.currentValue) {
+    inputData.currentValue = value
+    modelValue.value = value
+  }
+
+  emits('change', value, event)
 }
 
 watch(
   () => props.modelValue,
   (newVal, oldVal) => {
     if (inputData.userInput === null && newVal !== oldVal) {
-      inputData.currentValue = toPrecision(props.modelValue ?? 0)
+      inputData.currentValue = isNil(newVal) ? null : newVal
     }
   },
   { immediate: true },
@@ -249,10 +293,11 @@ watch(
     :max="max"
     align="center"
     inputmode="decimal"
-    input-type="number"
+    input-type="text"
+    :input-attrs="inputAttrs"
     :disabled="disabled"
     :readonly="readonly"
-    :clear-value="clearValue"
+    :clear-on-press-escape="false"
     :model-value="inputValue"
     :default-prefix-style="false"
     :default-suffix-style="false"

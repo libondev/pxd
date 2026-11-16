@@ -26,6 +26,12 @@ a comment beside the fix.
 
 <!-- Add new entries below this line -->
 
+### A formatted value cannot live in a native `type="number"` input
+
+- **Symptom**: `PNumberInput` with `thousands` rendered empty whenever the value came from outside, and logged `The specified value "1,000,000" cannot be parsed, or is out of range.` on blur.
+- **Cause**: The browser sanitizes a number input's value to `''` when it is not a valid floating-point number, so anything carrying a separator is dropped by the DOM, not by Vue. It only looked fine while `PInput` discarded `input-type` through an operator-precedence bug; honoring the prop exposed the mismatch.
+- **Fix**: Render the native control as `text` whenever the component writes a formatted value, back the lost role with `role="spinbutton"` plus `aria-valuenow/min/max`, keep `inputmode="decimal"` for the keypad, and filter and prefix-validate the keystrokes yourself — a text control no longer strips them.
+
 ### A closed `<details>` leaves the first enter with no start value to transition from
 
 - **Symptom**: The first expand of `useDetailsCollapse` (Reasoning, ToolCall, TodoList, Questionnaire) snapped open with no animation while every later toggle animated. Disabling reduced motion made it visible: `--duration: 0` hides the same snap.

@@ -163,6 +163,7 @@ const value = ref('')
 | autofocus | `boolean` | - | Focus the input as soon as it is mounted |
 | input-type | `string` | - | Native `type` attribute, when set it wins over `password` masking |
 | input-mode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | Native `inputmode` attribute, drives the virtual keyboard |
+| input-attrs | `Record<string, string \| number \| boolean \| undefined>` | - | Extra attributes applied to the underlying `input`, such as `role` and `aria-*` |
 | min-length | `number \| string` | - | Native `minlength` attribute, validated by the browser |
 | max-length | `number \| string` | - | Native `maxlength`, lifted while composing and shown by the word limit |
 | trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `max-length` is set. |

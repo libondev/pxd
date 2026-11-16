@@ -196,17 +196,17 @@ const value = ref(0)
 | thousands | `boolean` | - | Group the integer part with the separator while the input is not focused |
 | thousands-separator | `string` | `','` | Character placed between each group of three digits |
 | scientific | `boolean` | `true` | Allow `e` and `E` so users can type scientific notation |
-| clear-value | `number \| null` | `null` | Value restored by the built-in clear button |
+| clear-value | `number \| null` | `null` | Value written back when the field is cleared with `Escape` |
 | model-value | `number \| null` | - | Current value, `null` when the field is empty |
 
 ## Events
 
 | Name | Type | Description |
 | --- | --- | --- |
-| blur | `(event: FocusEvent) => void` | Emitted when the input loses focus, after the value has been clamped back into range. |
+| blur | `(event: FocusEvent) => void` | Emitted when the input loses focus, after the value has been rounded to the precision and clamped back into range. |
 | focus | `(event: FocusEvent) => void` | Emitted when the input gains focus. |
-| change | `(value: number \| null, event: Event) => void` | Emitted when the inner input reports a committed change, on blur after an edit, on Enter, or when the clear button is used. |
-| update:model-value | `(value: number \| null) => void` | Emitted whenever the component writes a new value, from typing, the step controls, the arrow keys, or blur clamping. |
+| change | `(value: number \| null, event: Event) => void` | Emitted when the inner input reports a committed change, on blur after an edit, on Enter, or when `Escape` clears the field. |
+| update:model-value | `(value: number \| null) => void` | Emitted whenever the component writes a new value, from typing, the step controls, the arrow keys, `Escape`, or blur clamping. |
 
 ## Slots
 

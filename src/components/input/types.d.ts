@@ -12,6 +12,7 @@ export interface InputProps {
   autofocus?: boolean
   inputType?: string
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
+  inputAttrs?: Record<string, string | number | boolean | undefined>
   minLength?: number | string
   maxLength?: number | string
   trimOverflow?: boolean
