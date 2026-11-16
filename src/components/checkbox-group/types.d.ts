@@ -9,7 +9,9 @@ export interface CheckboxGroupProps {
   modelValue?: CheckboxGroupModelValue[]
 }
 
+export type CheckboxGroupChangeValue = CheckboxGroupModelValue[]
+
 export interface CheckboxGroupEmits {
-  change: [NonNullable<CheckboxGroupProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<CheckboxGroupProps['modelValue']>]
+  change: [CheckboxGroupChangeValue, details: ChangeDetails]
+  'update:model-value': [CheckboxGroupChangeValue]
 }

@@ -13,7 +13,9 @@ export interface RatingProps {
   clearable?: boolean
 }
 
+export type RatingChangeValue = number
+
 export interface RatingEmits {
-  change: [NonNullable<RatingProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<RatingProps['modelValue']>]
+  change: [RatingChangeValue, details: ChangeDetails]
+  'update:model-value': [RatingChangeValue]
 }

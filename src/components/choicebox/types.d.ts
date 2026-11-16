@@ -15,7 +15,9 @@ export interface ChoiceboxProps {
   modelValue?: ComponentValue | ComponentValue[]
 }
 
+export type ChoiceboxChangeValue = ComponentValue | ComponentValue[]
+
 export interface ChoiceboxEmits {
-  change: [NonNullable<ChoiceboxProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<ChoiceboxProps['modelValue']>]
+  change: [ChoiceboxChangeValue, details: ChangeDetails]
+  'update:model-value': [ChoiceboxChangeValue]
 }

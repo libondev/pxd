@@ -7,7 +7,9 @@ export interface RadioGroupProps {
   options?: ComponentOption[]
 }
 
+export type RadioGroupChangeValue = ComponentValue
+
 export interface RadioGroupEmits {
-  change: [NonNullable<RadioGroupProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<RadioGroupProps['modelValue']>]
+  change: [RadioGroupChangeValue, details: ChangeDetails]
+  'update:model-value': [RadioGroupChangeValue]
 }

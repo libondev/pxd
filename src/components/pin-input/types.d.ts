@@ -18,7 +18,9 @@ export interface PinInputProps {
     | 'alphanumeric-password'
 }
 
+export type PinInputChangeValue = string
+
 export interface PinInputEmits {
-  change: [NonNullable<PinInputProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<PinInputProps['modelValue']>]
+  change: [PinInputChangeValue, details: ChangeDetails]
+  'update:model-value': [PinInputChangeValue]
 }

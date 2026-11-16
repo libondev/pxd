@@ -15,7 +15,9 @@ export interface SliderProps {
   defaultValue?: number | number[] | null
 }
 
+export type SliderChangeValue = number | number[]
+
 export interface SliderEmits {
-  change: [NonNullable<SliderProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<SliderProps['modelValue']>]
+  change: [SliderChangeValue, details: ChangeDetails]
+  'update:model-value': [SliderChangeValue]
 }

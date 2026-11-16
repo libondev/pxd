@@ -7,7 +7,9 @@ export interface MoreButtonProps {
   modelValue?: boolean
 }
 
+export type MoreButtonChangeValue = boolean
+
 export interface MoreButtonEmits {
-  change: [NonNullable<MoreButtonProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<MoreButtonProps['modelValue']>]
+  change: [MoreButtonChangeValue, details: ChangeDetails]
+  'update:model-value': [MoreButtonChangeValue]
 }

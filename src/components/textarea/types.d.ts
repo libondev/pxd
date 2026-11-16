@@ -18,9 +18,11 @@ export interface TextareaProps {
   wordLimitPosition?: 'inside' | 'outside'
 }
 
+export type TextareaChangeValue = string | number
+
 export interface TextareaEmits {
-  'update:model-value': [NonNullable<TextareaProps['modelValue']>]
-  change: [NonNullable<TextareaProps['modelValue']>, details: ChangeDetails]
+  'update:model-value': [TextareaChangeValue]
+  change: [TextareaChangeValue, details: ChangeDetails]
   focus: [FocusEvent]
   blur: [FocusEvent]
 }

@@ -9,7 +9,9 @@ export interface SwitchProps {
   modelValue?: string | number
 }
 
+export type SwitchChangeValue = string | number
+
 export interface SwitchEmits {
-  change: [NonNullable<SwitchProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<SwitchProps['modelValue']>]
+  change: [SwitchChangeValue, details: ChangeDetails]
+  'update:model-value': [SwitchChangeValue]
 }

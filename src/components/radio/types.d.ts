@@ -8,7 +8,9 @@ export interface RadioProps {
   modelValue?: ComponentValue
 }
 
+export type RadioChangeValue = ComponentValue
+
 export interface RadioEmits {
-  change: [NonNullable<RadioProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<RadioProps['modelValue']>]
+  change: [RadioChangeValue, details: ChangeDetails]
+  'update:model-value': [RadioChangeValue]
 }

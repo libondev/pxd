@@ -1,7 +1,7 @@
 import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentText, ComponentValue, ComponentShape } from '../../types/shared/props'
 
-type CheckboxModelValue = ComponentValue | boolean
+export type CheckboxModelValue = ComponentValue | boolean
 
 export interface CheckboxProps {
   label?: ComponentText
@@ -13,6 +13,6 @@ export interface CheckboxProps {
 }
 
 export interface CheckboxEmits {
-  change: [NonNullable<CheckboxModelValue>, details: ChangeDetails]
-  'update:model-value': [NonNullable<CheckboxModelValue>]
+  change: [CheckboxModelValue, details: ChangeDetails]
+  'update:model-value': [CheckboxModelValue]
 }

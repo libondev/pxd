@@ -5,7 +5,6 @@ import type {
   ComponentOption,
   ResponsiveValue,
 } from '../../types/shared/props'
-import type { CheckboxProps } from '../checkbox/types'
 
 export interface ToggleButtonGroupProps {
   gap?: ResponsiveValue<string | number>
@@ -17,7 +16,9 @@ export interface ToggleButtonGroupProps {
   modelValue?: ComponentValue | ComponentValue[]
 }
 
+export type ToggleButtonGroupChangeValue = ComponentValue | ComponentValue[]
+
 export interface ToggleButtonGroupEmits {
-  change: [NonNullable<CheckboxProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<CheckboxProps['modelValue']>]
+  change: [ToggleButtonGroupChangeValue, details: ChangeDetails]
+  'update:model-value': [ToggleButtonGroupChangeValue]
 }

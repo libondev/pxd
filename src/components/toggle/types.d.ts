@@ -17,7 +17,9 @@ export interface ToggleProps {
   inactiveLabel?: string
 }
 
+export type ToggleChangeValue = boolean | number | string
+
 export interface ToggleEmits {
-  change: [NonNullable<ToggleProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<ToggleProps['modelValue']>]
+  change: [ToggleChangeValue, details: ChangeDetails]
+  'update:model-value': [ToggleChangeValue]
 }

@@ -14,6 +14,6 @@ export interface TabsProps {
 }
 
 export interface TabsEmits {
-  change: [NonNullable<ComponentValue>, details: ChangeDetails]
-  'update:model-value': [NonNullable<ComponentValue>]
+  change: [ComponentValue, details: ChangeDetails]
+  'update:model-value': [ComponentValue]
 }

@@ -7,7 +7,9 @@ export interface ColorSelectorProps {
   modelValue?: string
 }
 
+export type ColorSelectorChangeValue = string
+
 export interface ColorSelectorEmits {
-  change: [NonNullable<ColorSelectorProps['modelValue']>, details: ChangeDetails]
-  'update:model-value': [NonNullable<ColorSelectorProps['modelValue']>]
+  change: [ColorSelectorChangeValue, details: ChangeDetails]
+  'update:model-value': [ColorSelectorChangeValue]
 }
