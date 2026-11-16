@@ -48,6 +48,10 @@
       "types": "./dist/plugins/resolver.d.ts",
       "default": "./dist/plugins/resolver.js"
     },
+    "./agent": {
+      "types": "./dist/agent/index.d.ts",
+      "default": "./dist/agent/index.js"
+    },
     "./components": {
       "types": "./dist/components/index.d.ts",
       "default": "./dist/components/index.js"

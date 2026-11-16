@@ -2,7 +2,8 @@
 import type { CheckboxEmits, CheckboxProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
-import { computed } from 'vue'
+import { computed, shallowRef } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useCheckboxGroupContext } from '../../contexts/checkbox.js'
@@ -21,6 +22,8 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
 const emits = defineEmits<CheckboxEmits>()
 
 const uniqueId = getUniqueId()
+
+const rootRef = shallowRef<HTMLElement>()
 
 const checkboxGroupContext = useCheckboxGroupContext()
 
@@ -88,6 +91,24 @@ const { classes } = useTailwindVariant(
   },
 )
 
+useAgentNode({
+  name: 'checkbox',
+  el: () => rootRef.value,
+  state: () => ({
+    checked: isSelected.value,
+    disabled: isDisabled.value,
+    indeterminate: props.indeterminate ?? false,
+  }),
+  actions: {
+    setValue: (value) => {
+      modelValue.value = value
+    },
+    toggle: () => {
+      modelValue.value = !isSelected.value
+    },
+  },
+})
+
 function onInputChange(event: Event) {
   const checked = (event.target as HTMLInputElement).checked
 
@@ -105,6 +126,7 @@ function onInputChange(event: Event) {
 
 <template>
   <label
+    ref="rootRef"
     data-checkbox
     :data-disabled="isDisabled"
     class="pxd-checkbox group/checkbox gap-2 relative inline-flex max-w-full cursor-pointer touch-manipulation items-center data-[disabled=true]:cursor-not-allowed data-[disabled=true]:text-gray-500"

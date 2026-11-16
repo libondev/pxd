@@ -3,6 +3,7 @@ import type { ComponentValue } from '../../types/shared/props'
 import type { TabsEmits, TabsProps, TabsOptions } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
@@ -46,6 +47,7 @@ const canScrollRight = shallowRef(false)
  * cannot grow it without bound.
  */
 const activatedValues = shallowRef<ComponentValue[]>([])
+const rootRef = shallowRef<HTMLElement>()
 
 /** Uncontrolled fallback: a bound `modelValue` always wins. */
 const { modelValue: activeValue, commit } = useModelCommit(props, emits, {
@@ -79,6 +81,15 @@ const { onKeydown: onNavKeydown } = useListKeyboardController({
     }
 
     return true
+  },
+})
+
+useAgentNode({
+  name: 'tabs',
+  el: () => rootRef.value,
+  state: () => ({ value: activeValue.value }),
+  actions: {
+    setValue: (value: ComponentValue) => select(value),
   },
 })
 
@@ -300,7 +311,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div data-tabs class="pxd-tabs" :data-variant="variant" v-bind="$attrs">
+  <div ref="rootRef" data-tabs class="pxd-tabs" :data-variant="variant" v-bind="$attrs">
     <div
       class="pxd-tabs--header min-w-0 text-sm relative flex items-stretch"
       :data-variant="variant"

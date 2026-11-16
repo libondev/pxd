@@ -4,6 +4,7 @@ import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { computed, shallowRef } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
@@ -32,6 +33,7 @@ const emits = defineEmits<InputEmits>()
 
 const uniqueId = getUniqueId()
 
+const rootRef = shallowRef<HTMLElement>()
 const inputRef = shallowRef<HTMLInputElement>()
 const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
@@ -96,6 +98,25 @@ const { attrs, classes } = useTailwindVariant(
     }),
   },
 )
+
+useAgentNode({
+  name: 'input',
+  el: () => rootRef.value,
+  state: () => ({
+    value: modelValue.value ?? '',
+    disabled: props.disabled ?? false,
+    readonly: props.readonly ?? false,
+    placeholder: props.placeholder,
+  }),
+  actions: {
+    setValue: (value) => {
+      modelValue.value = value == null ? '' : String(value)
+    },
+    focus,
+    blur,
+    select,
+  },
+})
 
 function getInputValue(ev: Event) {
   return (ev.target as HTMLInputElement).value
@@ -216,6 +237,7 @@ defineExpose({
 
 <template>
   <label
+    ref="rootRef"
     data-input
     :for="uniqueId"
     :data-disabled="disabled"
