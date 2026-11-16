@@ -3,6 +3,7 @@ import type { ComponentDateTimeValue } from '../../types/shared/props'
 import type { DatePickerEmits, DatePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
 import { dayjs } from '../../utils/date.js'
@@ -42,6 +43,22 @@ const modelValue = useModelValue(props, emits, {
     return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat) : ''
   },
 })
+useAgentNode({
+  name: 'date-picker',
+  state: () => ({ value: modelValue.value ?? null, open: popoverVisible.value }),
+  actions: {
+    setValue: (value) => {
+      const date = parseIncomingValue(value as DatePickerProps['modelValue'])
+
+      if (date) {
+        commitDate(date)
+      }
+    },
+    setOpen: (open) => {
+      togglePopoverVisible(Boolean(open))
+    },
+  },
+})
 
 function togglePopoverVisible(visible: boolean) {
   popoverVisible.value = visible
@@ -62,7 +79,6 @@ function isSameCommittedDate(date: dayjs.Dayjs | null) {
 
   return date.isSame(dayjsDateTime.value, 'day')
 }
-
 function commitDate(date: dayjs.Dayjs | null) {
   const shouldEmit = !isSameCommittedDate(date)
 
@@ -241,8 +257,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     class="pxd-date-picker w-full"
     trigger="click"
     :disabled="disabled"
-    :class="$attrs.class"
-    :style="$attrs.style"
+    v-bind="$attrs"
     :adaptive="isAdaptive"
     :toggle-on-trigger="false"
     :fill-trigger-width="false"

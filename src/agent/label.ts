@@ -53,5 +53,12 @@ export function accessibleName(el: Element | null | undefined): string | undefin
   // A component whose face is one button, like a more/less toggle, is named by that button.
   const button = el.querySelector('button, [role="button"]')
 
-  return button ? accessibleName(button) : undefined
+  if (button) {
+    return accessibleName(button)
+  }
+
+  // A wrapper whose name lives on the field it renders, like a date picker's input.
+  const field = el.querySelector('input, textarea, select')
+
+  return field ? accessibleName(field) : undefined
 }

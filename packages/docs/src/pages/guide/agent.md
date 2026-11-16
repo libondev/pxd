@@ -113,6 +113,8 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `checkbox-group` | `setValue` |
 | `choicebox` | `setValue` |
 | `color-selector` | `setValue` |
+| `command-menu` | `setOpen`, `setQuery` |
+| `date-picker` | `setValue`, `setOpen` |
 | `drawer` | `setOpen` |
 | `input` | `setValue`, `focus`, `blur`, `select` |
 | `list` | `setValue`, `focus`, `dispatch` |

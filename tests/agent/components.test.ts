@@ -7,6 +7,8 @@ import Button from '../../src/components/button/index.vue'
 import CheckboxGroup from '../../src/components/checkbox-group/index.vue'
 import Choicebox from '../../src/components/choicebox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
+import CommandMenu from '../../src/components/command-menu/index.vue'
+import DatePicker from '../../src/components/date-picker/index.vue'
 import List from '../../src/components/list/index.vue'
 import Menu from '../../src/components/menu/index.vue'
 import Modal from '../../src/components/modal/index.vue'
@@ -188,6 +190,54 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'select')).toMatchObject({ value: 2, open: false })
+  })
+
+  it('should set a date', async () => {
+    const bound = mountBound(DatePicker, { 'aria-label': 'Due' }, '')
+    const agent = createAgent()
+
+    const entry = find(agent.snapshot(), 'date-picker')
+
+    expect(entry).toMatchObject({ label: 'Due', open: false })
+
+    const result = await agent.act({
+      steps: [{ ref: entry.ref, action: 'setValue', args: ['2024-08-20'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(String(bound.value)).toContain('2024')
+  })
+
+  it('should open a command menu and filter it', async () => {
+    const bound = mountBound(
+      CommandMenu,
+      {
+        options: [
+          { label: 'Edit', value: 'edit' },
+          { label: 'Delete', value: 'delete' },
+        ],
+      },
+      false,
+    )
+    const agent = createAgent()
+
+    const closed = find(agent.snapshot(), 'command-menu')
+
+    expect(closed).toMatchObject({ open: false, actions: ['setOpen', 'setQuery'] })
+
+    const opened = await agent.act({
+      steps: [{ ref: closed.ref, action: 'setOpen', args: [true] }],
+    })
+
+    expect(opened.ok).toBe(true)
+    expect(bound.value).toBe(true)
+
+    const filtered = await agent.act({
+      steps: [{ ref: closed.ref, action: 'setQuery', args: ['edi'] }],
+    })
+
+    expect(filtered.ok).toBe(true)
+    expect(find(agent.snapshot(), 'command-menu')).toMatchObject({ open: true, query: 'edi' })
   })
 
   it('should pick an option in a list', async () => {

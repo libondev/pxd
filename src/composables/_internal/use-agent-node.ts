@@ -8,7 +8,13 @@ type AgentNodeOptions = Omit<AgentNode, 'el'> & { el?: AgentNode['el'] }
 // agent reads the same name, state and actions the component itself declares.
 export function useAgentNode(node: AgentNodeOptions) {
   const instance = getCurrentInstance()
-  const el = node.el ?? (() => instance?.vnode.el as Element | null | undefined)
+  const el =
+    node.el ??
+    (() => {
+      const root = instance?.vnode.el
+
+      return root?.nodeType === 1 ? (root as Element) : undefined
+    })
   let unregister: (() => void) | undefined
 
   onMounted(() => {
