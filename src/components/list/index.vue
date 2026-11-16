@@ -3,6 +3,7 @@ import type { ListNavigationCommand } from '../../composables/_internal/use-list
 import type { ListItemRow, ListRow } from '../../composables/_internal/use-list-rows'
 import type { ListProps, ListOption, ListOptionSelected, ListEmits } from './types'
 import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import { flattenListOptions } from '../../composables/_internal/use-list-rows.js'
 import { resolveNextListValue } from '../../composables/_internal/use-list-selection.js'
@@ -141,7 +142,7 @@ function onItemSelect(value: ListOptionSelected['value']): void {
   const nextValue = resolveNextListValue(props.modelValue, value, props.multiple)
 
   emits('update:model-value', nextValue)
-  emits('change', toSelectedOption(option))
+  emits('change', toSelectedOption(option), changeDetails())
 }
 
 function onActivateItem(navIndex: number) {

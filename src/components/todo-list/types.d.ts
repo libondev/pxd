@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentText, ComponentSize } from '../../types/shared/props'
 
 export type TodoStatus = 'pending' | 'in_progress' | 'completed' | 'canceled'
@@ -51,6 +52,6 @@ export interface TodoProps {
 }
 
 export interface TodoEmits {
-  change: [TodoChangeDetail]
+  change: [TodoChangeDetail, details?: ChangeDetails]
   'update:model-value': [TodoOption[]]
 }

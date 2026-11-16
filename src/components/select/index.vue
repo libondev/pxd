@@ -4,6 +4,7 @@ import type { ListModelValue } from '../list/types'
 import type { SelectEmits, SelectProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed, nextTick, shallowRef, watch } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSearch } from '../../composables/_internal/use-list-search.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
@@ -72,7 +73,7 @@ const { selected, apply, reset, commit } = useListSelection({
   modelValue: () => props.modelValue,
   multiple: () => props.multiple,
   onUpdateModelValue: (value) => emits('update:model-value', value),
-  onChange: (value) => emits('change', value),
+  onChange: (value) => emits('change', value, changeDetails()),
 })
 const { onKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value,

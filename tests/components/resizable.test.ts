@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import Resizable from '../../src/components/resizable/index.vue'
+import { changePayloads, lastChangePayload } from '../helpers/changes'
 import {
   CONTAINER_SIZE,
   createPointerEvent,
@@ -265,7 +266,7 @@ describe('resizable', () => {
     await flush()
 
     expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([[65, 35]])
-    expect(wrapper.emitted('change')).toEqual([[[65, 35]]])
+    expect(changePayloads(wrapper)).toEqual([[65, 35]])
 
     wrapper.unmount()
   })
@@ -491,7 +492,7 @@ describe('resizable', () => {
     await handle.trigger('keydown', { key: 'ArrowRight' })
 
     expect(readSizes(wrapper)).toEqual([51, 49])
-    expect(wrapper.emitted('change')?.at(-1)).toEqual([[51, 49]])
+    expect(lastChangePayload(wrapper)).toEqual([51, 49])
 
     await handle.trigger('keydown', { key: 'ArrowLeft', shiftKey: true })
 
@@ -828,7 +829,7 @@ describe('resizable', () => {
     await flush()
 
     expect(exposed.value.getPanelSizes()).toEqual([470, 530])
-    expect(wrapper.emitted('change')).toEqual([[[470, 530]]])
+    expect(changePayloads(wrapper)).toEqual([[470, 530]])
     expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([[470, 530]])
 
     wrapper.unmount()
@@ -1010,7 +1011,7 @@ describe('resizable', () => {
     handle.dispatchEvent(createPointerEvent('pointerup', { x: 320 }))
     await flush()
 
-    expect(wrapper.emitted('change')).toEqual([[[0, 1000]]])
+    expect(changePayloads(wrapper)).toEqual([[0, 1000]])
     expect(exposed.value.getPanelSizes()).toEqual([0, 1000])
 
     frames.restore()
@@ -1219,7 +1220,7 @@ describe('resizable', () => {
 
     expect(exposed.value.getPanelSizes()).toEqual([800, 200])
     expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([[800, 200]])
-    expect(wrapper.emitted('change')).toEqual([[[800, 200]]])
+    expect(changePayloads(wrapper)).toEqual([[800, 200]])
 
     wrapper.unmount()
   })
@@ -1263,7 +1264,7 @@ describe('resizable', () => {
     handle.element.dispatchEvent(createPointerEvent('pointerup', { x: 700 }))
     await flush()
 
-    expect(wrapper.emitted('change')).toEqual([[[800, 200]]])
+    expect(changePayloads(wrapper)).toEqual([[800, 200]])
 
     frames.restore()
     wrapper.unmount()

@@ -124,7 +124,7 @@ const options = [
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: ListModelValue) => void` | Emitted once the option selection is committed, right away for a single-select menu and on close for a multiple one. |
+| change | `(value: ListModelValue, details: ChangeDetails) => void` | Emitted once the option selection is committed, right away for a single-select menu and on close for a multiple one. |
 | update:model-value | `(value: ListModelValue) => void` | Emitted on every option toggle, while the menu stays open in a multiple menu. |
 
 ## Slots

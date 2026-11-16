@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentText, ComponentSizeWithXxs, ComponentValue } from '../../types/shared/props'
 
 type ToggleButtonModelValue = ComponentValue | boolean
@@ -13,6 +14,6 @@ export interface ToggleButtonProps {
 }
 
 export interface ToggleButtonEmits {
-  change: [NonNullable<ToggleButtonProps['modelValue']>]
+  change: [NonNullable<ToggleButtonProps['modelValue']>, details?: ChangeDetails]
   'update:model-value': [NonNullable<ToggleButtonProps['modelValue']>]
 }

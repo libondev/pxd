@@ -257,7 +257,7 @@ const data = [
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(date: string, event: MouseEvent) => void` | Emitted when a date cell is clicked. |
+| change | `(date: string, event: MouseEvent, details: ChangeDetails) => void` | Emitted when a date cell is clicked. |
 
 ## Slots
 

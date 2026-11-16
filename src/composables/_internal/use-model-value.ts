@@ -1,46 +1,32 @@
-import type { MaybeRefOrGetter, WritableComputedRef } from 'vue'
-import { computed, shallowRef, toValue } from 'vue'
+import type { ModelValueEmits, ModelValueOptions, ModelValueProps } from './use-model-ref.js'
+import type { WritableComputedRef } from 'vue'
+import { computed } from 'vue'
+import { cancelableChangeDetails } from './use-change-details.js'
+import { useModelRef } from './use-model-ref.js'
 
-interface BaseProps {
-  modelValue?: any
-}
-
-interface BaseEmits {
-  (event: 'change', ...args: any[]): void
-  (event: 'update:model-value', ...args: any[]): void
-}
-
-interface ModelValueOptions {
-  get?: (value: any) => any
-  withChange?: boolean
-  defaultValue?: MaybeRefOrGetter<any>
-}
-
-export function useModelValue<P extends BaseProps, E extends BaseEmits>(
+// A value whose every write is a change: assign it and `change` fires.
+// A component whose change is a commit instead uses `useModelCommit`.
+export function useModelValue<P extends ModelValueProps, E extends ModelValueEmits>(
   props: P,
   emits: E,
-  { withChange = true, defaultValue, get }: ModelValueOptions = {},
+  options: ModelValueOptions = {},
 ): WritableComputedRef<P['modelValue']> {
   type V = NonNullable<P['modelValue']>
 
-  const innerValue = shallowRef<V | undefined>(
-    defaultValue !== undefined ? toValue(defaultValue) : undefined,
-  )
-  const isControlled = computed(() => props.modelValue !== undefined)
+  const { display, write } = useModelRef(props, options)
 
-  const modelValue = computed<V>({
-    get: get || (() => (isControlled.value ? props.modelValue : innerValue.value)),
+  return computed<V>({
+    get: display,
     set: (value: V) => {
-      if (!isControlled.value) {
-        innerValue.value = value
+      const details = cancelableChangeDetails()
+      emits('change', value, details)
+
+      if (details.canceled) {
+        return
       }
 
-      if (withChange) {
-        emits('change', value)
-      }
+      write(value)
       emits('update:model-value', value)
     },
   })
-
-  return modelValue
 }

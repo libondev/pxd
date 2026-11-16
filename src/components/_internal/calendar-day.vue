@@ -1,5 +1,7 @@
 <script lang="ts" setup>
+import type { ChangeDetails } from '../../types/shared/change'
 import type { CalendarDay } from '../calendar/types'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 
 defineOptions({
@@ -14,7 +16,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  change: [day: CalendarDay]
+  change: [day: CalendarDay, details?: ChangeDetails]
 }>()
 
 const { attrs, classes: cellClasses } = useTailwindVariant(
@@ -75,7 +77,7 @@ function selectDate() {
     return
   }
 
-  emits('change', props.day)
+  emits('change', props.day, changeDetails())
 }
 </script>
 

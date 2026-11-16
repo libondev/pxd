@@ -131,5 +131,5 @@ const value = ref(0)
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: number) => void` | Emitted when the user commits a new rating. |
+| change | `(value: number, details: ChangeDetails) => void` | Emitted when the user commits a new rating. |
 | update:model-value | `(value: number) => void` | Emitted together with `change` when the user commits a new rating. |

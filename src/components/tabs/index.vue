@@ -5,7 +5,7 @@ import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
-import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { PTabSlot } from './tab-slot.js'
@@ -48,8 +48,7 @@ const canScrollRight = shallowRef(false)
 const activatedValues = shallowRef<ComponentValue[]>([])
 
 /** Uncontrolled fallback: a bound `modelValue` always wins. */
-const activeValue = useModelValue(props, emits, {
-  withChange: false,
+const { modelValue: activeValue, commit } = useModelCommit(props, emits, {
   defaultValue: () => props.defaultValue,
 })
 const configProvider = useConfigProvider()
@@ -111,7 +110,7 @@ function select(value: ComponentValue) {
   }
 
   activeValue.value = value
-  emits('change', value)
+  commit(value)
 }
 function isActivated(option: TabsOptions) {
   return isActiveOption(option) || activatedValues.value.includes(option.value)

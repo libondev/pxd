@@ -4,6 +4,7 @@ import ChevronDoubleLeftIcon from '@gdsicon/vue/chevron-double-left'
 import ChevronDoubleRightIcon from '@gdsicon/vue/chevron-double-right'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, shallowRef, watch } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { dayjs } from '../../utils/date.js'
 import { isNil, isUndefined } from '../../utils/is.js'
@@ -112,7 +113,7 @@ function selectDate(day: CalendarDay) {
     uncontrolledValue.value = value
   }
 
-  emits('change', value)
+  emits('change', value, changeDetails())
   emits('update:model-value', value)
 }
 

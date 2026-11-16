@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentOption, ComponentSize } from '../../types/shared/props'
 
 export interface SwitchProps {
@@ -9,6 +10,6 @@ export interface SwitchProps {
 }
 
 export interface SwitchEmits {
-  change: [NonNullable<SwitchProps['modelValue']>]
+  change: [NonNullable<SwitchProps['modelValue']>, details?: ChangeDetails]
   'update:model-value': [NonNullable<SwitchProps['modelValue']>]
 }

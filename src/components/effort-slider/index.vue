@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { EffortSliderEmits, EffortSliderProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import {
   createTailwindVariant,
   useTailwindVariant,
@@ -141,7 +141,7 @@ const particleList = computed(() => {
 
 const configProvider = useConfigProvider()
 
-const modelValue = useModelValue(props, emits, { withChange: false })
+const { modelValue, commit } = useModelCommit(props, emits)
 
 const { attrs, classes } = useTailwindVariant(
   {
@@ -285,7 +285,7 @@ function onThumbKeydown(ev: KeyboardEvent) {
   const value = setValue(next)
 
   if (value !== null) {
-    emits('change', value)
+    commit(value)
   }
 }
 
@@ -306,7 +306,7 @@ function endDragging(ev: PointerEvent) {
   updateFromPosition(ev.clientX)
 
   if (lastUpdatedValue !== null && lastUpdatedValue !== dragStartValue) {
-    emits('change', lastUpdatedValue)
+    commit(lastUpdatedValue)
   }
 
   stopDragging()

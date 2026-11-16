@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { defineComponent, nextTick } from 'vue'
 import ScrollProgress from '../../src/components/scroll-progress/index.vue'
+import { lastChangePayload } from '../helpers/changes'
 
 function patchScrollMetrics(
   el: HTMLElement,
@@ -80,7 +81,7 @@ describe('scroll-progress', () => {
 
     expect(wrapper.text()).toBe('50%')
     expect(wrapper.attributes('aria-valuenow')).toBe('50')
-    expect(wrapper.emitted('change')?.at(-1)).toEqual([50])
+    expect(lastChangePayload(wrapper)).toEqual(50)
 
     wrapper.unmount()
   })

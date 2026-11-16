@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentDirection } from '../../types/shared/props'
 
 export type ResizableDblclickAction = 'reset' | 'fold'
@@ -16,7 +17,7 @@ export interface ResizableProps {
 }
 
 export interface ResizableEmits {
-  change: [number[]]
+  change: [number[], details?: ChangeDetails]
   reset: [number[]]
   'update:collapsed': [boolean]
   'update:model-value': [number[]]

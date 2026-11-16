@@ -2,6 +2,7 @@
 import type { ListModelValue } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
 import { computed, nextTick, shallowRef, watch } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
@@ -29,7 +30,7 @@ const { selected, apply, reset, commit } = useListSelection({
   modelValue: () => props.modelValue,
   multiple: () => props.multiple,
   onUpdateModelValue: (value) => emits('update:model-value', value),
-  onChange: (value) => emits('change', value),
+  onChange: (value) => emits('change', value, changeDetails()),
 })
 
 // Action menus (no v-model) keep List uncontrolled so checkmarks never appear.

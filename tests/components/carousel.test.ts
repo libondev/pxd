@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import Carousel from '../../src/components/carousel/index.vue'
+import { changePayloads } from '../helpers/changes'
 
 let originalGetAnimations: Element['getAnimations'] | undefined
 
@@ -118,7 +119,7 @@ describe('carousel', () => {
     await flushPromises()
 
     expect(getAnimations).toHaveBeenCalled()
-    expect(wrapper.emitted('change')).toEqual([[0]])
+    expect(changePayloads(wrapper)).toEqual([0])
     expect(wrapper.find('.pxd-carousel--slider').attributes('style')).toContain(
       'translateX(calc(0% + 0px))',
     )

@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import CheckboxGroup from '../../src/components/checkbox-group/index.vue'
+import { changePayloads } from '../helpers/changes'
 
 const options = [
   { label: 'Option A', value: 'a' },
@@ -84,7 +85,7 @@ describe('checkbox-group', () => {
     await wrapper.findAll('input')[0].setValue(false)
 
     expect(wrapper.emitted('update:model-value')?.[0]).toEqual([['b']])
-    expect(wrapper.emitted('change')?.[0]).toEqual([['b']])
+    expect(changePayloads(wrapper)?.[0]).toEqual(['b'])
 
     wrapper.unmount()
   })

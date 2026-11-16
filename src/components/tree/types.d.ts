@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentClass, ComponentText, ComponentValue } from '../../types/shared/props'
 
 export interface TreeOption {
@@ -145,7 +146,7 @@ export interface TreeEmits {
   'update:model-value': [TreeModelValue]
   'update:data': [TreeOptions]
   move: [TreeMoveDetail]
-  change: [TreeChangeDetail]
+  change: [TreeChangeDetail, details?: ChangeDetails]
   'update:expandedKeys': [ComponentValue[]]
   expand: [TreeNodeDetail]
   collapse: [TreeNodeDetail]

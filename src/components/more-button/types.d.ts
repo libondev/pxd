@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentText } from '../../types/shared/props'
 
 export interface MoreButtonProps {
@@ -7,6 +8,6 @@ export interface MoreButtonProps {
 }
 
 export interface MoreButtonEmits {
-  change: [NonNullable<MoreButtonProps['modelValue']>]
+  change: [NonNullable<MoreButtonProps['modelValue']>, details?: ChangeDetails]
   'update:model-value': [NonNullable<MoreButtonProps['modelValue']>]
 }

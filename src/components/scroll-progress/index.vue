@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ScrollProgressEmits, ScrollProgressProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import {
   getElement,
@@ -73,7 +74,7 @@ const stopListener = watch(() => props.scrollTarget, bindListener, { flush: 'pos
 watch(
   () => percentage.value,
   (value) => {
-    emits('change', value)
+    emits('change', value, changeDetails())
   },
 )
 

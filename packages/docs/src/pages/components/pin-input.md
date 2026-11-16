@@ -88,7 +88,7 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: string) => void` | Emitted when a box is filled or cleared, when the whole code is pasted, or when an IME composition ends. |
+| change | `(value: string, details: ChangeDetails) => void` | Emitted when a box is filled or cleared, when the whole code is pasted, or when an IME composition ends. |
 | update:model-value | `(value: string) => void` | Emitted alongside `change` on every value update. |
 
 ## Methods

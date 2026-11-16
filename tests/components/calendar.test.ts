@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 import { h } from 'vue'
 import Calendar from '../../src/components/calendar/index.vue'
 import { dayjs } from '../../src/utils/date'
+import { changePayloads } from '../helpers/changes'
 
 const august15 = new Date(2024, 7, 15).getTime()
 const august20 = '2024-08-20'
@@ -48,7 +49,7 @@ describe('calendar', () => {
     await findDateCell(wrapper, 20).trigger('click')
 
     expect(wrapper.find('[aria-selected="true"]').text()).toBe('20')
-    expect(wrapper.emitted('change')).toEqual([[august20]])
+    expect(changePayloads(wrapper)).toEqual([august20])
     expect(wrapper.emitted('update:model-value')).toEqual([[august20]])
 
     wrapper.unmount()
@@ -65,7 +66,7 @@ describe('calendar', () => {
     await findDateCell(wrapper, 20).trigger('click')
 
     expect(wrapper.find('[aria-selected="true"]').text()).toBe('20')
-    expect(wrapper.emitted('change')).toEqual([['2024-08-20']])
+    expect(changePayloads(wrapper)).toEqual(['2024-08-20'])
     expect(wrapper.emitted('update:model-value')).toEqual([['2024-08-20']])
 
     wrapper.unmount()
@@ -214,7 +215,7 @@ describe('calendar', () => {
     await findDateCell(wrapper, 20).trigger('click')
 
     expect(wrapper.find('[aria-selected="true"]').text()).toBe('20')
-    expect(wrapper.emitted('change')).toEqual([[august20]])
+    expect(changePayloads(wrapper)).toEqual([august20])
 
     wrapper.unmount()
   })

@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type {
   BasePosition,
   ComponentDirection,
@@ -29,5 +30,5 @@ export interface CarouselProps {
 }
 
 export interface CarouselEmits {
-  change: [index: number]
+  change: [index: number, details?: ChangeDetails]
 }

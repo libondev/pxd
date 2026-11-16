@@ -15,6 +15,7 @@ import ListUnorderedIcon from '@gdsicon/vue/list-unordered'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed, shallowRef, useSlots, watch } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -173,7 +174,7 @@ function commit(index: number, status: TodoStatus) {
 
   const detail: TodoChangeDetail = { item, index, status, prevStatus, options }
 
-  emits('change', detail)
+  emits('change', detail, changeDetails())
   emits('update:model-value', options)
 }
 

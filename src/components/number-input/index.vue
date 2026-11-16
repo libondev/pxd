@@ -3,7 +3,7 @@ import type { NumberInputData, NumberInputEmits, NumberInputProps } from './type
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
 import { computed, reactive, shallowRef, watch } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useRepeatAction } from '../../composables/use-repeat-action.js'
 import { NOOP, isCompositionKeydown } from '../../utils/event.js'
 import { toNumber } from '../../utils/format.js'
@@ -98,7 +98,7 @@ const inputAttrs = computed(() => ({
   'aria-valuemax': props.max,
 }))
 
-const modelValue = useModelValue(props, emits, { withChange: false })
+const { modelValue, commit } = useModelCommit(props, emits)
 const { start: startDecrease, stop: stopDecrease } = useRepeatAction({
   enabled: () => !decreaseDisabled.value,
   action: decreaseValue,
@@ -150,7 +150,7 @@ function clampToRange(value: number) {
 
   return value
 }
-function commit(value: number | null) {
+function normalize(value: number | null) {
   if (!isNumber(value)) {
     return value
   }
@@ -163,7 +163,7 @@ function increaseValue() {
     return
   }
 
-  const value = commit(toNumber(inputData.currentValue) + props.step)
+  const value = normalize(toNumber(inputData.currentValue) + props.step)
 
   inputData.currentValue = value
   modelValue.value = value
@@ -174,7 +174,7 @@ function decreaseValue() {
     return
   }
 
-  const value = commit(toNumber(inputData.currentValue) - props.step)
+  const value = normalize(toNumber(inputData.currentValue) - props.step)
 
   inputData.currentValue = value
   modelValue.value = value
@@ -213,7 +213,7 @@ function clearInput(ev: KeyboardEvent) {
     modelValue.value = props.clearValue
   }
 
-  emits('change', props.clearValue, ev)
+  commit(props.clearValue, ev)
 
   if (hadValue) {
     ev.preventDefault()
@@ -229,7 +229,7 @@ function onInputBlur(event: FocusEvent) {
   isFocused.value = false
   inputData.userInput = null
 
-  const value = commit(inputData.currentValue)
+  const value = normalize(inputData.currentValue)
 
   if (value !== inputData.currentValue) {
     inputData.currentValue = value
@@ -265,14 +265,14 @@ function onInputChange(text: string, event: Event) {
     return
   }
 
-  const value = commit(parsed)
+  const value = normalize(parsed)
 
   if (value !== inputData.currentValue) {
     inputData.currentValue = value
     modelValue.value = value
   }
 
-  emits('change', value, event)
+  commit(value, event)
 }
 
 watch(

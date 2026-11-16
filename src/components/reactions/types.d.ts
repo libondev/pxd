@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentPosition } from '../../types/shared/props'
 import type { PopoverTrigger } from '../popover/types'
 
@@ -18,6 +19,6 @@ export interface ReactionsProps {
 export interface ReactionsEmits {
   add: [emoji: string]
   remove: [emoji: string]
-  change: [reactions: Reaction[]]
+  change: [reactions: Reaction[], details?: ChangeDetails]
   'update:model-value': [reactions: Reaction[]]
 }

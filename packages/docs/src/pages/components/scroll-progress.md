@@ -59,7 +59,7 @@ The default slot replaces the rendered text and receives the current `percentage
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(percentage: number) => void` | Emitted when the displayed percentage changes. |
+| change | `(percentage: number, details: ChangeDetails) => void` | Emitted when the displayed percentage changes. |
 
 ## Slots
 

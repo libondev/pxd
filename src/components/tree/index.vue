@@ -12,6 +12,7 @@ import type {
   TreeProps,
 } from './types'
 import { computed, shallowRef, useSlots, watch } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import {
@@ -482,13 +483,17 @@ function onCheck(row: TreeFlatNode, event?: MouseEvent): void {
   const checkedValues = toValues(next.value)
 
   emits('update:model-value', next.value)
-  emits('change', {
-    value: row.key,
-    node: row.node,
-    checked: checkedValues.includes(row.key),
-    checkedValues,
-    halfCheckedValues: next.halfCheckedValues,
-  })
+  emits(
+    'change',
+    {
+      value: row.key,
+      node: row.node,
+      checked: checkedValues.includes(row.key),
+      checkedValues,
+      halfCheckedValues: next.halfCheckedValues,
+    },
+    changeDetails(),
+  )
 }
 
 function onSearchInput(value: string): void {

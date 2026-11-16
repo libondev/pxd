@@ -1,4 +1,5 @@
 import type { ButtonVariant } from '../../types/components/button'
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentShape, ComponentSizeWithXs } from '../../types/shared/props'
 import type { ButtonProps } from '../button/types'
 import type { ListModelValue, ListOptions } from '../list/types'
@@ -15,7 +16,7 @@ export interface SplitButtonProps {
 }
 
 export interface SplitButtonEmits {
-  change: [ListModelValue]
+  change: [ListModelValue, details?: ChangeDetails]
   'main-click': []
   'update:model-value': [ListModelValue]
 }

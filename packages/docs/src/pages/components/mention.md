@@ -227,7 +227,7 @@ const options = [
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: string) => void` | Emitted when the editor HTML changes. |
+| change | `(value: string, details: ChangeDetails) => void` | Emitted when the editor HTML changes. |
 | submit | `(value: string) => void` | Emitted when `Enter` is pressed with `submit-on-enter` enabled. |
 | select | `(payload: MentionSelectPayload) => void` | Emitted when an option is picked, before the chip is inserted. |
 | mention-click | `(payload: MentionClickPayload) => void` | Emitted when a mention chip is clicked. |

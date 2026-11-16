@@ -74,7 +74,7 @@ const options = [
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: ComponentValue) => void` | Emitted when the radio is selected. |
+| change | `(value: ComponentValue, details: ChangeDetails) => void` | Emitted when the radio is selected. |
 | update:model-value | `(value: ComponentValue) => void` | Emitted right after `change` with the selected value. |
 
 ## RadioGroup Props
@@ -89,5 +89,5 @@ const options = [
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: ComponentValue) => void` | Emitted when one of the radios in the group is selected. |
+| change | `(value: ComponentValue, details: ChangeDetails) => void` | Emitted when one of the radios in the group is selected. |
 | update:model-value | `(value: ComponentValue) => void` | Emitted right after `change` with the selected value. |

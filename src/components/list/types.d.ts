@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type {
   ComponentAs,
   ComponentClass,
@@ -54,6 +55,6 @@ export interface ListProps {
 }
 
 export interface ListEmits {
-  change: [ListOptionSelected]
+  change: [ListOptionSelected, details?: ChangeDetails]
   'update:model-value': [ListModelValue]
 }

@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentSize, ComponentVariant } from '../../types/shared/props'
 
 export interface SliderProps {
@@ -15,6 +16,6 @@ export interface SliderProps {
 }
 
 export interface SliderEmits {
-  change: [NonNullable<SliderProps['modelValue']>]
+  change: [NonNullable<SliderProps['modelValue']>, details?: ChangeDetails]
   'update:model-value': [NonNullable<SliderProps['modelValue']>]
 }

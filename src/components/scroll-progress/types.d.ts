@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentPublicInstance } from 'vue'
 
 export interface ScrollProgressProps {
@@ -5,5 +6,5 @@ export interface ScrollProgressProps {
 }
 
 export interface ScrollProgressEmits {
-  change: [percentage: number]
+  change: [percentage: number, details?: ChangeDetails]
 }

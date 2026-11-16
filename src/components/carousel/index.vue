@@ -4,6 +4,7 @@ import type { CarouselEmits, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, shallowRef, useSlots } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
 import { useCarousel } from '../../composables/use-carousel.js'
 import { awaitAnimationEnd } from '../../utils/dom.js'
@@ -91,7 +92,7 @@ const {
   autoplay: () => props.autoplay,
   interval: () => props.interval,
   transition: animateMove,
-  onChange: (index) => emits('change', index),
+  onChange: (index) => emits('change', index, changeDetails()),
 })
 const slots = useSlots()
 

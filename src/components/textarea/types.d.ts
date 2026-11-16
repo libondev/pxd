@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentText, ComponentSizeWithXs } from '../../types/shared/props'
 
 export interface TextareaProps {
@@ -19,7 +20,7 @@ export interface TextareaProps {
 
 export interface TextareaEmits {
   'update:model-value': [NonNullable<TextareaProps['modelValue']>]
-  change: [NonNullable<TextareaProps['modelValue']>]
+  change: [NonNullable<TextareaProps['modelValue']>, details?: ChangeDetails]
   focus: [FocusEvent]
   blur: [FocusEvent]
 }

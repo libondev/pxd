@@ -148,7 +148,7 @@ const reactions = ref([{ emoji: '🔥', count: 2, mine: true }])
 | --- | --- | --- |
 | add | `(emoji: string) => void` | Emitted when the reader adds their reaction. |
 | remove | `(emoji: string) => void` | Emitted when the reader takes their reaction off. |
-| change | `(reactions: Reaction[]) => void` | Emitted when the reaction list changes. |
+| change | `(reactions: Reaction[], details: ChangeDetails) => void` | Emitted when the reaction list changes. |
 | update:model-value | `(reactions: Reaction[]) => void` | Emitted when the reaction list changes. |
 
 ## Slots

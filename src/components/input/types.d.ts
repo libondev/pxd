@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentSizeWithXs, ComponentClass } from '../../types/shared/props'
 
 export interface InputProps {
@@ -32,7 +33,7 @@ export interface InputProps {
 
 export interface InputEmits {
   click: [MouseEvent]
-  change: [string, Event]
+  change: [string, Event, details?: ChangeDetails]
   focus: [FocusEvent]
   blur: [FocusEvent]
   keydown: [KeyboardEvent]

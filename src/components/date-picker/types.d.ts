@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentDateTimeValue, ComponentSize } from '../../types/shared/props'
 
 export interface DatePickerProps {
@@ -15,6 +16,6 @@ export interface DatePickerProps {
 }
 
 export interface DatePickerEmits {
-  change: [ComponentDateTimeValue]
+  change: [ComponentDateTimeValue, details?: ChangeDetails]
   'update:model-value': [ComponentDateTimeValue]
 }

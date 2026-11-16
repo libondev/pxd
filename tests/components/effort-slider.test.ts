@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import EffortSlider from '../../src/components/effort-slider/index.vue'
+import { changePayloads } from '../helpers/changes'
 
 const OPTIONS = [
   { label: 'Low', value: 'low' },
@@ -66,7 +67,7 @@ describe('effort-slider', () => {
     await thumb.trigger('keydown', { code: 'ArrowRight' })
 
     expect(wrapper.emitted('update:model-value')).toEqual([['high']])
-    expect(wrapper.emitted('change')).toEqual([['high']])
+    expect(changePayloads(wrapper)).toEqual(['high'])
     expect(thumb.attributes('style')).toContain('66.66')
     expect(wrapper.find('.pxd-effort-slider--label').text()).toBe('High')
 
@@ -87,7 +88,7 @@ describe('effort-slider', () => {
     dispatch('pointerup', 70)
     await nextTick()
 
-    expect(wrapper.emitted('change')).toEqual([['high']])
+    expect(changePayloads(wrapper)).toEqual(['high'])
     expect(thumb.attributes('style')).toContain('66.66')
 
     wrapper.unmount()
@@ -155,7 +156,7 @@ describe('effort-slider', () => {
 
     dispatch('pointerup', 20)
 
-    expect(wrapper.emitted('change')).toEqual([['medium']])
+    expect(changePayloads(wrapper)).toEqual(['medium'])
 
     wrapper.unmount()
   })
@@ -202,7 +203,7 @@ describe('effort-slider', () => {
     dispatch('pointerup', 70)
     await nextTick()
 
-    expect(wrapper.emitted('change')).toEqual([['high']])
+    expect(changePayloads(wrapper)).toEqual(['high'])
     expect(wrapper.find('.pxd-effort-slider--thumb').attributes('data-dragging')).toBe('false')
 
     wrapper.unmount()
@@ -239,7 +240,7 @@ describe('effort-slider', () => {
 
     expect(wrapper.find('.pxd-effort-slider--thumb').attributes('style')).toContain('33.33')
     expect(wrapper.find('.pxd-effort-slider--thumb').attributes('data-dragging')).toBe('false')
-    expect(wrapper.emitted('change')).toEqual([['medium']])
+    expect(changePayloads(wrapper)).toEqual(['medium'])
 
     wrapper.unmount()
   })
@@ -282,11 +283,11 @@ describe('effort-slider', () => {
     const thumb = wrapper.find('.pxd-effort-slider--thumb')
 
     await thumb.trigger('keydown', { code: 'ArrowRight' })
-    expect(wrapper.emitted('change')).toEqual([['medium']])
+    expect(changePayloads(wrapper)).toEqual(['medium'])
 
     await wrapper.setProps({ modelValue: 'medium' })
     await thumb.trigger('keydown', { code: 'ArrowDown' })
-    expect(wrapper.emitted('change')).toEqual([['medium'], ['low']])
+    expect(changePayloads(wrapper)).toEqual(['medium', 'low'])
 
     wrapper.unmount()
   })
@@ -299,7 +300,7 @@ describe('effort-slider', () => {
     expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     await thumb.trigger('keydown', { code: 'ArrowLeft' })
-    expect(wrapper.emitted('change')).toEqual([['high']])
+    expect(changePayloads(wrapper)).toEqual(['high'])
 
     wrapper.unmount()
   })
@@ -309,11 +310,11 @@ describe('effort-slider', () => {
     const thumb = wrapper.find('.pxd-effort-slider--thumb')
 
     await thumb.trigger('keydown', { code: 'Home' })
-    expect(wrapper.emitted('change')).toEqual([['low']])
+    expect(changePayloads(wrapper)).toEqual(['low'])
 
     await wrapper.setProps({ modelValue: 'high' })
     await thumb.trigger('keydown', { code: 'End' })
-    expect(wrapper.emitted('change')).toEqual([['low'], ['max']])
+    expect(changePayloads(wrapper)).toEqual(['low', 'max'])
 
     wrapper.unmount()
   })

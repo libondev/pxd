@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ResizableEmits, ResizableProps } from './types'
 import { computed, onMounted, shallowRef, watch } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { throttleByRaf } from '../../utils/event.js'
 import { clampValue } from '../../utils/format.js'
@@ -133,7 +133,7 @@ const separatorRange = computed(() =>
       },
 )
 
-const modelValue = useModelValue(props, emits, { withChange: false })
+const { modelValue, commit } = useModelCommit(props, emits)
 
 useResizeObserver(containerRef, syncContainerSize)
 
@@ -247,7 +247,7 @@ function toggleFold() {
   const changed = collapsed.value ? expandLeading() : foldLeading(sizes.value[0])
 
   if (changed) {
-    emits('change', sizes.value.slice())
+    commit(sizes.value.slice())
   }
 }
 
@@ -411,7 +411,7 @@ function finishDrag(reportChange: boolean) {
   setSizes(settled)
 
   if (reportChange) {
-    emits('change', settled)
+    commit(settled)
   }
 }
 
@@ -478,7 +478,7 @@ function handleKeydown(event: KeyboardEvent) {
   }
 
   if (applyDelta(delta) || wasCollapsed) {
-    emits('change', sizes.value.slice())
+    commit(sizes.value.slice())
   }
 }
 

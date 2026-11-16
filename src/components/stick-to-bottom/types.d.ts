@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentClass } from '../../types/shared/props'
 
 export interface StickToBottomProps {
@@ -8,5 +9,5 @@ export interface StickToBottomProps {
 }
 
 export interface StickToBottomEmits {
-  change: [isAtBottom: boolean]
+  change: [isAtBottom: boolean, details?: ChangeDetails]
 }

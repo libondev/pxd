@@ -414,3 +414,9 @@ a comment beside the fix.
 - **Cause**: `@vue/compiler-sfc` resolves a prop's type through *relative* imports but not through an external package. While the type came from `vue` it stayed unresolved and produced no runtime prop; the local definition resolves to `boolean | Ref<boolean> | (() => boolean)`, so the compiler now emits a **Boolean** prop — and an omitted Boolean prop is cast to `false`. Same mechanism as *Optional `modelValue` unions that include boolean default to `false`*, reached through a type import instead of the declaration.
 - **Fix**: Never let `MaybeRefOrGetter<T>` reach `defineProps`. Give the component its own plain prop (`VirtualListProps extends Omit<VirtualListOptions, 'enabled'>` plus `enabled?: boolean`) and an explicit `withDefaults` value, keeping the `MaybeRefOrGetter` shape for composable options only.
 - **Related**: any type alias that gains or loses a local definition can change prop inference. Resolving a previously external type is a runtime change, not a type-only one — check the props of every component whose `types.d.ts` mentions it.
+
+### `toEqual([[value]])` on `emitted('change')` encodes the event's arity
+
+- **Symptom**: Giving `change` a second argument (`details`) failed 47 assertions across 12 files with `expected [ 'x' ] to deeply equal [ [ 'x' ] ]`, none of which mentioned `details`.
+- **Cause**: `emitted()` returns argument tuples, so `toEqual([[value]])` asserts the payload *and* the arity. The event gained a parameter, the tuple grew, and the payload slid one level in.
+- **Fix**: Assert payloads through `tests/helpers/changes.ts` — `changePayloads(wrapper)` for the list, `lastChangePayload(wrapper)` for the last call. One helper absorbs the arity change; adding the next argument then touches no assertions.

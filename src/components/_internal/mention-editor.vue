@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentClass, ComponentSize } from '../../types/shared/props'
 import type { MentionClickPayload, MentionRemovePayload } from '../mention/types'
 import { computed, onMounted, shallowRef } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useMentionEditor } from '../../composables/_internal/use-mention-editor.js'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -42,7 +44,7 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   trigger: [string]
-  change: [string]
+  change: [string, details?: ChangeDetails]
   submit: [string]
   'update:model-value': [string]
   'mention-click': [MentionClickPayload]
@@ -112,7 +114,7 @@ const {
   isSubmitOnEnter: () => props.submitOnEnter,
   onUpdate: (html) => {
     emits('update:model-value', html)
-    emits('change', html)
+    emits('change', html, changeDetails())
   },
   onTrigger: (trigger) => emits('trigger', trigger),
   onSubmit: (html) => emits('submit', html),

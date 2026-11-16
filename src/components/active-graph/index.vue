@@ -7,6 +7,7 @@ import type {
   ActiveGraphTooltipInfo,
 } from './types'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useDelayChange } from '../../composables/use-delay-change.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getAllDatesBetween } from '../../utils/date.js'
@@ -399,7 +400,7 @@ function onCellClick(event: MouseEvent) {
 
   selectedDate.value = selectedDate.value === date ? '' : date
 
-  emits('change', date, event)
+  emits('change', date, event, changeDetails())
 }
 // when pointer leaves the table area, hide the tooltip
 function onPointerLeave() {

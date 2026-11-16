@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentOption, ComponentValue } from '../../types/shared/props'
 
 export interface RadioGroupProps {
@@ -7,6 +8,6 @@ export interface RadioGroupProps {
 }
 
 export interface RadioGroupEmits {
-  change: [NonNullable<RadioGroupProps['modelValue']>]
+  change: [NonNullable<RadioGroupProps['modelValue']>, details?: ChangeDetails]
   'update:model-value': [NonNullable<RadioGroupProps['modelValue']>]
 }

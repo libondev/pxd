@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { CountdownEmits, CountdownProps } from './types'
 import { computed } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useCountdown } from '../../composables/use-countdown.js'
 import { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin } from '../../utils/date.js'
 
@@ -32,7 +33,7 @@ const { reset, timestamp } = useCountdown({
   duration: () => props.duration,
   millisecond: () => props.millisecond,
   intuitive: () => props.intuitive,
-  onChange: (enabled) => emits('change', enabled),
+  onChange: (enabled) => emits('change', enabled, changeDetails()),
   onReset: () => emits('reset'),
   onFinish: () => emits('finish'),
 })

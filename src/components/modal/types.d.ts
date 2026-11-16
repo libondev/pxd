@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentClass, ComponentText } from '../../types/shared/props'
 
 export interface ModalProps {
@@ -21,7 +22,7 @@ export interface ModalProps {
 export interface ModalEmits {
   show: []
   hide: []
-  change: [boolean]
+  change: [boolean, details?: ChangeDetails]
   'outside-click': [PointerEvent]
   'visible-change': [visible: boolean]
   'update:model-value': [visible: boolean]

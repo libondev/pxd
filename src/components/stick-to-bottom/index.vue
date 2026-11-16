@@ -2,6 +2,7 @@
 import type { StickToBottomEmits, StickToBottomProps } from './types'
 import { cn } from 'cn'
 import { computed, shallowRef, watch } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useStickToBottom } from '../../composables/use-stick-to-bottom.js'
 
 defineOptions({
@@ -40,7 +41,7 @@ const { isAtBottom, scrollToBottom, forceStickToBottom, stickIfNeeded, update } 
 watch(
   () => isAtBottom.value,
   (value) => {
-    emits('change', value)
+    emits('change', value, changeDetails())
   },
 )
 

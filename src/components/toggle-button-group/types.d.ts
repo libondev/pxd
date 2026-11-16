@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type {
   ComponentSizeWithXxs,
   ComponentValue,
@@ -17,6 +18,6 @@ export interface ToggleButtonGroupProps {
 }
 
 export interface ToggleButtonGroupEmits {
-  change: [NonNullable<CheckboxProps['modelValue']>]
+  change: [NonNullable<CheckboxProps['modelValue']>, details?: ChangeDetails]
   'update:model-value': [NonNullable<CheckboxProps['modelValue']>]
 }

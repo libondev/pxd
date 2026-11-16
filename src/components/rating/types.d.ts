@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentSizeWithXs } from '../../types/shared/props'
 
 export interface RatingProps {
@@ -13,6 +14,6 @@ export interface RatingProps {
 }
 
 export interface RatingEmits {
-  change: [NonNullable<RatingProps['modelValue']>]
+  change: [NonNullable<RatingProps['modelValue']>, details?: ChangeDetails]
   'update:model-value': [NonNullable<RatingProps['modelValue']>]
 }

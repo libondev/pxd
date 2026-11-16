@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import Slider from '../../src/components/slider/index.vue'
+import { changePayloads } from '../helpers/changes'
 
 function stubWidths(sizes: Array<[Element, number]>) {
   // happy-dom has no layout, so the layout widths come from these stubs.
@@ -65,7 +66,7 @@ describe('slider', () => {
 
     document.dispatchEvent(new PointerEvent('pointerup', { clientX: 60 }))
 
-    expect(wrapper.emitted('change')).toEqual([[60]])
+    expect(changePayloads(wrapper)).toEqual([60])
 
     wrapper.unmount()
   })
@@ -139,7 +140,7 @@ describe('slider', () => {
     document.dispatchEvent(new PointerEvent('pointerup', { clientX: 80 }))
 
     expect(wrapper.emitted('update:model-value')).toEqual([[10], [80]])
-    expect(wrapper.emitted('change')).toEqual([[80]])
+    expect(changePayloads(wrapper)).toEqual([80])
 
     wrapper.unmount()
   })
@@ -230,11 +231,11 @@ describe('slider', () => {
     const thumb = wrapper.find('.pxd-slider--thumb')
 
     await thumb.trigger('keydown', { code: 'ArrowRight' })
-    expect(wrapper.emitted('change')).toEqual([[60]])
+    expect(changePayloads(wrapper)).toEqual([60])
 
     await wrapper.setProps({ modelValue: 60 })
     await thumb.trigger('keydown', { code: 'ArrowRight' })
-    expect(wrapper.emitted('change')).toEqual([[60], [100]])
+    expect(changePayloads(wrapper)).toEqual([60, 100])
 
     wrapper.unmount()
   })
@@ -396,7 +397,7 @@ describe('slider', () => {
     await wrapper.findAll('.pxd-slider--mark')[1].trigger('click')
 
     expect(wrapper.emitted('update:model-value')).toEqual([[50]])
-    expect(wrapper.emitted('change')).toEqual([[50]])
+    expect(changePayloads(wrapper)).toEqual([50])
 
     wrapper.unmount()
   })
@@ -513,10 +514,10 @@ describe('slider', () => {
     const thumb = wrapper.find('.pxd-slider--thumb')
 
     await thumb.trigger('keydown', { code: 'Home' })
-    expect(wrapper.emitted('change')).toEqual([[10]])
+    expect(changePayloads(wrapper)).toEqual([10])
 
     await thumb.trigger('keydown', { code: 'End' })
-    expect(wrapper.emitted('change')).toEqual([[10], [90]])
+    expect(changePayloads(wrapper)).toEqual([10, 90])
 
     wrapper.unmount()
   })
@@ -528,10 +529,13 @@ describe('slider', () => {
     const thumbs = wrapper.findAll('.pxd-slider--thumb')
 
     await thumbs[0].trigger('keydown', { code: 'End' })
-    expect(wrapper.emitted('change')).toEqual([[[80, 80]]])
+    expect(changePayloads(wrapper)).toEqual([[80, 80]])
 
     await thumbs[1].trigger('keydown', { code: 'Home' })
-    expect(wrapper.emitted('change')).toEqual([[[80, 80]], [[20, 20]]])
+    expect(changePayloads(wrapper)).toEqual([
+      [80, 80],
+      [20, 20],
+    ])
 
     wrapper.unmount()
   })
@@ -564,7 +568,7 @@ describe('slider', () => {
     document.dispatchEvent(new PointerEvent('pointerup', { clientX: 90 }))
 
     expect(wrapper.emitted('update:model-value')).toEqual([[[80, 90]]])
-    expect(wrapper.emitted('change')).toEqual([[[80, 90]]])
+    expect(changePayloads(wrapper)).toEqual([[80, 90]])
 
     wrapper.unmount()
   })
@@ -608,7 +612,7 @@ describe('slider', () => {
     document.dispatchEvent(new PointerEvent('pointerup', { clientX: 50 }))
 
     expect(wrapper.emitted('update:model-value')).toEqual([[40], [50]])
-    expect(wrapper.emitted('change')).toEqual([[50]])
+    expect(changePayloads(wrapper)).toEqual([50])
 
     wrapper.unmount()
   })

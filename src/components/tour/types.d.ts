@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentPosition, ComponentText } from '../../types/shared/props'
 
 export interface TourStep {
@@ -22,7 +23,7 @@ export interface TourProps {
 export interface TourEmits {
   'update:model-value': [boolean]
   'update:current': [number]
-  change: [index: number, step: TourStep]
+  change: [index: number, step: TourStep, details?: ChangeDetails]
   finish: []
   skip: []
   error: [error: unknown, index: number]

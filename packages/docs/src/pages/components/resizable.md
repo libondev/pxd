@@ -272,7 +272,7 @@ what has to carry the fold state, e.g. through `aria-expanded`.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(sizes: number[]) => void` | Emitted when a drag, a key press or a fold commits new panel sizes. |
+| change | `(sizes: number[], details: ChangeDetails) => void` | Emitted when a drag, a key press or a fold commits new panel sizes. |
 | reset | `(sizes: number[]) => void` | Emitted when the panels go back to `default-value`. |
 | update:collapsed | `(collapsed: boolean) => void` | Emitted when the leading panel folds or unfolds. |
 | update:model-value | `(sizes: number[]) => void` | Emitted whenever a panel size changes. |

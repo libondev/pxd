@@ -298,7 +298,7 @@ function handleClose() {
 | --- | --- | --- |
 | show | `() => void` | Emitted right after the modal becomes visible. |
 | hide | `() => void` | Emitted right after the modal becomes hidden. |
-| change | `(value: boolean) => void` | Emitted when the modal closes itself, either through the Escape key or an overlay click. |
+| change | `(value: boolean, details: ChangeDetails) => void` | Emitted when the modal closes itself, either through the Escape key or an overlay click. |
 | outside-click | `(event: PointerEvent) => void` | Emitted when the overlay mask is clicked. |
 | visible-change | `(visible: boolean) => void` | Emitted on every change of the visible state, whether it comes from the parent or from the modal itself. |
 | update:model-value | `(visible: boolean) => void` | Emitted when the modal closes itself, so a `v-model` binding stays in sync. |

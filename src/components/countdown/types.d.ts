@@ -1,3 +1,5 @@
+import type { ChangeDetails } from '../../types/shared/change'
+
 export interface CountdownProps {
   /**
    * Whether to enable count up mode.
@@ -46,7 +48,7 @@ export interface CountdownProps {
 }
 
 export interface CountdownEmits {
-  change: [enabled: boolean]
+  change: [enabled: boolean, details?: ChangeDetails]
   reset: []
   finish: []
 }

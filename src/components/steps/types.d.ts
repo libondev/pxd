@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentDirection, ComponentText, ComponentSize } from '../../types/shared/props'
 
 export type StepsStatus = 'process' | 'finish' | 'error' | 'wait'
@@ -20,6 +21,6 @@ export interface StepsProps {
 }
 
 export interface StepsEmits {
-  change: [number]
+  change: [number, details?: ChangeDetails]
   'update:model-value': [number]
 }

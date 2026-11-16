@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentSizeWithXs } from '../../types/shared/props'
 
 export interface PinInputProps {
@@ -18,6 +19,6 @@ export interface PinInputProps {
 }
 
 export interface PinInputEmits {
-  change: [NonNullable<PinInputProps['modelValue']>]
+  change: [NonNullable<PinInputProps['modelValue']>, details?: ChangeDetails]
   'update:model-value': [NonNullable<PinInputProps['modelValue']>]
 }

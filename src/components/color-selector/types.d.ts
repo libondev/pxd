@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentSize } from '../../types/shared/props'
 
 export interface ColorSelectorProps {
@@ -7,6 +8,6 @@ export interface ColorSelectorProps {
 }
 
 export interface ColorSelectorEmits {
-  change: [NonNullable<ColorSelectorProps['modelValue']>]
+  change: [NonNullable<ColorSelectorProps['modelValue']>, details?: ChangeDetails]
   'update:model-value': [NonNullable<ColorSelectorProps['modelValue']>]
 }

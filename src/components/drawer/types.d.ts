@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { BasePosition, ComponentClass, ComponentText } from '../../types/shared/props'
 
 export interface DrawerProps {
@@ -22,7 +23,7 @@ export interface DrawerProps {
 export interface DrawerEmits {
   show: []
   hide: []
-  change: [boolean]
+  change: [boolean, details?: ChangeDetails]
   'outside-click': [PointerEvent]
   'visible-change': [visible: boolean]
   'update:model-value': [visible: boolean]

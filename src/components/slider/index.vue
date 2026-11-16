@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { SliderEmits, SliderProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import {
   createTailwindVariant,
   useTailwindVariant,
@@ -143,8 +143,7 @@ const markList = computed(() => {
 })
 
 // Uncontrolled fallback: a bound `modelValue` always wins.
-const activeValue = useModelValue(props, emits, {
-  withChange: false,
+const { modelValue: activeValue, commit } = useModelCommit(props, emits, {
   defaultValue: () => props.defaultValue ?? (props.range ? [props.min, props.min] : props.min),
 })
 
@@ -373,7 +372,7 @@ function endDragging(ev: PointerEvent) {
   updateValueFromPosition(ev.clientX)
 
   if (lastUpdatedValue !== null) {
-    emits('change', lastUpdatedValue)
+    commit(lastUpdatedValue)
   }
 
   stopDragging()
@@ -447,7 +446,7 @@ function onThumbKeydown(ev: KeyboardEvent, index: ThumbIndex) {
     return
   }
 
-  emits('change', setValue(next))
+  commit(setValue(next))
 }
 
 function selectMark(value: number) {
@@ -465,7 +464,7 @@ function selectMark(value: number) {
     return
   }
 
-  emits('change', setValue(next))
+  commit(setValue(next))
 }
 
 watch(() => [startPercentage.value, endPercentage.value], updateLabelShifts, { flush: 'post' })

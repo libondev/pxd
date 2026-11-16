@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import TimePicker from '../../src/components/time-picker/index.vue'
+import { changePayloads } from '../helpers/changes'
 
 async function typeAndChange(wrapper: ReturnType<typeof mount>, value: string) {
   const input = wrapper.find('input')
@@ -56,7 +57,7 @@ describe('time-picker', () => {
     await typeAndChange(wrapper, '12:30:00')
 
     expect(wrapper.emitted('update:model-value')).toEqual([['12:30:00']])
-    expect(wrapper.emitted('change')).toEqual([['12:30:00']])
+    expect(changePayloads(wrapper)).toEqual(['12:30:00'])
 
     wrapper.unmount()
   })
@@ -69,7 +70,7 @@ describe('time-picker', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.emitted('update:model-value')).toEqual([['12:30:00']])
-    expect(wrapper.emitted('change')).toEqual([['12:30:00']])
+    expect(changePayloads(wrapper)).toEqual(['12:30:00'])
 
     wrapper.unmount()
   })

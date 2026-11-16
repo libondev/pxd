@@ -47,5 +47,5 @@ const expanded = ref(false)
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: boolean) => void` | Emitted when the button toggles the expanded state. |
+| change | `(value: boolean, details: ChangeDetails) => void` | Emitted when the button toggles the expanded state. |
 | update:model-value | `(value: boolean) => void` | Emitted with the new expanded state on every toggle. |

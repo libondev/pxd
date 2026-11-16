@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentPosition } from '../../types/shared/props'
 import type { ListModelValue, ListOptions } from '../list/types'
 
@@ -12,6 +13,6 @@ export interface MenuProps {
 }
 
 export interface MenuEmits {
-  change: [ListModelValue]
+  change: [ListModelValue, details?: ChangeDetails]
   'update:model-value': [ListModelValue]
 }

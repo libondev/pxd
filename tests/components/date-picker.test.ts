@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import DatePicker from '../../src/components/date-picker/index.vue'
+import { changePayloads } from '../helpers/changes'
 import { flushPopover } from '../helpers/flush-popover'
 
 async function typeAndChange(wrapper: ReturnType<typeof mount>, value: string) {
@@ -45,7 +46,7 @@ describe('date-picker', () => {
     await nextTick()
 
     expect(wrapper.emitted('update:model-value')).toEqual([['2024/08/20']])
-    expect(wrapper.emitted('change')).toEqual([['2024/08/20']])
+    expect(changePayloads(wrapper)).toEqual(['2024/08/20'])
 
     wrapper.unmount()
   })

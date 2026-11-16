@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type {
   ComponentText,
   ComponentValue,
@@ -15,6 +16,6 @@ export interface ChoiceboxProps {
 }
 
 export interface ChoiceboxEmits {
-  change: [NonNullable<ChoiceboxProps['modelValue']>]
+  change: [NonNullable<ChoiceboxProps['modelValue']>, details?: ChangeDetails]
   'update:model-value': [NonNullable<ChoiceboxProps['modelValue']>]
 }

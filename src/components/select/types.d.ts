@@ -1,4 +1,5 @@
 import type { ButtonVariant } from '../../types/components/button'
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentSize, ComponentShape } from '../../types/shared/props'
 import type {
   ListFilterMethodFn,
@@ -28,6 +29,6 @@ export interface SelectProps {
 }
 
 export interface SelectEmits {
-  change: [ListModelValue]
+  change: [ListModelValue, details?: ChangeDetails]
   'update:model-value': [ListModelValue]
 }

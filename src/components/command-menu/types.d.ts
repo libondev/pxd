@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type {
   ListFilterMethodFn,
   ListOptions,
@@ -20,7 +21,7 @@ export interface CommandMenuProps {
 
 export interface CommandMenuEmits {
   'update:model-value': [boolean]
-  change: [boolean]
+  change: [boolean, details?: ChangeDetails]
   show: []
   hide: []
 }

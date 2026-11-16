@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentSize, ComponentOption } from '../../types/shared/props'
 
 export interface EffortSliderProps {
@@ -11,6 +12,6 @@ export interface EffortSliderProps {
 }
 
 export interface EffortSliderEmits {
-  change: [string | number]
+  change: [string | number, details?: ChangeDetails]
   'update:model-value': [string | number]
 }

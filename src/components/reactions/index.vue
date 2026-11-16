@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Reaction, ReactionsEmits, ReactionsProps } from './types'
 import { computed, shallowRef } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PPopover from '../popover/index.vue'
 
@@ -31,7 +32,7 @@ function commit(next: Reaction[], action: 'add' | 'remove', emoji: string) {
     emits('remove', emoji)
   }
 
-  emits('change', next)
+  emits('change', next, changeDetails())
   emits('update:model-value', next)
 }
 

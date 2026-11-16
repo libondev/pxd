@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentClass, ComponentSize } from '../../types/shared/props'
 import type { ListFilterMethodFn, ListOptionSelected, ListOptions } from '../list/types'
 
@@ -69,7 +70,7 @@ export interface MentionSelectPayload {
 }
 
 export interface MentionEmits {
-  change: [string]
+  change: [string, details?: ChangeDetails]
   submit: [string]
   select: [MentionSelectPayload]
   'mention-click': [MentionClickPayload]

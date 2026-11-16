@@ -106,7 +106,7 @@ function search(query) {
 | Name | Type | Description |
 | --- | --- | --- |
 | update:model-value | `(value: boolean) => void` | Emitted when the open state of the menu changes. |
-| change | `(value: boolean) => void` | Emitted together with `update:model-value` when the open state of the menu changes. |
+| change | `(value: boolean, details: ChangeDetails) => void` | Emitted together with `update:model-value` when the open state of the menu changes. |
 | show | `() => void` | Emitted when the menu opens. |
 | hide | `() => void` | Emitted when the menu closes. |
 

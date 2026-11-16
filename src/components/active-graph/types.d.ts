@@ -1,3 +1,5 @@
+import type { ChangeDetails } from '../../types/shared/change'
+
 interface FieldNames {
   date: string
   count: string
@@ -18,7 +20,7 @@ export interface ActiveGraphProps {
 }
 
 export interface ActiveGraphEmits {
-  change: [string, MouseEvent]
+  change: [string, MouseEvent, details?: ChangeDetails]
 }
 
 export interface ActiveGraphCellData {

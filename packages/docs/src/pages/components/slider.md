@@ -227,5 +227,5 @@ const steps = Object.keys(marks).map(i => Number(i))
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: number \| number[]) => void` | Emitted when a drag, an arrow key press, or a mark click settles on a new value. |
+| change | `(value: number \| number[], details: ChangeDetails) => void` | Emitted when a drag, an arrow key press, or a mark click settles on a new value. |
 | update:model-value | `(value: number \| number[]) => void` | Emitted whenever the value changes, including when the initial value is snapped to a valid step on mount. |

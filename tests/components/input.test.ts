@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import Input from '../../src/components/input/index.vue'
+import { withChangeDetails } from '../../src/composables/_internal/use-change-details'
 
 describe('input', () => {
   it('renders properly', async () => {
@@ -187,6 +188,28 @@ describe('input', () => {
 
     expect(event.defaultPrevented).toBe(false)
     expect(wrapper.emitted('update:model-value')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should report the cause of a change', () => {
+    const wrapper = mount(Input, {
+      props: {
+        modelValue: '',
+      },
+    })
+    const input = wrapper.find('input')
+
+    withChangeDetails({ source: 'agent', reason: 'set-value' }, () => {
+      input.element.value = 'typed'
+      input.element.dispatchEvent(new Event('change'))
+    })
+
+    expect(wrapper.emitted('change')?.[0]?.[2]).toMatchObject({
+      source: 'agent',
+      reason: 'set-value',
+      canceled: false,
+    })
 
     wrapper.unmount()
   })

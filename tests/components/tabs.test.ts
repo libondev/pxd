@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vite-plus/test'
 import { createSSRApp, defineComponent, h, nextTick, ref } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import Tabs from '../../src/components/tabs/index.vue'
+import { changePayloads } from '../helpers/changes'
 
 const OPTIONS = [
   { label: 'First', value: '1' },
@@ -186,7 +187,7 @@ describe('tabs', () => {
     await wrapper.findAll('[role="tab"]')[1]!.trigger('click')
 
     expect(tabs.emitted('update:model-value')).toEqual([['2']])
-    expect(tabs.emitted('change')).toEqual([['2']])
+    expect(changePayloads(tabs)).toEqual(['2'])
     expect(active.value).toBe('2')
 
     wrapper.unmount()
@@ -237,7 +238,7 @@ describe('tabs', () => {
     await wrapper.findAll('[role="tab"]')[1]!.trigger('click')
 
     expect(tabs.emitted('update:model-value')).toEqual([[2]])
-    expect(tabs.emitted('change')).toEqual([[2]])
+    expect(changePayloads(tabs)).toEqual([2])
 
     wrapper.unmount()
   })

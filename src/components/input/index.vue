@@ -4,7 +4,7 @@ import CrossIcon from '@gdsicon/vue/cross'
 import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { computed, shallowRef } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
@@ -44,7 +44,7 @@ const inputType = computed(() => {
 })
 
 const configProvider = useConfigProvider()
-const modelValue = useModelValue(props, emits, { withChange: false })
+const { modelValue, commit } = useModelCommit(props, emits)
 const {
   isWordLimitShown,
   hasMaxLength,
@@ -127,7 +127,7 @@ function onClick(event: MouseEvent) {
 
 function onChange(event: Event) {
   const inputValue = getInputValue(event)
-  emits('change', inputValue, event)
+  commit(inputValue, event)
 }
 
 function onInput(event: Event) {
@@ -202,7 +202,7 @@ function select() {
 function clear(ev: Event) {
   const clearValue = props.clearValue ?? ''
 
-  emits('change', '', ev)
+  commit('', ev)
   modelValue.value = clearValue
 }
 

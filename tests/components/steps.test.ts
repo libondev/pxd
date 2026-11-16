@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vite-plus/test'
 import { createSSRApp, defineComponent, h, nextTick, ref } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import Steps from '../../src/components/steps/index.vue'
+import { lastChangePayload } from '../helpers/changes'
 
 const OPTIONS = [
   { description: 'Review items in your cart', title: 'Cart' },
@@ -80,7 +81,7 @@ describe('steps', () => {
     await wrapper.findAll('.pxd-steps-item')[2]!.trigger('click')
 
     expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([2])
-    expect(wrapper.emitted('change')?.at(-1)).toEqual([2])
+    expect(lastChangePayload(wrapper)).toEqual(2)
 
     wrapper.unmount()
   })
@@ -210,7 +211,7 @@ describe('steps', () => {
     await wrapper.findAll('.custom-step')[2]!.trigger('click')
 
     expect(wrapper.emitted('update:model-value')?.at(-1)).toEqual([2])
-    expect(wrapper.emitted('change')?.at(-1)).toEqual([2])
+    expect(lastChangePayload(wrapper)).toEqual(2)
 
     wrapper.unmount()
   })

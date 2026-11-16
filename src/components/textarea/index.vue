@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { TextareaEmits, TextareaProps } from './types'
 import { computed, shallowRef } from 'vue'
-import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -25,7 +25,7 @@ const uniqueId = getUniqueId()
 
 const isComposing = shallowRef(false)
 
-const modelValue = useModelValue(props, emits, { withChange: false })
+const { modelValue, commit } = useModelCommit(props, emits)
 
 const configProvider = useConfigProvider()
 const {
@@ -93,7 +93,7 @@ function onInputBlur(event: FocusEvent) {
 }
 
 function onInputChange(event: Event) {
-  emits('change', (event.target as HTMLTextAreaElement).value)
+  commit((event.target as HTMLTextAreaElement).value)
 }
 
 function trimTextareaValue(textareaValue: string) {

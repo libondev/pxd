@@ -2,6 +2,7 @@
 import type { TourEmits, TourProps } from './types'
 import type { CSSProperties } from 'vue'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useTourTarget } from '../../composables/_internal/use-tour-target.js'
 import { useMotionReduced } from '../../composables/use-motion-reduce.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -122,7 +123,7 @@ function goToStep(index: number) {
 
   localCurrent.value = nextIndex
   emits('update:current', nextIndex)
-  emits('change', nextIndex, props.steps[nextIndex]!)
+  emits('change', nextIndex, props.steps[nextIndex]!, changeDetails())
   resolveTarget(nextIndex)
 }
 

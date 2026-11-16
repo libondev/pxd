@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import StickToBottom from '../../src/components/stick-to-bottom/index.vue'
+import { lastChangePayload } from '../helpers/changes'
 
 function patchScrollMetrics(
   el: HTMLElement,
@@ -127,7 +128,7 @@ describe('PStickToBottom', () => {
 
     expect(vm.isAtBottom).toBe(false)
     expect(wrapper.emitted('change')).toBeTruthy()
-    expect(wrapper.emitted('change')?.at(-1)).toEqual([false])
+    expect(lastChangePayload(wrapper)).toEqual(false)
   })
 
   it('applies default props', () => {

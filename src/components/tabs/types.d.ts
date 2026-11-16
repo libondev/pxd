@@ -1,3 +1,4 @@
+import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentOption, ComponentValue } from '../../types/shared/props'
 
 export interface TabsOptions extends ComponentOption {
@@ -13,6 +14,6 @@ export interface TabsProps {
 }
 
 export interface TabsEmits {
-  change: [NonNullable<ComponentValue>]
+  change: [NonNullable<ComponentValue>, details?: ChangeDetails]
   'update:model-value': [NonNullable<ComponentValue>]
 }
