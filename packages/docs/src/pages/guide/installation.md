@@ -10,7 +10,7 @@ See <RouterLink to="/guide/styled">Styled</RouterLink> for style setting.
 
 ## Install
 
-<div class="h-5 w-max min-w-22 bg-gray-100 rounded-[3px]">
+<div class="h-5 w-max min-w-20 bg-gray-100 rounded-[3px]">
 
 [![](https://img.shields.io/npm/v/pxd.svg)](https://www.npmjs.com/package/pxd){target="_blank"}
 
@@ -108,4 +108,3 @@ If the types still do not apply, disable tsgo in the workspace:
   "typescript.experimental.useTsgo": false
 }
 ```
-

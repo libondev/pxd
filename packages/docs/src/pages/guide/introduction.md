@@ -2,8 +2,6 @@
 
 PXD is a universal UI component library for Vue 3.3+, built from one codebase.
 
-?> The supported floor is `Vue >= 3.3`.
-
 Every component ships with built-in light and dark themes, adapts to desktop and mobile, and lets every animation be turned off. Start with <RouterLink to="/guide/installation">Installation</RouterLink>.
 
 ## Examples
