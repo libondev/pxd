@@ -111,20 +111,28 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | --- | --- |
 | `checkbox` | `setValue`, `toggle` |
 | `checkbox-group` | `setValue` |
+| `choicebox` | `setValue` |
+| `color-selector` | `setValue` |
 | `drawer` | `setOpen` |
 | `input` | `setValue`, `focus`, `blur`, `select` |
 | `modal` | `setOpen` |
 | `more-button` | `setValue`, `toggle` |
 | `number-input` | `setValue`, `increment`, `decrement` |
+| `pin-input` | `setValue` |
 | `radio-group` | `setValue` |
+| `rating` | `setValue` |
 | `select` | `setValue`, `setOpen`, `toggle` |
 | `slider` | `setValue` |
+| `steps` | `setValue` |
 | `switch` | `setValue` |
 | `tabs` | `setValue` |
 | `textarea` | `setValue`, `focus`, `blur` |
+| `time-picker` | `setValue` |
 | `toggle-button-group` | `setValue` |
 
-A group holds no value of its own: `setValue` on `checkbox-group`, `radio-group`, `switch` or `toggle-button-group` announces the change and asks for the update, and the value follows only when the app's `v-model` accepts it.
+A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-button-group` — holds no value of its own: `setValue` announces the change and asks for the update, and the value follows only when the app's `v-model` accepts it.
+
+`steps` moves only where the app marks it `clickable`, the same as a click. Its `value` is the current step's index.
 
 A dialog renders nothing while it is closed, so it reports no `label` until it opens. A step reaches it by `ref`, opens it, and every later step can use the title as its name.
 

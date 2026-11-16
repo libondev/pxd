@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { PinInputEmits, PinInputProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
@@ -73,6 +74,16 @@ const { classes } = useTailwindVariant(
     }),
   },
 )
+
+useAgentNode({
+  name: 'pin-input',
+  state: () => ({ value: modelValue.value ?? '', length: props.length }),
+  actions: {
+    setValue: (value) => {
+      modelValue.value = String(value ?? '')
+    },
+  },
+})
 
 function replaceCharAt(str: string, index: number, char: string) {
   return str.substring(0, index) + char + str.substring(index + 1)

@@ -2,6 +2,7 @@
 import type { TimePickerEmits, TimePickerProps } from './types'
 import ClockIcon from '@gdsicon/vue/clock'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -58,6 +59,15 @@ const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 const modelValue = useModelValue(props, emits, {
   get() {
     return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
+  },
+})
+useAgentNode({
+  name: 'time-picker',
+  state: () => ({ value: modelValue.value ?? '' }),
+  actions: {
+    setValue: (value) => {
+      modelValue.value = String(value ?? '')
+    },
   },
 })
 

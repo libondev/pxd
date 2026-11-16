@@ -1,17 +1,24 @@
+import type { Component } from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import { createAgent } from '../../src/agent'
 import Button from '../../src/components/button/index.vue'
 import CheckboxGroup from '../../src/components/checkbox-group/index.vue'
+import Choicebox from '../../src/components/choicebox/index.vue'
+import ColorSelector from '../../src/components/color-selector/index.vue'
 import Modal from '../../src/components/modal/index.vue'
 import MoreButton from '../../src/components/more-button/index.vue'
 import NumberInput from '../../src/components/number-input/index.vue'
+import PinInput from '../../src/components/pin-input/index.vue'
 import RadioGroup from '../../src/components/radio-group/index.vue'
+import Rating from '../../src/components/rating/index.vue'
 import Select from '../../src/components/select/index.vue'
 import Slider from '../../src/components/slider/index.vue'
+import Steps from '../../src/components/steps/index.vue'
 import Switch from '../../src/components/switch/index.vue'
 import Textarea from '../../src/components/textarea/index.vue'
+import TimePicker from '../../src/components/time-picker/index.vue'
 
 const mounted: { unmount: () => void }[] = []
 
@@ -23,6 +30,26 @@ function track<T extends { unmount: () => void }>(wrapper: T) {
 
 const find = <T extends { component: string }>(entries: T[], component: string) =>
   entries.find((entry) => entry.component === component)!
+
+function mountBound(component: Component, props: Record<string, unknown>, initial: unknown) {
+  const bound = ref(initial)
+  track(
+    mount(
+      defineComponent({
+        setup: () => () =>
+          h(component, {
+            ...props,
+            modelValue: bound.value,
+            'onUpdate:model-value': (next: unknown) => {
+              bound.value = next
+            },
+          }),
+      }),
+    ),
+  )
+
+  return bound
+}
 
 afterEach(() => {
   for (const wrapper of mounted.splice(0)) {
@@ -159,6 +186,114 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'select')).toMatchObject({ value: 2, open: false })
+  })
+
+  it('should clamp a rating to its count', async () => {
+    const bound = mountBound(Rating, { count: 5, 'aria-label': 'Score' }, 0)
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'rating')).toMatchObject({
+      label: 'Score',
+      value: 0,
+      count: 5,
+      actions: ['setValue'],
+    })
+
+    const result = await agent.act({ steps: [{ ref: 'Score', action: 'setValue', args: [9] }] })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe(5)
+  })
+
+  it('should move a clickable stepper', async () => {
+    const bound = mountBound(
+      Steps,
+      {
+        clickable: true,
+        options: [{ title: 'One' }, { title: 'Two' }],
+        'aria-label': 'Progress',
+      },
+      0,
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'steps')).toMatchObject({ label: 'Progress', value: 0 })
+
+    const result = await agent.act({ steps: [{ ref: 'Progress', action: 'setValue', args: [1] }] })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe(1)
+  })
+
+  it('should fill a pin input', async () => {
+    const bound = mountBound(PinInput, { 'aria-label': 'Code' }, '')
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'pin-input')).toMatchObject({
+      label: 'Code',
+      value: '',
+      length: 4,
+      actions: ['setValue'],
+    })
+
+    const result = await agent.act({ steps: [{ ref: 'Code', action: 'setValue', args: ['1234'] }] })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe('1234')
+  })
+
+  it('should pick a colour', async () => {
+    const bound = mountBound(
+      ColorSelector,
+      { colors: ['#000000', '#ff0000'], 'aria-label': 'Tint' },
+      '',
+    )
+    const agent = createAgent()
+
+    const result = await agent.act({
+      steps: [{ ref: 'Tint', action: 'setValue', args: ['#ff0000'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe('#ff0000')
+  })
+
+  it('should set a time', async () => {
+    const bound = mountBound(TimePicker, { 'aria-label': 'Starts' }, '')
+    const agent = createAgent()
+
+    const result = await agent.act({
+      steps: [{ ref: 'Starts', action: 'setValue', args: ['12:30:00'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe('12:30:00')
+  })
+
+  it('should pick a value in a choicebox', async () => {
+    const bound = mountBound(
+      Choicebox,
+      {
+        options: [
+          { label: 'A', value: 'a' },
+          { label: 'B', value: 'b' },
+        ],
+        'aria-label': 'Pick',
+      },
+      '',
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'choicebox')).toMatchObject({
+      label: 'Pick',
+      value: '',
+      actions: ['setValue'],
+    })
+
+    const result = await agent.act({ steps: [{ ref: 'Pick', action: 'setValue', args: ['b'] }] })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe('b')
   })
 
   it('should pick an option in a radio group', async () => {

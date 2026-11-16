@@ -415,6 +415,12 @@ a comment beside the fix.
 - **Fix**: Never let `MaybeRefOrGetter<T>` reach `defineProps`. Give the component its own plain prop (`VirtualListProps extends Omit<VirtualListOptions, 'enabled'>` plus `enabled?: boolean`) and an explicit `withDefaults` value, keeping the `MaybeRefOrGetter` shape for composable options only.
 - **Related**: any type alias that gains or loses a local definition can change prop inference. Resolving a previously external type is a runtime change, not a type-only one — check the props of every component whose `types.d.ts` mentions it.
 
+### A default `aria-label` names every instance the same
+
+- **Symptom**: `radio-group` shipped `aria-label="Radio Group"` and `toggle-button-group` `"Toggle Button Group"` (and `choicebox` fell back to `'Choicebox Group'`). Two groups on one page carried the same name, so a screen reader read duplicates and an agent could not pick between them.
+- **Cause**: A group's name is its purpose — "Sort order", "Notification channels" — and the component cannot know it. A default shaped like the widget type reads like a name while carrying no information, and the fallback silently hides the missing prop.
+- **Fix**: Ship no default; the app passes `aria-label` or the group stays unnamed, exactly like a bare `role="radiogroup"`. An unnamed control is honest and gets flagged in review; a duplicated name looks correct and is not.
+
 ### `toEqual([[value]])` on `emitted('change')` encodes the event's arity
 
 - **Symptom**: Giving `change` a second argument (`details`) failed 47 assertions across 12 files with `expected [ 'x' ] to deeply equal [ [ 'x' ] ]`, none of which mentioned `details`.

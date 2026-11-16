@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ColorSelectorEmits, ColorSelectorProps } from './types'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -19,6 +20,16 @@ const uniqueName = getUniqueId('color-selector')
 
 const configProvider = useConfigProvider()
 const modelValue = useModelValue(props, emits)
+
+useAgentNode({
+  name: 'color-selector',
+  state: () => ({ value: modelValue.value ?? null }),
+  actions: {
+    setValue: (value) => {
+      modelValue.value = String(value ?? '')
+    },
+  },
+})
 
 const { classes } = useTailwindVariant(
   {

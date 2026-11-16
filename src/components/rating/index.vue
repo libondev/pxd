@@ -3,6 +3,7 @@ import type { RatingEmits, RatingProps } from './types'
 import StarIcon from '@gdsicon/vue/star'
 import StarFillIcon from '@gdsicon/vue/star-fill'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -102,6 +103,16 @@ const { attrs, classes } = useTailwindVariant(
     },
   },
 )
+
+useAgentNode({
+  name: 'rating',
+  state: () => ({ value: modelValue.value ?? 0, count: starCount.value }),
+  actions: {
+    setValue: (value) => {
+      modelValue.value = Math.max(0, Math.min(starCount.value, Number(value)))
+    },
+  },
+})
 
 function getValueFromPosition(clientX: number): number {
   if (!ratingRef.value) {

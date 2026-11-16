@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { StepsOption, StepsEmits, StepsProps, StepsStatus } from './types'
 import { computed } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getFallbackValue } from '../../utils/helper.js'
@@ -65,6 +66,14 @@ const computedStyle = computed(() => {
     '--steps-description-font-size': size.descriptionFontSize,
     '--steps-gap': size.gap,
   }
+})
+
+useAgentNode({
+  name: 'steps',
+  state: () => ({ value: activeIndex.value }),
+  actions: {
+    setValue: (value) => select(Number(value)),
+  },
 })
 
 function resolveStatus(option: StepsOption, index: number): StepsStatus {

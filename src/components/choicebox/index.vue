@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { ChoiceboxEmits, ChoiceboxProps } from './types'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { emitChange } from '../../composables/_internal/use-change-details.js'
 import { provideChoiceboxContext } from '../../contexts/choicebox.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PChoiceboxItem from '../choicebox-item/index.vue'
@@ -13,6 +15,14 @@ defineOptions({
 const props = withDefaults(defineProps<ChoiceboxProps>(), { gap: 3 })
 const emits = defineEmits<ChoiceboxEmits>()
 
+useAgentNode({
+  name: 'choicebox',
+  state: () => ({ value: props.modelValue ?? (props.multiple ? [] : null) }),
+  actions: {
+    setValue: (value) => emitChange(emits, value),
+  },
+})
+
 provideChoiceboxContext({ props, emits, name: getUniqueId() })
 </script>
 
@@ -20,7 +30,7 @@ provideChoiceboxContext({ props, emits, name: getUniqueId() })
   <PStack
     data-choicebox
     :gap="gap"
-    :aria-label="label ?? 'Choicebox Group'"
+    :aria-label="label"
     :aria-multiselectable="multiple"
     :role="multiple ? 'group' : 'radiogroup'"
     class="pxd-choicebox"

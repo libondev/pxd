@@ -57,7 +57,6 @@ provideToggleButtonGroupContext({ props, emits })
     role="group"
     data-toggle-button-group
     :class="classes"
-    aria-label="Toggle Button Group"
     align="center"
     :gap="gap"
     :data-gap="gap"
