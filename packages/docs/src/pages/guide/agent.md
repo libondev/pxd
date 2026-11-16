@@ -108,11 +108,16 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | Component | Actions |
 | --- | --- |
 | `checkbox` | `setValue`, `toggle` |
+| `drawer` | `setOpen` |
 | `input` | `setValue`, `focus`, `blur`, `select` |
+| `modal` | `setOpen` |
 | `more-button` | `setValue`, `toggle` |
 | `number-input` | `setValue`, `increment`, `decrement` |
+| `select` | `setValue`, `setOpen`, `toggle` |
 | `slider` | `setValue` |
 | `tabs` | `setValue` |
 | `textarea` | `setValue`, `focus`, `blur` |
+
+A dialog renders nothing while it is closed, so it reports no `label` until it opens. A step reaches it by `ref`, opens it, and every later step can use the title as its name.
 
 Any other component stays out of `snapshot`, `act` and `query`, so an agent cannot half-see or half-drive it.

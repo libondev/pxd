@@ -4,6 +4,7 @@ import type { ListModelValue } from '../list/types'
 import type { SelectEmits, SelectProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed, nextTick, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSearch } from '../../composables/_internal/use-list-search.js'
@@ -83,6 +84,31 @@ const { onKeydown } = useListKeyboardController({
 const { listOptions, pending } = useListSearch(() => props.options ?? [], filterKeyword, {
   filterMethod: () => props.filterMethod,
   remoteFilter: () => props.remoteFilter,
+})
+
+useAgentNode({
+  name: 'select',
+  state: () => ({
+    value: selected.value ?? null,
+    open: popoverVisible.value,
+    multiple: props.multiple ?? false,
+  }),
+  actions: {
+    setValue: (value) => {
+      if (apply((value ?? null) as NonNullable<ListModelValue>)) {
+        popoverVisible.value = false
+        return
+      }
+
+      commit()
+    },
+    setOpen: (open) => {
+      popoverVisible.value = Boolean(open)
+    },
+    toggle: () => {
+      popoverVisible.value = !popoverVisible.value
+    },
+  },
 })
 
 function onSearchInput(ev: Event) {

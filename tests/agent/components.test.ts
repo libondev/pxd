@@ -2,8 +2,11 @@ import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import { createAgent } from '../../src/agent'
+import Button from '../../src/components/button/index.vue'
+import Modal from '../../src/components/modal/index.vue'
 import MoreButton from '../../src/components/more-button/index.vue'
 import NumberInput from '../../src/components/number-input/index.vue'
+import Select from '../../src/components/select/index.vue'
 import Slider from '../../src/components/slider/index.vue'
 import Textarea from '../../src/components/textarea/index.vue'
 
@@ -132,6 +135,76 @@ describe('agent components', () => {
 
     expect(change?.[0]).toBe(true)
     expect(change?.[1]).toMatchObject({ source: 'agent' })
+  })
+
+  it('should pick a value in a select', async () => {
+    const options = [
+      { label: 'One', value: 1 },
+      { label: 'Two', value: 2 },
+    ]
+    track(mount(Select, { props: { options }, attrs: { 'aria-label': 'Region' } }))
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'select')).toMatchObject({
+      label: 'Region',
+      value: null,
+      open: false,
+      actions: ['setValue', 'setOpen', 'toggle'],
+    })
+
+    const result = await agent.act({ steps: [{ ref: 'Region', action: 'setValue', args: [2] }] })
+
+    expect(result.ok).toBe(true)
+    expect(find(agent.snapshot(), 'select')).toMatchObject({ value: 2, open: false })
+  })
+
+  it('should open a closed dialog to press the button inside it', async () => {
+    const open = ref(false)
+    const removed = ref(false)
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(
+              Modal,
+              {
+                modelValue: open.value,
+                title: 'Settings',
+                'onUpdate:model-value': (next: unknown) => {
+                  open.value = Boolean(next)
+                },
+              },
+              {
+                default: () => h('p', 'Body'),
+                footer: () =>
+                  h(
+                    Button,
+                    {
+                      onClick: () => {
+                        removed.value = true
+                      },
+                    },
+                    () => 'Delete',
+                  ),
+              },
+            ),
+        }),
+      ),
+    )
+    const agent = createAgent()
+
+    const closed = find(agent.snapshot(), 'modal')
+
+    expect(closed).toMatchObject({ open: false, actions: ['setOpen'] })
+    expect(closed.label).toBeUndefined()
+
+    const result = await agent.act({
+      steps: [{ ref: closed.ref, action: 'press', args: ['Delete'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(removed.value).toBe(true)
+    expect(find(agent.snapshot(), 'modal')).toMatchObject({ open: true, label: 'Settings' })
   })
 
   it('should refuse a press whose button it cannot find', async () => {

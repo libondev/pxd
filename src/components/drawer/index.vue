@@ -2,6 +2,7 @@
 import type { DrawerEmits, DrawerProps } from './types'
 import CrossIcon from '@gdsicon/vue/cross'
 import { computed, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useOverlayDialog } from '../../composables/_internal/use-overlay-dialog.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -57,6 +58,17 @@ const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
   onOutsideClick: (ev) => emits('outside-click', ev),
   onClose: () => {
     isVisible.value = false
+  },
+})
+
+useAgentNode({
+  name: 'drawer',
+  el: () => drawerRef.value,
+  state: () => ({ open: isVisible.value }),
+  actions: {
+    setOpen: (open) => {
+      isVisible.value = Boolean(open)
+    },
   },
 })
 
