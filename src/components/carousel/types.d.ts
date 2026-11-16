@@ -30,5 +30,5 @@ export interface CarouselProps {
 }
 
 export interface CarouselEmits {
-  change: [index: number, details?: ChangeDetails]
+  change: [index: number, details: ChangeDetails]
 }

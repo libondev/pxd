@@ -20,7 +20,7 @@ export interface TextareaProps {
 
 export interface TextareaEmits {
   'update:model-value': [NonNullable<TextareaProps['modelValue']>]
-  change: [NonNullable<TextareaProps['modelValue']>, details?: ChangeDetails]
+  change: [NonNullable<TextareaProps['modelValue']>, details: ChangeDetails]
   focus: [FocusEvent]
   blur: [FocusEvent]
 }

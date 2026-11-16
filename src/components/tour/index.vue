@@ -123,7 +123,7 @@ function goToStep(index: number) {
 
   localCurrent.value = nextIndex
   emits('update:current', nextIndex)
-  emits('change', nextIndex, props.steps[nextIndex]!, changeDetails())
+  emits('change', nextIndex, changeDetails())
   resolveTarget(nextIndex)
 }
 

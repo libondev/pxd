@@ -213,7 +213,7 @@ function clearInput(ev: KeyboardEvent) {
     modelValue.value = props.clearValue
   }
 
-  commit(props.clearValue, ev)
+  commit(props.clearValue)
 
   if (hadValue) {
     ev.preventDefault()
@@ -257,7 +257,7 @@ function onInputInput(text: string) {
   modelValue.value = value
 }
 
-function onInputChange(text: string, event: Event) {
+function onInputChange(text: string) {
   const normalized = normalizeInputValue(text)
   const parsed = normalized === '' ? null : parseInputValue(normalized)
 
@@ -272,7 +272,7 @@ function onInputChange(text: string, event: Event) {
     modelValue.value = value
   }
 
-  commit(value, event)
+  commit(value)
 }
 
 watch(

@@ -16,7 +16,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  change: [day: CalendarDay, details?: ChangeDetails]
+  change: [day: CalendarDay, details: ChangeDetails]
 }>()
 
 const { attrs, classes: cellClasses } = useTailwindVariant(

@@ -12,7 +12,7 @@ export function useModelCommit<P extends ModelValueProps, E extends ModelValueEm
   options: ModelValueOptions = {},
 ): {
   modelValue: WritableComputedRef<P['modelValue']>
-  commit: (...args: unknown[]) => void
+  commit: (value: P['modelValue']) => void
 } {
   type V = NonNullable<P['modelValue']>
 
@@ -26,8 +26,8 @@ export function useModelCommit<P extends ModelValueProps, E extends ModelValueEm
     },
   })
 
-  const commit = (...args: unknown[]) => {
-    emits('change', ...args, changeDetails())
+  const commit = (value: P['modelValue']) => {
+    emits('change', value, changeDetails())
   }
 
   return { modelValue, commit }

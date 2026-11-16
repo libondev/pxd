@@ -40,8 +40,8 @@ function refreshData() {
   data.value = genRandomData()
 }
 
-function onChange(date, event) {
-  console.log({ date, event })
+function onChange(date, details) {
+  console.log({ date, details })
 }
 </script>
 
@@ -257,7 +257,7 @@ const data = [
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(date: string, event: MouseEvent, details: ChangeDetails) => void` | Emitted when a date cell is clicked. |
+| change | `(date: string, details: ChangeDetails) => void` | Emitted when a date cell is clicked. |
 
 ## Slots
 

@@ -18,6 +18,6 @@ export interface ToggleProps {
 }
 
 export interface ToggleEmits {
-  change: [NonNullable<ToggleProps['modelValue']>, details?: ChangeDetails]
+  change: [NonNullable<ToggleProps['modelValue']>, details: ChangeDetails]
   'update:model-value': [NonNullable<ToggleProps['modelValue']>]
 }

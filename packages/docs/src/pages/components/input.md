@@ -185,7 +185,7 @@ const value = ref('')
 | Name | Type | Description |
 | --- | --- | --- |
 | click | `(ev: MouseEvent) => void` | Emitted when the field is clicked. |
-| change | `(value: string, ev: Event, details: ChangeDetails) => void` | Emitted when the value is committed by pressing `Enter`, by the native change event, or by clearing the field. |
+| change | `(value: string, details: ChangeDetails) => void` | Emitted when the value is committed by pressing `Enter`, by the native change event, or by clearing the field. |
 | focus | `(ev: FocusEvent) => void` | Emitted when the field gains focus. |
 | blur | `(ev: FocusEvent) => void` | Emitted when the field loses focus. |
 | keydown | `(ev: KeyboardEvent) => void` | Emitted when a key is pressed while the field is neither readonly nor disabled. |
@@ -206,6 +206,6 @@ const value = ref('')
 | Name | Type | Description |
 | --- | --- | --- |
 | blur | `() => void` | Remove focus from the input element. |
-| clear | `(ev: Event) => void` | Reset the value to `clear-value` and emit `change` with an empty string. |
+| clear | `() => void` | Reset the value to `clear-value` and emit `change` with an empty string. |
 | focus | `() => void` | Move focus to the input element. |
 | select | `() => void` | Select the whole value of the input element. |

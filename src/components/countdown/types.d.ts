@@ -48,7 +48,7 @@ export interface CountdownProps {
 }
 
 export interface CountdownEmits {
-  change: [enabled: boolean, details?: ChangeDetails]
+  change: [enabled: boolean, details: ChangeDetails]
   reset: []
   finish: []
 }

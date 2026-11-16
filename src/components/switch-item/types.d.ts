@@ -9,6 +9,6 @@ export interface SwitchItemProps {
 }
 
 export interface SwitchItemEmits {
-  change: [NonNullable<SwitchItemProps['modelValue']>, details?: ChangeDetails]
+  change: [NonNullable<SwitchItemProps['modelValue']>, details: ChangeDetails]
   'update:model-value': [NonNullable<SwitchItemProps['modelValue']>]
 }

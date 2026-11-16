@@ -6,5 +6,5 @@ export interface ScrollProgressProps {
 }
 
 export interface ScrollProgressEmits {
-  change: [percentage: number, details?: ChangeDetails]
+  change: [percentage: number, details: ChangeDetails]
 }

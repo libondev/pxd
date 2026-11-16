@@ -18,6 +18,6 @@ export interface ToggleButtonGroupProps {
 }
 
 export interface ToggleButtonGroupEmits {
-  change: [NonNullable<CheckboxProps['modelValue']>, details?: ChangeDetails]
+  change: [NonNullable<CheckboxProps['modelValue']>, details: ChangeDetails]
   'update:model-value': [NonNullable<CheckboxProps['modelValue']>]
 }

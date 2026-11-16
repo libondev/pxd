@@ -16,6 +16,6 @@ export interface SliderProps {
 }
 
 export interface SliderEmits {
-  change: [NonNullable<SliderProps['modelValue']>, details?: ChangeDetails]
+  change: [NonNullable<SliderProps['modelValue']>, details: ChangeDetails]
   'update:model-value': [NonNullable<SliderProps['modelValue']>]
 }

@@ -17,7 +17,7 @@ export interface ResizableProps {
 }
 
 export interface ResizableEmits {
-  change: [number[], details?: ChangeDetails]
+  change: [number[], details: ChangeDetails]
   reset: [number[]]
   'update:collapsed': [boolean]
   'update:model-value': [number[]]

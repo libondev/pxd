@@ -23,7 +23,7 @@ export interface DrawerProps {
 export interface DrawerEmits {
   show: []
   hide: []
-  change: [boolean, details?: ChangeDetails]
+  change: [boolean, details: ChangeDetails]
   'outside-click': [PointerEvent]
   'visible-change': [visible: boolean]
   'update:model-value': [visible: boolean]

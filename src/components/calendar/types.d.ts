@@ -27,6 +27,6 @@ export interface CalendarProps {
 
 export interface CalendarEmits {
   'panel-change': [info: CalendarPanelInfo]
-  change: [ComponentDateTimeValue, details?: ChangeDetails]
+  change: [ComponentDateTimeValue, details: ChangeDetails]
   'update:model-value': [ComponentDateTimeValue]
 }

@@ -205,7 +205,7 @@ describe('input', () => {
       input.element.dispatchEvent(new Event('change'))
     })
 
-    expect(wrapper.emitted('change')?.[0]?.[2]).toMatchObject({
+    expect(wrapper.emitted('change')?.[0]?.[1]).toMatchObject({
       source: 'agent',
       reason: 'set-value',
       canceled: false,

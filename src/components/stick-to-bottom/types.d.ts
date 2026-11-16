@@ -9,5 +9,5 @@ export interface StickToBottomProps {
 }
 
 export interface StickToBottomEmits {
-  change: [isAtBottom: boolean, details?: ChangeDetails]
+  change: [isAtBottom: boolean, details: ChangeDetails]
 }

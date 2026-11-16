@@ -22,6 +22,6 @@ export interface TimePickerProps {
 }
 
 export interface TimePickerEmits {
-  change: [ComponentDateTimeValue, details?: ChangeDetails]
+  change: [ComponentDateTimeValue, details: ChangeDetails]
   'update:model-value': [ComponentDateTimeValue]
 }

@@ -33,7 +33,7 @@ export interface InputProps {
 
 export interface InputEmits {
   click: [MouseEvent]
-  change: [string, Event, details?: ChangeDetails]
+  change: [string, details: ChangeDetails]
   focus: [FocusEvent]
   blur: [FocusEvent]
   keydown: [KeyboardEvent]

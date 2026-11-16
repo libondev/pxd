@@ -420,3 +420,9 @@ a comment beside the fix.
 - **Symptom**: Giving `change` a second argument (`details`) failed 47 assertions across 12 files with `expected [ 'x' ] to deeply equal [ [ 'x' ] ]`, none of which mentioned `details`.
 - **Cause**: `emitted()` returns argument tuples, so `toEqual([[value]])` asserts the payload *and* the arity. The event gained a parameter, the tuple grew, and the payload slid one level in.
 - **Fix**: Assert payloads through `tests/helpers/changes.ts` — `changePayloads(wrapper)` for the list, `lastChangePayload(wrapper)` for the last call. One helper absorbs the arity change; adding the next argument then touches no assertions.
+
+### A native event in a public payload cannot be reproduced by an api call
+
+- **Symptom**: `input`, `number-input` and `active-graph` passed the DOM event they were handling as the second argument of `change`. Driving them through their own api (an agent's `setValue`, a programmatic write) had no such event to pass, so the payload shape depended on *how* the value was set.
+- **Cause**: A DOM `Event` is a trace of the interaction, not part of the value being reported. Anything that writes the same value without an interaction has to invent one, and an invented event is indistinguishable to the consumer from a real one.
+- **Fix**: Keep interaction traces out of the payload; report `(value, details)` from every path. Where a consumer truly needs the trigger, `details.reason` names it and `details.source` says who caused it. `tour`'s `change` lost its `step` the same way — it is derivable from `index`.

@@ -52,6 +52,6 @@ export interface TodoProps {
 }
 
 export interface TodoEmits {
-  change: [TodoChangeDetail, details?: ChangeDetails]
+  change: [TodoChangeDetail, details: ChangeDetails]
   'update:model-value': [TodoOption[]]
 }

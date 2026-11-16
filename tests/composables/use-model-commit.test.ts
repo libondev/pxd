@@ -45,22 +45,6 @@ describe('useModelCommit', () => {
     )
   })
 
-  it('should append the details after the arguments the component passes', () => {
-    const props = { modelValue: undefined as string | undefined }
-    const emits = vi.fn()
-    const { commit } = useModelCommit(props, emits)
-    const event = new Event('change')
-
-    commit('typed', event)
-
-    expect(emits).toHaveBeenCalledWith(
-      'change',
-      'typed',
-      event,
-      expect.objectContaining({ canceled: false }),
-    )
-  })
-
   it('should report the source of the change being committed', () => {
     const props = { modelValue: undefined as string | undefined }
     const emits = vi.fn()

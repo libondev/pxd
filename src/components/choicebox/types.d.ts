@@ -16,6 +16,6 @@ export interface ChoiceboxProps {
 }
 
 export interface ChoiceboxEmits {
-  change: [NonNullable<ChoiceboxProps['modelValue']>, details?: ChangeDetails]
+  change: [NonNullable<ChoiceboxProps['modelValue']>, details: ChangeDetails]
   'update:model-value': [NonNullable<ChoiceboxProps['modelValue']>]
 }

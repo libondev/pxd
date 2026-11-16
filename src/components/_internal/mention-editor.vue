@@ -44,7 +44,7 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   trigger: [string]
-  change: [string, details?: ChangeDetails]
+  change: [string, details: ChangeDetails]
   submit: [string]
   'update:model-value': [string]
   'mention-click': [MentionClickPayload]

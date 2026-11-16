@@ -19,7 +19,7 @@ export interface NumberInputProps {
 export interface NumberInputEmits {
   blur: [FocusEvent]
   focus: [FocusEvent]
-  change: [NumberInputProps['modelValue'], Event, details?: ChangeDetails]
+  change: [NumberInputProps['modelValue'], details: ChangeDetails]
   'update:model-value': [NumberInputProps['modelValue']]
 }
 

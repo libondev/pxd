@@ -8,6 +8,6 @@ export interface MoreButtonProps {
 }
 
 export interface MoreButtonEmits {
-  change: [NonNullable<MoreButtonProps['modelValue']>, details?: ChangeDetails]
+  change: [NonNullable<MoreButtonProps['modelValue']>, details: ChangeDetails]
   'update:model-value': [NonNullable<MoreButtonProps['modelValue']>]
 }

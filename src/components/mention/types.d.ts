@@ -70,7 +70,7 @@ export interface MentionSelectPayload {
 }
 
 export interface MentionEmits {
-  change: [string, details?: ChangeDetails]
+  change: [string, details: ChangeDetails]
   submit: [string]
   select: [MentionSelectPayload]
   'mention-click': [MentionClickPayload]

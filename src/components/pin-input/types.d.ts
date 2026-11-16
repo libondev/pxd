@@ -19,6 +19,6 @@ export interface PinInputProps {
 }
 
 export interface PinInputEmits {
-  change: [NonNullable<PinInputProps['modelValue']>, details?: ChangeDetails]
+  change: [NonNullable<PinInputProps['modelValue']>, details: ChangeDetails]
   'update:model-value': [NonNullable<PinInputProps['modelValue']>]
 }

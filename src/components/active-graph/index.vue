@@ -400,7 +400,7 @@ function onCellClick(event: MouseEvent) {
 
   selectedDate.value = selectedDate.value === date ? '' : date
 
-  emits('change', date, event, changeDetails())
+  emits('change', date, changeDetails())
 }
 // when pointer leaves the table area, hide the tooltip
 function onPointerLeave() {

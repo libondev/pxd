@@ -110,7 +110,10 @@ useAgentNode({
   }),
   actions: {
     setValue: (value) => {
-      modelValue.value = value == null ? '' : String(value)
+      const next = value == null ? '' : String(value)
+
+      modelValue.value = next
+      commit(next)
     },
     focus,
     blur,
@@ -148,7 +151,7 @@ function onClick(event: MouseEvent) {
 
 function onChange(event: Event) {
   const inputValue = getInputValue(event)
-  commit(inputValue, event)
+  commit(inputValue)
 }
 
 function onInput(event: Event) {
@@ -173,7 +176,7 @@ function onKeydown(event: KeyboardEvent) {
     } else if (event.key === 'Escape' && props.clearOnPressEscape) {
       const hasValue = !isNil(modelValue.value) && modelValue.value !== ''
 
-      clear(event)
+      clear()
 
       if (hasValue) {
         event.preventDefault()
@@ -220,10 +223,10 @@ function select() {
   inputRef.value?.select()
 }
 
-function clear(ev: Event) {
+function clear() {
   const clearValue = props.clearValue ?? ''
 
-  commit('', ev)
+  commit('')
   modelValue.value = clearValue
 }
 

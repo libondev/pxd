@@ -146,7 +146,7 @@ export interface TreeEmits {
   'update:model-value': [TreeModelValue]
   'update:data': [TreeOptions]
   move: [TreeMoveDetail]
-  change: [TreeChangeDetail, details?: ChangeDetails]
+  change: [TreeChangeDetail, details: ChangeDetails]
   'update:expandedKeys': [ComponentValue[]]
   expand: [TreeNodeDetail]
   collapse: [TreeNodeDetail]

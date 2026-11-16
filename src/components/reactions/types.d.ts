@@ -19,6 +19,6 @@ export interface ReactionsProps {
 export interface ReactionsEmits {
   add: [emoji: string]
   remove: [emoji: string]
-  change: [reactions: Reaction[], details?: ChangeDetails]
+  change: [reactions: Reaction[], details: ChangeDetails]
   'update:model-value': [reactions: Reaction[]]
 }

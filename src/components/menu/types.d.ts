@@ -13,6 +13,6 @@ export interface MenuProps {
 }
 
 export interface MenuEmits {
-  change: [ListModelValue, details?: ChangeDetails]
+  change: [ListModelValue, details: ChangeDetails]
   'update:model-value': [ListModelValue]
 }
