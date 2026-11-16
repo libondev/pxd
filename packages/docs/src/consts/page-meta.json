@@ -467,6 +467,10 @@
     "title": "useBackoffRetry",
     "description": "Runs an async task with exponential backoff and full jitter. Cancels in-flight work and pending waits when the effect scope is disposed, or when you call abort…"
   },
+  "/composables/use-carousel": {
+    "title": "useCarousel",
+    "description": "Drives a carousel's index, looping and autoplay state without rendering anything."
+  },
   "/composables/use-client-online": {
     "title": "useClientOnline",
     "description": "Tracks browser network connectivity status (online/offline)."
@@ -481,7 +485,7 @@
   },
   "/composables/use-countdown": {
     "title": "useCountdown",
-    "description": "Manages countdown/count-up timers and their event emission."
+    "description": "Manages countdown/count-up timers and reports lifecycle events through callbacks."
   },
   "/composables/use-deferred-value": {
     "title": "useDeferredValue",
@@ -498,6 +502,10 @@
   "/composables/use-document-hidden": {
     "title": "useDocumentHidden",
     "description": "Tracks document visibility state and fires callback on visibility changes."
+  },
+  "/composables/use-hold": {
+    "title": "useHold",
+    "description": "Tracks a press-and-hold gesture: progress, confirmation and cancellation."
   },
   "/composables/use-intersection-observer": {
     "title": "useIntersectionObserver",
@@ -558,6 +566,10 @@
   "/composables/use-window-size": {
     "title": "useWindowSize",
     "description": "Tracks window dimensions reactively, updating on resize and orientation change."
+  },
+  "/guide/agent": {
+    "title": "Agent",
+    "description": "createAgent exposes the components on a page to an AI agent. The agent reads their state and calls their actions directly, so it never needs a screenshot, a pa…"
   },
   "/guide/faq": {
     "title": "FAQ",

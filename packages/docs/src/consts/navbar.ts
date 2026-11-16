@@ -57,6 +57,10 @@ export const asideMenus = [
         path: '/guide/icons',
       },
       {
+        label: 'Agent',
+        path: '/guide/agent',
+      },
+      {
         label: 'FAQ',
         path: '/guide/faq',
       },
