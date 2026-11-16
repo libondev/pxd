@@ -12,6 +12,8 @@ export interface AgentComponent {
   component: string
   label?: string
   [state: string]: unknown
+  /** The text of the buttons inside it, for a `press` step. */
+  buttons?: string[]
   actions: string[]
 }
 

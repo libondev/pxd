@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { TextareaEmits, TextareaProps } from './types'
 import { computed, shallowRef } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
@@ -24,6 +25,7 @@ const emits = defineEmits<TextareaEmits>()
 const uniqueId = getUniqueId()
 
 const isComposing = shallowRef(false)
+const textareaRef = shallowRef<HTMLTextAreaElement>()
 
 const { modelValue, commit } = useModelCommit(props, emits)
 
@@ -83,6 +85,24 @@ const { attrs, classes } = useTailwindVariant(
     }),
   },
 )
+useAgentNode({
+  name: 'textarea',
+  state: () => ({
+    value: modelValue.value ?? '',
+    disabled: props.disabled ?? false,
+    readonly: props.readonly ?? false,
+  }),
+  actions: {
+    setValue: (value) => {
+      const next = value == null ? '' : String(value)
+
+      modelValue.value = next
+      commit(next)
+    },
+    focus: () => textareaRef.value?.focus(),
+    blur: () => textareaRef.value?.blur(),
+  },
+})
 
 function onInputFocus(event: FocusEvent) {
   emits('focus', event)
@@ -91,7 +111,6 @@ function onInputFocus(event: FocusEvent) {
 function onInputBlur(event: FocusEvent) {
   emits('blur', event)
 }
-
 function onInputChange(event: Event) {
   commit((event.target as HTMLTextAreaElement).value)
 }
@@ -128,6 +147,7 @@ function onCompositionEnd(event: CompositionEvent) {
 <template>
   <label data-textarea :for="uniqueId" :class="classes" v-bind="attrs">
     <textarea
+      ref="textareaRef"
       :id="uniqueId"
       v-model="modelValue"
       class="py-2.5 px-3 size-full min-h-inherit resize-none appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"

@@ -3,6 +3,7 @@ import type { NumberInputData, NumberInputEmits, NumberInputProps } from './type
 import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
 import { computed, reactive, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useRepeatAction } from '../../composables/use-repeat-action.js'
 import { NOOP, isCompositionKeydown } from '../../utils/event.js'
@@ -106,6 +107,27 @@ const { start: startDecrease, stop: stopDecrease } = useRepeatAction({
 const { start: startIncrease, stop: stopIncrease } = useRepeatAction({
   enabled: () => !increaseDisabled.value,
   action: increaseValue,
+})
+
+useAgentNode({
+  name: 'number-input',
+  state: () => ({
+    value: modelValue.value ?? null,
+    min: props.min,
+    max: props.max,
+    disabled: props.disabled ?? false,
+  }),
+  actions: {
+    setValue: (value) => {
+      const next = normalize(value === null || value === '' ? null : Number(value))
+
+      inputData.currentValue = next
+      modelValue.value = next
+      commit(next)
+    },
+    increment: increaseValue,
+    decrement: decreaseValue,
+  },
 })
 
 function formatWithThousands(value: string | number): string {

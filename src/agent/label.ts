@@ -38,5 +38,20 @@ export function accessibleName(el: Element | null | undefined): string | undefin
     }
   }
 
-  return el.closest('label')?.textContent?.trim() || undefined
+  const own = el.closest('label')?.textContent?.trim()
+
+  if (own) {
+    return own
+  }
+
+  const text = (target: Element) => (target.textContent ?? '').replace(/\s+/g, ' ').trim()
+
+  if (el.matches('button, [role="button"]')) {
+    return text(el) || undefined
+  }
+
+  // A component whose face is one button, like a more/less toggle, is named by that button.
+  const button = el.querySelector('button, [role="button"]')
+
+  return button ? accessibleName(button) : undefined
 }

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { SliderEmits, SliderProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import {
   createTailwindVariant,
@@ -221,6 +222,34 @@ const { attrs, classes } = useTailwindVariant(
     }),
   },
 )
+
+useAgentNode({
+  name: 'slider',
+  state: () => ({
+    value: activeValue.value ?? props.min,
+    min: props.min,
+    max: props.max,
+    disabled: props.disabled ?? false,
+  }),
+  actions: {
+    setValue: (value) => {
+      const next = [...valueRange.value] as [number, number]
+
+      if (props.range && Array.isArray(value)) {
+        next[0] = toValidValue(Number(value[0]))
+        next[1] = toValidValue(Number(value[1]))
+      } else {
+        next[1] = toValidValue(Number(Array.isArray(value) ? value[1] : value))
+      }
+
+      if (next[0] > next[1]) {
+        next.reverse()
+      }
+
+      commit(setValue(next))
+    },
+  },
+})
 
 function setValue(range: [number, number]) {
   const value = props.range ? range : range[1]

@@ -28,7 +28,10 @@ agent.snapshot()
 - `ref` names the component in a step, and stays the same while the component stays mounted.
 - `label` is the name a person reads for it, from `aria-label`, `aria-labelledby` or its `<label>`.
 - The state keys after `label` are the component's own, like `value`, `checked` or `disabled`.
+- `buttons` lists the text of the buttons inside it, when it has any, for a `press` step.
 - `actions` lists what can be called right now.
+
+A component that renders another one as its own root, like a number input over a text field, is reported once — as the wrapper, which owns the name a person reads.
 
 ## Act
 
@@ -47,6 +50,19 @@ await agent.act({
 - The result is `{ ok, results, error? }`. `results` holds `{ ref, result }` for the steps that ran; the run stops at the first failure, and `error` carries `{ message, ref }`.
 - A change made by a step reports `source: 'agent'` in its `change` event (see below).
 - The call resolves after the page has rendered what each step changed, so the next step and your own assertions see it.
+
+## Press
+
+`press` clicks a button the component shows, named by its text.
+
+```ts
+await agent.act({ steps: [{ ref: 'Show More', action: 'press' }] })
+await agent.act({ steps: [{ ref: 'Views', action: 'press', args: ['Two'] }] })
+```
+
+- With no argument it presses the only button inside the component; a component with several asks you to name one.
+- With an argument it presses the button whose text matches — the whole text first, then a part of it. Several matches are refused rather than guessed.
+- A closed popup renders no buttons, so a component that declares `setOpen` is opened first and read again.
 
 ## Query
 
@@ -91,8 +107,12 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 
 | Component | Actions |
 | --- | --- |
-| `input` | `setValue`, `focus`, `blur`, `select` |
 | `checkbox` | `setValue`, `toggle` |
+| `input` | `setValue`, `focus`, `blur`, `select` |
+| `more-button` | `setValue`, `toggle` |
+| `number-input` | `setValue`, `increment`, `decrement` |
+| `slider` | `setValue` |
 | `tabs` | `setValue` |
+| `textarea` | `setValue`, `focus`, `blur` |
 
 Any other component stays out of `snapshot`, `act` and `query`, so an agent cannot half-see or half-drive it.

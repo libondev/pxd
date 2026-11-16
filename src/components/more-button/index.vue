@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { MoreButtonEmits, MoreButtonProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import PButton from '../button/index.vue'
 
@@ -18,6 +19,19 @@ const props = withDefaults(defineProps<MoreButtonProps>(), {
 const emits = defineEmits<MoreButtonEmits>()
 
 const isExpanded = useModelValue(props, emits)
+
+useAgentNode({
+  name: 'more-button',
+  state: () => ({ expanded: isExpanded.value }),
+  actions: {
+    setValue: (value) => {
+      isExpanded.value = Boolean(value)
+    },
+    toggle: () => {
+      isExpanded.value = !isExpanded.value
+    },
+  },
+})
 
 function onToggleExpand() {
   isExpanded.value = !isExpanded.value
