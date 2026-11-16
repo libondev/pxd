@@ -40,3 +40,7 @@ auto-imports.d.ts
 typed-router.d.ts
 **/pnpm-lock.yaml
 .vite-ssg-temp
+
+# Local plans stay beside the tree; composables-roadmap.md stays tracked for the guide that points at it.
+.agents/plans/*
+!.agents/plans/composables-roadmap.md
