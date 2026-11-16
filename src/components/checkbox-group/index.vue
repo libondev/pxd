@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { CheckboxGroupEmits, CheckboxGroupProps } from './types'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { emitChange } from '../../composables/_internal/use-change-details.js'
 import { provideCheckboxGroupContext } from '../../contexts/checkbox.js'
 import PCheckbox from '../checkbox/index.vue'
 import PStack from '../stack/index.vue'
@@ -15,6 +17,14 @@ const props = withDefaults(defineProps<CheckboxGroupProps>(), {
 })
 
 const emits = defineEmits<CheckboxGroupEmits>()
+
+useAgentNode({
+  name: 'checkbox-group',
+  state: () => ({ value: props.modelValue ?? [] }),
+  actions: {
+    setValue: (value) => emitChange(emits, value),
+  },
+})
 
 provideCheckboxGroupContext({ props, emits })
 </script>

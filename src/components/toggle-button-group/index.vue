@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import type { ToggleButtonGroupProps, ToggleButtonGroupEmits } from './types'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { emitChange } from '../../composables/_internal/use-change-details.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { provideToggleButtonGroupContext } from '../../contexts/toggle-button.js'
@@ -38,6 +40,14 @@ const { attrs, classes } = useTailwindVariant(
     selection: () => ({ size: props.size || configProvider.size }),
   },
 )
+
+useAgentNode({
+  name: 'toggle-button-group',
+  state: () => ({ value: props.modelValue ?? null }),
+  actions: {
+    setValue: (value) => emitChange(emits, value),
+  },
+})
 
 provideToggleButtonGroupContext({ props, emits })
 </script>

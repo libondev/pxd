@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { SwitchProps, SwitchEmits } from './types'
 import { computed } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { emitChange } from '../../composables/_internal/use-change-details.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { provideSwitchContext } from '../../contexts/switch.js'
@@ -28,6 +30,14 @@ const SIZES = {
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
+
+useAgentNode({
+  name: 'switch',
+  state: () => ({ value: props.modelValue ?? null }),
+  actions: {
+    setValue: (value) => emitChange(emits, value),
+  },
+})
 
 provideSwitchContext({ props, emits, name: getUniqueId() })
 </script>

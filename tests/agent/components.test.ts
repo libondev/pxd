@@ -3,11 +3,14 @@ import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import { createAgent } from '../../src/agent'
 import Button from '../../src/components/button/index.vue'
+import CheckboxGroup from '../../src/components/checkbox-group/index.vue'
 import Modal from '../../src/components/modal/index.vue'
 import MoreButton from '../../src/components/more-button/index.vue'
 import NumberInput from '../../src/components/number-input/index.vue'
+import RadioGroup from '../../src/components/radio-group/index.vue'
 import Select from '../../src/components/select/index.vue'
 import Slider from '../../src/components/slider/index.vue'
+import Switch from '../../src/components/switch/index.vue'
 import Textarea from '../../src/components/textarea/index.vue'
 
 const mounted: { unmount: () => void }[] = []
@@ -156,6 +159,115 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'select')).toMatchObject({ value: 2, open: false })
+  })
+
+  it('should pick an option in a radio group', async () => {
+    const value = ref<string | number>('')
+    const wrapper = track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(RadioGroup, {
+              modelValue: value.value,
+              'aria-label': 'Size',
+              options: [
+                { label: 'Small', value: 'sm' },
+                { label: 'Large', value: 'lg' },
+              ],
+              'onUpdate:model-value': (next: unknown) => {
+                value.value = next as string
+              },
+            }),
+        }),
+      ),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'radio-group')).toMatchObject({
+      label: 'Size',
+      value: '',
+      actions: ['setValue'],
+    })
+
+    const result = await agent.act({ steps: [{ ref: 'Size', action: 'setValue', args: ['lg'] }] })
+
+    expect(result.ok).toBe(true)
+    expect(value.value).toBe('lg')
+
+    const change = wrapper.findComponent(RadioGroup).emitted('change')?.[0]
+
+    expect(change?.[0]).toBe('lg')
+    expect(change?.[1]).toMatchObject({ source: 'agent' })
+  })
+
+  it('should set a list of values in a checkbox group', async () => {
+    const value = ref<(string | number | boolean)[]>([])
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(CheckboxGroup, {
+              modelValue: value.value,
+              'aria-label': 'Toppings',
+              options: [
+                { label: 'Cheese', value: 'cheese' },
+                { label: 'Ham', value: 'ham' },
+              ],
+              'onUpdate:model-value': (next: unknown) => {
+                value.value = next as (string | number | boolean)[]
+              },
+            }),
+        }),
+      ),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'checkbox-group')).toMatchObject({
+      label: 'Toppings',
+      value: [],
+      actions: ['setValue'],
+    })
+
+    const result = await agent.act({
+      steps: [{ ref: 'Toppings', action: 'setValue', args: [['ham']] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(value.value).toEqual(['ham'])
+  })
+
+  it('should pick a value in a switch', async () => {
+    const value = ref<string | number>('')
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(Switch, {
+              modelValue: value.value,
+              'aria-label': 'Mode',
+              options: [
+                { label: 'On', value: 'on' },
+                { label: 'Off', value: 'off' },
+              ],
+              'onUpdate:model-value': (next: unknown) => {
+                value.value = next as string
+              },
+            }),
+        }),
+      ),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'switch')).toMatchObject({
+      label: 'Mode',
+      value: '',
+      actions: ['setValue'],
+    })
+
+    const result = await agent.act({ steps: [{ ref: 'Mode', action: 'setValue', args: ['on'] }] })
+
+    expect(result.ok).toBe(true)
+    expect(value.value).toBe('on')
   })
 
   it('should open a closed dialog to press the button inside it', async () => {

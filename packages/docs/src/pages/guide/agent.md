@@ -110,15 +110,21 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | Component | Actions |
 | --- | --- |
 | `checkbox` | `setValue`, `toggle` |
+| `checkbox-group` | `setValue` |
 | `drawer` | `setOpen` |
 | `input` | `setValue`, `focus`, `blur`, `select` |
 | `modal` | `setOpen` |
 | `more-button` | `setValue`, `toggle` |
 | `number-input` | `setValue`, `increment`, `decrement` |
+| `radio-group` | `setValue` |
 | `select` | `setValue`, `setOpen`, `toggle` |
 | `slider` | `setValue` |
+| `switch` | `setValue` |
 | `tabs` | `setValue` |
 | `textarea` | `setValue`, `focus`, `blur` |
+| `toggle-button-group` | `setValue` |
+
+A group holds no value of its own: `setValue` on `checkbox-group`, `radio-group`, `switch` or `toggle-button-group` announces the change and asks for the update, and the value follows only when the app's `v-model` accepts it.
 
 A dialog renders nothing while it is closed, so it reports no `label` until it opens. A step reaches it by `ref`, opens it, and every later step can use the title as its name.
 
