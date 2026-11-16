@@ -94,10 +94,12 @@ function onChange(value: string, details: ChangeDetails) {
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| source | `'user' \| 'programmatic' \| 'agent' \| undefined` | Who changed it, when the component can tell. |
+| source | `'agent' \| undefined` | Who changed it: `'agent'` when a step did, `undefined` when nothing named a cause. |
 | reason | `string \| undefined` | Why it changed, when the component declares one. |
 | cancel | `() => void` | Refuses the write, where the component owns it: the value stays, and `update:model-value` is not emitted. |
 | canceled | `boolean` | Whether `cancel()` was called. |
+
+`source` names an agent's change and nothing else yet. No component tags a person's input today, so a change a person made reports no source rather than claiming to be one — more origins arrive as components learn to name them.
 
 A change the component commits, like a field on blur or a slider once the drag ends, carries no `cancel` — the value has already been applied.
 

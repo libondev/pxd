@@ -1,7 +1,12 @@
-export type ChangeSource = 'user' | 'programmatic' | 'agent'
+/**
+ * Who caused the change. An agent step is the only cause a component can name today:
+ * nothing tags a person's input yet, so a change a person made reports no source rather
+ * than guessing one. A direction that cannot be trusted is worse than one that is absent.
+ */
+export type ChangeSource = 'agent'
 
 export interface ChangeDetails {
-  /** Absent when the component cannot tell what caused the change. */
+  /** `'agent'` when a bridge step made the change; absent when nothing named a cause. */
   source?: ChangeSource
   /** Why it changed, like `'item-press'`. */
   reason?: string
