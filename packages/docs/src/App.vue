@@ -5,7 +5,7 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 
 <template>
   <!-- :locale="zhCN" -->
-  <PConfigProvider class="min-w-0 flex w-full flex-col">
+  <PConfigProvider size="md" class="min-w-0 flex w-full flex-col">
     <SiteHeader />
 
     <PMessage width="180" group="website" />

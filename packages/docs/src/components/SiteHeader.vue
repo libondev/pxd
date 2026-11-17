@@ -60,9 +60,9 @@ onBeforeUnmount(() => {
 
 <template>
   <header
-    class="top-0 md:max-w-screen-2xl h-12 max-sm:max-w-full sticky z-5 mx-auto flex w-full items-center justify-between border-b bg-background-100 select-none"
+    class="top-0 md:max-w-screen-2xl sm:border-x h-12 max-sm:max-w-full sticky z-5 mx-auto flex w-full items-center justify-between border-b bg-background-100 select-none"
   >
-    <h2 class="sm:w-56 md:border-r xl:border-l h-full">
+    <h2 class="sm:w-56 md:border-r h-full">
       <RouterLink
         to="/"
         class="px-2.5 gap-2 flex h-full cursor-pointer items-center self-focus-ring outline-none"
@@ -82,7 +82,7 @@ onBeforeUnmount(() => {
       </RouterLink>
     </h2>
 
-    <nav class="xl:border-r flex h-full items-center">
+    <nav class="flex h-full items-center">
       <div class="h-full border-l">
         <PButton variant="ghost" shape="square" class="px-2.5 h-full" @click="openCommandMenu">
           <MagnifyingGlassIcon />

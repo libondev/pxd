@@ -90,7 +90,7 @@ const inventory = computed(
 </script>
 
 <template>
-  <main class="@container w-full">
+  <main class="sm:border-x @container w-full">
     <section class="overflow-x-clip">
       <div class="gap-5 px-6 py-5 relative flex items-start">
         <span
