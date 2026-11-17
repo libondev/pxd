@@ -10,10 +10,16 @@ const INJECTION =
 export const agentTools: AgentTool[] = [
   {
     name: 'snapshot',
-    description: `List every component on the page that an agent can drive, with its ref, kind, label, row text, state, choices and the actions it takes right now. A component that says disabled: true takes no action. Read actions before choosing a step; an entry marked incomplete failed to report its state. A component that left the page follows with offPage: true and the state it had, like a closed tab's fields. A long page ends with an entry whose component is "more": its count says how many were left out, and query finds them. ${INJECTION}`,
+    description: `List every component on the page that an agent can drive, with its ref, kind, label, row text, state, choices and the actions it takes right now. A component that says disabled: true takes no action. Read actions before choosing a step; an entry marked incomplete failed to report its state. A component that left the page follows with offPage: true and the state it had, like a closed tab's fields. A long page ends with an entry whose component is "more": its count says how many were left out, and query finds them. Pass items: false on a page with long lists, and read one list at a time with query({ within }). ${INJECTION}`,
     inputSchema: {
       type: 'object',
-      properties: {},
+      properties: {
+        items: {
+          type: 'boolean',
+          description:
+            'Whether to list the choices each component offers, true by default. Pass false when long lists would crowd out the rest of the page.',
+        },
+      },
       additionalProperties: false,
     },
   },

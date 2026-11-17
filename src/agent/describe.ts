@@ -1,5 +1,5 @@
 import type { AgentEntry } from './registry.js'
-import type { AgentComponent, AgentItem } from './types'
+import type { AgentComponent, AgentItem, AgentSnapshotOptions } from './types'
 import { accessibleName, textOf } from './label.js'
 import { confirmOf, isHidden, REDACTED, sourceOf } from './marks.js'
 import {
@@ -134,15 +134,18 @@ function describedText(el: Element | null): string | undefined {
   return text || undefined
 }
 
-export function describe(entry: AgentEntry): AgentComponent {
+export function describe(
+  entry: AgentEntry,
+  { items: withItems = true }: AgentSnapshotOptions = {},
+): AgentComponent {
   try {
-    return buildComponent(entry)
+    return buildComponent(entry, withItems)
   } catch {
     return { ref: entry.ref, component: entry.node.name, actions: [], incomplete: true }
   }
 }
 
-function buildComponent(entry: AgentEntry): AgentComponent {
+function buildComponent(entry: AgentEntry, withItems: boolean): AgentComponent {
   const { ref, node } = entry
   const el = agentElement(entry)
   const markEl = agentMarkElement(entry)
@@ -203,19 +206,24 @@ function buildComponent(entry: AgentEntry): AgentComponent {
     }
   }
 
-  let items: AgentItem[] = []
+  // With `items: false` the getter is not even read: a long list costs a model the most, and
+  // `query({ within })` reads one list at a time. A secret component's choices are never
+  // reported either, so they are not read for it.
+  if (withItems && !secret) {
+    let items: AgentItem[] = []
 
-  try {
-    items = node.items?.() ?? []
-  } catch {
-    failed = true
-  }
+    try {
+      items = node.items?.() ?? []
+    } catch {
+      failed = true
+    }
 
-  if (items.length && !secret) {
-    component.items = items.slice(0, ITEM_LIMIT)
+    if (items.length) {
+      component.items = items.slice(0, ITEM_LIMIT)
 
-    if (items.length > ITEM_LIMIT) {
-      component.itemCount = items.length
+      if (items.length > ITEM_LIMIT) {
+        component.itemCount = items.length
+      }
     }
   }
 

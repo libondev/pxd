@@ -135,6 +135,7 @@ agent.snapshot()
 - `pending: true` and `error` report a component whose own work is running or has failed, like a button's save.
 - `incomplete: true` means one of the component's own state or item getters threw. The entry stays addressable instead of taking down the whole snapshot, but its data is not complete.
 - `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`, and one a person cannot pick `disabled`. A list longer than 100 stops there and reports `itemCount`; `query({ within })` reads the rest. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen.
+- `snapshot({ items: false })` leaves the choices out entirely — the component's items getter is not even read — for a page whose long lists would crowd out everything else. `query({ within })` then reads one list at a time.
 - `buttons` lists the name of each button inside it — its accessible name, so an icon-only button carrying `aria-label` is listed and pressable too. A link with an `href` counts as a button, so a pager's Prev and Next can be pressed.
 - `text` carries what it says besides its name, like a dialog's description, read from the element its own `aria-describedby` points at.
 - `actions` lists what can be called right now.
@@ -257,7 +258,7 @@ const run = (call: { name: 'snapshot' | 'act' | 'query', input: any }) => agent[
 
 | Tool | Takes |
 | --- | --- |
-| snapshot | nothing |
+| snapshot | an optional `items: false` to leave the choices out |
 | act | `steps` and an optional `timeout` |
 | query | `text`, `within` or `kind` |
 

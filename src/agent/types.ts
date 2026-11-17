@@ -79,6 +79,12 @@ export interface AgentStep {
   args?: any[]
 }
 
+export interface AgentSnapshotOptions {
+  /** Include the choices each component offers. `true` by default; pass `false` for a page
+   *  whose long lists would crowd out everything else, and read them with `query({ within })`. */
+  items?: boolean
+}
+
 export interface AgentQuery {
   text?: string
   within?: string
@@ -147,7 +153,7 @@ export interface AgentStepResult {
 
 /** The bridge's own three calls, as a helper built around it sees them. */
 export interface AgentBridge {
-  snapshot: () => AgentComponent[]
+  snapshot: (options?: AgentSnapshotOptions) => AgentComponent[]
   act: (options: AgentActOptions) => Promise<AgentActResult>
   query: (options?: AgentQuery) => AgentComponent[]
 }

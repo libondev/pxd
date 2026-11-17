@@ -251,6 +251,35 @@ describe('agent components', () => {
     expect(find(agent.snapshot(), 'select')).toMatchObject({ value: 2 })
   })
 
+  it('should leave the choices out when a snapshot asks for fields only', () => {
+    track(
+      mount(Select, {
+        props: {
+          options: [
+            { label: 'One', value: 1 },
+            { label: 'Two', value: 2 },
+          ],
+        },
+        attrs: { 'aria-label': 'Region' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'select').items).toHaveLength(2)
+
+    const bare = find(agent.snapshot({ items: false }), 'select')
+
+    expect(bare.items).toBeUndefined()
+    expect(bare).toMatchObject({
+      label: 'Region',
+      value: null,
+      actions: ['setValue', 'setOpen', 'toggle'],
+    })
+
+    // The choices are still one call away, which is what makes leaving them out safe.
+    expect(agent.query({ within: 'Region' })[0].items).toHaveLength(2)
+  })
+
   it('should read the choices inside a group', async () => {
     track(
       mount(Select, {

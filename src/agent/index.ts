@@ -4,6 +4,7 @@ import type {
   AgentAllow,
   AgentComponent,
   AgentQuery,
+  AgentSnapshotOptions,
 } from './types'
 import { createAllowGate } from './allow.js'
 import { agentCallers } from './callers.js'
@@ -79,7 +80,7 @@ export function createAgent({
     values: valuesOf(result.after.states, result.touched),
     appeared: agentShownEntries()
       .filter((entry) => !result.before.has(entry.ref))
-      .map(describe)
+      .map((entry) => describe(entry))
       .slice(0, AGENT_LIMIT),
   })
 
@@ -94,7 +95,7 @@ export function createAgent({
     return started
   }
 
-  const snapshot = () => {
+  const snapshot = (options: AgentSnapshotOptions = {}) => {
     const left = agentOffPage(since).map((record) => {
       const component: AgentComponent = {
         ...record.state,
@@ -115,7 +116,7 @@ export function createAgent({
       return component
     })
 
-    return capped([...agentShownEntries().map(describe), ...left])
+    return capped([...agentShownEntries().map((entry) => describe(entry, options)), ...left])
   }
 
   const query = (options: AgentQuery = {}) => {

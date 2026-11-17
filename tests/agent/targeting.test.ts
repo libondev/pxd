@@ -153,6 +153,27 @@ describe('agent targeting', () => {
     expect(pressed).toBe(true)
   })
 
+  it('should not read the choices at all when a snapshot leaves them out', () => {
+    const root = host()
+    let reads = 0
+
+    register({
+      name: 'list',
+      el: () => root,
+      items: () => {
+        reads += 1
+
+        return [{ label: 'Row', value: 'r' }]
+      },
+      state: () => ({ value: 'r' }),
+      actions: {},
+    })
+
+    createAgent().snapshot({ items: false })
+
+    expect(reads).toBe(0)
+  })
+
   it('should stop a long snapshot at the limit and say how many it left out', () => {
     for (let index = 0; index < 120; index++) {
       const root = host()
