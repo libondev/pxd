@@ -8,6 +8,7 @@ interface ListSelectionOptions {
   modelValue?: MaybeRefOrGetter<ListModelValue | undefined>
   multiple?: MaybeRefOrGetter<boolean | undefined>
   onChange?: (value: NonNullable<ListModelValue>) => void
+  onClear?: (value: NonNullable<ListModelValue>) => void
   onUpdateModelValue?: (value: NonNullable<ListModelValue>) => void
 }
 
@@ -72,5 +73,14 @@ export function useListSelection(options: ListSelectionOptions) {
     options.onChange?.(selected.value ?? [])
   }
 
-  return { selected, apply, reset, commit }
+  function clear() {
+    const next = (isMultiple() ? [] : null) as NonNullable<ListModelValue>
+
+    dirty = false
+    selected.value = next
+    options.onUpdateModelValue?.(next)
+    options.onClear?.(next)
+  }
+
+  return { selected, apply, reset, commit, clear }
 }

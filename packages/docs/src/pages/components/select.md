@@ -22,6 +22,26 @@ const options = [
 </template>
 ```
 
+## Clearable
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref(2)
+
+const options = [
+  { label: 'One', value: 1 },
+  { label: 'Two', value: 2 },
+  { label: 'Three', value: 3 },
+]
+</script>
+
+<template>
+  <PSelect v-model="value" class="w-full" :options="options" clearable></PSelect>
+</template>
+```
+
 ## Multiple
 
 ```vue demo
@@ -240,6 +260,7 @@ const options = [
 | suffix-icon | `boolean` | `true` | Show the chevron icon in the trigger suffix |
 | placeholder | `string` | - | Text shown in the trigger while nothing is selected |
 | filterable | `boolean` | `false` | Show a search input at the top of the popover that filters the options |
+| clearable | `boolean` | `false` | Show a clear control in the trigger when a value is selected; clearing emits `null` (or `[]` in `multiple` mode) and a `change` with reason `cleared` |
 | filter-placeholder | `string` | - | Placeholder of the search input shown when `filterable` is on |
 | filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match on `label` and `description` | Predicate deciding which option shows while the query is being typed |
 | remote-filter | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`, only while `filterable` is on: the options it returns replace `options` until the query is cleared |

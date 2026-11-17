@@ -52,4 +52,43 @@ describe('useListSelection', () => {
     expect(onUpdateModelValue).not.toHaveBeenCalled()
     expect(onChange).not.toHaveBeenCalled()
   })
+
+  it('should clear a single value to null and report it once', () => {
+    const onUpdateModelValue = vi.fn()
+    const onClear = vi.fn()
+    const onChange = vi.fn()
+    const { clear, selected } = useListSelection({
+      modelValue: 2,
+      onUpdateModelValue,
+      onChange,
+      onClear,
+    })
+
+    clear()
+    expect(selected.value).toBeNull()
+    expect(onUpdateModelValue).toHaveBeenCalledWith(null)
+    expect(onClear).toHaveBeenCalledWith(null)
+    expect(onChange).not.toHaveBeenCalled()
+  })
+
+  it('should clear a multiple value and drop a pending change', () => {
+    const onUpdateModelValue = vi.fn()
+    const onClear = vi.fn()
+    const onChange = vi.fn()
+    const { apply, clear, commit, selected } = useListSelection({
+      multiple: true,
+      modelValue: [1],
+      onUpdateModelValue,
+      onChange,
+      onClear,
+    })
+
+    apply([1, 2])
+    clear()
+    expect(selected.value).toEqual([])
+    expect(onClear).toHaveBeenCalledWith([])
+
+    commit()
+    expect(onChange).not.toHaveBeenCalled()
+  })
 })

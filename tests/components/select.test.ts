@@ -231,4 +231,53 @@ describe('select', () => {
 
     wrapper.unmount()
   })
+
+  it('should show a clear control only when clearable and a value is selected', async () => {
+    const wrapper = mount(Select, {
+      props: { clearable: true, options },
+    })
+
+    expect(wrapper.find('.pxd-select--clear').exists()).toBe(false)
+
+    await wrapper.setProps({ modelValue: 2 })
+    expect(wrapper.find('.pxd-select--clear').exists()).toBe(true)
+    // The chevron gives way to the clear control's icon.
+    expect(wrapper.find('.pxd-select--clear svg').exists()).toBe(true)
+
+    await wrapper.setProps({ disabled: true })
+    expect(wrapper.find('.pxd-select--clear').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should clear a single value without opening the popover, reporting a cleared change', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { clearable: true, options, modelValue: 1 },
+    })
+
+    await wrapper.find('.pxd-select--clear').trigger('click')
+
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBeNull()
+    expect(wrapper.emitted('change')?.[0]?.[0]).toBeNull()
+    expect(wrapper.emitted('change')?.[0]?.[1]).toMatchObject({ reason: 'cleared' })
+    // data-popover-ignore keeps the clear click from toggling the menu open.
+    expect(document.body.querySelector('.pxd-select--content')).toBeNull()
+
+    wrapper.unmount()
+  })
+
+  it('should clear a multiple value to an empty array', async () => {
+    const wrapper = mount(Select, {
+      props: { clearable: true, multiple: true, options, modelValue: [1, 2] },
+    })
+
+    await wrapper.find('.pxd-select--clear').trigger('click')
+
+    expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toEqual([])
+    expect(wrapper.emitted('change')?.[0]?.[0]).toEqual([])
+    expect(wrapper.emitted('change')?.[0]?.[1]).toMatchObject({ reason: 'cleared' })
+
+    wrapper.unmount()
+  })
 })

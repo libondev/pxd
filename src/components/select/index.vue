@@ -3,6 +3,7 @@ import type { ListKeyboardMap } from '../../composables/_internal/use-list-keybo
 import type { ListModelValue } from '../list/types'
 import type { SelectEmits, SelectProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
+import CrossIcon from '@gdsicon/vue/cross'
 import { computed, nextTick, shallowRef, watch } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
@@ -27,6 +28,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<SelectProps>(), {
   suffixIcon: true,
+  clearable: false,
 })
 const emits = defineEmits<SelectEmits>()
 
@@ -51,6 +53,13 @@ const searchInputRef = shallowRef<HTMLInputElement>()
 
 const filterKeyword = shallowRef('')
 
+const hasValue = computed(() => {
+  const value = props.modelValue
+
+  return props.multiple ? Array.isArray(value) && value.length > 0 : !isNil(value) && value !== ''
+})
+const showClear = computed(() => props.clearable && hasValue.value && !props.disabled)
+
 const notify = useAgentChange(emits)
 // Resolved from the full options so a selected item that the filter drops still has a label.
 const selectedItems = useSelectedListItems(
@@ -73,11 +82,18 @@ const computedSize = computed(() => props.size || configProvider.size)
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 // Single mode commits on pick and closes; multiple mode stays open and commits `change`
 // once when the popover closes, so a round of toggles is one event.
-const { selected, apply, reset, commit } = useListSelection({
+const {
+  selected,
+  apply,
+  reset,
+  commit,
+  clear: clearSelection,
+} = useListSelection({
   modelValue: () => props.modelValue,
   multiple: () => props.multiple,
   onUpdateModelValue: (value) => emits('update:model-value', value),
   onChange: (value) => notify(value, changeDetailsFor({ reason: 'item-press' })),
+  onClear: (value) => notify(value, changeDetailsFor({ reason: 'cleared' })),
 })
 const { onKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value,
@@ -119,6 +135,11 @@ useAgentNode({
 
 function onSearchInput(ev: Event) {
   filterKeyword.value = (ev.target as HTMLInputElement).value
+}
+
+function clear() {
+  clearSelection()
+  popoverVisible.value = false
 }
 
 function onListUpdate(next: ListModelValue) {
@@ -172,10 +193,10 @@ watch(listOptions, async () => {
     @wrapper-keydown="onKeydown"
   >
     <PButton
-      class="justify-between text-inherit"
+      class="relative justify-between text-inherit"
       align="left"
       full-width
-      :class="{ 'text-gray-600': !translatedLabel }"
+      :class="{ 'text-gray-600': !translatedLabel, 'pe-8': showClear }"
       :variant="variant"
       :shape="shape"
       :size="computedSize"
@@ -197,9 +218,20 @@ watch(listOptions, async () => {
       </template>
 
       <template #suffix>
-        <slot name="suffix">
+        <button
+          v-if="showClear"
+          type="button"
+          data-popover-ignore
+          aria-label="Clear selection"
+          class="pxd-select--clear p-1 end-1.5 absolute cursor-pointer appearance-none rounded-sm font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+          @click.stop.prevent="clear"
+          @pointerdown.prevent
+        >
+          <CrossIcon class="size-3" />
+        </button>
+        <slot v-else name="suffix">
           <ChevronDownIcon
-            v-if="suffixIcon"
+            v-if="suffixIcon && !showClear"
             class="text-sm text-foreground-secondary motion-safe:transition-transform"
             :class="{ 'rotate-180': popoverVisible }"
           />
