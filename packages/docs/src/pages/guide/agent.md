@@ -168,7 +168,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `todo-list` | `start`, `complete`, `cancel`, `reset` |
 | `toggle` | `setValue` |
 | `tour` | `next`, `previous`, `goTo`, `close` |
-| `tree` | `expandKey`, `collapseKey`, `expandAll`, `collapseAll`, `focus` |
+| `tree` | `expandKey`, `collapseKey`, `expandAll`, `collapseAll`, `setActiveKey`, `scrollToKey`, `focus` |
 | `toggle-button-group` | `setValue` |
 
 A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-button-group` — holds no value of its own: `setValue` announces the change and asks for the update, and the value follows only when the app's `v-model` accepts it.

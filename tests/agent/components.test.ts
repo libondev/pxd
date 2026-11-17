@@ -353,7 +353,15 @@ describe('agent components', () => {
     expect(before).toMatchObject({
       label: 'Files',
       expanded: 0,
-      actions: ['expandKey', 'collapseKey', 'expandAll', 'collapseAll', 'focus'],
+      actions: [
+        'expandKey',
+        'collapseKey',
+        'expandAll',
+        'collapseAll',
+        'setActiveKey',
+        'scrollToKey',
+        'focus',
+      ],
     })
 
     const result = await agent.act({ steps: [{ ref: 'Files', action: 'expandAll' }] })

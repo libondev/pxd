@@ -342,6 +342,8 @@ useAgentNode({
     collapseKey: (value) => setExpandedByValue(value, false),
     expandAll,
     collapseAll,
+    setActiveKey,
+    scrollToKey,
     focus: () => containerRef.value?.focus(),
   },
 })
