@@ -12,6 +12,7 @@ import type {
   TreeProps,
 } from './types'
 import { computed, shallowRef, useSlots, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
@@ -329,6 +330,22 @@ const dragNode = computed(() =>
   dragValue.value === undefined ? undefined : index.value.byValue.get(dragValue.value)?.node,
 )
 
+useAgentNode({
+  name: 'tree',
+  el: () => containerRef.value,
+  state: () => ({
+    value: props.modelValue ?? [],
+    expanded: expandedKeys.value.length,
+  }),
+  actions: {
+    expandKey: (value) => setExpandedByValue(value, true),
+    collapseKey: (value) => setExpandedByValue(value, false),
+    expandAll,
+    collapseAll,
+    focus: () => containerRef.value?.focus(),
+  },
+})
+
 function canLoad(value: ComponentValue): boolean {
   if (!props.lazy || !props.load || loadedChildren.value.has(value)) {
     return false
@@ -473,7 +490,6 @@ function toValues(value: TreeModelValue): ComponentValue[] {
 
   return value == null ? [] : [value]
 }
-
 function onCheck(row: TreeFlatNode, event?: MouseEvent): void {
   if (props.disabled || !isSelectable(row.key)) {
     return
@@ -685,7 +701,6 @@ watch(
   },
   { immediate: true },
 )
-
 // `expandAll` on a lazy tree: a level only exists once its parent resolved, so keep opening.
 watch(treeData, () => {
   if (!expandAllPending.value) {

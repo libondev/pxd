@@ -30,6 +30,7 @@ import Textarea from '../../src/components/textarea/index.vue'
 import TimePicker from '../../src/components/time-picker/index.vue'
 import Toggle from '../../src/components/toggle/index.vue'
 import Tour from '../../src/components/tour/index.vue'
+import Tree from '../../src/components/tree/index.vue'
 
 const mounted: { unmount: () => void }[] = []
 
@@ -324,6 +325,34 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'tour')).toMatchObject({ current: 1 })
+  })
+
+  it('should expand a tree', async () => {
+    track(
+      mount(Tree, {
+        props: {
+          data: [
+            { value: 'a', label: 'A', children: [{ value: 'a1', label: 'A1' }] },
+            { value: 'b', label: 'B', children: [{ value: 'b1', label: 'B1' }] },
+          ],
+        },
+        attrs: { 'aria-label': 'Files' },
+      }),
+    )
+    const agent = createAgent()
+
+    const before = find(agent.snapshot(), 'tree')
+
+    expect(before).toMatchObject({
+      label: 'Files',
+      expanded: 0,
+      actions: ['expandKey', 'collapseKey', 'expandAll', 'collapseAll', 'focus'],
+    })
+
+    const result = await agent.act({ steps: [{ ref: 'Files', action: 'expandAll' }] })
+
+    expect(result.ok).toBe(true)
+    expect(find(agent.snapshot(), 'tree').expanded).toBeGreaterThan(0)
   })
 
   it('should set a date', async () => {
