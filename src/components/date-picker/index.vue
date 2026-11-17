@@ -285,7 +285,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     >
       <template #suffix>
         <slot name="suffix">
-          <CalendarIcon v-if="suffixIcon" class="me-3" />
+          <CalendarIcon v-if="suffixIcon" class="me-(--input-ip)" />
         </slot>
       </template>
     </PInput>

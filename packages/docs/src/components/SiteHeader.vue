@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
 
     <nav class="xl:border-r flex h-full items-center">
       <div class="h-full border-l">
-        <PButton variant="ghost" shape="square" class="h-full" @click="openCommandMenu">
+        <PButton variant="ghost" shape="square" class="px-2.5 h-full" @click="openCommandMenu">
           <MagnifyingGlassIcon />
 
           <span class="sm:block ms-1.5 hidden">Search</span>
@@ -126,7 +126,7 @@ onBeforeUnmount(() => {
         <PLinkButton
           variant="ghost"
           shape="square"
-          class="h-full"
+          class="px-2.5 h-full"
           target="_blank"
           :href="githubLink"
         >
@@ -138,7 +138,7 @@ onBeforeUnmount(() => {
 
       <div class="h-full border-l">
         <CustomVariables width="200" position="bottom-end">
-          <PButton variant="ghost" shape="square" class="h-full">
+          <PButton variant="ghost" shape="square" class="px-2.5 h-full">
             <SparklesIcon />
 
             <span class="sm:block ms-1.5 hidden">Customize</span>

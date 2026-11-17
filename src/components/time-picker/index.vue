@@ -300,7 +300,7 @@ onBeforeUnmount(() => {
     >
       <template #suffix>
         <slot name="suffix">
-          <ClockIcon v-if="suffixIcon" class="me-3" />
+          <ClockIcon v-if="suffixIcon" class="me-(--input-ip)" />
         </slot>
       </template>
     </PInput>

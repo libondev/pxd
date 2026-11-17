@@ -60,10 +60,10 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-textarea pxd-input--border relative flex size-full min-h-inherit max-w-full items-center justify-center rounded-md bg-background-100 motion-safe:transition-appearance',
     variants: {
       size: {
-        xs: 'text-xs',
-        sm: 'text-sm',
-        md: 'text-sm',
-        lg: 'text-base',
+        xs: 'text-xs [--input-bp:0.375rem] [--input-ip:0.375rem]',
+        sm: 'text-sm [--input-bp:0.5rem] [--input-ip:0.5rem]',
+        md: 'text-sm [--input-bp:0.625rem] [--input-ip:0.75rem]',
+        lg: 'text-base [--input-bp:0.625rem] [--input-ip:0.75rem]',
       },
       disabled: {
         true: 'is-disabled',
@@ -150,7 +150,7 @@ function onCompositionEnd(event: CompositionEvent) {
       ref="textareaRef"
       :id="uniqueId"
       v-model="modelValue"
-      class="py-2.5 px-3 size-full min-h-inherit resize-none appearance-none rounded-inherit border-none bg-transparent font-inherit outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
+      class="size-full min-h-inherit resize-none appearance-none rounded-inherit border-none bg-transparent px-(--input-ip) py-(--input-bp) font-inherit outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
       :class="nativeTextareaClasses"
       spellcheck="false"
       autocorrect="off"

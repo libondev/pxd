@@ -137,7 +137,7 @@ const inventory = computed(
       <div
         class="px-6 py-4 max-lg:odd:border-s-0 max-md:border-s-0 flex min-h-[74px] items-center border-s border-t first:border-s-0"
       >
-        <PLinkButton shape="rounded" variant="primary" href="/guide/introduction">
+        <PLinkButton shape="rounded" variant="primary" class="px-3" href="/guide/introduction">
           Get Started
 
           <template #suffix>
@@ -149,7 +149,7 @@ const inventory = computed(
       <div
         class="px-6 py-4 max-lg:odd:border-s-0 max-md:border-s-0 flex min-h-[74px] items-center border-s border-t first:border-s-0"
       >
-        <PLinkButton shape="rounded" :href="githubLink" target="_blank" external-icon>
+        <PLinkButton shape="rounded" :href="githubLink" class="px-3" target="_blank" external-icon>
           <template #prefix>
             <IconStarFill />
           </template>

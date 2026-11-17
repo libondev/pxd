@@ -67,10 +67,10 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-appearance',
     variants: {
       size: {
-        xs: `${BASIC_HEIGHTS.xs} text-xs rounded-sm`,
-        sm: `${BASIC_HEIGHTS.sm} text-sm rounded-md`,
-        md: `${BASIC_HEIGHTS.md} text-sm rounded-md`,
-        lg: `${BASIC_HEIGHTS.lg} text-base rounded-lg`,
+        xs: `${BASIC_HEIGHTS.xs} text-xs rounded-sm [--input-ip:0.375rem]`,
+        sm: `${BASIC_HEIGHTS.sm} text-sm rounded-md [--input-ip:0.5rem]`,
+        md: `${BASIC_HEIGHTS.md} text-sm rounded-md [--input-ip:0.75rem]`,
+        lg: `${BASIC_HEIGHTS.lg} text-base rounded-lg [--input-ip:0.75rem]`,
       },
       align: {
         left: 'text-left',
@@ -253,7 +253,7 @@ defineExpose({
       v-if="$slots.prefix"
       class="pxd-input--prefix text-sm flex h-full shrink-0 items-center rounded-l-inherit text-foreground-secondary"
       :class="[
-        { 'px-3 border-r border-gray-300 bg-background-200': defaultPrefixStyle },
+        { 'border-r border-gray-300 bg-background-200 px-(--input-ip)': defaultPrefixStyle },
         prefixClass,
       ]"
       @pointerdown.prevent="NOOP"
@@ -264,7 +264,7 @@ defineExpose({
     <input
       :id="uniqueId"
       ref="inputRef"
-      class="px-3 py-0 file:font-medium size-full appearance-none truncate rounded-none border-none bg-transparent [text-align:inherit] font-inherit outline-none select-auto file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
+      class="py-0 file:font-medium size-full appearance-none truncate rounded-none border-none bg-transparent px-(--input-ip) [text-align:inherit] font-inherit outline-none select-auto file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
       spellcheck="false"
       autocorrect="off"
       autocomplete="off"
@@ -333,7 +333,10 @@ defineExpose({
       v-if="$slots.suffix"
       class="pxd-input--suffix text-sm flex h-full shrink-0 items-center rounded-r-inherit text-foreground-secondary"
       :class="[
-        { 'px-3 rounded-r-inherit border-l border-gray-300 bg-background-200': defaultSuffixStyle },
+        {
+          'rounded-r-inherit border-l border-gray-300 bg-background-200 px-(--input-ip)':
+            defaultSuffixStyle,
+        },
         suffixClass,
       ]"
       @pointerdown.prevent="NOOP"

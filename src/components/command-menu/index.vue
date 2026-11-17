@@ -135,7 +135,7 @@ watch(listOptions, async () => {
     <template #header>
       <label
         :for="uniqueId"
-        class="px-4 py-3 -mx-5 -mbs-5 gap-2 flex items-center border-b bg-background-100"
+        class="px-4 py-2.5 -mx-5 -mbs-5 gap-2 flex items-center border-b bg-background-100"
       >
         <input
           :id="uniqueId"
@@ -152,7 +152,7 @@ watch(listOptions, async () => {
           spellcheck="false"
           type="text"
           name="command-menu-filter-input"
-          class="h-7 flex-1 shrink-0 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
+          class="h-7 text-sm flex-1 shrink-0 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
           @keydown="onListKeydown"
         />
 
