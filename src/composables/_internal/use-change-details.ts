@@ -23,15 +23,49 @@ const INTERACTION_REASONS: ReadonlySet<ChangeReason> = new Set<ChangeReason>([
 // like an agent's tags its changes without every call site naming it.
 let cause: ChangeCause | undefined
 
+// An async action keeps its cause until it settles: a carousel's `next()` only announces its
+// index after the slide transition, and a change emitted afterwards has to know who started it.
 export function withChangeDetails<T>(next: ChangeCause, run: () => T): T {
   const outer = cause
+
   cause = next
 
+  let result: T
+
   try {
-    return run()
-  } finally {
+    result = run()
+  } catch (error) {
+    if (cause === next) {
+      cause = outer
+    }
+
+    throw error
+  }
+
+  if (result && typeof (result as { then?: unknown }).then === 'function') {
+    return (result as unknown as Promise<unknown>).then(
+      (value) => {
+        if (cause === next) {
+          cause = outer
+        }
+
+        return value
+      },
+      (error) => {
+        if (cause === next) {
+          cause = outer
+        }
+
+        throw error
+      },
+    ) as T
+  }
+
+  if (cause === next) {
     cause = outer
   }
+
+  return result
 }
 
 // A step that a person caused cannot be faked: the event is theirs. A step with no event is

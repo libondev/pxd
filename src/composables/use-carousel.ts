@@ -1,3 +1,4 @@
+import type { ChangeReason } from '../types/shared/change'
 import type { ComputedRef, MaybeRefOrGetter, Ref } from 'vue'
 import { computed, onScopeDispose, shallowRef, toValue, watch } from 'vue'
 import { clampValue } from '../utils/format.js'
@@ -32,7 +33,7 @@ export interface CarouselOptions {
    */
   transition?: (move: CarouselMove) => void | Promise<void>
   /** Called after the index is committed. */
-  onChange?: (index: number) => void
+  onChange?: (index: number, reason: ChangeReason) => void
 }
 
 interface Results {
@@ -41,9 +42,9 @@ interface Results {
   isAtLast: ComputedRef<boolean>
   isAutoPlayPaused: Readonly<Ref<boolean>>
   progressKey: Readonly<Ref<number>>
-  next: () => Promise<number | null>
-  prev: () => Promise<number | null>
-  goTo: (index: number) => Promise<number | null>
+  next: (reason?: ChangeReason) => Promise<number | null>
+  prev: (reason?: ChangeReason) => Promise<number | null>
+  goTo: (index: number, reason?: ChangeReason) => Promise<number | null>
   pause: () => void
   resume: () => void
   stop: () => void
@@ -65,9 +66,9 @@ export function useCarousel(options: CarouselOptions = {}): Results {
   const isAtFirst = computed(() => indexRef.value === 0)
   const isAtLast = computed(() => indexRef.value === readCount() - 1)
 
-  function setIndex(value: number): void {
+  function setIndex(value: number, reason: ChangeReason): void {
     indexRef.value = value
-    options.onChange?.(value)
+    options.onChange?.(value, reason)
     restartAutoPlay()
   }
 
@@ -96,7 +97,7 @@ export function useCarousel(options: CarouselOptions = {}): Results {
     return result
   }
 
-  async function step(direction: 1 | -1): Promise<number | null> {
+  async function step(direction: 1 | -1, reason: ChangeReason): Promise<number | null> {
     const count = readCount()
 
     if (count <= 1) {
@@ -124,20 +125,20 @@ export function useCarousel(options: CarouselOptions = {}): Results {
     }
 
     await options.transition?.({ from, to, direction, wrapped })
-    setIndex(to)
+    setIndex(to, reason)
 
     return to
   }
 
-  function next(): Promise<number | null> {
-    return enqueue(() => step(1))
+  function next(reason: ChangeReason = 'item-press'): Promise<number | null> {
+    return enqueue(() => step(1, reason))
   }
 
-  function prev(): Promise<number | null> {
-    return enqueue(() => step(-1))
+  function prev(reason: ChangeReason = 'item-press'): Promise<number | null> {
+    return enqueue(() => step(-1, reason))
   }
 
-  function goTo(target: number): Promise<number | null> {
+  function goTo(target: number, reason: ChangeReason = 'item-press'): Promise<number | null> {
     return enqueue(async () => {
       const count = readCount()
 
@@ -160,7 +161,7 @@ export function useCarousel(options: CarouselOptions = {}): Results {
         direction: to > from ? 1 : -1,
         wrapped: false,
       })
-      setIndex(to)
+      setIndex(to, reason)
 
       return to
     })
@@ -184,7 +185,7 @@ export function useCarousel(options: CarouselOptions = {}): Results {
     timer = setTimeout(
       () => {
         timer = null
-        void next().finally(() => {
+        void next('sync').finally(() => {
           if (timer === null) {
             restartAutoPlay()
           }

@@ -96,7 +96,7 @@ const {
   autoplay: () => props.autoplay,
   interval: () => props.interval,
   transition: animateMove,
-  onChange: (index) => notify(index, changeDetailsFor({ reason: 'sync' })),
+  onChange: (index, reason) => notify(index, changeDetailsFor({ reason })),
 })
 const slots = useSlots()
 
@@ -143,9 +143,9 @@ useAgentNode({
     paused: isAutoPlayPaused.value,
   }),
   actions: {
-    next,
-    previous: prev,
-    goTo,
+    next: () => next('api'),
+    previous: () => prev('api'),
+    goTo: (index) => goTo(Number(index), 'api'),
     play: resume,
     pause,
   },

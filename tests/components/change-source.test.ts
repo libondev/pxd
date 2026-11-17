@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { createAgent } from '../../src/agent'
+import Carousel from '../../src/components/carousel/index.vue'
 import Checkbox from '../../src/components/checkbox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
 import CommandMenu from '../../src/components/command-menu/index.vue'
@@ -231,6 +232,40 @@ describe('change source', () => {
     await nextTick()
 
     expect(wrapper.findComponent(CommandMenu).emitted('close')?.at(-1)?.[0]).toBe('escape-key')
+  })
+
+  it('should name a person who pressed the carousel arrow', async () => {
+    const wrapper = track(
+      mount(Carousel, {
+        props: {
+          autoplay: false,
+          options: [{ label: 'One' }, { label: 'Two' }, { label: 'Three' }],
+        },
+      }),
+    )
+
+    await wrapper.find('[aria-label="Carousel arrow right"]').trigger('click')
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'item-press' })
+  })
+
+  it('should name an agent step that advanced a carousel', async () => {
+    const wrapper = track(
+      mount(Carousel, {
+        props: {
+          autoplay: false,
+          options: [{ label: 'One' }, { label: 'Two' }, { label: 'Three' }],
+        },
+      }),
+    )
+    const agent = createAgent()
+    const entry = agent.snapshot().find((component) => component.component === 'carousel')!
+
+    const result = await agent.act({ steps: [{ ref: entry.ref, action: 'next' }] })
+
+    expect(result.ok).toBe(true)
+    expect(detailsOf(wrapper)).toMatchObject({ source: 'agent', reason: 'api' })
   })
 
   it('should name an agent step that flipped a toggle', async () => {

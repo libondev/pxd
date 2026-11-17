@@ -43,8 +43,8 @@ describe('useCarousel', () => {
     await expect(result.prev()).resolves.toBe(0)
     expect(result.index.value).toBe(0)
     expect(result.isAtFirst.value).toBe(true)
-    expect(onChange).toHaveBeenNthCalledWith(1, 1)
-    expect(onChange).toHaveBeenNthCalledWith(2, 0)
+    expect(onChange).toHaveBeenNthCalledWith(1, 1, 'item-press')
+    expect(onChange).toHaveBeenNthCalledWith(2, 0, 'item-press')
 
     stop()
   })
@@ -108,7 +108,7 @@ describe('useCarousel', () => {
     resolveTransition()
     await expect(pending).resolves.toBe(1)
     expect(result.index.value).toBe(1)
-    expect(onChange).toHaveBeenCalledWith(1)
+    expect(onChange).toHaveBeenCalledWith(1, 'item-press')
 
     stop()
   })
