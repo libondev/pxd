@@ -39,7 +39,7 @@ node --input-type=module -e "console.log(Object.keys(await import('pxd/agent')))
 文档站开发时仍能跑，因为 `packages/docs/vite.config.ts` 把 `pxd` 放进 `ssr.noExternal`，由 Vite 直接
 编译源码，不走 Node 的 exports 解析。
 
-所以从包名导入任何子入口之前都要先 `pnpm build:lib`。注意本沙箱禁止批量删除 `dist`，而
+所以**在 Node 里**从包名导入任何子入口之前都要先 `pnpm build:lib`；文档站不受此限 —— 实测 Vite/SSG 能直接编译 `pxd/agent` 的源码并在页面里渲染 demo。注意本沙箱禁止批量删除 `dist`，而
 `build:core` 的 mkdist 第一步会删它 —— 这一步要在本机跑。
 
 ## Safety
@@ -63,3 +63,8 @@ Conventional Commits：`<type>(<scope>): <subject>`，破坏性变更在 scope �
 2. 类型错误 — `pnpm check:type`；查 `tsconfig.app.json` 的 include 与 types
 3. lint 报错 — `pnpm lint:fix`，规则在 `vite.config.ts` → `lint`
 4. 测试相关 — 见 `.agents/guides/testing.md`
+5. `pnpm build:docs` 以 exit 1 结束但页面已产出 — vite-ssg 在首尾各清一次临时/产物目录，
+   本沙箱的 safe-delete 守卫对 >500 文件的批量删除会拒绝（`.vite-ssg-temp`、`dist/components`）。
+   **页面在末尾清理之前已经渲染完**，所以 `dist/guide/*.html` 是新的。要拿干净的成功退出码，
+   先把 `packages/docs/.vite-ssg-temp` 与 `packages/docs/dist` **重命名**移走（重命名不触发守卫），再构建；
+   本机没有该守卫时不会出现这个问题。

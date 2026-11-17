@@ -12,6 +12,74 @@ const agent = createAgent()
 
 Create one bridge per page, in the browser. Every method reads the components that are mounted at the moment it is called.
 
+## Try it
+
+The three controls below are ordinary `pxd` components. The buttons ask the bridge for its snapshot, drive all three values in one run, and look for a component by one of its choices. Everything the bridge returns is printed underneath.
+
+```vue demo
+<script setup lang="ts">
+import { onMounted, onUnmounted, ref } from 'vue'
+import { createAgent } from 'pxd/agent'
+
+const name = ref('')
+const done = ref(false)
+const view = ref('overview')
+const output = ref('Press a button to see what the bridge returns.')
+const lastChange = ref('')
+
+const agent = createAgent()
+
+let stop: () => void
+
+// Only listen in the browser: a static build renders the page without a DOM to change.
+onMounted(() => {
+  stop = agent.subscribe((change) => {
+    lastChange.value = `${change.component}: ${change.details?.reason ?? 'changed'} (${change.details?.source ?? 'no source'})`
+  })
+})
+
+onUnmounted(() => stop?.())
+
+const views = [
+  { label: 'Overview', value: 'overview' },
+  { label: 'Details', value: 'details' },
+]
+
+function show(value: unknown) {
+  output.value = JSON.stringify(value, null, 2)
+}
+
+async function runSteps() {
+  show(await agent.act({
+    steps: [
+      { ref: 'Project name', action: 'setValue', args: ['Atlas'] },
+      { ref: 'Done', action: 'setValue', args: [true] },
+      { ref: 'Views', action: 'setValue', args: ['details'] },
+    ],
+  }))
+}
+</script>
+
+<template>
+  <div class="flex flex-col gap-4">
+    <PInput v-model="name" aria-label="Project name" />
+    <PCheckbox v-model="done" aria-label="Done" />
+    <PTabs v-model="view" aria-label="Views" :options="views" />
+
+    <div class="flex flex-wrap gap-2">
+      <PButton @click="show(agent.snapshot())">Snapshot</PButton>
+      <PButton @click="runSteps()">Run steps</PButton>
+      <PButton @click="show(agent.query({ text: 'Overview' }))">Query items</PButton>
+    </div>
+
+    <p v-if="lastChange" class="text-sm">Last change: {{ lastChange }}</p>
+    <pre class="max-h-72 overflow-auto rounded-lg bg-background-200 p-4 text-xs">{{ output }}</pre>
+  </div>
+</template>
+```
+
+`query({ text: 'Overview' })` finds the tabs by one of its choices, not by its label — the choices come from the component's own data, so a virtualised list answers the same way. The snapshot lists every `pxd` component on this page, including the ones in the surrounding docs UI: the registry belongs to the page, not to the demo.
+
 ## Snapshot
 
 `snapshot()` returns one entry per component that declares itself to the bridge.
