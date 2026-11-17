@@ -131,6 +131,8 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 
 | Component | Actions |
 | --- | --- |
+| `active-graph` | `setValue` |
+| `calendar` | `setValue`, `selectToday` |
 | `carousel` | `next`, `previous`, `goTo`, `play`, `pause` |
 | `checkbox` | `setValue`, `toggle` |
 | `checkbox-group` | `setValue` |
@@ -156,6 +158,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `scroll-progress` | — |
 | `select` | `setValue`, `setOpen`, `toggle` |
 | `slider` | `setValue` |
+| `split-button` | `setValue` |
 | `steps` | `setValue` |
 | `stick-to-bottom` | `scrollToBottom` |
 | `switch` | `setValue` |

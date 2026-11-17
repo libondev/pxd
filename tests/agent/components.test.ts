@@ -3,7 +3,9 @@ import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import { createAgent } from '../../src/agent'
+import ActiveGraph from '../../src/components/active-graph/index.vue'
 import Button from '../../src/components/button/index.vue'
+import Calendar from '../../src/components/calendar/index.vue'
 import Carousel from '../../src/components/carousel/index.vue'
 import CheckboxGroup from '../../src/components/checkbox-group/index.vue'
 import Choicebox from '../../src/components/choicebox/index.vue'
@@ -26,6 +28,7 @@ import Resizable from '../../src/components/resizable/index.vue'
 import ScrollProgress from '../../src/components/scroll-progress/index.vue'
 import Select from '../../src/components/select/index.vue'
 import Slider from '../../src/components/slider/index.vue'
+import SplitButton from '../../src/components/split-button/index.vue'
 import Steps from '../../src/components/steps/index.vue'
 import StickToBottom from '../../src/components/stick-to-bottom/index.vue'
 import Switch from '../../src/components/switch/index.vue'
@@ -502,6 +505,74 @@ describe('agent components', () => {
 
     expect(allowed.ok).toBe(true)
     expect(removed.value).toBe(true)
+  })
+
+  it('should pick a value in a split button', async () => {
+    const bound = mountBound(
+      SplitButton,
+      {
+        'aria-label': 'Actions',
+        options: [
+          { label: 'Edit', value: 'edit' },
+          { label: 'Delete', value: 'delete' },
+        ],
+      },
+      null,
+    )
+    const agent = createAgent()
+
+    const entry = find(agent.snapshot(), 'split-button')
+
+    expect(entry).toMatchObject({ label: 'Actions', value: null, actions: ['setValue'] })
+
+    const result = await agent.act({
+      steps: [{ ref: entry.ref, action: 'setValue', args: ['delete'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe('delete')
+  })
+
+  it('should pick a date in a calendar', async () => {
+    const bound = mountBound(Calendar, { 'aria-label': 'Due' }, null)
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'calendar')).toMatchObject({
+      label: 'Due',
+      value: null,
+      actions: ['setValue', 'selectToday'],
+    })
+
+    const result = await agent.act({
+      steps: [{ ref: 'Due', action: 'setValue', args: ['2026-11-20'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe('2026-11-20')
+  })
+
+  it('should select a day in an active graph', async () => {
+    track(
+      mount(ActiveGraph, {
+        props: {
+          data: [{ date: '2026-11-10', count: 3 }],
+          startDate: '2026-11-01',
+          endDate: '2026-11-30',
+        },
+        attrs: { 'aria-label': 'Activity' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'active-graph')).toMatchObject({
+      label: 'Activity',
+      selected: '',
+      actions: ['setValue'],
+    })
+
+    await agent.act({ steps: [{ ref: 'Activity', action: 'setValue', args: ['2026-11-10'] }] })
+
+    expect(find(agent.snapshot(), 'active-graph')).toMatchObject({ selected: '2026-11-10' })
   })
 
   it('should set a date', async () => {

@@ -2,6 +2,7 @@
 import type { SplitButtonProps, SplitButtonEmits } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useSelectedListItem } from '../../composables/_internal/use-selected-list-item.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -21,6 +22,16 @@ const selectedItem = useSelectedListItem(() => props.options || [], modelValue)
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
+
+useAgentNode({
+  name: 'split-button',
+  state: () => ({ value: modelValue.value ?? null }),
+  actions: {
+    setValue: (value) => {
+      modelValue.value = value
+    },
+  },
+})
 </script>
 
 <template>

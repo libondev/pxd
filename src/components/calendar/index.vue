@@ -3,7 +3,8 @@ import type { CalendarDay, CalendarEmits, CalendarPanelInfo, CalendarProps } fro
 import ChevronDoubleLeftIcon from '@gdsicon/vue/chevron-double-left'
 import ChevronDoubleRightIcon from '@gdsicon/vue/chevron-double-right'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, shallowRef, watch } from 'vue'
+import { computed, nextTick, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { dayjs } from '../../utils/date.js'
@@ -71,6 +72,45 @@ const configProvider = useConfigProvider()
 const weekDays = computed(() => {
   const days = configProvider.locale.date.day
   return [...days.slice(1), days[0]]
+})
+
+useAgentNode({
+  name: 'calendar',
+  state: () => ({
+    value: selectedValue.value ?? null,
+    month: panelDate.value.format('YYYY-MM'),
+  }),
+  actions: {
+    setValue: async (value) => {
+      const date = dayjs(value as string | number | Date)
+
+      if (!date.isValid()) {
+        return
+      }
+
+      const key = date.format('YYYY-MM-DD')
+      const dayInPanel = () => calendarDays.value.find((day) => day.key === key)
+      const day = dayInPanel()
+
+      if (day) {
+        selectDate(day)
+
+        return
+      }
+
+      // The date is outside the month on show: turn to it, then pick the day the panel built
+      // so its own min/max and disabled rules still decide.
+      setPanelDate(date)
+      await nextTick()
+
+      const moved = dayInPanel()
+
+      if (moved) {
+        selectDate(moved)
+      }
+    },
+    selectToday,
+  },
 })
 
 function emitPanelChange() {

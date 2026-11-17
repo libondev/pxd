@@ -7,6 +7,7 @@ import type {
   ActiveGraphTooltipInfo,
 } from './types'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useDelayChange } from '../../composables/use-delay-change.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -113,6 +114,22 @@ const tableHeadList = computed(() => {
 const tableBodyList = shallowRef<ActiveGraphRowData[]>([])
 
 const configProvider = useConfigProvider()
+useAgentNode({
+  name: 'active-graph',
+  state: () => ({ selected: selectedDate.value ?? '' }),
+  actions: {
+    setValue: (value) => {
+      const next = value == null ? '' : String(value)
+
+      if (next === (selectedDate.value ?? '')) {
+        return
+      }
+
+      selectedDate.value = next
+      emits('change', next, changeDetails())
+    },
+  },
+})
 
 const getDefaultStartDate = () => {
   const date = new Date()
