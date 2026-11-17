@@ -4,6 +4,7 @@ import type { CarouselEmits, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, shallowRef, useSlots } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
 import { useCarousel } from '../../composables/use-carousel.js'
@@ -126,6 +127,21 @@ useSwipeGesture(sliderRef, {
     }
   },
 })
+useAgentNode({
+  name: 'carousel',
+  state: () => ({
+    index: currentIndex.value,
+    count: slideCount.value,
+    paused: isAutoPlayPaused.value,
+  }),
+  actions: {
+    next,
+    previous: prev,
+    goTo,
+    play: resume,
+    pause,
+  },
+})
 
 async function animateMove(move: CarouselMove) {
   const el = sliderRef.value
@@ -155,7 +171,6 @@ async function animateMove(move: CarouselMove) {
   void el.offsetHeight
   el.style.transition = ''
 }
-
 function onWheelToggle(ev: WheelEvent) {
   if (!props.toggleOnWheel) {
     return

@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import { createAgent } from '../../src/agent'
 import Button from '../../src/components/button/index.vue'
+import Carousel from '../../src/components/carousel/index.vue'
 import CheckboxGroup from '../../src/components/checkbox-group/index.vue'
 import Choicebox from '../../src/components/choicebox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
@@ -28,6 +29,7 @@ import Switch from '../../src/components/switch/index.vue'
 import Textarea from '../../src/components/textarea/index.vue'
 import TimePicker from '../../src/components/time-picker/index.vue'
 import Toggle from '../../src/components/toggle/index.vue'
+import Tour from '../../src/components/tour/index.vue'
 
 const mounted: { unmount: () => void }[] = []
 
@@ -273,6 +275,55 @@ describe('agent components', () => {
       label: 'Thread',
       actions: ['scrollToBottom'],
     })
+  })
+
+  it('should move a carousel', async () => {
+    track(
+      mount(Carousel, {
+        props: { options: [{ label: 'One' }, { label: 'Two' }, { label: 'Three' }] },
+        attrs: { 'aria-label': 'Slides' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'carousel')).toMatchObject({
+      label: 'Slides',
+      index: 0,
+      count: 3,
+      actions: ['next', 'previous', 'goTo', 'play', 'pause'],
+    })
+
+    await agent.act({ steps: [{ ref: 'Slides', action: 'goTo', args: [2] }] })
+
+    expect(find(agent.snapshot(), 'carousel')).toMatchObject({ index: 2 })
+  })
+
+  it('should move a tour', async () => {
+    track(
+      mount(Tour, {
+        props: {
+          current: 0,
+          steps: [{ title: 'One' }, { title: 'Two' }, { title: 'Three' }],
+        },
+        attrs: { 'aria-label': 'Onboarding' },
+      }),
+    )
+    const agent = createAgent()
+
+    const entry = find(agent.snapshot(), 'tour')
+
+    expect(entry).toMatchObject({
+      current: 0,
+      total: 3,
+      actions: ['next', 'previous', 'goTo', 'close'],
+    })
+
+    const result = await agent.act({
+      steps: [{ ref: entry.ref, action: 'goTo', args: [1] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(find(agent.snapshot(), 'tour')).toMatchObject({ current: 1 })
   })
 
   it('should set a date', async () => {

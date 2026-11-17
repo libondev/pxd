@@ -2,6 +2,7 @@
 import type { TourEmits, TourProps } from './types'
 import type { CSSProperties } from 'vue'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useTourTarget } from '../../composables/_internal/use-tour-target.js'
 import { useMotionReduced } from '../../composables/use-motion-reduce.js'
@@ -81,6 +82,17 @@ const maskStyle = computed<CSSProperties>(() => {
     height: `${rect.value.height}px`,
     borderRadius: targetRadius.value || '0px',
   }
+})
+
+useAgentNode({
+  name: 'tour',
+  state: () => ({ current: localCurrent.value, total: props.steps.length }),
+  actions: {
+    next,
+    previous: prev,
+    goTo: goToStep,
+    close,
+  },
 })
 
 function normalizeCurrent(index: number) {
