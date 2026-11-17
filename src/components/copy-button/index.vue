@@ -2,6 +2,7 @@
 import type { CopyButtonProps, CopyButtonEmits } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import CopyIcon from '@gdsicon/vue/copy'
+import { useSlots, computed } from 'vue'
 import { useCopyClick } from '../../composables/use-copy-click.js'
 import PButton from '../button/index.vue'
 
@@ -13,10 +14,16 @@ defineOptions({
 const props = defineProps<CopyButtonProps>()
 const emits = defineEmits<CopyButtonEmits>()
 
+const slots = useSlots()
+
+const iconShape = computed(() => {
+  return !slots.prefix && !slots.suffix
+})
+
 const { isCopied, copyText } = useCopyClick()
 
 async function onCopyClick(ev: PointerEvent) {
-  const text = `${(typeof props.text === 'function' ? props.text(ev) : props.text) ?? ''}`
+  const text = `${(typeof props.content === 'function' ? props.content(ev) : props.content) ?? ''}`
 
   try {
     await copyText(text)
@@ -28,16 +35,32 @@ async function onCopyClick(ev: PointerEvent) {
 </script>
 
 <template>
-  <PButton data-copy-button class="pxd-copy-button" v-bind="$attrs" @click="onCopyClick">
-    <slot v-if="$slots.default" :copied="isCopied" />
+  <PButton
+    data-copy-button
+    class="pxd-copy-button"
+    v-bind="$attrs"
+    :icon="iconShape"
+    @click="onCopyClick"
+  >
+    <template #prefix>
+      <span class="shrink-0">
+        <slot name="prefix" :copied="isCopied" />
+      </span>
+    </template>
 
     <Transition
       name="pxd-transition--fade-scale"
       mode="out-in"
-      class="pxd-copy-button--icon not-first:ms-1.5"
+      class="pxd-copy-button--icon shrink-0"
     >
       <CheckIcon v-if="isCopied" />
       <CopyIcon v-else />
     </Transition>
+
+    <template #suffix>
+      <span class="shrink-0">
+        <slot name="suffix" :copied="isCopied" />
+      </span>
+    </template>
   </PButton>
 </template>

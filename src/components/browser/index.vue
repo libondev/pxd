@@ -46,7 +46,7 @@ const SLOT_CLASS = 'gap-4 min-w-0 flex flex-1 items-center justify-center'
             {{ address }}
           </div>
 
-          <PCopyButton variant="ghost" size="xs" shape="rounded" :text="address" icon />
+          <PCopyButton variant="ghost" size="xs" shape="rounded" :content="address" />
         </div>
       </div>
 

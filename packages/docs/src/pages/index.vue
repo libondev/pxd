@@ -161,11 +161,11 @@ const inventory = computed(
         <PCopyButton
           aria-label="Copy AI prompt"
           size="sm"
-          class="-ml-3 pr-2.5"
+          class="-ms-3"
           variant="ghost"
-          :text="AGENT_INSTALL_PROMPT"
+          :content="AGENT_INSTALL_PROMPT"
         >
-          Copy AI prompt
+          <template #prefix> Copy AI prompt </template>
         </PCopyButton>
       </div>
     </section>

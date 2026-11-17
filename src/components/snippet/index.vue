@@ -22,6 +22,7 @@ const emits = defineEmits<SnippetEmits>()
 
 const computedTextList = computed(() => toArray(props.text))
 const copyText = computed(() => computedTextList.value.join('\n'))
+const computedSize = computed(() => props.size || configProvider.size)
 
 const configProvider = useConfigProvider()
 const { attrs, classes } = useTailwindVariant(
@@ -29,8 +30,8 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-snippet ps-3 pe-1 gap-4 group/snippet relative flex items-center rounded-lg border tabular-nums',
     variants: {
       size: {
-        sm: `${BASIC_MIN_HEIGHTS.sm} py-2 pe-0.75 text-xs`,
-        md: `${BASIC_MIN_HEIGHTS.md} py-2.5 pe-1 text-sm`,
+        sm: `${BASIC_MIN_HEIGHTS.sm} py-2.5 pe-1 text-xs`,
+        md: `${BASIC_MIN_HEIGHTS.md} py-2.5 pe-1.25 text-sm`,
         lg: `${BASIC_MIN_HEIGHTS.lg} py-3 pe-2 text-base`,
       },
       variant: {
@@ -50,7 +51,7 @@ const { attrs, classes } = useTailwindVariant(
   },
   {
     selection: () => ({
-      size: props.size || configProvider.size,
+      size: computedSize.value,
       variant: props.variant,
       prompt: isTruthyProp(props.prompt),
     }),
@@ -86,10 +87,9 @@ function onError(error: unknown) {
       }"
     >
       <PCopyButton
-        size="sm"
-        icon
+        size="xs"
         variant="ghost"
-        :text="copyText"
+        :content="copyText"
         class="right-0 p-1.5 absolute top-1/2 -translate-y-1/2 text-inherit"
         @copy="onCopy"
         @error="onError"

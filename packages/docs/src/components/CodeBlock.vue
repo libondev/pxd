@@ -34,9 +34,8 @@ function getCopyText(ev: PointerEvent) {
 
         <PCopyButton
           class="top-3 right-4 absolute active:scale-95"
-          icon
           size="sm"
-          :text="getCopyText"
+          :content="getCopyText"
         />
       </div>
     </details>

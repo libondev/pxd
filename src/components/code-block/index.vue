@@ -299,10 +299,9 @@ onUnmounted(() => {
 
         <PCopyButton
           v-if="copyBtn !== 'hidden'"
-          icon
           size="xs"
           variant="ghost"
-          :text="code"
+          :content="code"
           @copy="onCopy"
         />
       </div>
@@ -367,7 +366,7 @@ onUnmounted(() => {
           class="end-3.5 top-2 max-sm:opacity-100 absolute focus-within:opacity-100 motion-safe:transition-opacity"
           :class="{ 'opacity-0 group-hover/code-block:opacity-100': copyBtn === 'hover' }"
         >
-          <PCopyButton icon size="sm" variant="ghost" :text="code" @copy="onCopy" />
+          <PCopyButton size="sm" variant="ghost" :content="code" @copy="onCopy" />
         </div>
       </div>
 

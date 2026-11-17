@@ -8,7 +8,7 @@ CopyButton extends the [Button component](/components/button).
 
 ```vue demo
 <template>
-  <PCopyButton text="lorem" icon />
+  <PCopyButton content="lorem" />
 </template>
 ```
 
@@ -17,12 +17,12 @@ CopyButton extends the [Button component](/components/button).
 ```vue demo
 <template>
   <PStack>
-    <PCopyButton icon text="lorem" variant="default" />
-    <PCopyButton icon text="lorem" variant="primary" />
-    <PCopyButton icon text="lorem" variant="success" />
-    <PCopyButton icon text="lorem" variant="warning" />
-    <PCopyButton icon text="lorem" variant="error" />
-    <PCopyButton icon text="lorem" variant="ghost" />
+    <PCopyButton content="lorem" variant="default" />
+    <PCopyButton content="lorem" variant="primary" />
+    <PCopyButton content="lorem" variant="success" />
+    <PCopyButton content="lorem" variant="warning" />
+    <PCopyButton content="lorem" variant="error" />
+    <PCopyButton content="lorem" variant="ghost" />
   </PStack>
 </template>
 ```
@@ -31,7 +31,7 @@ CopyButton extends the [Button component](/components/button).
 
 ```vue demo
 <template>
-  <PCopyButton text="lorem" variant="default">
+  <PCopyButton content="lorem" variant="default">
     <span>
       Click to copy
     </span>
@@ -43,11 +43,11 @@ CopyButton extends the [Button component](/components/button).
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| text | `ComponentText \| ((event: PointerEvent) => ComponentText)` | - | Text to copy, or a function that receives the click event |
+| content | `ComponentText \| ((event: PointerEvent) => ComponentText)` | - | Text to copy, or a function that receives the click event |
 
 ## Events
 
 | Name | Type | Description |
 | --- | --- | --- |
-| copy | `(text: string, event: PointerEvent) => void` | Emitted after the text has been copied to the clipboard. |
+| copy | `(content: string, event: PointerEvent) => void` | Emitted after the text has been copied to the clipboard. |
 | error | `(error: unknown, event: PointerEvent) => void` | Emitted when copying fails after both the Clipboard API and the fallback failed. |
