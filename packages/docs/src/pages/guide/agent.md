@@ -27,7 +27,7 @@ agent.snapshot()
 
 - `ref` names the component in a step, and stays the same while the component stays mounted.
 - `label` is the name a person reads for it, from `aria-label`, `aria-labelledby` or its `<label>`.
-- The state keys after `label` are the component's own, like `value`, `checked` or `disabled`.
+- The state keys after `label` are the component's own, like `value`, `checked` or `disabled`. A key that would collide with the bridge's — `ref`, `component`, `label`, `actions`, `buttons`, `items`, `confirm` — is dropped rather than allowed to overwrite them.
 - `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`. A list longer than 100 stops there and reports `itemCount`. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen.
 - `buttons` lists the name of each button inside it — its accessible name, so an icon-only button carrying `aria-label` is listed and pressable too.
 - `actions` lists what can be called right now.
@@ -86,7 +86,7 @@ const stop = agent.subscribe((change) => {
 | details | The `ChangeDetails` the event carried, including `canceled` once a handler has refused it. |
 
 - A change a step made arrives with `details.source === 'agent'`, so one log line tells a person from an agent.
-- A region marked `data-agent-hidden` stays silent, like it does in `snapshot`.
+- Only the component a snapshot shows reports: an inner field whose wrapper owns the same element stays silent, and the wrapper announces the change it took from it. A region marked `data-agent-hidden` says nothing at all.
 - `stop()` ends the subscription. A bridge nobody subscribed to builds no report at all.
 
 ## Query

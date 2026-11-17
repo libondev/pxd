@@ -50,6 +50,20 @@ export function agentLabel(node: AgentNode): string | undefined {
   return node.label?.() || accessibleName(node.el())
 }
 
+// The entry a change should be reported under: a wrapper that renders another registered
+// component's own root holds that element too, and the wrapper is the one a person reads.
+export function agentOwnerEntry(entry: AgentEntry): AgentEntry {
+  const el = entry.node.el()
+
+  if (!el) {
+    return entry
+  }
+
+  const same = agentEntries().filter((other) => other.order > entry.order && other.node.el() === el)
+
+  return same[same.length - 1] ?? entry
+}
+
 // A wrapper that renders another registered component's own root, like a number input
 // over a text field, reports that element twice; the wrapper is the one a person reads.
 export function agentVisibleEntries(): AgentEntry[] {

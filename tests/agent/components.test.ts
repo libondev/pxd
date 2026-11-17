@@ -1007,6 +1007,22 @@ describe('agent components', () => {
     expect(bound.value).toBe('grid')
   })
 
+  it('should report an inner change under the wrapper that owns it', async () => {
+    const wrapper = track(mount(NumberInput, { attrs: { 'aria-label': 'Count' } }))
+    const agent = createAgent()
+    const seen: AgentChange[] = []
+
+    agent.subscribe((change) => seen.push(change))
+
+    const input = wrapper.find('input')
+
+    input.element.value = '7'
+    input.element.dispatchEvent(new Event('change'))
+
+    expect(seen).toHaveLength(1)
+    expect(seen[0]).toMatchObject({ component: 'number-input', label: 'Count' })
+  })
+
   it('should set a date', async () => {
     const bound = mountBound(DatePicker, { 'aria-label': 'Due' }, '')
     const agent = createAgent()
