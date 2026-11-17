@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ScrollProgressEmits, ScrollProgressProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import {
@@ -39,6 +40,12 @@ const percentage = computed(() => {
 const scrollElement = shallowRef<HTMLElement | null>(null)
 
 useResizeObserver(() => scrollElement.value, scheduleUpdate)
+
+useAgentNode({
+  name: 'scroll-progress',
+  state: () => ({ percentage: percentage.value }),
+  actions: {},
+})
 
 function update() {
   const el = scrollElement.value

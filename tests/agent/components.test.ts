@@ -19,9 +19,11 @@ import PinInput from '../../src/components/pin-input/index.vue'
 import RadioGroup from '../../src/components/radio-group/index.vue'
 import Rating from '../../src/components/rating/index.vue'
 import Resizable from '../../src/components/resizable/index.vue'
+import ScrollProgress from '../../src/components/scroll-progress/index.vue'
 import Select from '../../src/components/select/index.vue'
 import Slider from '../../src/components/slider/index.vue'
 import Steps from '../../src/components/steps/index.vue'
+import StickToBottom from '../../src/components/stick-to-bottom/index.vue'
 import Switch from '../../src/components/switch/index.vue'
 import Textarea from '../../src/components/textarea/index.vue'
 import TimePicker from '../../src/components/time-picker/index.vue'
@@ -245,6 +247,32 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'resizable')).toMatchObject({ value: [60, 40] })
+  })
+
+  it('should report a scroll indicator with nothing to call', () => {
+    track(mount(ScrollProgress, { attrs: { 'aria-label': 'Read' } }))
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'scroll-progress')).toMatchObject({
+      label: 'Read',
+      percentage: 0,
+      actions: [],
+    })
+  })
+
+  it('should offer scrollToBottom on a stick-to-bottom container', () => {
+    track(
+      mount(StickToBottom, {
+        attrs: { 'aria-label': 'Thread' },
+        slots: { default: 'Messages' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'stick-to-bottom')).toMatchObject({
+      label: 'Thread',
+      actions: ['scrollToBottom'],
+    })
   })
 
   it('should set a date', async () => {

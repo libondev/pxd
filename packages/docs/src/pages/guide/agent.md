@@ -127,9 +127,11 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `radio-group` | `setValue` |
 | `rating` | `setValue` |
 | `resizable` | `setValue` |
+| `scroll-progress` | — |
 | `select` | `setValue`, `setOpen`, `toggle` |
 | `slider` | `setValue` |
 | `steps` | `setValue` |
+| `stick-to-bottom` | `scrollToBottom` |
 | `switch` | `setValue` |
 | `tabs` | `setValue` |
 | `textarea` | `setValue`, `focus`, `blur` |
@@ -140,6 +142,8 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-button-group` — holds no value of its own: `setValue` announces the change and asks for the update, and the value follows only when the app's `v-model` accepts it.
 
 `steps` moves only where the app marks it `clickable`, the same as a click. Its `value` is the current step's index.
+
+`scroll-progress` reports its percentage and offers no action: a reading some other component's scroll produces, listed so an agent can see it.
 
 A dialog renders nothing while it is closed, so it reports no `label` until it opens. A step reaches it by `ref`, opens it, and every later step can use the title as its name.
 

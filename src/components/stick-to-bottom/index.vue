@@ -2,6 +2,7 @@
 import type { StickToBottomEmits, StickToBottomProps } from './types'
 import { cn } from 'cn'
 import { computed, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useStickToBottom } from '../../composables/use-stick-to-bottom.js'
 
@@ -37,6 +38,14 @@ const { isAtBottom, scrollToBottom, forceStickToBottom, stickIfNeeded, update } 
     action: actionRef,
   },
 )
+
+useAgentNode({
+  name: 'stick-to-bottom',
+  state: () => ({ atBottom: isAtBottom.value }),
+  actions: {
+    scrollToBottom,
+  },
+})
 
 watch(
   () => isAtBottom.value,
