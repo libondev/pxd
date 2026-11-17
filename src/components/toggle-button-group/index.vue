@@ -3,7 +3,7 @@ import type { ToggleButtonGroupProps, ToggleButtonGroupEmits } from './types'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
+import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { provideToggleButtonGroupContext } from '../../contexts/toggle-button.js'
@@ -50,7 +50,7 @@ useAgentNode({
   state: () => ({ value: props.modelValue ?? null }),
   actions: {
     setValue: (value) => {
-      const details = cancelableChangeDetails()
+      const details = cancelableChangeDetailsFor({ reason: 'api' })
 
       notify(value, details)
 

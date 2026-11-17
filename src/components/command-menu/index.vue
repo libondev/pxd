@@ -74,6 +74,7 @@ useAgentNode({
 
 function onDialogClose(reason: ChangeReason) {
   closeReason = reason
+  emits('close', reason)
 }
 
 function onModelUpdate(open: boolean) {
@@ -96,6 +97,7 @@ function showModal() {
 }
 
 function closeModal(reason: ChangeReason = 'close-press') {
+  emits('close', reason)
   change(false, { reason })
 }
 

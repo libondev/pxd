@@ -6,7 +6,7 @@ import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
+import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import { flattenListOptions } from '../../composables/_internal/use-list-rows.js'
@@ -122,7 +122,7 @@ useAgentNode({
         return
       }
 
-      const details = cancelableChangeDetails()
+      const details = cancelableChangeDetailsFor({ reason: 'api' })
 
       for (const option of options) {
         notify(toSelectedOption(option), details)

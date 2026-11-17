@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
+import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { provideSwitchContext } from '../../contexts/switch.js'
@@ -40,7 +40,7 @@ useAgentNode({
   state: () => ({ value: props.modelValue ?? null }),
   actions: {
     setValue: (value) => {
-      const details = cancelableChangeDetails()
+      const details = cancelableChangeDetailsFor({ reason: 'api' })
 
       notify(value, details)
 

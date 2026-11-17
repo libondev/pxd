@@ -147,7 +147,7 @@ function onChange(value: string, details: ChangeDetails) {
 
 `source` is worked out, not declared: a step the bridge runs names itself, a write that carries the event behind it can only be a person's, and a write with no event is a person's only when its reason is an interaction (`'typed'`, `'item-press'`, …) — otherwise the call has to say `'programmatic'`, or the change reports no source at all. A write that says nothing claims nothing.
 
-Every component that reports a value now writes through that entry, so a person's change carries `source: 'user'` and a reason like `'typed'` or `'item-press'`. A dialog says which of the three ways it closed: `'close-press'` for its button, `'escape-key'` for Escape, `'outside-press'` for a click outside. The table below is what a handler can rely on; where a component has no event to hand — a clear button calling `clear()` — the reason still says a person did it.
+Every component that reports a value now writes through that entry, so a person's change carries `source: 'user'` and a reason like `'typed'` or `'item-press'`. A dialog says which of the three ways it closed — `'close-press'` for its button, `'escape-key'` for Escape, `'outside-press'` for a click outside — and a command menu repeats that reason on its own `close` event. The table below is what a handler can rely on; where a component has no event to hand — a clear button calling `clear()` — the reason still says a person did it.
 
 A change the component commits, like a field on blur or a slider once the drag ends, carries no `cancel` — the value has already been applied.
 

@@ -90,7 +90,7 @@ describe('agent', () => {
     const change = page.checkbox.findComponent(Checkbox).emitted('change')?.[0]
 
     expect(change?.[0]).toBe(true)
-    expect(change?.[1]).toMatchObject({ source: 'agent' })
+    expect(change?.[1]).toMatchObject({ source: 'agent', reason: 'api' })
     expect(find(agent.snapshot(), 'checkbox')).toMatchObject({ checked: true })
   })
 

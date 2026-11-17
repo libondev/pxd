@@ -3,7 +3,7 @@ import type { ChoiceboxEmits, ChoiceboxProps } from './types'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
+import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { provideChoiceboxContext } from '../../contexts/choicebox.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PChoiceboxItem from '../choicebox-item/index.vue'
@@ -24,7 +24,7 @@ useAgentNode({
   state: () => ({ value: props.modelValue ?? (props.multiple ? [] : null) }),
   actions: {
     setValue: (value) => {
-      const details = cancelableChangeDetails()
+      const details = cancelableChangeDetailsFor({ reason: 'api' })
 
       notify(value, details)
 

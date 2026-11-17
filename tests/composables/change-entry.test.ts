@@ -88,6 +88,17 @@ describe('change entry', () => {
     expect(unlisted, 'pass { reason } to commit(value, at)').toEqual([])
   })
 
+  it('should not announce a change without a reason', () => {
+    const offenders = read()
+      .filter((source) => /(?:cancelable)?[cC]hangeDetails\(\)/.test(source.text))
+      .map((source) => source.name)
+
+    expect(
+      offenders,
+      'use changeDetailsFor({ reason }) or cancelableChangeDetailsFor({ reason })',
+    ).toEqual([])
+  })
+
   it('should not let a template write past the entry', () => {
     const offenders = read()
       .filter((source) => source.text.includes('useModelValue('))

@@ -106,7 +106,8 @@ function search(query) {
 | Name | Type | Description |
 | --- | --- | --- |
 | update:model-value | `(value: boolean) => void` | Emitted when the open state of the menu changes. |
-| change | `(value: boolean, details: ChangeDetails) => void` | Emitted together with `update:model-value` when the open state of the menu changes. |
+| close | `(reason: ChangeReason) => void` | Emitted before the menu closes, saying why: `'escape-key'`, `'outside-press'`, `'close-press'` from the dialog, or `'item-press'` when an item was picked. |
+| change | `(value: boolean, details: ChangeDetails) => void` | Emitted together with `update:model-value` when the open state of the menu changes, with the same reason in `details.reason`. |
 | show | `() => void` | Emitted when the menu opens. |
 | hide | `() => void` | Emitted when the menu closes. |
 

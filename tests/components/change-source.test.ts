@@ -5,6 +5,7 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { createAgent } from '../../src/agent'
 import Checkbox from '../../src/components/checkbox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
+import CommandMenu from '../../src/components/command-menu/index.vue'
 import Input from '../../src/components/input/index.vue'
 import Modal from '../../src/components/modal/index.vue'
 import Radio from '../../src/components/radio/index.vue'
@@ -207,6 +208,29 @@ describe('change source', () => {
       source: 'user',
       reason: 'escape-key',
     })
+  })
+
+  it('should tell the caller why a command menu closed', async () => {
+    const open = ref(true)
+    const wrapper = track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(CommandMenu, {
+              modelValue: open.value,
+              options: [{ label: 'Edit', value: 'edit' }],
+              'onUpdate:model-value': (next: unknown) => {
+                open.value = Boolean(next)
+              },
+            }),
+        }),
+      ),
+    )
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await nextTick()
+
+    expect(wrapper.findComponent(CommandMenu).emitted('close')?.at(-1)?.[0]).toBe('escape-key')
   })
 
   it('should name an agent step that flipped a toggle', async () => {

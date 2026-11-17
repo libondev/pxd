@@ -3,7 +3,7 @@ import type { CheckboxGroupEmits, CheckboxGroupProps } from './types'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
+import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { provideCheckboxGroupContext } from '../../contexts/checkbox.js'
 import PCheckbox from '../checkbox/index.vue'
 import PStack from '../stack/index.vue'
@@ -27,7 +27,7 @@ useAgentNode({
   state: () => ({ value: props.modelValue ?? [] }),
   actions: {
     setValue: (value) => {
-      const details = cancelableChangeDetails()
+      const details = cancelableChangeDetailsFor({ reason: 'api' })
 
       notify(value, details)
 
