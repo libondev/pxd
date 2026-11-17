@@ -44,7 +44,7 @@ const btnContentClasses = computed(() => {
   }[internalAlign || buttonGroupContext?.props.align || 'center']
 
   return {
-    'not-first:ps-1 not-last:pe-1 only:px-1': !icon,
+    'not-first:ps-1.5 not-last:pe-1.5': !icon,
     [alignClasses]: true,
   }
 })
@@ -55,10 +55,10 @@ const { attrs, classes } = useTailwindVariant(
     variants: {
       size: {
         xxs: `${BASIC_HEIGHTS.xxs} px-0.5 rounded-sm text-[0.6875rem]`,
-        xs: `${BASIC_HEIGHTS.xs} px-0.5 text-xs rounded-sm`,
-        sm: `${BASIC_HEIGHTS.sm} px-1 text-sm rounded-md`,
-        md: `${BASIC_HEIGHTS.md} px-2 text-sm rounded-md`,
-        lg: `${BASIC_HEIGHTS.lg} px-3 text-base rounded-lg`,
+        xs: `${BASIC_HEIGHTS.xs} px-1 text-xs rounded-sm`,
+        sm: `${BASIC_HEIGHTS.sm} px-2 text-sm rounded-md`,
+        md: `${BASIC_HEIGHTS.md} px-3 text-sm rounded-md`,
+        lg: `${BASIC_HEIGHTS.lg} px-4 text-base rounded-lg`,
       },
       shape: {
         square: 'rounded-none',
@@ -138,10 +138,7 @@ useAgentNode({
     <PSpinner v-if="loading" />
     <slot v-else name="prefix" />
 
-    <span
-      class="min-w-0 flex flex-1 items-center whitespace-nowrap empty:hidden"
-      :class="btnContentClasses"
-    >
+    <span class="min-w-0 flex flex-1 items-center whitespace-nowrap" :class="btnContentClasses">
       <slot />
     </span>
 
