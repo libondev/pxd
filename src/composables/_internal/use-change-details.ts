@@ -42,19 +42,3 @@ export function cancelableChangeDetails(reason?: string): ChangeDetails {
     },
   }
 }
-
-// Announces a change and, unless a handler refused it, the update that carries it. A group
-// holds no value of its own — its items write through it — so it writes nothing either.
-export function emitChange<E extends (event: any, ...args: any[]) => void>(
-  emits: E,
-  value: unknown,
-) {
-  const details = cancelableChangeDetails()
-  emits('change', value, details)
-
-  if (details.canceled) {
-    return
-  }
-
-  emits('update:model-value', value)
-}

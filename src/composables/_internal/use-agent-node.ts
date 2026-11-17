@@ -18,7 +18,7 @@ export function useAgentNode(node: AgentNodeOptions) {
   let unregister: (() => void) | undefined
 
   onMounted(() => {
-    unregister = registerAgentNode({ ...node, el })
+    unregister = registerAgentNode({ ...node, el }, instance ?? undefined)
   })
 
   onScopeDispose(() => {

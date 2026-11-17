@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Reaction, ReactionsEmits, ReactionsProps } from './types'
 import { computed, shallowRef } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { getUniqueId } from '../../utils/helper.js'
@@ -26,6 +27,7 @@ const visible = shallowRef(false)
 
 const reactions = computed(() => props.modelValue)
 
+const notify = useAgentChange(emits)
 useAgentNode({
   name: 'reactions',
   state: () => ({
@@ -45,7 +47,7 @@ function commit(next: Reaction[], action: 'add' | 'remove', emoji: string) {
     emits('remove', emoji)
   }
 
-  emits('change', next, changeDetails())
+  notify(next, changeDetails())
   emits('update:model-value', next)
 }
 

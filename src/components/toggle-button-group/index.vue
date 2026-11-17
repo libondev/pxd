@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { ToggleButtonGroupProps, ToggleButtonGroupEmits } from './types'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { emitChange } from '../../composables/_internal/use-change-details.js'
+import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { provideToggleButtonGroupContext } from '../../contexts/toggle-button.js'
@@ -20,6 +21,7 @@ const props = withDefaults(defineProps<ToggleButtonGroupProps>(), {
   modelValue: () => [],
 })
 const emits = defineEmits<ToggleButtonGroupEmits>()
+const notify = useAgentChange(emits)
 
 const configProvider = useConfigProvider()
 
@@ -45,7 +47,15 @@ useAgentNode({
   name: 'toggle-button-group',
   state: () => ({ value: props.modelValue ?? null }),
   actions: {
-    setValue: (value) => emitChange(emits, value),
+    setValue: (value) => {
+      const details = cancelableChangeDetails()
+
+      notify(value, details)
+
+      if (!details.canceled) {
+        emits('update:model-value', value)
+      }
+    },
   },
 })
 

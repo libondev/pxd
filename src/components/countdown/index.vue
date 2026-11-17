@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { CountdownEmits, CountdownProps } from './types'
 import { computed } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useCountdown } from '../../composables/use-countdown.js'
@@ -21,6 +22,7 @@ const props = withDefaults(defineProps<CountdownProps>(), {
 })
 
 const emits = defineEmits<CountdownEmits>()
+const notify = useAgentChange(emits)
 
 dayjs.extend(dayjsDurationPlugin)
 dayjs.extend(dayjsMillisecondTokenPlugin)
@@ -34,7 +36,7 @@ const { reset, timestamp } = useCountdown({
   duration: () => props.duration,
   millisecond: () => props.millisecond,
   intuitive: () => props.intuitive,
-  onChange: (enabled) => emits('change', enabled, changeDetails()),
+  onChange: (enabled) => notify(enabled, changeDetails()),
   onReset: () => emits('reset'),
   onFinish: () => emits('finish'),
 })

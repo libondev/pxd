@@ -7,6 +7,7 @@ import type {
   ActiveGraphTooltipInfo,
 } from './types'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useDelayChange } from '../../composables/use-delay-change.js'
@@ -113,6 +114,7 @@ const tableHeadList = computed(() => {
 })
 const tableBodyList = shallowRef<ActiveGraphRowData[]>([])
 
+const notify = useAgentChange(emits)
 const configProvider = useConfigProvider()
 useAgentNode({
   name: 'active-graph',
@@ -126,7 +128,7 @@ useAgentNode({
       }
 
       selectedDate.value = next
-      emits('change', next, changeDetails())
+      notify(next, changeDetails())
     },
   },
 })
@@ -417,7 +419,7 @@ function onCellClick(event: MouseEvent) {
 
   selectedDate.value = selectedDate.value === date ? '' : date
 
-  emits('change', date, changeDetails())
+  notify(date, changeDetails())
 }
 // when pointer leaves the table area, hide the tooltip
 function onPointerLeave() {

@@ -1,3 +1,4 @@
+import type { AgentChange } from '../../src/agent'
 import type { Component } from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
@@ -633,6 +634,93 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'approval-card')).toMatchObject({ status: 'approved' })
+  })
+
+  it('should tell a subscriber who changed what', async () => {
+    const value = ref('')
+    const wrapper = track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(Input, {
+              modelValue: value.value,
+              'aria-label': 'Project name',
+              'onUpdate:model-value': (next: unknown) => {
+                value.value = next == null ? '' : String(next as string | number)
+              },
+            }),
+        }),
+      ),
+    )
+    const agent = createAgent()
+    const seen: AgentChange[] = []
+    const stop = agent.subscribe((change) => seen.push(change))
+
+    await agent.act({
+      steps: [{ ref: 'Project name', action: 'setValue', args: ['Atlas'] }],
+    })
+
+    expect(seen).toHaveLength(1)
+    expect(seen[0]).toMatchObject({
+      component: 'input',
+      label: 'Project name',
+      value: 'Atlas',
+    })
+    expect(seen[0].details?.source).toBe('agent')
+
+    const input = wrapper.find('input')
+
+    input.element.value = 'typed'
+    input.element.dispatchEvent(new Event('change'))
+
+    expect(seen).toHaveLength(2)
+    expect(seen[1]).toMatchObject({ value: 'typed' })
+    expect(seen[1].details?.source).toBeUndefined()
+
+    stop()
+
+    await agent.act({
+      steps: [{ ref: 'Project name', action: 'setValue', args: ['Later'] }],
+    })
+
+    expect(seen).toHaveLength(2)
+  })
+
+  it('should stay quiet about a hidden region', async () => {
+    const value = ref('')
+    const wrapper = track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h('div', { 'data-agent-hidden': '' }, [
+              h(Input, {
+                modelValue: value.value,
+                'aria-label': 'Recovery codes',
+                'onUpdate:model-value': (next: unknown) => {
+                  value.value = next == null ? '' : String(next as string | number)
+                },
+              }),
+            ]),
+        }),
+      ),
+    )
+    const agent = createAgent()
+    const seen: AgentChange[] = []
+
+    agent.subscribe((change) => seen.push(change))
+
+    const entry = find(agent.snapshot(), 'input')
+
+    expect(entry).toBeUndefined()
+
+    const input = wrapper.find('input')
+
+    input.element.value = 'abc'
+    input.element.dispatchEvent(new Event('change'))
+
+    // The change did happen — it just never reaches the bridge.
+    expect(wrapper.findComponent(Input).emitted('change')).toHaveLength(1)
+    expect(seen).toHaveLength(0)
   })
 
   it('should set a date', async () => {

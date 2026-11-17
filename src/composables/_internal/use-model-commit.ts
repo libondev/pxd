@@ -1,6 +1,7 @@
 import type { ModelValueEmits, ModelValueOptions, ModelValueProps } from './use-model-ref.js'
 import type { WritableComputedRef } from 'vue'
-import { computed } from 'vue'
+import { computed, getCurrentInstance } from 'vue'
+import { notifyAgentChange } from '../../agent/report.js'
 import { changeDetails } from './use-change-details.js'
 import { useModelRef } from './use-model-ref.js'
 
@@ -17,6 +18,7 @@ export function useModelCommit<P extends ModelValueProps, E extends ModelValueEm
   type V = NonNullable<P['modelValue']>
 
   const { display, write } = useModelRef(props, options)
+  const instance = getCurrentInstance()
 
   const modelValue = computed<V>({
     get: display,
@@ -27,7 +29,13 @@ export function useModelCommit<P extends ModelValueProps, E extends ModelValueEm
   })
 
   const commit = (value: P['modelValue']) => {
-    emits('change', value, changeDetails())
+    const details = changeDetails()
+
+    emits('change', value, details)
+
+    if (instance) {
+      notifyAgentChange(instance, value, details)
+    }
   }
 
   return { modelValue, commit }

@@ -1,6 +1,7 @@
 import type { ModelValueEmits, ModelValueOptions, ModelValueProps } from './use-model-ref.js'
 import type { WritableComputedRef } from 'vue'
-import { computed } from 'vue'
+import { computed, getCurrentInstance } from 'vue'
+import { notifyAgentChange } from '../../agent/report.js'
 import { cancelableChangeDetails } from './use-change-details.js'
 import { useModelRef } from './use-model-ref.js'
 
@@ -14,12 +15,17 @@ export function useModelValue<P extends ModelValueProps, E extends ModelValueEmi
   type V = NonNullable<P['modelValue']>
 
   const { display, write } = useModelRef(props, options)
+  const instance = getCurrentInstance()
 
   return computed<V>({
     get: display,
     set: (value: V) => {
       const details = cancelableChangeDetails()
       emits('change', value, details)
+
+      if (instance) {
+        notifyAgentChange(instance, value, details)
+      }
 
       if (details.canceled) {
         return

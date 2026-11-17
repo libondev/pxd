@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { SwitchProps, SwitchEmits } from './types'
 import { computed } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { emitChange } from '../../composables/_internal/use-change-details.js'
+import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { provideSwitchContext } from '../../contexts/switch.js'
@@ -27,6 +28,7 @@ const SIZES = {
   lg: `${BASIC_HEIGHTS.lg} text-base`,
 }
 
+const notify = useAgentChange(emits)
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
@@ -35,7 +37,15 @@ useAgentNode({
   name: 'switch',
   state: () => ({ value: props.modelValue ?? null }),
   actions: {
-    setValue: (value) => emitChange(emits, value),
+    setValue: (value) => {
+      const details = cancelableChangeDetails()
+
+      notify(value, details)
+
+      if (!details.canceled) {
+        emits('update:model-value', value)
+      }
+    },
   },
 })
 

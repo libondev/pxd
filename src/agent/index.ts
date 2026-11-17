@@ -2,6 +2,7 @@ import type { AgentEntry } from './registry.js'
 import type {
   AgentActResult,
   AgentAllowedStep,
+  AgentChangeListener,
   AgentComponent,
   AgentStep,
   AgentStepResult,
@@ -10,6 +11,7 @@ import { nextTick } from 'vue'
 import { withChangeDetails } from '../composables/_internal/use-change-details.js'
 import { confirmOf, isHidden, isSecret, REDACTED } from './marks.js'
 import { agentEntry, agentLabel, agentVisibleEntries } from './registry.js'
+import { subscribeAgentChanges } from './report.js'
 
 export type * from './types'
 
@@ -317,5 +319,7 @@ export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions =
       .map(describe)
   }
 
-  return { act, query, snapshot }
+  const subscribe = (listener: AgentChangeListener) => subscribeAgentChanges(listener)
+
+  return { act, query, snapshot, subscribe }
 }

@@ -4,6 +4,7 @@ import type { ListModelValue } from '../list/types'
 import type { SelectEmits, SelectProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed, nextTick, shallowRef, watch } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
@@ -49,6 +50,7 @@ const searchInputRef = shallowRef<HTMLInputElement>()
 
 const filterKeyword = shallowRef('')
 
+const notify = useAgentChange(emits)
 // Resolved from the full options so a selected item that the filter drops still has a label.
 const selectedItems = useSelectedListItems(
   () => props.options || [],
@@ -74,7 +76,7 @@ const { selected, apply, reset, commit } = useListSelection({
   modelValue: () => props.modelValue,
   multiple: () => props.multiple,
   onUpdateModelValue: (value) => emits('update:model-value', value),
-  onChange: (value) => emits('change', value, changeDetails()),
+  onChange: (value) => notify(value, changeDetails()),
 })
 const { onKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value,

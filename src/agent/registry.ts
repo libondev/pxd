@@ -9,15 +9,28 @@ export interface AgentEntry {
 }
 
 const entries = new Map<string, AgentEntry>()
+// Which component instance a change came from, so a report can name it without the call
+// site passing anything.
+const entriesByInstance = new WeakMap<object, AgentEntry>()
 let count = 0
 let order = 0
 
-export function registerAgentNode(node: AgentNode): () => void {
+export function registerAgentNode(node: AgentNode, owner?: object): () => void {
   const ref = `c${++count}`
-  entries.set(ref, { ref, order: ++order, node })
+  const entry: AgentEntry = { ref, order: ++order, node }
+
+  entries.set(ref, entry)
+
+  if (owner) {
+    entriesByInstance.set(owner, entry)
+  }
 
   return () => {
     entries.delete(ref)
+
+    if (owner && entriesByInstance.get(owner) === entry) {
+      entriesByInstance.delete(owner)
+    }
   }
 }
 
@@ -27,6 +40,10 @@ export function agentEntries(): AgentEntry[] {
 
 export function agentEntry(ref: string): AgentEntry | undefined {
   return entries.get(ref)
+}
+
+export function agentEntryOf(owner: object): AgentEntry | undefined {
+  return entriesByInstance.get(owner)
 }
 
 export function agentLabel(node: AgentNode): string | undefined {

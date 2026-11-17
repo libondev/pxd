@@ -15,6 +15,7 @@ import ListUnorderedIcon from '@gdsicon/vue/list-unordered'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed, shallowRef, useSlots, watch } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
@@ -114,6 +115,7 @@ const summaryText = computed(() => {
   return active > 0 ? `${completed}/${active}` : ''
 })
 
+const notify = useAgentChange(emits)
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
@@ -185,7 +187,7 @@ function commit(index: number, status: TodoStatus) {
 
   const detail: TodoChangeDetail = { item, index, status, prevStatus, options }
 
-  emits('change', detail, changeDetails())
+  notify(detail, changeDetails())
   emits('update:model-value', options)
 }
 

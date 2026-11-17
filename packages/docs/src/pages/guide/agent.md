@@ -64,6 +64,28 @@ await agent.act({ steps: [{ ref: 'Views', action: 'press', args: ['Two'] }] })
 - With an argument it presses the button whose text matches — the whole text first, then a part of it. Several matches are refused rather than guessed.
 - A closed popup renders no buttons, so a component that declares `setOpen` is opened first and read again.
 
+## Subscribing
+
+`subscribe(listener)` reports every change a wired component makes, whoever made it.
+
+```ts
+const stop = agent.subscribe((change) => {
+  log(change.ref, change.component, change.value, change.details?.source)
+})
+```
+
+| Field | Meaning |
+| --- | --- |
+| ref | The component that changed, the same `ref` a step uses. |
+| component | Its name, like `input`. |
+| label | The name a person reads, when it has one. |
+| value | The value the change carried — a select's option, a list's selected item — not the component's whole state. |
+| details | The `ChangeDetails` the event carried, including `canceled` once a handler has refused it. |
+
+- A change a step made arrives with `details.source === 'agent'`, so one log line tells a person from an agent.
+- A region marked `data-agent-hidden` stays silent, like it does in `snapshot`.
+- `stop()` ends the subscription. A bridge nobody subscribed to builds no report at all.
+
 ## Query
 
 `query({ text, within, kind })` finds components by a part of their label, and is the way to reach a long list once `snapshot` stops being enough.

@@ -4,6 +4,7 @@ import type { CarouselEmits, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, shallowRef, useSlots } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
@@ -75,6 +76,7 @@ const loopPlacement = computed(() => {
   return 'none'
 })
 
+const notify = useAgentChange(emits)
 const {
   index: currentIndex,
   isAtFirst,
@@ -93,7 +95,7 @@ const {
   autoplay: () => props.autoplay,
   interval: () => props.interval,
   transition: animateMove,
-  onChange: (index) => emits('change', index, changeDetails()),
+  onChange: (index) => notify(index, changeDetails()),
 })
 const slots = useSlots()
 

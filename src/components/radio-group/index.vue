@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { RadioGroupEmits, RadioGroupProps } from './types'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { emitChange } from '../../composables/_internal/use-change-details.js'
+import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
 import { provideRadioGroupContext } from '../../contexts/radio.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PRadio from '../radio/index.vue'
@@ -14,12 +15,21 @@ defineOptions({
 
 const props = defineProps<RadioGroupProps>()
 const emits = defineEmits<RadioGroupEmits>()
+const notify = useAgentChange(emits)
 
 useAgentNode({
   name: 'radio-group',
   state: () => ({ value: props.modelValue ?? null }),
   actions: {
-    setValue: (value) => emitChange(emits, value),
+    setValue: (value) => {
+      const details = cancelableChangeDetails()
+
+      notify(value, details)
+
+      if (!details.canceled) {
+        emits('update:model-value', value)
+      }
+    },
   },
 })
 

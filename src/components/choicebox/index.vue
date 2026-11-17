@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { ChoiceboxEmits, ChoiceboxProps } from './types'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { emitChange } from '../../composables/_internal/use-change-details.js'
+import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
 import { provideChoiceboxContext } from '../../contexts/choicebox.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PChoiceboxItem from '../choicebox-item/index.vue'
@@ -14,12 +15,21 @@ defineOptions({
 
 const props = withDefaults(defineProps<ChoiceboxProps>(), { gap: 3 })
 const emits = defineEmits<ChoiceboxEmits>()
+const notify = useAgentChange(emits)
 
 useAgentNode({
   name: 'choicebox',
   state: () => ({ value: props.modelValue ?? (props.multiple ? [] : null) }),
   actions: {
-    setValue: (value) => emitChange(emits, value),
+    setValue: (value) => {
+      const details = cancelableChangeDetails()
+
+      notify(value, details)
+
+      if (!details.canceled) {
+        emits('update:model-value', value)
+      }
+    },
   },
 })
 

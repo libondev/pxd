@@ -2,6 +2,7 @@
 import type { StickToBottomEmits, StickToBottomProps } from './types'
 import { cn } from 'cn'
 import { computed, shallowRef, watch } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useStickToBottom } from '../../composables/use-stick-to-bottom.js'
@@ -29,6 +30,7 @@ const wrapperClasses = computed(() =>
   ),
 )
 
+const notify = useAgentChange(emits)
 const { isAtBottom, scrollToBottom, forceStickToBottom, stickIfNeeded, update } = useStickToBottom(
   containerRef,
   contentRef,
@@ -50,7 +52,7 @@ useAgentNode({
 watch(
   () => isAtBottom.value,
   (value) => {
-    emits('change', value, changeDetails())
+    notify(value, changeDetails())
   },
 )
 

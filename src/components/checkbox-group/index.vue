@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { CheckboxGroupEmits, CheckboxGroupProps } from './types'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { emitChange } from '../../composables/_internal/use-change-details.js'
+import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
 import { provideCheckboxGroupContext } from '../../contexts/checkbox.js'
 import PCheckbox from '../checkbox/index.vue'
 import PStack from '../stack/index.vue'
@@ -17,12 +18,21 @@ const props = withDefaults(defineProps<CheckboxGroupProps>(), {
 })
 
 const emits = defineEmits<CheckboxGroupEmits>()
+const notify = useAgentChange(emits)
 
 useAgentNode({
   name: 'checkbox-group',
   state: () => ({ value: props.modelValue ?? [] }),
   actions: {
-    setValue: (value) => emitChange(emits, value),
+    setValue: (value) => {
+      const details = cancelableChangeDetails()
+
+      notify(value, details)
+
+      if (!details.canceled) {
+        emits('update:model-value', value)
+      }
+    },
   },
 })
 

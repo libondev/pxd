@@ -3,6 +3,7 @@ import type { ListNavigationCommand } from '../../composables/_internal/use-list
 import type { ListItemRow, ListRow } from '../../composables/_internal/use-list-rows'
 import type { ListProps, ListOption, ListOptionSelected, ListEmits } from './types'
 import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
@@ -52,6 +53,7 @@ const flattened = computed(() => flattenListOptions(props.options))
 const rows = computed(() => flattened.value.rows)
 const itemRows = computed(() => flattened.value.itemRows)
 
+const notify = useAgentChange(emits)
 const { activeIndex, dispatch, setActiveIndex, onPointerOver, setFirstAsActive } =
   useListNavigation({
     loop: () => props.loop,
@@ -121,7 +123,7 @@ useAgentNode({
       const details = cancelableChangeDetails()
 
       for (const option of options) {
-        emits('change', toSelectedOption(option), details)
+        notify(toSelectedOption(option), details)
       }
 
       if (details.canceled) {
@@ -174,7 +176,7 @@ function onItemSelect(value: ListOptionSelected['value']): void {
   const nextValue = resolveNextListValue(props.modelValue, value, props.multiple)
 
   emits('update:model-value', nextValue)
-  emits('change', toSelectedOption(option), changeDetails())
+  notify(toSelectedOption(option), changeDetails())
 }
 
 function onActivateItem(navIndex: number) {

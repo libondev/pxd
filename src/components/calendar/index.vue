@@ -4,6 +4,7 @@ import ChevronDoubleLeftIcon from '@gdsicon/vue/chevron-double-left'
 import ChevronDoubleRightIcon from '@gdsicon/vue/chevron-double-right'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, shallowRef, watch } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -67,6 +68,7 @@ const panelInfo = computed<CalendarPanelInfo>(() => ({
   month: panelDate.value.month() + 1,
 }))
 
+const notify = useAgentChange(emits)
 const configProvider = useConfigProvider()
 
 const weekDays = computed(() => {
@@ -153,7 +155,7 @@ function selectDate(day: CalendarDay) {
     uncontrolledValue.value = value
   }
 
-  emits('change', value, changeDetails())
+  notify(value, changeDetails())
   emits('update:model-value', value)
 }
 

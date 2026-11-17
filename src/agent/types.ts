@@ -1,3 +1,5 @@
+import type { ChangeDetails } from '../types/shared/change'
+
 export interface AgentNode {
   name: string
   el: () => Element | null | undefined
@@ -22,6 +24,18 @@ export interface AgentStep {
   action: string
   args?: any[]
 }
+
+/** A change a registered component made, as `subscribe` receives it. */
+export interface AgentChange {
+  ref: string
+  component: string
+  label?: string
+  value: unknown
+  /** Who caused it and whether a handler refused it; absent when nothing named a cause. */
+  details?: ChangeDetails
+}
+
+export type AgentChangeListener = (change: AgentChange) => void
 
 /** A step the app marked, as `allow` receives it before it runs. */
 export interface AgentAllowedStep {

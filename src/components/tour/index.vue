@@ -2,6 +2,7 @@
 import type { TourEmits, TourProps } from './types'
 import type { CSSProperties } from 'vue'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useTourTarget } from '../../composables/_internal/use-tour-target.js'
@@ -42,6 +43,7 @@ const tourStyle = computed<CSSProperties>(() => ({
   '--tour-index': props.zIndex,
 }))
 
+const notify = useAgentChange(emits)
 const configProvider = useConfigProvider()
 
 const nextText = computed(() => {
@@ -135,7 +137,7 @@ function goToStep(index: number) {
 
   localCurrent.value = nextIndex
   emits('update:current', nextIndex)
-  emits('change', nextIndex, changeDetails())
+  notify(nextIndex, changeDetails())
   resolveTarget(nextIndex)
 }
 
