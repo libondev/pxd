@@ -22,7 +22,7 @@ const switchGroupName = switchGroupContext?.name ?? getUniqueId()
 
 const isDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled || false)
 
-const { modelValue } = useModelValue(
+const { modelValue, change } = useModelValue(
   switchGroupContext?.props ?? props,
   switchGroupContext?.emits ?? emits,
 )
@@ -44,12 +44,12 @@ const { classes } = useTailwindVariant(
   },
 )
 
-function onInputChange() {
+function onInputChange(event: Event) {
   if (isDisabled.value) {
     return
   }
 
-  modelValue.value = props.value
+  change(props.value, { reason: 'trigger-press', event })
 }
 </script>
 

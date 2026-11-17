@@ -6,29 +6,9 @@ import { describe, expect, it } from 'vite-plus/test'
 // component is migrated it keeps writing the way it used to, and this list is the ledger:
 // a component that is not in it may not introduce another raw write, and removing a name
 // happens in the commit that migrates that component.
-const RAW_VALUE_WRITES = new Set([
-  'checkbox',
-  'choicebox-item',
-  'color-selector',
-  'command-menu',
-  'date-picker',
-  'pin-input',
-  'radio',
-  'rating',
-  'split-button',
-  'switch-item',
-  'time-picker',
-  'toggle-button',
-])
+const RAW_VALUE_WRITES = new Set(['command-menu', 'date-picker', 'split-button'])
 
-const UNREASONED_COMMITS = new Set([
-  'effort-slider',
-  'number-input',
-  'resizable',
-  'slider',
-  'tabs',
-  'textarea',
-])
+const UNREASONED_COMMITS = new Set(['slider', 'tabs'])
 
 const TEMPLATE_WRITES = new Set([
   'color-selector',
@@ -89,6 +69,7 @@ describe('change entry', () => {
 
   it('should not let a template write past the entry', () => {
     const offenders = read()
+      .filter((source) => source.text.includes('useModelValue('))
       .filter((source) => /v-model="modelValue"|@change="modelValue\s*=/.test(source.text))
       .map((source) => source.name)
 

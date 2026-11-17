@@ -35,7 +35,10 @@ const inputName = computed(() => {
   return choiceboxGroupContext?.name || internalId
 })
 
-const { modelValue } = useModelValue(choiceboxGroupContext?.props, choiceboxGroupContext?.emits)
+const { modelValue, change } = useModelValue(
+  choiceboxGroupContext?.props,
+  choiceboxGroupContext?.emits,
+)
 
 const isSelected = computed(() => {
   if (isMultiple.value) {
@@ -126,19 +129,22 @@ function onInputChange(event: Event) {
 
   if (isMultiple.value) {
     if (Array.isArray(modelValue.value)) {
-      modelValue.value = checked
-        ? [...modelValue.value, inputValue]
-        : modelValue.value.filter((v) => v !== inputValue)
+      change(
+        checked
+          ? [...modelValue.value, inputValue]
+          : modelValue.value.filter((v) => v !== inputValue),
+        { reason: 'item-press', event },
+      )
 
       return
     }
 
-    modelValue.value = [inputValue]
+    change([inputValue], { reason: 'item-press', event })
 
     return
   }
 
-  modelValue.value = inputValue
+  change(inputValue, { reason: 'item-press', event })
 }
 </script>
 

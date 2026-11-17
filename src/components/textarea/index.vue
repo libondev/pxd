@@ -97,7 +97,7 @@ useAgentNode({
       const next = value == null ? '' : String(value)
 
       modelValue.value = next
-      commit(next)
+      commit(next, { reason: 'api' })
     },
     focus: () => textareaRef.value?.focus(),
     blur: () => textareaRef.value?.blur(),
@@ -112,7 +112,7 @@ function onInputBlur(event: FocusEvent) {
   emits('blur', event)
 }
 function onInputChange(event: Event) {
-  commit((event.target as HTMLTextAreaElement).value)
+  commit((event.target as HTMLTextAreaElement).value, { reason: 'typed', event })
 }
 
 function trimTextareaValue(textareaValue: string) {

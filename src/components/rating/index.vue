@@ -55,7 +55,7 @@ const isDragging = shallowRef(false)
 const starCount = computed(() => Math.max(1, props.count))
 
 const configProvider = useConfigProvider()
-const { modelValue } = useModelValue(props, emits)
+const { modelValue, change } = useModelValue(props, emits)
 
 const displayValue = computed(() => dragValue.value ?? hoverValue.value ?? modelValue.value)
 const fills = computed(() => {
@@ -109,7 +109,7 @@ useAgentNode({
   state: () => ({ value: modelValue.value ?? 0, count: starCount.value }),
   actions: {
     setValue: (value) => {
-      modelValue.value = Math.max(0, Math.min(starCount.value, Number(value)))
+      change(Math.max(0, Math.min(starCount.value, Number(value))), { reason: 'api' })
     },
   },
 })
@@ -131,12 +131,10 @@ function getValueFromPosition(clientX: number): number {
   return Math.max(step, Math.ceil(rawValue / step) * step)
 }
 
-function commitValue(value: number) {
-  if (props.clearable && value === modelValue.value) {
-    modelValue.value = 0
-  } else {
-    modelValue.value = value
-  }
+function commitValue(value: number, event: Event) {
+  const next = props.clearable && value === modelValue.value ? 0 : value
+
+  change(next, { reason: 'settle', event })
 }
 
 function resetDragging() {
@@ -190,7 +188,7 @@ function handleDocumentPointerUp(event: PointerEvent) {
     return
   }
 
-  commitValue(getValueFromPosition(event.clientX))
+  commitValue(getValueFromPosition(event.clientX), event)
   resetDragging()
 }
 
@@ -236,10 +234,10 @@ function handleKeydown(event: KeyboardEvent) {
   const step = props.allowHalf ? 0.5 : 1
   if (key === 'ArrowRight' || key === 'ArrowUp') {
     event.preventDefault()
-    modelValue.value = Math.min(starCount.value, modelValue.value + step)
+    change(Math.min(starCount.value, modelValue.value + step), { reason: 'step', event })
   } else if (key === 'ArrowLeft' || key === 'ArrowDown') {
     event.preventDefault()
-    modelValue.value = Math.max(0, modelValue.value - step)
+    change(Math.max(0, modelValue.value - step), { reason: 'step', event })
   }
 }
 

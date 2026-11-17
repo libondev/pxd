@@ -123,7 +123,7 @@ useAgentNode({
 
       inputData.currentValue = next
       modelValue.value = next
-      commit(next)
+      commit(next, { reason: 'api' })
     },
     increment: increaseValue,
     decrement: decreaseValue,
@@ -235,7 +235,7 @@ function clearInput(ev: KeyboardEvent) {
     modelValue.value = props.clearValue
   }
 
-  commit(props.clearValue)
+  commit(props.clearValue, { reason: 'cleared' })
 
   if (hadValue) {
     ev.preventDefault()
@@ -294,7 +294,7 @@ function onInputChange(text: string) {
     modelValue.value = value
   }
 
-  commit(value)
+  commit(value, { reason: 'typed' })
 }
 
 watch(

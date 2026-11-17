@@ -43,7 +43,7 @@ const computedInputMode = computed(() => {
 })
 
 const configProvider = useConfigProvider()
-const { modelValue } = useModelValue(props, emits)
+const { modelValue, change } = useModelValue(props, emits)
 
 let localValue: string = modelValue.value
 
@@ -80,7 +80,7 @@ useAgentNode({
   state: () => ({ value: modelValue.value ?? '', length: props.length }),
   actions: {
     setValue: (value) => {
-      modelValue.value = String(value ?? '')
+      change(String(value ?? ''), { reason: 'api' })
     },
   },
 })
@@ -97,7 +97,7 @@ function setInputValue(value: string, index?: number) {
     localValue = replaceCharAt(localValue, index, value)
   }
 
-  modelValue.value = localValue
+  change(localValue, { reason: 'typed' })
 }
 
 function focusInputField(dir: 'next' | 'prev', index: number): void

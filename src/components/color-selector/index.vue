@@ -20,7 +20,7 @@ const emits = defineEmits<ColorSelectorEmits>()
 const uniqueName = getUniqueId('color-selector')
 
 const configProvider = useConfigProvider()
-const { modelValue } = useModelValue(props, emits)
+const { modelValue, change } = useModelValue(props, emits)
 
 useAgentNode({
   name: 'color-selector',
@@ -32,7 +32,7 @@ useAgentNode({
   state: () => ({ value: modelValue.value ?? null }),
   actions: {
     setValue: (value) => {
-      modelValue.value = String(value ?? '')
+      change(String(value ?? ''), { reason: 'api' })
     },
   },
 })
@@ -55,6 +55,9 @@ const { classes } = useTailwindVariant(
     }),
   },
 )
+function onColorChange(event: Event) {
+  change((event.target as HTMLInputElement).value, { reason: 'item-press', event })
+}
 </script>
 
 <template>
@@ -69,7 +72,7 @@ const { classes } = useTailwindVariant(
       :class="classes"
       :checked="modelValue === color"
       :tabindex="modelValue === color ? 0 : -1"
-      @change="modelValue = color"
+      @change="onColorChange"
     />
   </div>
 </template>

@@ -147,7 +147,7 @@ useAgentNode({
       const changed = setSizes([Number(pair[0] ?? 0), Number(pair[1] ?? 0)])
 
       if (changed) {
-        commit(modelValue.value)
+        commit(modelValue.value, { reason: 'api' })
       }
     },
   },
@@ -263,7 +263,7 @@ function toggleFold() {
   const changed = collapsed.value ? expandLeading() : foldLeading(sizes.value[0])
 
   if (changed) {
-    commit(sizes.value.slice())
+    commit(sizes.value.slice(), { reason: 'trigger-press' })
   }
 }
 
@@ -427,7 +427,7 @@ function finishDrag(reportChange: boolean) {
   setSizes(settled)
 
   if (reportChange) {
-    commit(settled)
+    commit(settled, { reason: 'settle' })
   }
 }
 
@@ -494,7 +494,7 @@ function handleKeydown(event: KeyboardEvent) {
   }
 
   if (applyDelta(delta) || wasCollapsed) {
-    commit(sizes.value.slice())
+    commit(sizes.value.slice(), { reason: 'step', event })
   }
 }
 

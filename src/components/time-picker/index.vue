@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ChangeAt } from '../../types/shared/change'
 import type { TimePickerEmits, TimePickerProps } from './types'
 import ClockIcon from '@gdsicon/vue/clock'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
@@ -56,7 +57,7 @@ const committedValue = shallowRef<string | number>('')
 const configProvider = useConfigProvider()
 
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
-const { modelValue } = useModelValue(props, emits, {
+const { modelValue, change } = useModelValue(props, emits, {
   get() {
     return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
   },
@@ -66,7 +67,7 @@ useAgentNode({
   state: () => ({ value: modelValue.value ?? '' }),
   actions: {
     setValue: (value) => {
-      modelValue.value = String(value ?? '')
+      change(String(value ?? ''), { reason: 'api' })
     },
   },
 })
@@ -188,7 +189,7 @@ function formatEmittedValue() {
   return dayjsDateTime.value.format(props.valueFormat)
 }
 
-function updateModelValue() {
+function updateModelValue(at: ChangeAt) {
   const nextValue = formatEmittedValue()
 
   if (committedValue.value === nextValue) {
@@ -196,7 +197,7 @@ function updateModelValue() {
   }
 
   committedValue.value = nextValue
-  modelValue.value = nextValue
+  change(nextValue, at)
 }
 
 function syncFromModelValue(value: TimePickerProps['modelValue']) {
@@ -207,7 +208,7 @@ function syncFromModelValue(value: TimePickerProps['modelValue']) {
 function onInputValueChange(value: string) {
   if (value === '') {
     updateDayjsDateTime('')
-    updateModelValue()
+    updateModelValue({ reason: 'cleared' })
     togglePopoverVisible(false)
     return
   }
@@ -215,7 +216,7 @@ function onInputValueChange(value: string) {
   const newDateTime = getFormattedValue(value)
   if (newDateTime.isValid()) {
     dayjsDateTime.value = newDateTime
-    updateModelValue()
+    updateModelValue({ reason: 'typed' })
   }
 
   togglePopoverVisible(false)
@@ -241,13 +242,13 @@ function onPresetClick(ev: MouseEvent) {
   }
 
   updateDayjsDateTime(presetValue)
-  updateModelValue()
+  updateModelValue({ reason: 'item-press', event: ev })
   togglePopoverVisible(false)
 }
 
 function onSetNowClick() {
   updateDayjsDateTime(new Date())
-  updateModelValue()
+  updateModelValue({ reason: 'trigger-press' })
   togglePopoverVisible(false)
 }
 
@@ -280,7 +281,7 @@ onBeforeUnmount(() => {
     :lock-scroll-on-visible="isAdaptive"
     :close-on-press-escape="closeOnPressEscape"
     @show="setTimesScrollTop"
-    @outside-click="updateModelValue"
+    @outside-click="(event: PointerEvent) => updateModelValue({ reason: 'outside-press', event })"
   >
     <PInput
       :size="size"

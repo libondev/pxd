@@ -29,7 +29,7 @@ const checkboxGroupContext = useCheckboxGroupContext()
 
 const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled || false)
 
-const { modelValue } = useModelValue(
+const { modelValue, change } = useModelValue(
   checkboxGroupContext?.props ?? props,
   checkboxGroupContext?.emits ?? emits,
 )
@@ -101,10 +101,10 @@ useAgentNode({
   }),
   actions: {
     setValue: (value) => {
-      modelValue.value = value
+      change(value, { reason: 'api' })
     },
     toggle: () => {
-      modelValue.value = !isSelected.value
+      change(!isSelected.value, { reason: 'api' })
     },
   },
 })
@@ -113,14 +113,17 @@ function onInputChange(event: Event) {
   const checked = (event.target as HTMLInputElement).checked
 
   if (Array.isArray(modelValue.value)) {
-    modelValue.value = checked
-      ? [...modelValue.value, props.value]
-      : modelValue.value.filter((v) => v !== props.value)
+    change(
+      checked
+        ? [...modelValue.value, props.value]
+        : modelValue.value.filter((v) => v !== props.value),
+      { reason: 'trigger-press', event },
+    )
 
     return
   }
 
-  modelValue.value = checked
+  change(checked, { reason: 'trigger-press', event })
 }
 </script>
 

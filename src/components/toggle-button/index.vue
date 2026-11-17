@@ -28,7 +28,7 @@ const computedVariant = computed(() => {
   return props.variant || toggleButtonGroupContext?.props.variant || 'default'
 })
 
-const { modelValue } = useModelValue(
+const { modelValue, change } = useModelValue(
   toggleButtonGroupContext?.props ?? props,
   toggleButtonGroupContext?.emits ?? emits,
 )
@@ -101,17 +101,20 @@ function onToggleClick() {
     if (toggleButtonGroupContext.props.multiple) {
       const formattedValue = toArray(modelValue.value)
 
-      modelValue.value = newCheckedState
-        ? [...formattedValue, props.value]
-        : formattedValue.filter((v) => v !== props.value)
+      change(
+        newCheckedState
+          ? [...formattedValue, props.value]
+          : formattedValue.filter((v) => v !== props.value),
+        { reason: 'trigger-press' },
+      )
     } else {
-      modelValue.value = props.value
+      change(props.value, { reason: 'trigger-press' })
     }
 
     return
   }
 
-  modelValue.value = newCheckedState
+  change(newCheckedState, { reason: 'trigger-press' })
 }
 </script>
 

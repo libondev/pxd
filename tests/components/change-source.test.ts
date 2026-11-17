@@ -3,7 +3,10 @@ import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import { createAgent } from '../../src/agent'
+import Checkbox from '../../src/components/checkbox/index.vue'
+import ColorSelector from '../../src/components/color-selector/index.vue'
 import Input from '../../src/components/input/index.vue'
+import Radio from '../../src/components/radio/index.vue'
 import Toggle from '../../src/components/toggle/index.vue'
 
 const detailsOf = (wrapper: { emitted: (event: string) => unknown[][] | undefined }) =>
@@ -99,6 +102,32 @@ describe('change source', () => {
       source: 'user',
       reason: 'trigger-press',
     })
+  })
+
+  it('should name a person who ticked a checkbox', async () => {
+    const wrapper = track(mount(Checkbox, { props: { modelValue: false } }))
+
+    await wrapper.find('input').setValue(true)
+
+    expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'trigger-press' })
+  })
+
+  it('should name a person who picked a radio', async () => {
+    const wrapper = track(mount(Radio, { props: { modelValue: 'a', value: 'b' } }))
+
+    await wrapper.find('input').setValue(true)
+
+    expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'trigger-press' })
+  })
+
+  it('should name a person who picked a colour', async () => {
+    const wrapper = track(
+      mount(ColorSelector, { props: { modelValue: '', colors: ['#000000', '#ff0000'] } }),
+    )
+
+    await wrapper.find('input').setValue(true)
+
+    expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'item-press' })
   })
 
   it('should name an agent step that flipped a toggle', async () => {

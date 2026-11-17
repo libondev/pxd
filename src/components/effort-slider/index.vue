@@ -186,7 +186,7 @@ useAgentNode({
       const next = setValue(index)
 
       if (next !== null) {
-        commit(next)
+        commit(next, { reason: 'api' })
       }
     },
   },
@@ -312,7 +312,7 @@ function onThumbKeydown(ev: KeyboardEvent) {
   const value = setValue(next)
 
   if (value !== null) {
-    commit(value)
+    commit(value, { reason: 'step' })
   }
 }
 
@@ -333,7 +333,7 @@ function endDragging(ev: PointerEvent) {
   updateFromPosition(ev.clientX)
 
   if (lastUpdatedValue !== null && lastUpdatedValue !== dragStartValue) {
-    commit(lastUpdatedValue)
+    commit(lastUpdatedValue, { reason: 'settle', event: ev })
   }
 
   stopDragging()

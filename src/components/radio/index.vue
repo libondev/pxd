@@ -22,7 +22,7 @@ const radioGroupName = radioGroupContext?.name ?? getUniqueId()
 
 const isDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled || false)
 
-const { modelValue } = useModelValue(
+const { modelValue, change } = useModelValue(
   radioGroupContext?.props ?? props,
   radioGroupContext?.emits ?? emits,
 )
@@ -52,12 +52,12 @@ const { classes } = useTailwindVariant(
   },
 )
 
-function onInputChange() {
+function onInputChange(event: Event) {
   if (isDisabled.value) {
     return
   }
 
-  modelValue.value = props.value
+  change(props.value, { reason: 'trigger-press', event })
 }
 </script>
 
