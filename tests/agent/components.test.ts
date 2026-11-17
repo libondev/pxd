@@ -15,6 +15,7 @@ import ColorSelector from '../../src/components/color-selector/index.vue'
 import CommandMenu from '../../src/components/command-menu/index.vue'
 import Countdown from '../../src/components/countdown/index.vue'
 import DatePicker from '../../src/components/date-picker/index.vue'
+import Drawer from '../../src/components/drawer/index.vue'
 import EffortSlider from '../../src/components/effort-slider/index.vue'
 import Input from '../../src/components/input/index.vue'
 import List from '../../src/components/list/index.vue'
@@ -27,6 +28,7 @@ import PinInput from '../../src/components/pin-input/index.vue'
 import Popover from '../../src/components/popover/index.vue'
 import RadioGroup from '../../src/components/radio-group/index.vue'
 import Rating from '../../src/components/rating/index.vue'
+import Reactions from '../../src/components/reactions/index.vue'
 import Resizable from '../../src/components/resizable/index.vue'
 import ScrollProgress from '../../src/components/scroll-progress/index.vue'
 import Select from '../../src/components/select/index.vue'
@@ -38,6 +40,7 @@ import Switch from '../../src/components/switch/index.vue'
 import Textarea from '../../src/components/textarea/index.vue'
 import TimePicker from '../../src/components/time-picker/index.vue'
 import TodoList from '../../src/components/todo-list/index.vue'
+import ToggleButtonGroup from '../../src/components/toggle-button-group/index.vue'
 import Toggle from '../../src/components/toggle/index.vue'
 import Tour from '../../src/components/tour/index.vue'
 import Tree from '../../src/components/tree/index.vue'
@@ -913,6 +916,95 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(false)
     expect(result.error?.message).toBe('Canceled.')
+  })
+
+  it('should open a drawer', async () => {
+    const open = ref(false)
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(
+              Drawer,
+              {
+                modelValue: open.value,
+                title: 'Filters',
+                'onUpdate:model-value': (next: unknown) => {
+                  open.value = Boolean(next)
+                },
+              },
+              { default: () => h('p', 'Body') },
+            ),
+        }),
+      ),
+    )
+    const agent = createAgent()
+
+    const closed = find(agent.snapshot(), 'drawer')
+
+    expect(closed).toMatchObject({ open: false, actions: ['setOpen'] })
+
+    const result = await agent.act({
+      steps: [{ ref: closed.ref, action: 'setOpen', args: [true] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(open.value).toBe(true)
+    expect(find(agent.snapshot(), 'drawer')).toMatchObject({ open: true, label: 'Filters' })
+  })
+
+  it('should pick a reaction', async () => {
+    const bound = mountBound(
+      Reactions,
+      {
+        'aria-label': 'Reactions',
+        options: ['👍', '🎉'],
+      },
+      [],
+    )
+    const agent = createAgent()
+
+    const entry = find(agent.snapshot(), 'reactions')
+
+    expect(entry).toMatchObject({ label: 'Reactions', actions: ['pick', 'toggle'] })
+
+    const result = await agent.act({
+      steps: [{ ref: 'Reactions', action: 'pick', args: ['🎉'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect((bound.value as { emoji: string }[]).map((reaction) => reaction.emoji)).toEqual(['🎉'])
+  })
+
+  it('should pick a toggle button in a group', async () => {
+    const bound = mountBound(
+      ToggleButtonGroup,
+      {
+        'aria-label': 'View',
+        options: [
+          { label: 'List', value: 'list' },
+          { label: 'Grid', value: 'grid' },
+        ],
+      },
+      'list',
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'toggle-button-group')).toMatchObject({
+      label: 'View',
+      value: 'list',
+      items: [
+        { label: 'List', value: 'list', selected: true },
+        { label: 'Grid', value: 'grid' },
+      ],
+    })
+
+    const result = await agent.act({
+      steps: [{ ref: 'View', action: 'setValue', args: ['grid'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe('grid')
   })
 
   it('should set a date', async () => {

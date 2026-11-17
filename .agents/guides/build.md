@@ -21,6 +21,19 @@
    - 临时生成 `dist/styles/source.css`（`@layer` / `@import` / `@source` 包一层，路径相对 `dist/styles` 扫编译后的 components/composables/constants）。
    - 调 Tailwind CLI 编译出 `dist/styles/styles.css`，然后删除 `source.css`（不进源码、也不留在发布产物里）。
 
+## Hand-maintained exports
+
+`update-exports.js` 只刷新 barrel 与清单文件，`package.json` 的 `exports` 是手工维护的。目前有
+`./agent`（`dist/agent/index.js`）这一类子入口，构建后必须实名验证一次，因为导出写错时类型检查
+与测试都发现不了：
+
+```bash
+pnpm build:lib
+node --input-type=module -e "console.log(Object.keys(await import('pxd/agent')))"
+```
+
+`dev:lib` 的 `dist` 是 `src` 的 symlink，`dist/agent` 这类路径在开发态并不存在 —— 别用它判断
+
 ## Safety
 
 - 不要手动编辑 `dist/`：开发态它是 `src` 的 symlink，发布态是生成物。

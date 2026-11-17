@@ -7,6 +7,7 @@ import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useOverlayDialog } from '../../composables/_internal/use-overlay-dialog.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getCssUnitValue } from '../../utils/format.js'
+import { getUniqueId } from '../../utils/helper.js'
 import PButton from '../button/index.vue'
 import PLoadingMask from '../loading-mask/index.vue'
 import POverlay from '../overlay/index.vue'
@@ -28,6 +29,8 @@ const props = withDefaults(defineProps<DrawerProps>(), {
 })
 
 const emits = defineEmits<DrawerEmits>()
+
+const titleId = getUniqueId()
 
 const drawerRef = shallowRef<HTMLElement>()
 const ensurePosition = computed(() => props.position)
@@ -108,6 +111,7 @@ watch(
         role="dialog"
         tabindex="-1"
         aria-modal="true"
+        :aria-labelledby="title || $slots.title ? titleId : undefined"
         class="pxd-drawer group/drawer translate-z-0 pointer-events-auto fixed z-(--modal-index) flex max-h-full max-w-full flex-col overflow-clip bg-background-100 shadow-border-modal outline-none"
         :class="wrapperClass"
         :style="computedStyle"
@@ -121,7 +125,11 @@ watch(
           :class="[defaultStyles.headerClass, { 'pe-13': closeable }]"
         >
           <slot name="header">
-            <h3 v-if="title || $slots.title" class="text-lg font-semibold tracking-tight m-0">
+            <h3
+              v-if="title || $slots.title"
+              :id="titleId"
+              class="text-lg font-semibold tracking-tight m-0"
+            >
               <slot name="title">
                 {{ title }}
               </slot>
