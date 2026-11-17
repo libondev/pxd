@@ -14,7 +14,7 @@ Create one bridge per page, in the browser. Every method reads the components th
 
 ## Try it
 
-The three controls below are ordinary `pxd` components. The buttons ask the bridge for its snapshot, drive all three values in one run, and look for a component by one of its choices. Everything the bridge returns is printed underneath.
+The controls below are ordinary `pxd` components. The buttons ask the bridge for its snapshot, drive several different kinds of value in one run, press a button by its name, and look for a component by one of its choices. Everything the bridge returns is printed underneath.
 
 ```vue demo
 <script setup lang="ts">
@@ -24,6 +24,10 @@ import { createAgent } from 'pxd/agent'
 const name = ref('')
 const done = ref(false)
 const view = ref('overview')
+const region = ref<string | null>(null)
+const size = ref<string | number>('')
+const volume = ref(20)
+const saved = ref(false)
 const output = ref('Press a button to see what the bridge returns.')
 const lastChange = ref('')
 
@@ -45,6 +49,16 @@ const views = [
   { label: 'Details', value: 'details' },
 ]
 
+const regions = [
+  { label: 'Europe', value: 'eu' },
+  { label: 'Asia', value: 'as' },
+]
+
+const sizes = [
+  { label: 'Small', value: 'sm' },
+  { label: 'Large', value: 'lg' },
+]
+
 function show(value: unknown) {
   output.value = JSON.stringify(value, null, 2)
 }
@@ -55,21 +69,41 @@ async function runSteps() {
       { ref: 'Project name', action: 'setValue', args: ['Atlas'] },
       { ref: 'Done', action: 'setValue', args: [true] },
       { ref: 'Views', action: 'setValue', args: ['details'] },
+      { ref: 'Region', action: 'setValue', args: ['eu'] },
+      { ref: 'Size', action: 'setValue', args: ['lg'] },
+      { ref: 'Volume', action: 'setValue', args: [72] },
     ],
   }))
+}
+
+async function pressSave() {
+  show(await agent.act({ steps: [{ ref: 'Save', action: 'press', args: ['Save'] }] }))
 }
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
-    <PInput v-model="name" aria-label="Project name" />
-    <PCheckbox v-model="done" aria-label="Done" />
+    <div class="grid gap-4 sm:grid-cols-2">
+      <PInput v-model="name" aria-label="Project name" />
+      <PCheckbox v-model="done" aria-label="Done" />
+      <PSelect v-model="region" aria-label="Region" :options="regions" placeholder="Pick a region" />
+      <PRadioGroup v-model="size" aria-label="Size" :options="sizes" />
+      <PSlider v-model="volume" aria-label="Volume" :min="0" :max="100" />
+    </div>
+
     <PTabs v-model="view" aria-label="Views" :options="views" />
+
+    <div class="flex flex-wrap items-center gap-2">
+      <PButton @click="saved = false">Reset</PButton>
+      <PButton @click="saved = true">Save</PButton>
+      <span class="text-sm">Saved: {{ saved }}</span>
+    </div>
 
     <div class="flex flex-wrap gap-2">
       <PButton @click="show(agent.snapshot())">Snapshot</PButton>
       <PButton @click="runSteps()">Run steps</PButton>
-      <PButton @click="show(agent.query({ text: 'Overview' }))">Query items</PButton>
+      <PButton @click="pressSave()">Press Save</PButton>
+      <PButton @click="show(agent.query({ text: 'Europe' }))">Query items</PButton>
     </div>
 
     <p v-if="lastChange" class="text-sm">Last change: {{ lastChange }}</p>
@@ -78,7 +112,7 @@ async function runSteps() {
 </template>
 ```
 
-`query({ text: 'Overview' })` finds the tabs by one of its choices, not by its label — the choices come from the component's own data, so a virtualised list answers the same way. The snapshot lists every `pxd` component on this page, including the ones in the surrounding docs UI: the registry belongs to the page, not to the demo.
+Six steps in one run show that `setValue` takes whatever each component takes: a string, a boolean, a choice from `options`, and a number the slider clamps to its own range. `press` is a bridge action, not one of the component's own — it clicks the button whose accessible name it is given. `query({ text: 'Europe' })` finds the select by a choice, and `matchedItems` names the choice that hit even when it is past the hundred a snapshot shows. The snapshot lists every `pxd` component on this page, including the ones in the surrounding docs UI: the registry belongs to the page, not to the demo.
 
 ## Snapshot
 
