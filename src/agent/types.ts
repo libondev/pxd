@@ -68,6 +68,8 @@ export interface AgentComponent {
   more?: number
   /** The call that finds the rest, `query`, on an entry that ends a cut list. */
   use?: string
+  /** The first names a cut list left out, so a model knows what it cannot see. */
+  sample?: string[]
   /** True when a component's own state or items getter failed; the entry is still addressable. */
   incomplete?: boolean
   actions: string[]

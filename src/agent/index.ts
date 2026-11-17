@@ -44,18 +44,25 @@ const AGENT_LIMIT = 100
 // The most choices one `query({ within })` returns, and how many values one `act` reports.
 const ITEM_MATCH_LIMIT = 50
 
-// The entry that ends a cut list, shaped like a component so the list keeps one type.
-const moreOf = (more: number): AgentComponent => ({
-  ref: 'more',
-  component: 'more',
-  more,
-  use: 'query',
-  actions: [],
-})
+// The entry that ends a cut list, shaped like a component so the list keeps one type. It
+// names the first few it left behind: a count alone tells a model something is missing but
+// not what, so it never thinks to ask.
+const moreOf = (left: AgentComponent[]): AgentComponent => {
+  const sample = [...new Set(left.map((entry) => entry.label ?? entry.component))].slice(0, 3)
+
+  return {
+    ref: 'more',
+    component: 'more',
+    more: left.length,
+    use: 'query',
+    ...(sample.length && { sample }),
+    actions: [],
+  }
+}
 
 const capped = (found: AgentComponent[]) =>
   found.length > AGENT_LIMIT
-    ? [...found.slice(0, AGENT_LIMIT), moreOf(found.length - AGENT_LIMIT)]
+    ? [...found.slice(0, AGENT_LIMIT), moreOf(found.slice(AGENT_LIMIT))]
     : found
 
 export function createAgent({

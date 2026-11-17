@@ -174,18 +174,24 @@ describe('agent targeting', () => {
     expect(reads).toBe(0)
   })
 
-  it('should stop a long snapshot at the limit and say how many it left out', () => {
+  it('should stop a long snapshot at the limit and name what it left out', () => {
     for (let index = 0; index < 120; index++) {
       const root = host()
 
       root.textContent = `Chip ${index}`
-      register({ name: 'chip', el: () => root, actions: {} })
+      register({ name: 'chip', label: () => `Chip ${index}`, el: () => root, actions: {} })
     }
 
     const entries = createAgent().snapshot()
 
     expect(entries).toHaveLength(101)
-    expect(entries.at(-1)).toMatchObject({ ref: 'more', component: 'more', more: 20, use: 'query' })
+    expect(entries.at(-1)).toMatchObject({
+      ref: 'more',
+      component: 'more',
+      more: 20,
+      use: 'query',
+      sample: ['Chip 100', 'Chip 101', 'Chip 102'],
+    })
   })
 
   it('should report the values after a run and the components it brought onto the page', async () => {

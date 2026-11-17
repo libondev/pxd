@@ -141,7 +141,7 @@ agent.snapshot()
 - `actions` lists what can be called right now.
 - `source` says where the app writes it, when the element carries `data-agent-source`, like `src/pages/settings.vue:24`.
 - A component that left the page follows with `offPage: true` and the state it had, like a closed tab's fields. Only what left while the bridge was listening is reported, fifty at most.
-- A page with more than 100 components stops there and ends with `{ ref: 'more', component: 'more', more, use: 'query' }`: `more` says how many were left out.
+- A page with more than 100 components stops there and ends with `{ ref: 'more', component: 'more', more, use: 'query' }`: `more` says how many were left out, and `sample` names the first three of them, so nothing goes missing without a hint that it exists.
 
 What it reports is what a person can reach: a region marked `data-agent-hidden` or `aria-hidden="true"`, a control inside a closed `<details>`, and anything the browser says is not visible stay out of the snapshot entirely.
 

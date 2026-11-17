@@ -38,6 +38,7 @@ const RESERVED = new Set([
   'source',
   'more',
   'use',
+  'sample',
 ])
 
 export const fold = (text: string) =>
