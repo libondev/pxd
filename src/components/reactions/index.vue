@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Reaction, ReactionsEmits, ReactionsProps } from './types'
 import { computed, shallowRef } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PPopover from '../popover/index.vue'
@@ -24,6 +25,18 @@ const labelId = getUniqueId('pxd-reactions-label')
 const visible = shallowRef(false)
 
 const reactions = computed(() => props.modelValue)
+
+useAgentNode({
+  name: 'reactions',
+  state: () => ({
+    value: props.modelValue ?? [],
+    disabled: props.disabled ?? false,
+  }),
+  actions: {
+    pick,
+    toggle,
+  },
+})
 
 function commit(next: Reaction[], action: 'add' | 'remove', emoji: string) {
   if (action === 'add') {

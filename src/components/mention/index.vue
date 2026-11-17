@@ -8,6 +8,7 @@ import type {
   MentionSelectPayload,
 } from './types'
 import { computed, nextTick, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useMentionSuggest } from '../../composables/_internal/use-mention-suggest.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
@@ -44,7 +45,6 @@ const emits = defineEmits<MentionEmits>()
 
 const listId = getUniqueId('mention-list')
 const searchInputId = getUniqueId('mention-search')
-
 // A hide caused by a press outside must not pull focus back out of wherever the user went.
 let isHideFromOutsideClick = false
 
@@ -93,6 +93,20 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
     Tab: 'activate',
     Home: 'first',
     End: 'last',
+  },
+})
+useAgentNode({
+  name: 'mention',
+  state: () => ({ value: modelValue.value ?? '' }),
+  actions: {
+    setValue: (value) => editorRef.value?.setText(value == null ? '' : String(value)),
+    insertText: (text) => editorRef.value?.insertText(String(text)),
+    insertMention: (key, label, trigger) =>
+      editorRef.value?.insertMention(String(key), String(label), trigger ?? undefined),
+    replaceQuery: (text) => editorRef.value?.replaceQuery(String(text)),
+    focus: () => editorRef.value?.focus(),
+    blur: () => editorRef.value?.blur(),
+    clear: () => editorRef.value?.clear(),
   },
 })
 

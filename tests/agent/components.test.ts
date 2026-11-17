@@ -9,9 +9,11 @@ import CheckboxGroup from '../../src/components/checkbox-group/index.vue'
 import Choicebox from '../../src/components/choicebox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
 import CommandMenu from '../../src/components/command-menu/index.vue'
+import Countdown from '../../src/components/countdown/index.vue'
 import DatePicker from '../../src/components/date-picker/index.vue'
 import EffortSlider from '../../src/components/effort-slider/index.vue'
 import List from '../../src/components/list/index.vue'
+import Mention from '../../src/components/mention/index.vue'
 import Menu from '../../src/components/menu/index.vue'
 import Modal from '../../src/components/modal/index.vue'
 import MoreButton from '../../src/components/more-button/index.vue'
@@ -28,6 +30,7 @@ import StickToBottom from '../../src/components/stick-to-bottom/index.vue'
 import Switch from '../../src/components/switch/index.vue'
 import Textarea from '../../src/components/textarea/index.vue'
 import TimePicker from '../../src/components/time-picker/index.vue'
+import TodoList from '../../src/components/todo-list/index.vue'
 import Toggle from '../../src/components/toggle/index.vue'
 import Tour from '../../src/components/tour/index.vue'
 import Tree from '../../src/components/tree/index.vue'
@@ -353,6 +356,58 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'tree').expanded).toBeGreaterThan(0)
+  })
+
+  it('should report a countdown without a value', async () => {
+    track(mount(Countdown, { props: { duration: 60_000 }, attrs: { 'aria-label': 'Left' } }))
+
+    const entry = find(createAgent().snapshot(), 'countdown')
+
+    expect(entry).toMatchObject({ label: 'Left', enabled: false, actions: ['reset'] })
+  })
+
+  it('should let a mention editor be filled', async () => {
+    track(mount(Mention, { attrs: { 'aria-label': 'Reply' } }))
+
+    const entry = find(createAgent().snapshot(), 'mention')
+
+    expect(entry).toMatchObject({
+      label: 'Reply',
+      value: '',
+      actions: [
+        'setValue',
+        'insertText',
+        'insertMention',
+        'replaceQuery',
+        'focus',
+        'blur',
+        'clear',
+      ],
+    })
+  })
+
+  it('should complete a task', async () => {
+    track(
+      mount(TodoList, {
+        props: {
+          options: [
+            { id: 'a', content: 'Write' },
+            { id: 'b', content: 'Ship' },
+          ],
+        },
+        attrs: { 'aria-label': 'Plan' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'todo-list')).toMatchObject({ label: 'Plan' })
+
+    const result = await agent.act({
+      steps: [{ ref: 'Plan', action: 'complete', args: ['a'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(find(agent.snapshot(), 'todo-list').completed).toBe(1)
   })
 
   it('should set a date', async () => {

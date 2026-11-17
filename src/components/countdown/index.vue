@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { CountdownEmits, CountdownProps } from './types'
 import { computed } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useCountdown } from '../../composables/use-countdown.js'
 import { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin } from '../../utils/date.js'
@@ -58,6 +59,14 @@ const displayTimes = computed(() => {
   const time = timestampDuration.value.format(props.format)
 
   return time
+})
+
+useAgentNode({
+  name: 'countdown',
+  state: () => ({ enabled: props.enabled ?? false, ...times.value }),
+  actions: {
+    reset,
+  },
 })
 
 defineExpose({

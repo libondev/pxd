@@ -15,6 +15,7 @@ import ListUnorderedIcon from '@gdsicon/vue/list-unordered'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed, shallowRef, useSlots, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
@@ -148,6 +149,16 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
   contentRef,
   () => props.expand,
 )
+useAgentNode({
+  name: 'todo-list',
+  state: () => ({ ...stats.value }),
+  actions: {
+    start,
+    complete,
+    cancel,
+    reset,
+  },
+})
 
 function resolveStatus(item: TodoOption): TodoStatus {
   return item.status ?? 'pending'

@@ -115,11 +115,13 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `choicebox` | `setValue` |
 | `color-selector` | `setValue` |
 | `command-menu` | `setOpen`, `setQuery` |
+| `countdown` | `reset` |
 | `date-picker` | `setValue`, `setOpen` |
 | `drawer` | `setOpen` |
 | `effort-slider` | `setValue` |
 | `input` | `setValue`, `focus`, `blur`, `select` |
 | `list` | `setValue`, `focus`, `dispatch` |
+| `mention` | `setValue`, `insertText`, `insertMention`, `replaceQuery`, `focus`, `blur`, `clear` |
 | `menu` | `setValue`, `setOpen`, `toggle` |
 | `modal` | `setOpen` |
 | `more-button` | `setValue`, `toggle` |
@@ -127,6 +129,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `pin-input` | `setValue` |
 | `radio-group` | `setValue` |
 | `rating` | `setValue` |
+| `reactions` | `pick`, `toggle` |
 | `resizable` | `setValue` |
 | `scroll-progress` | — |
 | `select` | `setValue`, `setOpen`, `toggle` |
@@ -137,6 +140,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `tabs` | `setValue` |
 | `textarea` | `setValue`, `focus`, `blur` |
 | `time-picker` | `setValue` |
+| `todo-list` | `start`, `complete`, `cancel`, `reset` |
 | `toggle` | `setValue` |
 | `tour` | `next`, `previous`, `goTo`, `close` |
 | `tree` | `expandKey`, `collapseKey`, `expandAll`, `collapseAll`, `focus` |
