@@ -2,6 +2,7 @@ import type { RefuseUnlessAllowed } from './allow.js'
 import type { PressOutcome } from './press.js'
 import type { AgentEntry } from './registry.js'
 import type { AgentActOptions, AgentAllow, AgentStepChange, AgentStepResult } from './types'
+import type { AgentFieldState } from './values.js'
 import { nextTick } from 'vue'
 import { withChangeDetails } from '../composables/_internal/use-change-details.js'
 import { agentDisabled, messageOf } from './describe.js'
@@ -98,6 +99,8 @@ export interface AgentRunResult {
   touched: Set<string>
   /** The components that were on the page when the run began. */
   before: Set<string>
+  /** What the page showed after the last step, for the run's own report. */
+  after: StepSnapshot
 }
 
 interface RunnerDeps {
@@ -110,10 +113,7 @@ interface RunnerDeps {
 // what it took off the page.
 interface StepSnapshot {
   refs: Set<string>
-  states: Map<
-    string,
-    { component: string; label?: string; secret: boolean; state: Record<string, unknown> }
-  >
+  states: Map<string, AgentFieldState>
 }
 
 const differs = (was: unknown, now: unknown) =>
@@ -189,12 +189,24 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
     const deadline = Date.now() + budget
     const results: AgentStepResult[] = []
     const touched = new Set<string>()
-    const before = new Set(agentShownEntries().map((entry) => entry.ref))
+    // One capture to begin, then each step's own: what a step leaves behind is what the
+    // next one starts from, so a run of steps reads the page half as often.
+    let current = captureStep()
+    const before = new Set(current.refs)
     let at: { index: number; ref?: string } = { index: 0 }
+
+    const fail = (message: string): AgentRunResult => ({
+      ok: false,
+      results,
+      touched,
+      before,
+      after: current,
+      error: { message, ...(at.ref ? { ref: at.ref } : {}), step: at.index },
+    })
 
     try {
       for (const [index, step] of steps.entries()) {
-        at = { index }
+        at = { index, ref: step.ref }
 
         if (signal?.aborted || Date.now() >= deadline) {
           throw new Stop(signal?.aborted ? 'canceled' : 'timeout')
@@ -203,13 +215,7 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
         const found = findAgentTarget(step.ref, step.action, step.args?.[0])
 
         if ('error' in found) {
-          return {
-            ok: false,
-            results,
-            touched,
-            before,
-            error: { message: found.error, ref: step.ref, step: index },
-          }
+          return fail(found.error)
         }
 
         const entry = found.entry
@@ -217,49 +223,29 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
         at = { index, ref: entry.ref }
 
         if (agentDisabled(entry)) {
-          return {
-            ok: false,
-            results,
-            touched,
-            before,
-            error: {
-              message: `${entry.node.name} ${entry.ref} is disabled now.`,
-              ref: entry.ref,
-              step: index,
-            },
-          }
+          return fail(`${entry.node.name} ${entry.ref} is disabled now.`)
         }
 
         const staged = stepArgs(entry, step.action, step.args ?? [])
 
         if ('error' in staged) {
-          return {
-            ok: false,
-            results,
-            touched,
-            before,
-            error: { message: staged.error, ref: entry.ref, step: index },
-          }
+          return fail(staged.error)
         }
 
         if (step.action === 'press') {
-          const prior = captureStep()
           const outcome = await settle(press(entry, staged.args[0], signal), deadline, signal)
 
           if ('error' in outcome) {
-            return {
-              ok: false,
-              results,
-              touched,
-              before,
-              error: { message: outcome.error, ref: entry.ref, step: index },
-            }
+            return fail(outcome.error)
           }
 
           await settle(nextTick(), deadline, signal)
           touched.add(entry.ref)
 
-          const { changes, gone } = diffStep(prior, captureStep())
+          const after = captureStep()
+          const { changes, gone } = diffStep(current, after)
+
+          current = after
 
           results.push({
             ref: entry.ref,
@@ -283,47 +269,20 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
         )
 
         if (refused) {
-          return {
-            ok: false,
-            results,
-            touched,
-            before,
-            error: { message: refused, ref: entry.ref, step: index },
-          }
+          return fail(refused)
         }
 
         const action = entry.node.actions[step.action]
 
         if (!action) {
-          return {
-            ok: false,
-            results,
-            touched,
-            before,
-            error: {
-              message: `"${entry.node.name}" has no action "${step.action}".`,
-              ref: entry.ref,
-              step: index,
-            },
-          }
+          return fail(`"${entry.node.name}" has no action "${step.action}".`)
         }
 
         // The person who answered `allow` may have disabled it while deciding.
         if (agentDisabled(entry)) {
-          return {
-            ok: false,
-            results,
-            touched,
-            before,
-            error: {
-              message: `${entry.node.name} ${entry.ref} is disabled now.`,
-              ref: entry.ref,
-              step: index,
-            },
-          }
+          return fail(`${entry.node.name} ${entry.ref} is disabled now.`)
         }
 
-        const prior = captureStep()
         const result = await settle(
           withChangeDetails({ source: 'agent' }, () => action(...staged.args)),
           deadline,
@@ -332,23 +291,16 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
         const settled = await settle(settlePending(entry), deadline, signal)
 
         if (settled.error != null) {
-          return {
-            ok: false,
-            results,
-            touched,
-            before,
-            error: {
-              message: `${step.action} on ${entry.ref} failed: ${messageOf(settled.error)}`,
-              ref: entry.ref,
-              step: index,
-            },
-          }
+          return fail(`${step.action} on ${entry.ref} failed: ${messageOf(settled.error)}`)
         }
 
         await settle(nextTick(), deadline, signal)
         touched.add(entry.ref)
 
-        const { changes, gone } = diffStep(prior, captureStep())
+        const after = captureStep()
+        const { changes, gone } = diffStep(current, after)
+
+        current = after
 
         results.push({
           ref: entry.ref,
@@ -360,24 +312,15 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
     } catch (error) {
       // A component's own action can throw: that is the step failing, not the caller's
       // promise, and the message is what a model needs to correct itself.
-      return {
-        ok: false,
-        results,
-        touched,
-        before,
-        error: {
-          message:
-            error instanceof Stop
-              ? error.kind === 'canceled'
-                ? 'Canceled.'
-                : `Timed out after ${budget}ms.`
-              : messageOf(error),
-          ref: at.ref,
-          step: at.index,
-        },
-      }
+      return fail(
+        error instanceof Stop
+          ? error.kind === 'canceled'
+            ? 'Canceled.'
+            : `Timed out after ${budget}ms.`
+          : messageOf(error),
+      )
     }
 
-    return { ok: true, results, touched, before }
+    return { ok: true, results, touched, before, after: current }
   }
 }

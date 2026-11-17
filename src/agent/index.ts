@@ -8,13 +8,13 @@ import type {
 import { createAllowGate } from './allow.js'
 import { agentCallers } from './callers.js'
 import { describe, MATCH_LIMIT } from './describe.js'
-import { REDACTED } from './marks.js'
 import { createPress } from './press.js'
 import { agentShownEntries, findAgentEntries, findAgentTarget, itemsMatching } from './query.js'
-import { agentLabelSafe, agentOffPage, agentSecret, agentTick } from './registry.js'
+import { agentOffPage, agentTick } from './registry.js'
 import { subscribeAgentChanges } from './report.js'
 import { createRunner } from './run.js'
 import { agentTools } from './tools.js'
+import { valuesOf } from './values.js'
 
 export type * from './types'
 export { agentTools } from './tools.js'
@@ -42,7 +42,6 @@ const AGENT_LIMIT = 100
 
 // The most choices one `query({ within })` returns, and how many values one `act` reports.
 const ITEM_MATCH_LIMIT = 50
-const VALUE_LIMIT = 100
 
 // The entry that ends a cut list, shaped like a component so the list keeps one type.
 const moreOf = (more: number): AgentComponent => ({
@@ -73,69 +72,11 @@ export function createAgent({
   // One run at a time: two callers interleaving steps would fight over the same component.
   let queue: Promise<unknown> = Promise.resolve()
 
-  // Every field's value after a run, so an agent checks its work without another snapshot.
-  // A long page keeps what the steps touched first and says how many it left out.
-  const valuesOf = (touched: Set<string>) => {
-    const fields: { name: string; value: unknown; first: boolean }[] = []
-
-    for (const entry of agentShownEntries()) {
-      let state: Record<string, unknown>
-
-      try {
-        state = entry.node.state?.() ?? {}
-      } catch {
-        continue
-      }
-
-      if (state.open === true) {
-        continue
-      }
-
-      const key = 'checked' in state ? 'checked' : 'value' in state ? 'value' : undefined
-
-      if (!key) {
-        continue
-      }
-
-      const secret = agentSecret(entry)
-
-      fields.push({
-        name: `${entry.ref} ${agentLabelSafe(entry.node) ?? entry.node.name}`,
-        value: secret && state[key] != null && state[key] !== '' ? REDACTED : (state[key] ?? null),
-        first: touched.has(entry.ref),
-      })
-    }
-
-    const kept = new Set(fields.filter((field) => field.first))
-
-    for (const field of fields) {
-      if (kept.size >= VALUE_LIMIT) {
-        break
-      }
-
-      kept.add(field)
-    }
-
-    const out: Record<string, unknown> = {}
-
-    for (const field of fields) {
-      if (kept.has(field)) {
-        out[field.name] = field.value
-      }
-    }
-
-    if (fields.length > kept.size) {
-      out.more = fields.length - kept.size
-    }
-
-    return out
-  }
-
   const finish = (result: Awaited<ReturnType<typeof run>>): AgentActResult => ({
     ok: result.ok,
     results: result.results,
     ...(result.error && { error: result.error }),
-    values: valuesOf(result.touched),
+    values: valuesOf(result.after.states, result.touched),
     appeared: agentShownEntries()
       .filter((entry) => !result.before.has(entry.ref))
       .map(describe)

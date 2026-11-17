@@ -1,9 +1,73 @@
 import type { AgentEntry } from './registry.js'
 import type { AgentItem } from './types'
 import { fold, valueText } from './describe.js'
+import { REDACTED } from './marks.js'
 
 // The actions whose argument names a value or a choice. Others, like `setQuery`, take text.
 const CHOOSING = new Set(['setValue', 'setChecked', 'select'])
+
+/** What one component showed, as a run remembers it before and after a step. */
+export interface AgentFieldState {
+  component: string
+  label?: string
+  secret: boolean
+  state: Record<string, unknown>
+}
+
+// How many fields one `act` reports back before it starts counting what it left out.
+const FIELD_LIMIT = 100
+
+/**
+ * Every field's value after a run, named by ref and label, so an agent checks its work
+ * without another snapshot. A long page keeps the fields the steps touched first.
+ */
+export function valuesOf(states: Map<string, AgentFieldState>, touched: Set<string>) {
+  const fields: { name: string; value: unknown; first: boolean }[] = []
+
+  for (const [ref, entry] of states) {
+    if (entry.state.open === true) {
+      continue
+    }
+
+    const key = 'checked' in entry.state ? 'checked' : 'value' in entry.state ? 'value' : undefined
+
+    if (!key) {
+      continue
+    }
+
+    const value = entry.state[key]
+
+    fields.push({
+      name: `${ref} ${entry.label ?? entry.component}`,
+      value: entry.secret && value != null && value !== '' ? REDACTED : (value ?? null),
+      first: touched.has(ref),
+    })
+  }
+
+  const kept = new Set(fields.filter((field) => field.first))
+
+  for (const field of fields) {
+    if (kept.size >= FIELD_LIMIT) {
+      break
+    }
+
+    kept.add(field)
+  }
+
+  const out: Record<string, unknown> = {}
+
+  for (const field of fields) {
+    if (kept.has(field)) {
+      out[field.name] = field.value
+    }
+  }
+
+  if (fields.length > kept.size) {
+    out.more = fields.length - kept.size
+  }
+
+  return out
+}
 
 const nameOfEntry = (entry: AgentEntry) => `${entry.node.name} ${entry.ref}`
 

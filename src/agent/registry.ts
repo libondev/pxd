@@ -309,5 +309,17 @@ export function agentOwnerEntry(entry: AgentEntry): AgentEntry {
 }
 
 export function agentVisibleEntries(): AgentEntry[] {
-  return agentEntries().filter((entry) => agentOwnerEntry(entry) === entry)
+  const entries = agentEntries()
+  const pairs = entries.map((entry) => ({ entry, el: agentElement(entry) }))
+  // One pass, not one per entry: a wrapper registered after the component it renders owns
+  // that element, so the last registration for an element is the one a person reads.
+  const owner = new Map<Element, AgentEntry>()
+
+  for (const { entry, el } of pairs) {
+    if (el) {
+      owner.set(el, entry)
+    }
+  }
+
+  return pairs.filter(({ entry, el }) => !el || owner.get(el) === entry).map(({ entry }) => entry)
 }
