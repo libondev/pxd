@@ -89,6 +89,27 @@ const stop = agent.subscribe((change) => {
 - Only the component a snapshot shows reports: an inner field whose wrapper owns the same element stays silent, and the wrapper announces the change it took from it. A region marked `data-agent-hidden` says nothing at all.
 - `stop()` ends the subscription. A bridge nobody subscribed to builds no report at all.
 
+## Handing it to a model
+
+`agentTools` describes the three calls as JSON Schema, ready to pass as tool definitions:
+
+```ts
+import { agentTools, createAgent } from 'pxd/agent'
+
+const agent = createAgent()
+
+// Each tool is named after the method that runs it.
+const run = (call: { name: 'snapshot' | 'act' | 'query', input: any }) => agent[call.name](call.input)
+```
+
+| Tool | Takes |
+| --- | --- |
+| snapshot | nothing |
+| act | `steps` and an optional `timeout` |
+| query | `text`, `within` or `kind` |
+
+The bridge does not register itself as a browser agent tool: wiring that up is the app's call, and `agentTools` is what it needs to do so.
+
 ## Query
 
 `query({ text, within, kind })` finds components by a part of their label, and is the way to reach a long list once `snapshot` stops being enough.

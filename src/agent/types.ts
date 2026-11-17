@@ -52,6 +52,15 @@ export interface AgentActOptions {
   signal?: AbortSignal
 }
 
+/** One of the bridge's calls, described for a model to choose from. */
+export interface AgentTool {
+  /** Also the method that runs it: `agent[name](input)`. */
+  name: 'snapshot' | 'act' | 'query'
+  description: string
+  /** JSON Schema of what the call takes. */
+  inputSchema: Record<string, unknown>
+}
+
 /** A change a registered component made, as `subscribe` receives it. */
 export interface AgentChange {
   ref: string

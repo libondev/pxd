@@ -13,8 +13,10 @@ import { buttonsOf, describe, fold, nameOf } from './describe.js'
 import { confirmOf, isHidden } from './marks.js'
 import { agentEntry, agentLabel, agentVisibleEntries } from './registry.js'
 import { subscribeAgentChanges } from './report.js'
+import { agentTools } from './tools.js'
 
 export type * from './types'
+export { agentTools } from './tools.js'
 
 export interface AgentQuery {
   text?: string
@@ -381,5 +383,5 @@ export function createAgent({
 
   const subscribe = (listener: AgentChangeListener) => subscribeAgentChanges(listener)
 
-  return { act, query, snapshot, subscribe }
+  return { act, query, snapshot, subscribe, tools: agentTools }
 }
