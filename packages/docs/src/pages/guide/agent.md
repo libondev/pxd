@@ -96,6 +96,7 @@ agent.snapshot()
 - `ref` names the component in a step, and stays the same while the component stays mounted.
 - `label` is the name a person reads for it, from `aria-label`, `aria-labelledby` or its `<label>`.
 - The state keys after `label` are the component's own, like `value`, `checked` or `disabled`. A key that would collide with the bridge's — `ref`, `component`, `label`, `actions`, `buttons`, `items`, `confirm` — is dropped rather than allowed to overwrite them.
+- `incomplete: true` means one of the component's own state or item getters threw. The entry stays addressable instead of taking down the whole snapshot, but its data is not complete.
 - `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`. A list longer than 100 stops there and reports `itemCount`. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen.
 - `buttons` lists the name of each button inside it — its accessible name, so an icon-only button carrying `aria-label` is listed and pressable too.
 - `actions` lists what can be called right now.
@@ -134,6 +135,7 @@ await agent.act({ steps: [{ ref: 'Views', action: 'press', args: ['Two'] }] })
 - With no argument it presses the only button inside the component; a component with several asks you to name one.
 - With an argument it presses the button whose text matches — the whole text first, then a part of it. Several matches are refused rather than guessed.
 - A closed popup renders no buttons, so a component that declares `setOpen` is opened first and read again.
+- It waits through three renders, each across a macrotask, within the run's timeout. Content that arrives from a network request later than that still needs the app to have it ready; `press` does not poll indefinitely.
 
 ## Subscribing
 
@@ -191,6 +193,7 @@ agent.query({ within: 'Views' })
 - `text` matches any part of a label, or of one of the choices inside a component, ignoring case and accents.
 - `kind` matches the component name, like `checkbox`.
 - `within` limits the result to components inside the one it names; an unknown name returns an empty list.
+- It reads every choice, not only the first hundred a snapshot shows. `matchedItems` names the choices that made a component match, including ones past that cut.
 
 ## Change events
 
@@ -240,8 +243,8 @@ Three attributes on your own elements decide what an agent may do alone:
 | Attribute | Effect |
 | --- | --- |
 | `data-agent-confirm="Deletes the project"` | A step on it, or inside it, is asked about first. Write the sentence for the person who will be asked. |
-| `data-agent-secret` | Its value reads as `[redacted]`, and can still be set. A password field, `autocomplete="one-time-code"` or a `cc-*` field is secret without the attribute. |
-| `data-agent-hidden` | The region stays out of `snapshot`, `act` and `query`, as if it were not on the page. |
+| `data-agent-secret` | Its value reads as `[redacted]`, and it reports no `label`, `items` or `buttons` — those can be as revealing as the value. It can still be set. A password field, `autocomplete="one-time-code"` or a `cc-*` field is secret without the attribute. |
+| `data-agent-hidden` | The region stays out of `snapshot`, `act` and `query`, as if it were not on the page — including a step that names a component by its `ref`. A hidden button cannot be pressed either. |
 
 `createAgent({ allow })` answers the question:
 
@@ -254,6 +257,7 @@ const agent = createAgent({
 
 - `allow` receives `{ ref, component, label?, action, confirm }` and returns `true`, `false`, or a promise of either, for your own confirmation UI.
 - Without `allow`, a marked step fails with `Needs a person` and nothing happens.
+- The mark is read from the component's place in the page, so a dialog that has not rendered yet still asks before `setOpen`. 
 - A marked step waits `allowTimeout` milliseconds for the answer, five minutes by default.
 
 ## Naming what you want driven

@@ -1,7 +1,7 @@
 import type { AgentEntry } from './registry.js'
 import type { AgentAllowedStep } from './types'
 import { confirmOf } from './marks.js'
-import { agentLabel } from './registry.js'
+import { agentLabelSafe, agentMarkElement } from './registry.js'
 
 export type RefuseUnlessAllowed = (
   entry: AgentEntry,
@@ -38,7 +38,7 @@ export function createAllowGate({ allow, allowTimeout }: AllowGateOptions) {
   }
 
   const refuseUnlessAllowed: RefuseUnlessAllowed = async (entry, action, el) => {
-    const confirm = confirmOf(el ?? entry.node.el())
+    const confirm = confirmOf(el ?? agentMarkElement(entry))
 
     if (!confirm) {
       return
@@ -51,7 +51,7 @@ export function createAllowGate({ allow, allowTimeout }: AllowGateOptions) {
       confirm,
     }
 
-    const label = agentLabel(entry.node)
+    const label = agentLabelSafe(entry.node)
 
     if (label) {
       question.label = label

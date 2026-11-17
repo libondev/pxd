@@ -1,6 +1,6 @@
 import type { AgentActOptions, AgentAllowedStep, AgentQuery } from './types'
 import { createAllowGate } from './allow.js'
-import { describe } from './describe.js'
+import { describe, MATCH_LIMIT } from './describe.js'
 import { createPress } from './press.js'
 import { agentShownEntries, findAgentEntries, resolveAgentEntry } from './query.js'
 import { subscribeAgentChanges } from './report.js'
@@ -47,7 +47,16 @@ export function createAgent({
 
   return {
     act,
-    query: (options?: AgentQuery) => findAgentEntries(options).map(describe),
+    query: (options?: AgentQuery) =>
+      findAgentEntries(options).map(({ entry, matches }) => {
+        const component = describe(entry)
+
+        if (matches.length) {
+          component.matchedItems = matches.slice(0, MATCH_LIMIT)
+        }
+
+        return component
+      }),
     snapshot: () => agentShownEntries().map(describe),
     subscribe: subscribeAgentChanges,
     tools: agentTools,

@@ -6,7 +6,7 @@ export const agentTools: AgentTool[] = [
   {
     name: 'snapshot',
     description:
-      'List every component on the page that an agent can drive, with its ref, name, label, state, choices and the actions it takes right now.',
+      'List every component on the page that an agent can drive, with its ref, name, label, state, choices and the actions it takes right now. Read actions before choosing a step; an entry marked incomplete failed to report its state.',
     inputSchema: {
       type: 'object',
       properties: {},
@@ -33,11 +33,12 @@ export const agentTools: AgentTool[] = [
               action: {
                 type: 'string',
                 description:
-                  "One of the component's actions, like setValue or setOpen; press clicks a button.",
+                  "Take it from the component's `actions` in snapshot(). `press` is the one bridge action not listed there: it clicks a button by its text.",
               },
               args: {
                 type: 'array',
-                description: "The action's arguments, like the value for setValue.",
+                description:
+                  "The action's arguments: a value for setValue, a button name for press. Press with no argument needs exactly one button.",
                 items: {},
               },
             },
@@ -57,7 +58,7 @@ export const agentTools: AgentTool[] = [
   {
     name: 'query',
     description:
-      'Find components by a part of a label or by one of the choices inside them, optionally limited to those within another component or to one kind.',
+      'Find components by a part of a label or by one of the choices inside them, optionally limited to those within another component or to one kind. matchedItems names the choices that hit.',
     inputSchema: {
       type: 'object',
       properties: {

@@ -15,6 +15,9 @@ export interface AgentItem {
 export interface AgentNode {
   name: string
   el: () => Element | null | undefined
+  /** Filled in by `useAgentNode`: the DOM anchor to read `data-agent-*` from when `el` is
+   *  empty, as a closed dialog's is. A component never writes this itself. */
+  scope?: () => Element | null
   label?: () => string | undefined
   state?: () => Record<string, unknown>
   /** The choices it offers, read from its own data rather than from the DOM, so a
@@ -35,6 +38,10 @@ export interface AgentComponent {
   items?: AgentItem[]
   /** How many choices there are, when more than `items` shows. */
   itemCount?: number
+  /** `query({ text })` names the choices that made this component match, even past the cut. */
+  matchedItems?: (string | number)[]
+  /** True when a component's own state or items getter failed; the entry is still addressable. */
+  incomplete?: boolean
   actions: string[]
 }
 

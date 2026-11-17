@@ -437,10 +437,12 @@ describe('agent components', () => {
       }),
     )
 
-    expect(find(createAgent().snapshot(), 'input')).toMatchObject({
-      label: 'Password',
-      value: '[redacted]',
-    })
+    const entry = find(createAgent().snapshot(), 'input')
+
+    expect(entry).toMatchObject({ value: '[redacted]' })
+    expect(entry.label).toBeUndefined()
+    expect(entry.buttons).toBeUndefined()
+    expect(entry.items).toBeUndefined()
   })
 
   it('should leave out a region the app marks hidden', () => {

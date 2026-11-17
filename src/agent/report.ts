@@ -1,7 +1,7 @@
 import type { ChangeDetails } from '../types/shared/change'
 import type { AgentChange, AgentChangeListener } from './types'
 import { isHidden } from './marks.js'
-import { agentEntryOf, agentLabel, agentOwnerEntry } from './registry.js'
+import { agentEntryOf, agentLabelSafe, agentMarkElement, agentOwnerEntry } from './registry.js'
 
 const listeners = new Set<AgentChangeListener>()
 
@@ -25,12 +25,12 @@ export function notifyAgentChange(owner: object, value: unknown, details?: Chang
   // Only the component a snapshot shows reports. An inner field whose wrapper owns the same
   // element stays silent — the wrapper announces the change it took from it — and a hidden
   // region says nothing at all.
-  if (!entry || isHidden(entry.node.el()) || agentOwnerEntry(entry) !== entry) {
+  if (!entry || isHidden(agentMarkElement(entry)) || agentOwnerEntry(entry) !== entry) {
     return
   }
 
   const change: AgentChange = { ref: entry.ref, component: entry.node.name, value, details }
-  const label = agentLabel(entry.node)
+  const label = agentLabelSafe(entry.node)
 
   if (label) {
     change.label = label

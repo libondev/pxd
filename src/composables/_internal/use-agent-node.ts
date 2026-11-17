@@ -15,10 +15,17 @@ export function useAgentNode(node: AgentNodeOptions) {
 
       return root?.nodeType === 1 ? (root as Element) : undefined
     })
+  // A dialog renders nothing while closed, but its Vue anchor still sits inside the app's
+  // confirm/secret/hidden region. Marks are read from the anchor when there is no element.
+  const scope = () => {
+    const root = instance?.vnode.el
+
+    return el() ?? (root && 'parentElement' in root ? (root.parentElement as Element | null) : null)
+  }
   let unregister: (() => void) | undefined
 
   onMounted(() => {
-    unregister = registerAgentNode({ ...node, el }, instance ?? undefined)
+    unregister = registerAgentNode({ ...node, el, scope }, instance ?? undefined)
   })
 
   onScopeDispose(() => {
