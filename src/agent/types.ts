@@ -23,6 +23,16 @@ export interface AgentStep {
   args?: any[]
 }
 
+/** A step the app marked, as `allow` receives it before it runs. */
+export interface AgentAllowedStep {
+  ref: string
+  component: string
+  label?: string
+  action: string
+  /** What `data-agent-confirm` says the step does, in the words a person reads. */
+  confirm: string
+}
+
 export interface AgentStepResult {
   ref: string
   result: unknown

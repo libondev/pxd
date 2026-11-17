@@ -12,6 +12,7 @@ import CommandMenu from '../../src/components/command-menu/index.vue'
 import Countdown from '../../src/components/countdown/index.vue'
 import DatePicker from '../../src/components/date-picker/index.vue'
 import EffortSlider from '../../src/components/effort-slider/index.vue'
+import Input from '../../src/components/input/index.vue'
 import List from '../../src/components/list/index.vue'
 import Mention from '../../src/components/mention/index.vue'
 import Menu from '../../src/components/menu/index.vue'
@@ -408,6 +409,99 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'todo-list').completed).toBe(1)
+  })
+
+  it('should redact a field the app marks secret', async () => {
+    track(
+      mount(Input, {
+        props: { modelValue: 'hunter2' },
+        attrs: { 'aria-label': 'Password', 'data-agent-secret': '' },
+      }),
+    )
+
+    expect(find(createAgent().snapshot(), 'input')).toMatchObject({
+      label: 'Password',
+      value: '[redacted]',
+    })
+  })
+
+  it('should leave out a region the app marks hidden', () => {
+    const hidden = track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h('div', { 'data-agent-hidden': '' }, [
+              h(Input, { 'aria-label': 'Recovery codes', modelValue: 'abc' }),
+            ]),
+        }),
+      ),
+    )
+
+    track(mount(Input, { attrs: { 'aria-label': 'Visible' } }))
+
+    const labels = createAgent()
+      .snapshot()
+      .map((entry) => entry.label)
+
+    expect(labels).toContain('Visible')
+    expect(labels).not.toContain('Recovery codes')
+
+    hidden.unmount()
+  })
+
+  it('should ask a person before pressing a marked button', async () => {
+    const removed = ref(false)
+    const open = ref(true)
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(
+              Modal,
+              {
+                modelValue: open.value,
+                title: 'Settings',
+                'onUpdate:model-value': (next: unknown) => {
+                  open.value = Boolean(next)
+                },
+              },
+              {
+                default: () => h('p', 'Body'),
+                footer: () =>
+                  h(
+                    Button,
+                    {
+                      'data-agent-confirm': 'Deletes the project',
+                      onClick: () => {
+                        removed.value = true
+                      },
+                    },
+                    () => 'Delete',
+                  ),
+              },
+            ),
+        }),
+      ),
+    )
+
+    const entry = find(createAgent().snapshot(), 'modal')
+
+    expect(entry).toBeDefined()
+
+    const refused = await createAgent().act({
+      steps: [{ ref: entry.ref, action: 'press', args: ['Delete'] }],
+    })
+
+    expect(refused.ok).toBe(false)
+    expect(refused.error?.message).toContain('Needs a person')
+    expect(removed.value).toBe(false)
+
+    const allowed = await createAgent({ allow: () => true }).act({
+      steps: [{ ref: entry.ref, action: 'press', args: ['Delete'] }],
+    })
+
+    expect(allowed.ok).toBe(true)
+    expect(removed.value).toBe(true)
   })
 
   it('should set a date', async () => {

@@ -1,7 +1,14 @@
 import type { AgentEntry } from './registry.js'
-import type { AgentActResult, AgentComponent, AgentStep, AgentStepResult } from './types'
+import type {
+  AgentActResult,
+  AgentAllowedStep,
+  AgentComponent,
+  AgentStep,
+  AgentStepResult,
+} from './types'
 import { nextTick } from 'vue'
 import { withChangeDetails } from '../composables/_internal/use-change-details.js'
+import { confirmOf, isHidden, isSecret, REDACTED } from './marks.js'
 import { agentEntry, agentLabel, agentVisibleEntries } from './registry.js'
 
 export type * from './types'
@@ -27,6 +34,7 @@ const buttonsOf = (el: Element | null | undefined) =>
 
 function describe(entry: AgentEntry): AgentComponent {
   const { ref, node } = entry
+  const el = node.el()
   const component: AgentComponent = { ref, component: node.name, actions: [] }
 
   const label = agentLabel(node)
@@ -35,7 +43,18 @@ function describe(entry: AgentEntry): AgentComponent {
     component.label = label
   }
 
-  Object.assign(component, node.state?.())
+  const state = node.state?.() ?? {}
+
+  Object.assign(
+    component,
+    isSecret(el) ? Object.fromEntries(Object.keys(state).map((key) => [key, REDACTED])) : state,
+  )
+
+  const confirm = confirmOf(el)
+
+  if (confirm) {
+    component.confirm = confirm
+  }
 
   const buttons = buttonsOf(node.el()).map(textOf).filter(Boolean)
 
@@ -48,7 +67,18 @@ function describe(entry: AgentEntry): AgentComponent {
   return component
 }
 
-export function createAgent() {
+export interface AgentOptions {
+  /** Asked before a step the app marked `data-agent-confirm`. Without it, such steps fail. */
+  allow?: (step: AgentAllowedStep) => boolean | Promise<boolean>
+  /** How long a step waits for `allow`, in milliseconds. Five minutes by default. */
+  timeout?: number
+}
+
+const DEFAULT_TIMEOUT = 5 * 60 * 1000
+
+export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions = {}) {
+  const entries = () => agentVisibleEntries().filter((entry) => !isHidden(entry.node.el()))
+
   // A ref, or the name exactly one component answers to.
   const resolve = (ref: string) => {
     const byRef = agentEntry(ref)
@@ -58,7 +88,7 @@ export function createAgent() {
     }
 
     const needle = fold(ref)
-    const named = agentVisibleEntries().filter((entry) => {
+    const named = entries().filter((entry) => {
       const label = agentLabel(entry.node)
 
       return !!label && fold(label) === needle
@@ -79,7 +109,55 @@ export function createAgent() {
     return outer.length === 1 ? outer[0] : undefined
   }
 
-  const snapshot = (): AgentComponent[] => agentVisibleEntries().map(describe)
+  const snapshot = (): AgentComponent[] => entries().map(describe)
+
+  // A step the app marked has to be allowed before anything happens.
+  const refuseUnlessAllowed = async (entry: AgentEntry, action: string, el?: Element | null) => {
+    const confirm = confirmOf(el ?? entry.node.el())
+
+    if (!confirm) {
+      return
+    }
+
+    const question: AgentAllowedStep = {
+      ref: entry.ref,
+      component: entry.node.name,
+      action,
+      confirm,
+    }
+
+    const label = agentLabel(entry.node)
+
+    if (label) {
+      question.label = label
+    }
+
+    if (await ask(question)) {
+      return
+    }
+
+    return `Needs a person: ${confirm}`
+  }
+
+  const ask = async (question: AgentAllowedStep) => {
+    if (!allow) {
+      return false
+    }
+
+    const answer = Promise.resolve(allow(question))
+    const guarded = answer.then((allowed) => !!allowed)
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    const expired = new Promise<boolean>((resolve) => {
+      timer = setTimeout(() => resolve(false), timeout)
+    })
+
+    try {
+      return await Promise.race([guarded, expired])
+    } finally {
+      clearTimeout(timer)
+    }
+  }
 
   // Clicks the button a step names. A closed popup renders no buttons, so a component that
   // declares `setOpen` is opened first and read again.
@@ -103,6 +181,12 @@ export function createAgent() {
 
     if (typeof text !== 'string' || !text) {
       if (buttons.length === 1) {
+        const refused = await refuseUnlessAllowed(entry, 'press', buttons[0].el)
+
+        if (refused) {
+          return refused
+        }
+
         withChangeDetails({ source: 'agent' }, () => buttons[0].el.click())
         await nextTick()
 
@@ -124,6 +208,12 @@ export function createAgent() {
 
     if (!near.length) {
       return `"${entry.node.name}" has no button matching "${text}"; it has: ${buttons.map((button) => button.text).join(', ')}.`
+    }
+
+    const refused = await refuseUnlessAllowed(entry, 'press', near[0].el)
+
+    if (refused) {
+      return refused
     }
 
     withChangeDetails({ source: 'agent' }, () => near[0].el.click())
@@ -154,6 +244,12 @@ export function createAgent() {
         results.push({ ref: entry.ref, result: null })
 
         continue
+      }
+
+      const refused = await refuseUnlessAllowed(entry, step.action)
+
+      if (refused) {
+        return { ok: false, results, error: { message: refused, ref: entry.ref } }
       }
 
       const action = entry.node.actions[step.action]
@@ -189,7 +285,7 @@ export function createAgent() {
 
     const needle = text ? fold(text) : undefined
 
-    return agentVisibleEntries()
+    return entries()
       .filter((entry) => {
         if (kind && entry.node.name !== kind) {
           return false

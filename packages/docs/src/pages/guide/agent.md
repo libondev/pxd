@@ -103,6 +103,28 @@ function onChange(value: string, details: ChangeDetails) {
 
 A change the component commits, like a field on blur or a slider once the drag ends, carries no `cancel` — the value has already been applied.
 
+## Keeping it in bounds
+
+Three attributes on your own elements decide what an agent may do alone:
+
+| Attribute | Effect |
+| --- | --- |
+| `data-agent-confirm="Deletes the project"` | A step on it, or inside it, is asked about first. Write the sentence for the person who will be asked. |
+| `data-agent-secret` | Its value reads as `[redacted]`, and can still be set. A password field, `autocomplete="one-time-code"` or a `cc-*` field is secret without the attribute. |
+| `data-agent-hidden` | The region stays out of `snapshot`, `act` and `query`, as if it were not on the page. |
+
+`createAgent({ allow })` answers the question:
+
+```ts
+const agent = createAgent({
+  allow: (step) => askThePerson(step.confirm),
+})
+```
+
+- `allow` receives `{ ref, component, label?, action, confirm }` and returns `true`, `false`, or a promise of either, for your own confirmation UI.
+- Without `allow`, a marked step fails with `Needs a person` and nothing happens.
+- A step waits `timeout` milliseconds for the answer, five minutes by default.
+
 ## What is wired
 
 A component appears in `snapshot` only when it declares itself to the bridge. Today that is:
