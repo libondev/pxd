@@ -52,7 +52,7 @@ await agent.act({
 - A change made by a step reports `source: 'agent'` in its `change` event (see below).
 - The call resolves after the page has rendered what each step changed, so the next step and your own assertions see it.
 - `timeout` caps the whole run (thirty seconds by default) and `signal` ends it: a step that outlives either fails with `Timed out after …` or `Canceled.`, and no further step runs. The step already in flight may still finish its work — the run stops waiting, it does not undo.
-- One run at a time. Two calls on the same bridge queue, because interleaved steps would fight over the same component.
+- One run at a time. Two calls on the same bridge queue, because interleaved steps would fight over the same component. A run that timed out releases the queue while its last step may still be finishing, so a following run can overlap it.
 
 ## Press
 
@@ -171,6 +171,16 @@ const agent = createAgent({
 - `allow` receives `{ ref, component, label?, action, confirm }` and returns `true`, `false`, or a promise of either, for your own confirmation UI.
 - Without `allow`, a marked step fails with `Needs a person` and nothing happens.
 - A marked step waits `allowTimeout` milliseconds for the answer, five minutes by default.
+
+## Naming what you want driven
+
+A component is found by its label, and the label is the name a person reads: its `aria-label`, its `<label>`, the text of its button, or the name of the field it wraps. Nothing is invented, so a control with no text of its own appears in `snapshot` with a `ref` and no `label`:
+
+- a `slider`, a `rating`, a `steps` bar or an `effort-slider` — the value is visual, the name is yours to give;
+- `carousel`, `active-graph`, `calendar` — the content names nothing;
+- any field without a visible `<label>`, like a `time-picker` or a `number-input`.
+
+Pass `aria-label` to those and they are reachable by name; leave them and a step can still use their `ref`. The library deliberately ships no default names: two unlabeled slider used to answer to the same word, which is worse than having none.
 
 ## What is wired
 
