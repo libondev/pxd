@@ -1,10 +1,10 @@
 import type { AgentEntry } from './registry.js'
 import type {
+  AgentActOptions,
   AgentActResult,
   AgentAllowedStep,
   AgentChangeListener,
   AgentComponent,
-  AgentStep,
   AgentStepResult,
 } from './types'
 import { nextTick } from 'vue'
@@ -94,16 +94,23 @@ function describe(entry: AgentEntry): AgentComponent {
 export interface AgentOptions {
   /** Asked before a step the app marked `data-agent-confirm`. Without it, such steps fail. */
   allow?: (step: AgentAllowedStep) => boolean | Promise<boolean>
-  /** How long a step waits for `allow`, in milliseconds. Five minutes by default. */
-  timeout?: number
+  /** How long a marked step waits for `allow`, in milliseconds. Five minutes by default. */
+  allowTimeout?: number
+  /** How long one `act` run may take, in milliseconds. Thirty seconds by default. */
+  actTimeout?: number
 }
 
-const DEFAULT_TIMEOUT = 5 * 60 * 1000
+const DEFAULT_ALLOW_TIMEOUT = 5 * 60 * 1000
+const DEFAULT_ACT_TIMEOUT = 30 * 1000
 // A snapshot has to stay readable to a model: a list of ten thousand rows would crowd out
 // everything else, so items stop here and `itemCount` says how many there really are.
 const ITEM_LIMIT = 100
 
-export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions = {}) {
+export function createAgent({
+  allow,
+  allowTimeout = DEFAULT_ALLOW_TIMEOUT,
+  actTimeout = DEFAULT_ACT_TIMEOUT,
+}: AgentOptions = {}) {
   const entries = () => agentVisibleEntries().filter((entry) => !isHidden(entry.node.el()))
 
   // A ref, or the name exactly one component answers to.
@@ -176,7 +183,7 @@ export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions =
     let timer: ReturnType<typeof setTimeout> | undefined
 
     const expired = new Promise<boolean>((resolve) => {
-      timer = setTimeout(() => resolve(false), timeout)
+      timer = setTimeout(() => resolve(false), allowTimeout)
     })
 
     try {
@@ -247,61 +254,159 @@ export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions =
     await nextTick()
   }
 
-  const act = async ({ steps }: { steps: AgentStep[] }): Promise<AgentActResult> => {
+  // A step that outlasts the run's budget, or one the caller cancels, ends the run where it is.
+  class Stop extends Error {
+    constructor(readonly kind: 'canceled' | 'timeout') {
+      super(kind)
+    }
+  }
+
+  const settle = <T>(work: Promise<T> | T, budget: number, signal?: AbortSignal) =>
+    new Promise<T>((resolve, reject) => {
+      const remaining = budget - Date.now()
+
+      if (signal?.aborted) {
+        reject(new Stop('canceled'))
+
+        return
+      }
+
+      if (remaining <= 0) {
+        reject(new Stop('timeout'))
+
+        return
+      }
+
+      const done = () => {
+        clearTimeout(timer)
+        signal?.removeEventListener('abort', onAbort)
+      }
+      const onAbort = () => {
+        done()
+        reject(new Stop('canceled'))
+      }
+      const timer = setTimeout(() => {
+        done()
+        reject(new Stop('timeout'))
+      }, remaining)
+
+      signal?.addEventListener('abort', onAbort, { once: true })
+
+      // A step that finishes after the race was lost changes the page anyway; nothing here
+      // can undo that, so the promise is handled and its result dropped.
+      void (async () => {
+        try {
+          resolve(await work)
+        } catch (error) {
+          reject(error)
+        } finally {
+          done()
+        }
+      })()
+    })
+
+  const runSteps = async ({
+    steps,
+    timeout: budget = actTimeout,
+    signal,
+  }: AgentActOptions): Promise<AgentActResult> => {
+    const deadline = Date.now() + budget
     const results: AgentStepResult[] = []
+    let at: { index: number; ref?: string } = { index: 0 }
 
-    for (const [index, step] of steps.entries()) {
-      const entry = resolve(step.ref)
+    try {
+      for (const [index, step] of steps.entries()) {
+        at = { index }
 
-      if (!entry) {
-        return {
-          ok: false,
-          results,
-          error: { message: `No component matches "${step.ref}".`, ref: step.ref, step: index },
-        }
-      }
-
-      if (step.action === 'press') {
-        const error = await press(entry, step.args?.[0])
-
-        if (error) {
-          return { ok: false, results, error: { message: error, ref: entry.ref, step: index } }
+        if (signal?.aborted || Date.now() >= deadline) {
+          throw new Stop(signal?.aborted ? 'canceled' : 'timeout')
         }
 
-        results.push({ ref: entry.ref, result: null })
+        const entry = resolve(step.ref)
 
-        continue
-      }
-
-      const refused = await refuseUnlessAllowed(entry, step.action)
-
-      if (refused) {
-        return { ok: false, results, error: { message: refused, ref: entry.ref, step: index } }
-      }
-
-      const action = entry.node.actions[step.action]
-
-      if (!action) {
-        return {
-          ok: false,
-          results,
-          error: {
-            message: `"${entry.node.name}" has no action "${step.action}".`,
-            ref: entry.ref,
-            step: index,
-          },
+        if (!entry) {
+          return {
+            ok: false,
+            results,
+            error: { message: `No component matches "${step.ref}".`, ref: step.ref, step: index },
+          }
         }
+
+        at = { index, ref: entry.ref }
+
+        if (step.action === 'press') {
+          const error = await settle(press(entry, step.args?.[0]), deadline, signal)
+
+          if (error) {
+            return { ok: false, results, error: { message: error, ref: entry.ref, step: index } }
+          }
+
+          await settle(nextTick(), deadline, signal)
+          results.push({ ref: entry.ref, result: null })
+
+          continue
+        }
+
+        const refused = await settle(refuseUnlessAllowed(entry, step.action), deadline, signal)
+
+        if (refused) {
+          return { ok: false, results, error: { message: refused, ref: entry.ref, step: index } }
+        }
+
+        const action = entry.node.actions[step.action]
+
+        if (!action) {
+          return {
+            ok: false,
+            results,
+            error: {
+              message: `"${entry.node.name}" has no action "${step.action}".`,
+              ref: entry.ref,
+              step: index,
+            },
+          }
+        }
+
+        const result = await settle(
+          withChangeDetails({ source: 'agent' }, () => action(...(step.args ?? []))),
+          deadline,
+          signal,
+        )
+
+        await settle(nextTick(), deadline, signal)
+        results.push({ ref: entry.ref, result: result ?? null })
+      }
+    } catch (error) {
+      if (!(error instanceof Stop)) {
+        throw error
       }
 
-      const result = await withChangeDetails({ source: 'agent' }, () =>
-        action(...(step.args ?? [])),
-      )
-
-      await nextTick()
-      results.push({ ref: entry.ref, result: result ?? null })
+      return {
+        ok: false,
+        results,
+        error: {
+          message: error.kind === 'canceled' ? 'Canceled.' : `Timed out after ${budget}ms.`,
+          ref: at.ref,
+          step: at.index,
+        },
+      }
     }
 
     return { ok: true, results }
+  }
+
+  // One run at a time: two callers interleaving steps would fight over the same component.
+  let queue: Promise<unknown> = Promise.resolve()
+
+  const act = (options: AgentActOptions) => {
+    const run = queue.then(() => runSteps(options))
+
+    queue = run.then(
+      () => {},
+      () => {},
+    )
+
+    return run
   }
 
   const query = ({ text, within, kind }: AgentQuery = {}) => {

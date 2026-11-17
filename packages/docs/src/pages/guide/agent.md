@@ -51,6 +51,8 @@ await agent.act({
 - The result is `{ ok, results, error? }`. `results` holds `{ ref, result }` for the steps that ran; the run stops at the first failure, and `error` carries `{ message, ref, step }`, where `step` is the index that failed.
 - A change made by a step reports `source: 'agent'` in its `change` event (see below).
 - The call resolves after the page has rendered what each step changed, so the next step and your own assertions see it.
+- `timeout` caps the whole run (thirty seconds by default) and `signal` ends it: a step that outlives either fails with `Timed out after …` or `Canceled.`, and no further step runs. The step already in flight may still finish its work — the run stops waiting, it does not undo.
+- One run at a time. Two calls on the same bridge queue, because interleaved steps would fight over the same component.
 
 ## Press
 
@@ -141,12 +143,13 @@ Three attributes on your own elements decide what an agent may do alone:
 ```ts
 const agent = createAgent({
   allow: (step) => askThePerson(step.confirm),
+  actTimeout: 30_000,
 })
 ```
 
 - `allow` receives `{ ref, component, label?, action, confirm }` and returns `true`, `false`, or a promise of either, for your own confirmation UI.
 - Without `allow`, a marked step fails with `Needs a person` and nothing happens.
-- A step waits `timeout` milliseconds for the answer, five minutes by default.
+- A marked step waits `allowTimeout` milliseconds for the answer, five minutes by default.
 
 ## What is wired
 

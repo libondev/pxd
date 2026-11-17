@@ -885,6 +885,36 @@ describe('agent components', () => {
     expect(result.results).toHaveLength(1)
   })
 
+  it('should not run a step it has no time for', async () => {
+    track(mount(Input, { attrs: { 'aria-label': 'Project name' } }))
+    const agent = createAgent()
+
+    const result = await agent.act({
+      steps: [{ ref: 'Project name', action: 'setValue', args: ['Atlas'] }],
+      timeout: 0,
+    })
+
+    expect(result.ok).toBe(false)
+    expect(result.error?.message).toContain('Timed out')
+    expect(find(agent.snapshot(), 'input')).toMatchObject({ value: '' })
+  })
+
+  it('should not run a step that was canceled', async () => {
+    const controller = new AbortController()
+
+    track(mount(Input, { attrs: { 'aria-label': 'Project name' } }))
+
+    controller.abort()
+
+    const result = await createAgent().act({
+      steps: [{ ref: 'Project name', action: 'setValue', args: ['Atlas'] }],
+      signal: controller.signal,
+    })
+
+    expect(result.ok).toBe(false)
+    expect(result.error?.message).toBe('Canceled.')
+  })
+
   it('should set a date', async () => {
     const bound = mountBound(DatePicker, { 'aria-label': 'Due' }, '')
     const agent = createAgent()

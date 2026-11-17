@@ -44,6 +44,14 @@ export interface AgentStep {
   args?: any[]
 }
 
+export interface AgentActOptions {
+  steps: AgentStep[]
+  /** How long the whole run may take, in milliseconds. Thirty seconds by default. */
+  timeout?: number
+  /** Ends the run before the next step, and stops waiting on the one in flight. */
+  signal?: AbortSignal
+}
+
 /** A change a registered component made, as `subscribe` receives it. */
 export interface AgentChange {
   ref: string
