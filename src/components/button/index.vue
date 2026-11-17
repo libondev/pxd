@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ButtonProps } from './types'
 import { computed } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useButtonGroupContext } from '../../contexts/button.js'
@@ -112,6 +113,14 @@ const { attrs, classes } = useTailwindVariant(
     },
   },
 )
+useAgentNode({
+  name: 'button',
+  state: () => ({
+    disabled: isDisabled.value,
+    loading: props.loading ?? false,
+  }),
+  actions: {},
+})
 </script>
 
 <template>

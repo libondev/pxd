@@ -29,8 +29,15 @@ const textOf = (el: Element) => (el.textContent ?? '').replace(/\s+/g, ' ').trim
 
 // The buttons a step can press: a closed popup renders nothing, so it can't be pressed
 // until the step that opens it has rendered.
-const buttonsOf = (el: Element | null | undefined) =>
-  el ? [...el.querySelectorAll<HTMLElement>('button, [role="button"]')] : []
+const buttonsOf = (el: Element | null | undefined) => {
+  if (!el) {
+    return []
+  }
+
+  const root = el.matches('button, [role="button"]') ? [el as HTMLElement] : []
+
+  return [...root, ...el.querySelectorAll<HTMLElement>('button, [role="button"]')]
+}
 
 function describe(entry: AgentEntry): AgentComponent {
   const { ref, node } = entry

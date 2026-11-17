@@ -132,6 +132,8 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | Component | Actions |
 | --- | --- |
 | `active-graph` | `setValue` |
+| `approval-card` | `approve`, `reject`, `dismiss`, `reset` |
+| `button` | — |
 | `calendar` | `setValue`, `selectToday` |
 | `carousel` | `next`, `previous`, `goTo`, `play`, `pause` |
 | `checkbox` | `setValue`, `toggle` |
@@ -175,7 +177,7 @@ A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-butt
 
 `steps` moves only where the app marks it `clickable`, the same as a click. Its `value` is the current step's index.
 
-`scroll-progress` reports its percentage and offers no action: a reading some other component's scroll produces, listed so an agent can see it.
+`scroll-progress` reports its percentage and offers no action: a reading some other component's scroll produces, listed so an agent can see it. `button` is the same shape the other way round — no action of its own, because `press` already clicks it.
 
 A dialog renders nothing while it is closed, so it reports no `label` until it opens. A step reaches it by `ref`, opens it, and every later step can use the title as its name.
 

@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import { createAgent } from '../../src/agent'
 import ActiveGraph from '../../src/components/active-graph/index.vue'
+import ApprovalCard from '../../src/components/approval-card/index.vue'
 import Button from '../../src/components/button/index.vue'
 import Calendar from '../../src/components/calendar/index.vue'
 import Carousel from '../../src/components/carousel/index.vue'
@@ -581,6 +582,57 @@ describe('agent components', () => {
     await agent.act({ steps: [{ ref: 'Activity', action: 'setValue', args: ['2026-11-10'] }] })
 
     expect(find(agent.snapshot(), 'active-graph')).toMatchObject({ selected: '2026-11-10' })
+  })
+
+  it('should press a button that stands on its own', async () => {
+    const clicks = ref(0)
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(
+              Button,
+              {
+                onClick: () => {
+                  clicks.value += 1
+                },
+              },
+              () => 'Save',
+            ),
+        }),
+      ),
+    )
+    const agent = createAgent()
+
+    const entry = find(agent.snapshot(), 'button')
+
+    expect(entry).toMatchObject({ label: 'Save', buttons: ['Save'], actions: [] })
+
+    const result = await agent.act({ steps: [{ ref: 'Save', action: 'press' }] })
+
+    expect(result.ok).toBe(true)
+    expect(clicks.value).toBe(1)
+  })
+
+  it('should approve an approval card', async () => {
+    track(
+      mount(ApprovalCard, {
+        props: { title: 'Run command', command: 'rm -rf dist' },
+        attrs: { 'aria-label': 'Approval' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'approval-card')).toMatchObject({
+      label: 'Approval',
+      status: 'pending',
+      actions: ['approve', 'reject', 'dismiss', 'reset'],
+    })
+
+    const result = await agent.act({ steps: [{ ref: 'Approval', action: 'approve' }] })
+
+    expect(result.ok).toBe(true)
+    expect(find(agent.snapshot(), 'approval-card')).toMatchObject({ status: 'approved' })
   })
 
   it('should set a date', async () => {

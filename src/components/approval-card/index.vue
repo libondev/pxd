@@ -14,6 +14,7 @@ import ClockIcon from '@gdsicon/vue/clock'
 import CrossCircleFillIcon from '@gdsicon/vue/cross-circle-fill'
 import TerminalIcon from '@gdsicon/vue/terminal'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isCompositionKeydown } from '../../utils/event.js'
 import { isTruthyProp, toArray } from '../../utils/format.js'
@@ -86,6 +87,17 @@ const computedStatusLabel = computed(() => configProvider.locale.approval[status
 const computedRememberLabel = computed(
   () => props.rememberLabel || configProvider.locale.approval.remember,
 )
+
+useAgentNode({
+  name: 'approval-card',
+  state: () => ({ status: status.value }),
+  actions: {
+    approve,
+    reject,
+    dismiss,
+    reset,
+  },
+})
 
 function clearTimer() {
   if (timerId !== undefined) {

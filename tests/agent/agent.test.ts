@@ -2,9 +2,9 @@ import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import { createAgent } from '../../src/agent'
-import Button from '../../src/components/button/index.vue'
 import Checkbox from '../../src/components/checkbox/index.vue'
 import Input from '../../src/components/input/index.vue'
+import Stack from '../../src/components/stack/index.vue'
 import Tabs from '../../src/components/tabs/index.vue'
 
 const options = [
@@ -127,10 +127,10 @@ describe('agent', () => {
 
   it('should leave out a component that declares no node', () => {
     mountPage()
-    track(mount(Button, { slots: { default: 'Save' } }))
+    track(mount(Stack, { slots: { default: 'Save' } }))
     const agent = createAgent()
 
-    expect(agent.snapshot().map((entry) => entry.component)).not.toContain('button')
+    expect(agent.snapshot().map((entry) => entry.component)).not.toContain('stack')
   })
 
   it('should find components by text and kind', () => {
