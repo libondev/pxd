@@ -10,6 +10,7 @@ import CommandMenu from '../../src/components/command-menu/index.vue'
 import Input from '../../src/components/input/index.vue'
 import Modal from '../../src/components/modal/index.vue'
 import Radio from '../../src/components/radio/index.vue'
+import Select from '../../src/components/select/index.vue'
 import Tabs from '../../src/components/tabs/index.vue'
 import Toggle from '../../src/components/toggle/index.vue'
 
@@ -248,6 +249,37 @@ describe('change source', () => {
     await new Promise((resolve) => setTimeout(resolve, 0))
 
     expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'item-press' })
+  })
+
+  it('should name an agent step that set multiple select values', async () => {
+    const value = ref<(string | number)[]>([])
+    const wrapper = track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(Select, {
+              modelValue: value.value,
+              multiple: true,
+              options: [
+                { label: 'One', value: 1 },
+                { label: 'Two', value: 2 },
+              ],
+              'onUpdate:model-value': (next: unknown) => {
+                value.value = next as (string | number)[]
+              },
+            }),
+        }),
+      ),
+    )
+    const agent = createAgent()
+    const entry = agent.snapshot().find((component) => component.component === 'select')!
+
+    const result = await agent.act({
+      steps: [{ ref: entry.ref, action: 'setValue', args: [[1, 2]] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(detailsOf(wrapper.findComponent(Select))).toMatchObject({ source: 'agent' })
   })
 
   it('should name an agent step that advanced a carousel', async () => {
