@@ -32,7 +32,9 @@ pnpm build:lib
 node --input-type=module -e "console.log(Object.keys(await import('pxd/agent')))"
 ```
 
-`dev:lib` 的 `dist` 是 `src` 的 symlink，`dist/agent` 这类路径在开发态并不存在 —— 别用它判断
+开发态 `dev:lib` 会把 `dist` 换成指向 `src` 的符号链接，`exports` 里的 `dist/agent/index.js` 因此经由
+链接解析到 `src/agent/index.js`。这条路径是**推理**而非实测：本地沙箱禁止删除 `dist`，`dev-stub` 起不来。
+要确认就自己跑一次 `pnpm dev` 后在 docs 里 `import('pxd/agent')`。
 
 ## Safety
 
