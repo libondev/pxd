@@ -28,7 +28,7 @@ const computedVariant = computed(() => {
   return props.variant || toggleButtonGroupContext?.props.variant || 'default'
 })
 
-const modelValue = useModelValue(
+const { modelValue } = useModelValue(
   toggleButtonGroupContext?.props ?? props,
   toggleButtonGroupContext?.emits ?? emits,
 )

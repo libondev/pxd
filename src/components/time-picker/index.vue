@@ -56,7 +56,7 @@ const committedValue = shallowRef<string | number>('')
 const configProvider = useConfigProvider()
 
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
-const modelValue = useModelValue(props, emits, {
+const { modelValue } = useModelValue(props, emits, {
   get() {
     return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
   },

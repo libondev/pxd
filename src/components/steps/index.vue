@@ -47,7 +47,7 @@ const SIZES = {
   },
 }
 
-const activeValue = useModelValue(props, emits, {
+const { modelValue: activeValue } = useModelValue(props, emits, {
   defaultValue: () => props.defaultValue,
 })
 const activeIndex = computed(() => activeValue.value ?? 0)

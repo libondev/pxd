@@ -49,7 +49,7 @@ const defaultStyles = computed(() => ({
     : '-mbs-3',
 }))
 
-const isVisible = useModelValue(props, emits)
+const { modelValue: isVisible } = useModelValue(props, emits)
 const configProvider = useConfigProvider()
 const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
   autoFocusElement: () => props.autoFocusElement,

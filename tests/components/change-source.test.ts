@@ -1,0 +1,116 @@
+import type { ChangeDetails } from '../../src/types/shared/change'
+import { mount } from '@vue/test-utils'
+import { afterEach, describe, expect, it } from 'vite-plus/test'
+import { defineComponent, h, ref } from 'vue'
+import { createAgent } from '../../src/agent'
+import Input from '../../src/components/input/index.vue'
+import Toggle from '../../src/components/toggle/index.vue'
+
+const detailsOf = (wrapper: { emitted: (event: string) => unknown[][] | undefined }) =>
+  wrapper.emitted('change')?.at(-1)?.[1] as ChangeDetails | undefined
+
+// The registry is module-level, so a component left mounted answers to the same name in the
+// next case and act() refuses to guess between two.
+const mounted: { unmount: () => void }[] = []
+
+const track = <T extends { unmount: () => void }>(wrapper: T) => {
+  mounted.push(wrapper)
+
+  return wrapper
+}
+
+afterEach(() => {
+  mounted.splice(0).forEach((wrapper) => wrapper.unmount())
+})
+
+const field = (value: { value: string }, label = 'Project name') =>
+  track(
+    mount(
+      defineComponent({
+        setup: () => () =>
+          h(Input, {
+            modelValue: value.value,
+            'aria-label': label,
+            'onUpdate:model-value': (next: unknown) => {
+              value.value = next == null ? '' : String(next as string | number)
+            },
+          }),
+      }),
+    ),
+  )
+
+const toggle = (checked: { value: boolean }) =>
+  track(
+    mount(
+      defineComponent({
+        setup: () => () =>
+          h(Toggle, {
+            modelValue: checked.value,
+            'aria-label': 'Notifications',
+            'onUpdate:model-value': (next: unknown) => {
+              checked.value = next === true
+            },
+          }),
+      }),
+    ),
+  )
+
+describe('change source', () => {
+  it('should name a person who typed in a field', () => {
+    const wrapper = field(ref(''))
+    const input = wrapper.find('input')
+
+    input.element.value = 'Atlas'
+    input.element.dispatchEvent(new Event('change'))
+
+    expect(detailsOf(wrapper.findComponent(Input))).toMatchObject({
+      source: 'user',
+      reason: 'typed',
+    })
+  })
+
+  it('should name a person who cleared a field, even without an event', () => {
+    const wrapper = track(mount(Input, { props: { modelValue: 'Atlas' } }))
+
+    ;(wrapper.vm as unknown as { clear: () => void }).clear()
+
+    expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'cleared' })
+  })
+
+  it('should name an agent step that set a field', async () => {
+    const wrapper = field(ref(''))
+
+    await createAgent().act({
+      steps: [{ ref: 'Project name', action: 'setValue', args: ['Atlas'] }],
+    })
+
+    expect(detailsOf(wrapper.findComponent(Input))).toMatchObject({
+      source: 'agent',
+      reason: 'api',
+    })
+  })
+
+  it('should name a person who pressed a toggle', async () => {
+    const wrapper = toggle(ref(false))
+
+    await wrapper.find('input').setValue(true)
+
+    expect(detailsOf(wrapper.findComponent(Toggle))).toMatchObject({
+      source: 'user',
+      reason: 'trigger-press',
+    })
+  })
+
+  it('should name an agent step that flipped a toggle', async () => {
+    const wrapper = toggle(ref(false))
+
+    await createAgent().act({
+      steps: [{ ref: 'Notifications', action: 'setValue', args: [true] }],
+    })
+
+    expect(detailsOf(wrapper.findComponent(Toggle))).toMatchObject({
+      source: 'agent',
+      reason: 'api',
+    })
+  })
+})

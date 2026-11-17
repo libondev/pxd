@@ -34,7 +34,7 @@ const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
 const calendarModelValue = computed(() => dayjsDateTime.value?.valueOf() ?? null)
 
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
-const modelValue = useModelValue(props, emits, {
+const { modelValue } = useModelValue(props, emits, {
   get() {
     if (draftInput.value !== null) {
       return draftInput.value

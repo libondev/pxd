@@ -29,7 +29,7 @@ const checkboxGroupContext = useCheckboxGroupContext()
 
 const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled || false)
 
-const modelValue = useModelValue(
+const { modelValue } = useModelValue(
   checkboxGroupContext?.props ?? props,
   checkboxGroupContext?.emits ?? emits,
 )

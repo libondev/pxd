@@ -33,7 +33,7 @@ const configProvider = useConfigProvider()
 
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 
-const modelValue = useModelValue(props, emits)
+const { modelValue, change } = useModelValue(props, emits)
 
 const isChecked = computed(() => modelValue.value === props.activeValue)
 
@@ -58,7 +58,7 @@ useAgentNode({
         }
       }
 
-      modelValue.value = value
+      change(value, { reason: 'api' })
     },
   },
 })
@@ -81,7 +81,8 @@ async function onCheckboxChange(e: Event) {
   }
 
   const changedValue = rawValue ? props.activeValue : props.inactiveValue
-  modelValue.value = changedValue
+
+  change(changedValue, { reason: 'trigger-press', event: e })
 }
 </script>
 

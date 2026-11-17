@@ -22,7 +22,7 @@ const radioGroupName = radioGroupContext?.name ?? getUniqueId()
 
 const isDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled || false)
 
-const modelValue = useModelValue(
+const { modelValue } = useModelValue(
   radioGroupContext?.props ?? props,
   radioGroupContext?.emits ?? emits,
 )

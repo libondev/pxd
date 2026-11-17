@@ -55,7 +55,7 @@ const isDragging = shallowRef(false)
 const starCount = computed(() => Math.max(1, props.count))
 
 const configProvider = useConfigProvider()
-const modelValue = useModelValue(props, emits)
+const { modelValue } = useModelValue(props, emits)
 
 const displayValue = computed(() => dragValue.value ?? hoverValue.value ?? modelValue.value)
 const fills = computed(() => {

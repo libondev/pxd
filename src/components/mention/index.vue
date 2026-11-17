@@ -52,7 +52,7 @@ const editorRef = shallowRef<InstanceType<typeof PMentionEditor>>()
 const listRef = shallowRef<InstanceType<typeof PList>>()
 const searchInputRef = shallowRef<HTMLInputElement>()
 
-const modelValue = useModelValue(props, emits)
+const { modelValue } = useModelValue(props, emits)
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)

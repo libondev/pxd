@@ -20,7 +20,7 @@ const emits = defineEmits<ColorSelectorEmits>()
 const uniqueName = getUniqueId('color-selector')
 
 const configProvider = useConfigProvider()
-const modelValue = useModelValue(props, emits)
+const { modelValue } = useModelValue(props, emits)
 
 useAgentNode({
   name: 'color-selector',

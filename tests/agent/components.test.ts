@@ -680,7 +680,7 @@ describe('agent components', () => {
 
     expect(seen).toHaveLength(2)
     expect(seen[1]).toMatchObject({ value: 'typed' })
-    expect(seen[1].details?.source).toBeUndefined()
+    expect(seen[1].details).toMatchObject({ source: 'user', reason: 'typed' })
 
     stop()
 

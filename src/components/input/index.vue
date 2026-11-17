@@ -113,7 +113,7 @@ useAgentNode({
       const next = value == null ? '' : String(value)
 
       modelValue.value = next
-      commit(next)
+      commit(next, { reason: 'api' })
     },
     focus,
     blur,
@@ -151,7 +151,7 @@ function onClick(event: MouseEvent) {
 
 function onChange(event: Event) {
   const inputValue = getInputValue(event)
-  commit(inputValue)
+  commit(inputValue, { reason: 'typed', event })
 }
 
 function onInput(event: Event) {
@@ -226,7 +226,7 @@ function select() {
 function clear() {
   const clearValue = props.clearValue ?? ''
 
-  commit('')
+  commit('', { reason: 'cleared' })
   modelValue.value = clearValue
 }
 

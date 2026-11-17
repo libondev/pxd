@@ -22,7 +22,7 @@ const switchGroupName = switchGroupContext?.name ?? getUniqueId()
 
 const isDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled || false)
 
-const modelValue = useModelValue(
+const { modelValue } = useModelValue(
   switchGroupContext?.props ?? props,
   switchGroupContext?.emits ?? emits,
 )

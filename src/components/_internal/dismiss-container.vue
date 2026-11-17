@@ -49,7 +49,7 @@ const computedStyle = computed(() => {
   }
 })
 
-const modelValue = useModelValue(props, emits)
+const { modelValue } = useModelValue(props, emits)
 useSwipeGesture(containerRef, {
   handleSelector: '.pxd-dismiss-container--handle',
   swipeThreshold: 0,

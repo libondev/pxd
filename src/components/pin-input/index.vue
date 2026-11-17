@@ -43,7 +43,7 @@ const computedInputMode = computed(() => {
 })
 
 const configProvider = useConfigProvider()
-const modelValue = useModelValue(props, emits)
+const { modelValue } = useModelValue(props, emits)
 
 let localValue: string = modelValue.value
 

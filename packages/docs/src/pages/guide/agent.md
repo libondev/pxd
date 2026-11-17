@@ -140,12 +140,14 @@ function onChange(value: string, details: ChangeDetails) {
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| source | `'agent' \| undefined` | Who changed it: `'agent'` when a step did, `undefined` when nothing named a cause. |
-| reason | `string \| undefined` | Why it changed, when the component declares one. |
+| source | `'user' \| 'agent' \| 'programmatic' \| undefined` | Who changed it: a person, a step, or code. |
+| reason | `string \| undefined` | Why it changed, from a closed list: `'typed'`, `'cleared'`, `'item-press'`, `'trigger-press'`, `'escape-key'`, `'settle'`, `'api'`, … |
 | cancel | `() => void` | Refuses the write, where the component owns it: the value stays, and `update:model-value` is not emitted. |
 | canceled | `boolean` | Whether `cancel()` was called. |
 
-`source` names an agent's change and nothing else yet. No component tags a person's input today, so a change a person made reports no source rather than claiming to be one — more origins arrive as components learn to name them.
+`source` is worked out, not declared: a step the bridge runs names itself, a write that carries the event behind it can only be a person's, and a write with no event is a person's only when its reason is an interaction (`'typed'`, `'item-press'`, …) — otherwise the call has to say `'programmatic'`, or the change reports no source at all. A write that says nothing claims nothing.
+
+Components move onto that entry one at a time, so today `input` and `toggle` name their person, and the rest still report no source for a person's change. `'agent'` is reported by every wired component.
 
 A change the component commits, like a field on blur or a slider once the drag ends, carries no `cancel` — the value has already been applied.
 

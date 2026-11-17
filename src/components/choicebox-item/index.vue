@@ -35,7 +35,7 @@ const inputName = computed(() => {
   return choiceboxGroupContext?.name || internalId
 })
 
-const modelValue = useModelValue(choiceboxGroupContext?.props, choiceboxGroupContext?.emits)
+const { modelValue } = useModelValue(choiceboxGroupContext?.props, choiceboxGroupContext?.emits)
 
 const isSelected = computed(() => {
   if (isMultiple.value) {

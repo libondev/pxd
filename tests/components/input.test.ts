@@ -205,9 +205,11 @@ describe('input', () => {
       input.element.dispatchEvent(new Event('change'))
     })
 
+    // The call site knows more than the cause around it: typing is why it changed, and the
+    // agent wrapper only says who was driving.
     expect(wrapper.emitted('change')?.[0]?.[1]).toMatchObject({
       source: 'agent',
-      reason: 'set-value',
+      reason: 'typed',
       canceled: false,
     })
 

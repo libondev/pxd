@@ -51,7 +51,7 @@ const computedStyle = computed(() => ({
   '--drawer-size': getCssUnitValue(props.size),
 }))
 
-const isVisible = useModelValue(props, emits)
+const { modelValue: isVisible } = useModelValue(props, emits)
 const configProvider = useConfigProvider()
 const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
   autoFocusElement: () => props.autoFocusElement,

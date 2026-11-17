@@ -35,7 +35,7 @@ const filterKeyword = shallowRef('')
 const listRef = shallowRef<InstanceType<typeof PList>>()
 
 const configProvider = useConfigProvider()
-const modelValue = useModelValue(props, emits)
+const { modelValue } = useModelValue(props, emits)
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 const { listOptions, pending } = useListSearch(() => props.options ?? [], filterKeyword, {
   filterMethod: () => props.filterMethod,

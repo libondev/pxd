@@ -17,7 +17,7 @@ defineOptions({
 const props = defineProps<SplitButtonProps>()
 const emits = defineEmits<SplitButtonEmits>()
 
-const modelValue = useModelValue(props, emits)
+const { modelValue } = useModelValue(props, emits)
 const selectedItem = useSelectedListItem(() => props.options || [], modelValue)
 const configProvider = useConfigProvider()
 

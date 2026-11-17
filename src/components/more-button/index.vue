@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<MoreButtonProps>(), {
 
 const emits = defineEmits<MoreButtonEmits>()
 
-const isExpanded = useModelValue(props, emits)
+const { modelValue: isExpanded } = useModelValue(props, emits)
 
 useAgentNode({
   name: 'more-button',
