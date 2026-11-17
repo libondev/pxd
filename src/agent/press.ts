@@ -2,7 +2,7 @@ import type { RefuseUnlessAllowed } from './allow.js'
 import type { AgentEntry } from './registry.js'
 import { nextTick } from 'vue'
 import { withChangeDetails } from '../composables/_internal/use-change-details.js'
-import { buttonsOf, fold, nameOf } from './describe.js'
+import { agentDisabled, buttonsOf, fold, nameOf } from './describe.js'
 import { agentElement } from './registry.js'
 
 export type PressOutcome = { pressed: string } | { error: string }
@@ -13,7 +13,7 @@ const PRESS_ATTEMPTS = 3
 // Clicks the button a step names. A popup that has not rendered yet, or whose content is
 // still arriving, is read again a few times inside the run's budget rather than once.
 export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
-  return async (entry: AgentEntry, text?: unknown): Promise<PressOutcome> => {
+  return async (entry: AgentEntry, text?: unknown, signal?: AbortSignal): Promise<PressOutcome> => {
     const asked = typeof text === 'string' && text ? text : undefined
     const wanted = asked ? fold(asked) : undefined
     const names = (buttons: { name: string }[]) => buttons.map((button) => button.name).join(', ')
@@ -63,6 +63,19 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
       }
     }
 
+    // A popup opened only to find a button closes again when the search fails, so the next
+    // step and the person see the page as it was.
+    const close = async () => {
+      if (!opened) {
+        return
+      }
+
+      opened = false
+
+      withChangeDetails({ source: 'agent' }, () => entry.node.actions.setOpen?.(false))
+      await nextTick()
+    }
+
     let opened = false
     let message = ''
 
@@ -76,9 +89,22 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
       const found = pick()
 
       if ('target' in found && found.target) {
-        const refused = await refuseUnlessAllowed(entry, 'press', found.target.el)
+        if (agentDisabled(entry)) {
+          await close()
+
+          return { error: `${entry.node.name} ${entry.ref} is disabled now.` }
+        }
+
+        const refused = await refuseUnlessAllowed(entry, {
+          action: 'press',
+          args: [found.target.name],
+          el: found.target.el,
+          signal,
+        })
 
         if (refused) {
+          await close()
+
           return { error: refused }
         }
 
@@ -94,7 +120,7 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
       if (!opened && entry.node.actions.setOpen) {
         opened = true
 
-        await withChangeDetails({ source: 'agent' }, () => entry.node.actions.setOpen(true))
+        withChangeDetails({ source: 'agent' }, () => entry.node.actions.setOpen?.(true))
 
         continue
       }
@@ -103,6 +129,8 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
         break
       }
     }
+
+    await close()
 
     return { error: message }
   }

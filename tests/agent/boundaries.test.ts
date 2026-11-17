@@ -117,7 +117,7 @@ describe('agent boundaries', () => {
     )
     const agent = createAgent({
       allow: (step) => {
-        asked.push(step.confirm)
+        asked.push(step.confirm ?? '')
 
         return true
       },

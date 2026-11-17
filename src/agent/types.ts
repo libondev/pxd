@@ -19,10 +19,20 @@ export interface AgentNode {
    *  empty, as a closed dialog's is. A component never writes this itself. */
   scope?: () => Element | null
   label?: () => string | undefined
+  /** What names it on its row, when that text is the component's own rather than its neighbours'. */
+  row?: () => string | undefined
   state?: () => Record<string, unknown>
   /** The choices it offers, read from its own data rather than from the DOM, so a
    *  virtualised list reports what it would show, not only the rows on screen. */
   items?: () => AgentItem[] | undefined
+  /** Whether its own work is running, like a save, so a step waits for it to finish. */
+  pending?: () => boolean | undefined
+  /** Why its last action failed, so a step reports the failure instead of a silent success. */
+  error?: () => unknown
+  /** True when its value is always one of its items, so a step that names another is refused. */
+  closed?: boolean
+  /** True when its closed items hide other components, as a collapse's do. */
+  reveals?: boolean
   actions: Record<string, (...args: any[]) => unknown>
 }
 
@@ -31,6 +41,8 @@ export interface AgentComponent {
   ref: string
   component: string
   label?: string
+  /** Other text on its row, like the name beside a table row's menu. */
+  row?: string
   [state: string]: unknown
   /** The text of the buttons inside it, for a `press` step. */
   buttons?: string[]
@@ -40,6 +52,20 @@ export interface AgentComponent {
   itemCount?: number
   /** `query({ text })` names the choices that made this component match, even past the cut. */
   matchedItems?: (string | number)[]
+  /** Whether its own work is running right now. */
+  pending?: boolean
+  /** Why its last action failed. */
+  error?: string
+  /** What `data-agent-confirm` says the step does, in the words a person reads. */
+  confirm?: string
+  /** True for a component that left the page, with the state it had. */
+  offPage?: boolean
+  /** Where the app writes it, from `data-agent-source`. */
+  source?: string
+  /** How many matches a cut list left out, on the entry that ends it. */
+  more?: number
+  /** The call that finds the rest, `query`, on an entry that ends a cut list. */
+  use?: string
   /** True when a component's own state or items getter failed; the entry is still addressable. */
   incomplete?: boolean
   actions: string[]
@@ -79,22 +105,34 @@ export interface AgentChange {
   ref: string
   component: string
   label?: string
+  row?: string
+  /** Which of its values changed, like `value`, `checked` or `open`. */
+  key: string
   value: unknown
+  /** The value before the change, so a listener can put it back. */
+  previous: unknown
   /** Who caused it and whether a handler refused it; absent when nothing named a cause. */
   details?: ChangeDetails
 }
 
 export type AgentChangeListener = (change: AgentChange) => void
 
-/** A step the app marked, as `allow` receives it before it runs. */
+/** A step the app is asked about before it runs, marked or not. */
 export interface AgentAllowedStep {
   ref: string
   component: string
   label?: string
   action: string
+  /** What the step passes to the action, so a policy can read the value it would write. */
+  args: unknown[]
   /** What `data-agent-confirm` says the step does, in the words a person reads. */
-  confirm: string
+  confirm?: string
+  /** Aborts when the step stops waiting, so a confirmation the app shows can close. */
+  signal: AbortSignal
 }
+
+/** Refuses a step: return false, or a promise of false, and it does not run. */
+export type AgentAllow = (step: AgentAllowedStep) => boolean | Promise<boolean>
 
 export interface AgentStepResult {
   ref: string
@@ -105,4 +143,8 @@ export interface AgentActResult {
   ok: boolean
   results: AgentStepResult[]
   error?: { message: string; ref?: string; step?: number }
+  /** Every field's value after the run, named by ref and label, cut at its own limit. */
+  values: Record<string, unknown>
+  /** The components the run brought onto the page, like an opened dialog's buttons. */
+  appeared: AgentComponent[]
 }

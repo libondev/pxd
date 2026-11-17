@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { PaginationProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
+import { shallowRef } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 
 defineOptions({
@@ -10,11 +12,20 @@ defineOptions({
 
 defineProps<PaginationProps>()
 
+const rootRef = shallowRef<HTMLElement>()
+
 const configProvider = useConfigProvider()
+
+useAgentNode({
+  name: 'pagination',
+  el: () => rootRef.value,
+  actions: {},
+})
 </script>
 
 <template>
   <nav
+    ref="rootRef"
     data-pagination
     :aria-label="configProvider.locale.pagination.label"
     class="pxd-pagination relative flex w-full flex-wrap items-start justify-between"

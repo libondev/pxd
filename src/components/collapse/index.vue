@@ -2,6 +2,7 @@
 import type { CollapseEmits, CollapseProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useCollapseGroupContext } from '../../contexts/collapse.js'
 import { getUniqueId } from '../../utils/helper.js'
@@ -16,6 +17,7 @@ const props = withDefaults(defineProps<CollapseProps>(), {
 const emits = defineEmits<CollapseEmits>()
 
 const uid = getUniqueId()
+const rootRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
 
 const collapseGroup = useCollapseGroupContext()
@@ -24,6 +26,21 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
   contentRef,
   () => props.expand,
 )
+
+useAgentNode({
+  name: 'collapse',
+  el: () => rootRef.value,
+  state: () => ({ open: isOpen.value }),
+  reveals: true,
+  actions: {
+    setOpen: (open) => {
+      isOpen.value = Boolean(open)
+    },
+    toggle: () => {
+      onToggleClick()
+    },
+  },
+})
 
 function onTriggerClick(ev: MouseEvent) {
   emits('toggle', ev)
@@ -67,6 +84,7 @@ onBeforeUnmount(() => {
 
 <template>
   <details
+    ref="rootRef"
     data-collapse
     class="pxd-collapse group/collapse border-b"
     v-bind="$attrs"

@@ -13,6 +13,7 @@ import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import CrossIcon from '@gdsicon/vue/cross'
 import QuestionIcon from '@gdsicon/vue/question'
 import { computed, shallowReactive, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -127,6 +128,41 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
   contentRef,
   () => props.expand,
 )
+
+useAgentNode({
+  name: 'questionnaire',
+  label: () => currentQuestion.value?.header,
+  row: () => currentQuestion.value?.question,
+  reveals: true,
+  state: () => ({
+    status: currentState.value,
+    index: currentIndex.value,
+    total: props.data.length,
+    header: currentQuestion.value?.header,
+    question: currentQuestion.value?.question,
+    multiSelect: currentQuestion.value?.multiSelect ?? false,
+    allowFreeform: currentQuestion.value?.allowFreeformInput ?? false,
+    selected: currentAnswer.value?.selected ?? [],
+    freeText: currentAnswer.value?.freeText ?? '',
+  }),
+  items: () =>
+    currentQuestion.value?.options
+      .filter((option) => !!option.label)
+      .map((option) => ({
+        label: option.label,
+        value: option.label,
+        ...(currentAnswer.value?.selected.includes(option.label) && { selected: true }),
+      })),
+  actions: {
+    answer,
+    answerText,
+    next,
+    previous,
+    skip,
+    skipAll,
+    submit,
+  },
+})
 function createInitialAnswers(questions: QuestionnaireQuestion[]): QuestionnaireAnswers {
   return questions.reduce((answers, question) => {
     answers[question.header] = {
@@ -222,11 +258,13 @@ function onAnswerItemSelect(item: ListOptionSelected) {
     return
   }
 
-  if (
-    currentIndex.value === props.data.length - 1 &&
-    !question.multiSelect &&
-    !question.allowFreeformInput
-  ) {
+  // A multiple choice stays open so its options can be toggled one after another; the
+  // footer's Next or Submit moves on.
+  if (question.multiSelect) {
+    return
+  }
+
+  if (currentIndex.value === props.data.length - 1 && !question.allowFreeformInput) {
     onSubmitAnswers()
     return
   }
@@ -270,6 +308,83 @@ function onFreeformInputChange() {
   }
 
   updateCurrentAnswer((answer) => ({ ...answer, selected: [] }))
+}
+
+// Picks one of the current question's options, the way a person clicking it does: a single
+// choice replaces the answer and moves on, a multiple one toggles and stays.
+function answer(label: string) {
+  const question = currentQuestion.value
+
+  if (!question) {
+    return
+  }
+
+  const option = question.options.find((item) => item.label === label)
+
+  if (!option?.label) {
+    const labels = question.options.map((item) => item.label).filter(Boolean)
+
+    throw new Error(
+      `No option "${label}" in "${question.question}": ${labels.join(', ') || 'none'}.`,
+    )
+  }
+
+  if (question.multiSelect) {
+    updateCurrentAnswer((current) => ({
+      ...current,
+      selected: current.selected.includes(option.label)
+        ? current.selected.filter((item) => item !== option.label)
+        : [...current.selected, option.label],
+    }))
+
+    return
+  }
+
+  updateCurrentAnswer((current) => ({ ...current, selected: [option.label], freeText: '' }))
+
+  if (currentIndex.value === props.data.length - 1 && !question.allowFreeformInput) {
+    onSubmitAnswers()
+
+    return
+  }
+
+  toggleCurrentIndex(1)
+}
+
+// The answer typed instead of picked. A single choice gives way to it; a multiple one keeps
+// what is already selected, as the freeform row does.
+function answerText(text: string) {
+  const question = currentQuestion.value
+
+  if (!question) {
+    return
+  }
+
+  updateCurrentAnswer((current) => ({
+    ...current,
+    freeText: text,
+    selected: question.multiSelect ? current.selected : [],
+  }))
+}
+
+function next() {
+  toggleCurrentIndex(1)
+}
+
+function previous() {
+  toggleCurrentIndex(-1)
+}
+
+function skip() {
+  skipCurrentQuestion()
+}
+
+function skipAll() {
+  skipAllQuestions()
+}
+
+function submit() {
+  onSubmitAnswers()
 }
 
 function getFinalAnswers() {

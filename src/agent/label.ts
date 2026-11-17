@@ -1,3 +1,31 @@
+// The text a person reads, without what a screen reader skips or the app hides from
+// agents: an icon's `aria-hidden` label, a region marked `data-agent-hidden`.
+export function textOf(el: Element | null | undefined): string {
+  if (!el) {
+    return ''
+  }
+
+  let text = ''
+
+  const walk = (node: Node) => {
+    for (const child of node.childNodes) {
+      if (child.nodeType === 3) {
+        text += child.textContent
+      } else if (
+        child instanceof Element &&
+        child.getAttribute('aria-hidden') !== 'true' &&
+        !child.hasAttribute('data-agent-hidden')
+      ) {
+        walk(child)
+      }
+    }
+  }
+
+  walk(el)
+
+  return text.replace(/\s+/g, ' ').trim()
+}
+
 // The name a person would read for the component, so a step can find it by that name.
 export function accessibleName(el: Element | null | undefined): string | undefined {
   if (!el) {
@@ -29,7 +57,7 @@ export function accessibleName(el: Element | null | undefined): string | undefin
 
   if (labels?.length) {
     const text = [...labels]
-      .map((entry) => entry.textContent?.trim())
+      .map((entry) => textOf(entry))
       .filter(Boolean)
       .join(' ')
 
@@ -38,16 +66,29 @@ export function accessibleName(el: Element | null | undefined): string | undefin
     }
   }
 
-  const own = el.closest('label')?.textContent?.trim()
+  const own = el.closest('label')
 
   if (own) {
-    return own
+    const text = textOf(own)
+
+    if (text) {
+      return text
+    }
   }
 
-  const text = (target: Element) => (target.textContent ?? '').replace(/\s+/g, ' ').trim()
+  // A section named by the line a person clicks to open it.
+  const summary = el.matches('details') ? el.querySelector(':scope > summary') : undefined
+
+  if (summary) {
+    const text = textOf(summary)
+
+    if (text) {
+      return text
+    }
+  }
 
   if (el.matches('button, [role="button"]')) {
-    return text(el) || undefined
+    return textOf(el) || undefined
   }
 
   // A component whose face is one button, like a more/less toggle, is named by that button.

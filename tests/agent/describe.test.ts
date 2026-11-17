@@ -17,12 +17,20 @@ const entryOf = (state: Record<string, unknown>, items?: AgentItem[]): AgentEntr
 
 describe('agent describe', () => {
   it('should keep the state the component reports', () => {
-    expect(describeComponent(entryOf({ value: 1, disabled: true }))).toMatchObject({
+    expect(describeComponent(entryOf({ value: 1 }))).toMatchObject({
       ref: 'c1',
       component: 'demo',
       value: 1,
-      disabled: true,
       actions: ['setValue'],
+    })
+  })
+
+  it('should take the actions away from a disabled component', () => {
+    expect(describeComponent(entryOf({ value: 1, disabled: true }))).toMatchObject({
+      ref: 'c1',
+      component: 'demo',
+      disabled: true,
+      actions: [],
     })
   })
 

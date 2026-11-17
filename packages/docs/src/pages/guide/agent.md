@@ -127,13 +127,21 @@ agent.snapshot()
 // ]
 ```
 
-- `ref` names the component in a step, and stays the same while the component stays mounted.
+- `ref` names the component in a step. It stays the same while the component is mounted, and a component that leaves and comes back takes its old ref again.
 - `label` is the name a person reads for it, from `aria-label`, `aria-labelledby` or its `<label>`.
-- The state keys after `label` are the component's own, like `value`, `checked` or `disabled`. A key that would collide with the bridge's — `ref`, `component`, `label`, `actions`, `buttons`, `items`, `confirm` — is dropped rather than allowed to overwrite them.
+- `row` is the text beside it on the same row — a table row's name next to its menu — so two identical controls can be told apart and reached by that text.
+- The state keys after `label` are the component's own, like `value`, `checked` or `disabled`. A key that would collide with the bridge's — `ref`, `component`, `label`, `row`, `actions`, `buttons`, `items`, `itemCount`, `matchedItems`, `confirm`, `pending`, `error`, `offPage`, `source`, `more`, `use` — is dropped rather than allowed to overwrite them.
+- `disabled: true` means the component takes no action right now: `actions` is empty, `press` is refused, and a step on it fails instead of writing to a control a person cannot use.
+- `pending: true` and `error` report a component whose own work is running or has failed, like a button's save.
 - `incomplete: true` means one of the component's own state or item getters threw. The entry stays addressable instead of taking down the whole snapshot, but its data is not complete.
-- `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`. A list longer than 100 stops there and reports `itemCount`. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen.
-- `buttons` lists the name of each button inside it — its accessible name, so an icon-only button carrying `aria-label` is listed and pressable too.
+- `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`, and one a person cannot pick `disabled`. A list longer than 100 stops there and reports `itemCount`; `query({ within })` reads the rest. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen.
+- `buttons` lists the name of each button inside it — its accessible name, so an icon-only button carrying `aria-label` is listed and pressable too. A link with an `href` counts as a button, so a pager's Prev and Next can be pressed.
 - `actions` lists what can be called right now.
+- `source` says where the app writes it, when the element carries `data-agent-source`, like `src/pages/settings.vue:24`.
+- A component that left the page follows with `offPage: true` and the state it had, like a closed tab's fields. Only what left while the bridge was listening is reported, fifty at most.
+- A page with more than 100 components stops there and ends with `{ ref: 'more', component: 'more', more, use: 'query' }`: `more` says how many were left out.
+
+What it reports is what a person can reach: a region marked `data-agent-hidden` or `aria-hidden="true"`, a control inside a closed `<details>`, and anything the browser says is not visible stay out of the snapshot entirely.
 
 A component that renders another one as its own root, like a number input over a text field, is reported once — as the wrapper, which owns the name a person reads.
 
@@ -150,8 +158,12 @@ await agent.act({
 })
 ```
 
-- A label must match exactly, ignoring case and accents. A label that matches more than one component is refused rather than guessed.
-- The result is `{ ok, results, error? }`. `results` holds `{ ref, result }` for the steps that ran; the run stops at the first failure, and `error` carries `{ message, ref, step }`, where `step` is the index that failed.
+- A step names its component by `ref`, by its `label`, by the text on its `row`, or by its kind like `select`. A name matches exactly, or as whole words within the label and row, so `name` finds `Display name` but not `Username`. Two components that answer to the same name are refused, and the error lists each one's ref.
+- A value can be written as the choice's label rather than its value: `setValue: ['Europe']` picks the option whose value is `eu`. A list that holds only its own items refuses anything else and names the items it does have. A number is read out of text — `'40'` becomes `40` — and a checkbox takes `true` or `false`, never the string `'true'`.
+- The result is `{ ok, results, error?, values, appeared }`. `results` holds `{ ref, result }` for the steps that ran; the run stops at the first failure, and `error` carries `{ message, ref, step }`, where `step` is the index that failed.
+- `values` holds every field's value after the run, named by ref and label, so an agent checks its work without another snapshot. A long page keeps the fields the steps touched first and ends with `more`. `appeared` lists the components the run brought onto the page, like an opened dialog's buttons.
+- A step on a component that reports `disabled` or `readonly` fails instead of writing to it, checked again after `allow` answers.
+- A step waits for the component's own work: while it reports `pending`, up to fifteen seconds, and a component that reports `error` fails the step with it.
 - A change made by a step reports `source: 'agent'` in its `change` event (see below).
 - The call resolves after the page has rendered what each step changed, so the next step and your own assertions see it.
 - `timeout` caps the whole run (thirty seconds by default) and `signal` ends it: a step that outlives either fails with `Timed out after …` or `Canceled.`, and no further step runs. The step already in flight may still finish its work — the run stops waiting, it does not undo.
@@ -167,8 +179,9 @@ await agent.act({ steps: [{ ref: 'Views', action: 'press', args: ['Two'] }] })
 ```
 
 - With no argument it presses the only button inside the component; a component with several asks you to name one.
-- With an argument it presses the button whose text matches — the whole text first, then a part of it. Several matches are refused rather than guessed.
-- A closed popup renders no buttons, so a component that declares `setOpen` is opened first and read again.
+- With an argument it presses the button whose text matches — the whole text first, then a part of it. Several matches are refused rather than guessed. A link with an `href`, like a pager's Prev, is pressed the same way.
+- A closed popup renders no buttons, so a component that declares `setOpen` is opened first and read again. If the button is not there after all, the popup closes again.
+- A disabled component, or a disabled button, is refused rather than clicked.
 - It waits through three renders, each across a macrotask, within the run's timeout. Content that arrives from a network request later than that still needs the app to have it ready; `press` does not poll indefinitely.
 
 ## Subscribing
@@ -186,10 +199,14 @@ const stop = agent.subscribe((change) => {
 | ref | The component that changed, the same `ref` a step uses. |
 | component | Its name, like `input`. |
 | label | The name a person reads, when it has one. |
+| row | The text on its row, when it has any. |
+| key | Which of its values changed: `value`, a checkbox's `checked`, a dialog's `open`. |
 | value | The value the change carried — a select's option, a list's selected item — not the component's whole state. |
+| previous | The value before the change, so a listener can put it back. A change cancelled by a handler never arrives. |
 | details | The `ChangeDetails` the event carried, including `canceled` once a handler has refused it. |
 
 - A change a step made arrives with `details.source === 'agent'`, so one log line tells a person from an agent.
+- A password, one-time-code or card field, and any field inside `data-agent-secret`, reports `value` and `previous` as `[redacted]`: the bridge never passes on what it must not read.
 - Only the component a snapshot shows reports: an inner field whose wrapper owns the same element stays silent, and the wrapper announces the change it took from it. A region marked `data-agent-hidden` says nothing at all.
 - `stop()` ends the subscription. A bridge nobody subscribed to builds no report at all.
 
@@ -212,7 +229,18 @@ const run = (call: { name: 'snapshot' | 'act' | 'query', input: any }) => agent[
 | act | `steps` and an optional `timeout` |
 | query | `text`, `within` or `kind` |
 
-The bridge does not register itself as a browser agent tool: wiring that up is the app's call, and `agentTools` is what it needs to do so.
+A browser that carries its own agent can have the three tools directly, through WebMCP:
+
+```ts
+import { createAgent, registerTools } from 'pxd/agent'
+
+const agent = createAgent({ allow: (step) => (step.confirm ? askThePerson(step.confirm) : true) })
+
+// Nothing happens in a browser without `document.modelContext`.
+const unregister = registerTools(agent, { allow: (step) => step.action !== 'press' })
+```
+
+`registerTools` needs an `allow` of its own, because that agent is not the app's: it decides every step after the bridge's own check. The tools are registered as `readOnlyHint` for `snapshot` and `query`, and `consequentialHint` for `act`, so the browser knows which one changes the page.
 
 ## Query
 
@@ -221,13 +249,14 @@ The bridge does not register itself as a browser agent tool: wiring that up is t
 ```ts
 agent.query({ kind: 'checkbox' })
 agent.query({ text: 'project' })
-agent.query({ within: 'Views' })
+agent.query({ within: 'Region' })
 ```
 
-- `text` matches any part of a label, or of one of the choices inside a component, ignoring case and accents.
+- `text` matches any part of a label or of the text on a row, or of one of the choices inside a component, ignoring case and accents.
 - `kind` matches the component name, like `checkbox`.
-- `within` limits the result to components inside the one it names; an unknown name returns an empty list.
-- It reads every choice, not only the first hundred a snapshot shows. `matchedItems` names the choices that made a component match, including ones past that cut.
+- `within` names one component and returns it with its own choices, fifty at most, matching `text` when given — a select's five hundred options can be read without listing the page. It never opens anything, so a list whose choices are only in the DOM says so and a step opens it. An unknown name returns an empty list.
+- Without `within`, it reads every choice, not only the first hundred a snapshot shows. `matchedItems` names the choices that made a component match, including ones past that cut.
+- More than a hundred matches stop there, with a `more` entry at the end, the same as a snapshot.
 
 ## Change events
 
@@ -277,22 +306,24 @@ Three attributes on your own elements decide what an agent may do alone:
 | Attribute | Effect |
 | --- | --- |
 | `data-agent-confirm="Deletes the project"` | A step on it, or inside it, is asked about first. Write the sentence for the person who will be asked. |
-| `data-agent-secret` | Its value reads as `[redacted]`, and it reports no `label`, `items` or `buttons` — those can be as revealing as the value. It can still be set. A password field, `autocomplete="one-time-code"` or a `cc-*` field is secret without the attribute. |
+| `data-agent-secret` | Its value reads as `[redacted]` — in a snapshot, in a `subscribe` change and in an `act` result — and it reports no `label`, `row`, `items` or `buttons`, which can be as revealing as the value. It can still be set. A password field, `autocomplete="one-time-code"` or a `cc-*` field is secret without the attribute. |
 | `data-agent-hidden` | The region stays out of `snapshot`, `act` and `query`, as if it were not on the page — including a step that names a component by its `ref`. A hidden button cannot be pressed either. |
+
+A `data-agent-source` attribute, on a component or an element around it, puts its location in the snapshot, like `src/pages/settings.vue:24`, so a model can say where a control is written. A misspelled `data-agent-*` name warns in development and does nothing.
 
 `createAgent({ allow })` answers the question:
 
 ```ts
 const agent = createAgent({
-  allow: (step) => askThePerson(step.confirm),
+  allow: (step) => (step.confirm ? askThePerson(step.confirm) : true),
   actTimeout: 30_000,
 })
 ```
 
-- `allow` receives `{ ref, component, label?, action, confirm }` and returns `true`, `false`, or a promise of either, for your own confirmation UI.
-- Without `allow`, a marked step fails with `Needs a person` and nothing happens.
-- The mark is read from the component's place in the page, so a dialog that has not rendered yet still asks before `setOpen`. 
-- A marked step waits `allowTimeout` milliseconds for the answer, five minutes by default.
+- `allow` is asked about **every** step, marked or not, and receives `{ ref, component, label?, action, args, confirm?, signal }`. Return `true`, `false`, or a promise of either, for your own confirmation UI — so an app can refuse a step for its own reasons, like an amount it will not let an agent set, or a control only its owner may change. `signal` aborts when the step stops waiting, so a dialog you opened can close.
+- Without `allow`, a marked step fails with `Needs a person` and nothing happens; unmarked steps run.
+- The mark is read from the component's place in the page, so a dialog that has not rendered yet still asks before `setOpen`.
+- A step waits `allowTimeout` milliseconds for the answer, five minutes by default, and then fails without running.
 
 ## Naming what you want driven
 
@@ -318,6 +349,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `checkbox` | `setValue`, `toggle` |
 | `checkbox-group` | `setValue` |
 | `choicebox` | `setValue` |
+| `collapse` | `setOpen`, `toggle` |
 | `color-selector` | `setValue` |
 | `command-menu` | `setOpen`, `setQuery` |
 | `countdown` | `reset` |
@@ -331,8 +363,10 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `modal` | `setOpen` |
 | `more-button` | `setValue`, `toggle` |
 | `number-input` | `setValue`, `increment`, `decrement` |
+| `pagination` | — |
 | `pin-input` | `setValue` |
 | `popover` | `setOpen`, `toggle` |
+| `questionnaire` | `answer`, `answerText`, `next`, `previous`, `skip`, `skipAll`, `submit` |
 | `radio-group` | `setValue` |
 | `rating` | `setValue` |
 | `reactions` | `pick`, `toggle` |
@@ -357,7 +391,11 @@ A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-butt
 
 `steps` moves only where the app marks it `clickable`, the same as a click. Its `value` is the current step's index.
 
-`scroll-progress` reports its percentage and offers no action: a reading some other component's scroll produces, listed so an agent can see it. `button` is the same shape the other way round — no action of its own, because `press` already clicks it.
+`scroll-progress` reports its percentage and offers no action: a reading some other component's scroll produces, listed so an agent can see it. `button` is the same shape the other way round — no action of its own, because `press` already clicks it. `pagination` is the third: it holds no value, and its Prev and Next links are pressed by their text.
+
+`collapse` reveals its content: while it is closed, the controls inside it stay out of the snapshot, and a step that names one is told which closed section to open first.
+
+`questionnaire` is named by the current question's header, with the question itself on its `row`, so an agent can find it by either. Its `items` are the current question's options, and `answer` takes one by its label — a single choice replaces the answer and moves on, a multiple one toggles and stays. `answerText` types the freeform answer, and `submit` reports the answers through `submit`, so put `data-agent-confirm` on the questionnaire if sending them needs a person.
 
 A dialog renders nothing while it is closed, so it reports no `label` until it opens. A step reaches it by `ref`, opens it, and every later step can use the title as its name.
 

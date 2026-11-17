@@ -77,6 +77,40 @@ describe('questionnaire', () => {
     wrapper.unmount()
   })
 
+  it('stays on a multi-select question while its options are toggled', async () => {
+    const wrapper = mount(Questionnaire, {
+      props: {
+        data: [
+          createQuestion({
+            header: 'interests',
+            question: 'What do you enjoy?',
+            multiSelect: true,
+          }),
+          createQuestion({
+            header: 'pace',
+            question: 'How fast should it run?',
+            options: [
+              { label: 'Slow', description: 'Take your time' },
+              { label: 'Fast', description: 'Move quickly' },
+            ],
+          }),
+        ],
+      },
+    })
+
+    await wrapper.findAll('[data-list-item]')[0].trigger('click')
+    await wrapper.findAll('[data-list-item]')[1].trigger('click')
+
+    expect(wrapper.text()).toContain('What do you enjoy?')
+    expect(wrapper.text()).not.toContain('How fast should it run?')
+
+    await wrapper.get('[aria-label="Next question"]').trigger('click')
+
+    expect(wrapper.text()).toContain('How fast should it run?')
+
+    wrapper.unmount()
+  })
+
   it('submits a freeform answer when it is entered manually', async () => {
     const wrapper = mount(Questionnaire, {
       props: {
