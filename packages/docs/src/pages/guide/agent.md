@@ -29,7 +29,7 @@ agent.snapshot()
 - `label` is the name a person reads for it, from `aria-label`, `aria-labelledby` or its `<label>`.
 - The state keys after `label` are the component's own, like `value`, `checked` or `disabled`.
 - `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`. A list longer than 100 stops there and reports `itemCount`. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen.
-- `buttons` lists the text of the buttons inside it, when it has any, for a `press` step.
+- `buttons` lists the name of each button inside it — its accessible name, so an icon-only button carrying `aria-label` is listed and pressable too.
 - `actions` lists what can be called right now.
 
 A component that renders another one as its own root, like a number input over a text field, is reported once — as the wrapper, which owns the name a person reads.
@@ -48,7 +48,7 @@ await agent.act({
 ```
 
 - A label must match exactly, ignoring case and accents. A label that matches more than one component is refused rather than guessed.
-- The result is `{ ok, results, error? }`. `results` holds `{ ref, result }` for the steps that ran; the run stops at the first failure, and `error` carries `{ message, ref }`.
+- The result is `{ ok, results, error? }`. `results` holds `{ ref, result }` for the steps that ran; the run stops at the first failure, and `error` carries `{ message, ref, step }`, where `step` is the index that failed.
 - A change made by a step reports `source: 'agent'` in its `change` event (see below).
 - The call resolves after the page has rendered what each step changed, so the next step and your own assertions see it.
 

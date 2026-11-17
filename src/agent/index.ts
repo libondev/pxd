@@ -9,6 +9,7 @@ import type {
 } from './types'
 import { nextTick } from 'vue'
 import { withChangeDetails } from '../composables/_internal/use-change-details.js'
+import { accessibleName } from './label.js'
 import { confirmOf, isHidden, isSecret, REDACTED } from './marks.js'
 import { agentEntry, agentLabel, agentVisibleEntries } from './registry.js'
 import { subscribeAgentChanges } from './report.js'
@@ -28,6 +29,10 @@ const fold = (text: string) =>
     .toLowerCase()
 
 const textOf = (el: Element) => (el.textContent ?? '').replace(/\s+/g, ' ').trim()
+
+// What a button is called: its accessible name first, so an icon-only button that carries
+// aria-label is still pressable by the word a person hears.
+const nameOf = (el: Element) => accessibleName(el) ?? textOf(el)
 
 // The buttons a step can press: a closed popup renders nothing, so it can't be pressed
 // until the step that opens it has rendered.
@@ -65,7 +70,7 @@ function describe(entry: AgentEntry): AgentComponent {
     component.confirm = confirm
   }
 
-  const buttons = buttonsOf(node.el()).map(textOf).filter(Boolean)
+  const buttons = buttonsOf(node.el()).map(nameOf).filter(Boolean)
 
   if (buttons.length) {
     component.buttons = buttons
@@ -186,7 +191,7 @@ export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions =
   const press = async (entry: AgentEntry, text?: unknown) => {
     const read = () =>
       buttonsOf(entry.node.el())
-        .map((el) => ({ el, text: textOf(el) }))
+        .map((el) => ({ el, text: nameOf(el) }))
         .filter((button) => button.text)
 
     let buttons = read()
@@ -245,14 +250,14 @@ export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions =
   const act = async ({ steps }: { steps: AgentStep[] }): Promise<AgentActResult> => {
     const results: AgentStepResult[] = []
 
-    for (const step of steps) {
+    for (const [index, step] of steps.entries()) {
       const entry = resolve(step.ref)
 
       if (!entry) {
         return {
           ok: false,
           results,
-          error: { message: `No component matches "${step.ref}".`, ref: step.ref },
+          error: { message: `No component matches "${step.ref}".`, ref: step.ref, step: index },
         }
       }
 
@@ -260,7 +265,7 @@ export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions =
         const error = await press(entry, step.args?.[0])
 
         if (error) {
-          return { ok: false, results, error: { message: error, ref: entry.ref } }
+          return { ok: false, results, error: { message: error, ref: entry.ref, step: index } }
         }
 
         results.push({ ref: entry.ref, result: null })
@@ -271,7 +276,7 @@ export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions =
       const refused = await refuseUnlessAllowed(entry, step.action)
 
       if (refused) {
-        return { ok: false, results, error: { message: refused, ref: entry.ref } }
+        return { ok: false, results, error: { message: refused, ref: entry.ref, step: index } }
       }
 
       const action = entry.node.actions[step.action]
@@ -283,6 +288,7 @@ export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions =
           error: {
             message: `"${entry.node.name}" has no action "${step.action}".`,
             ref: entry.ref,
+            step: index,
           },
         }
       }

@@ -839,6 +839,52 @@ describe('agent components', () => {
     expect(entry.itemCount).toBe(120)
   })
 
+  it('should press an icon button by the name it answers to', async () => {
+    const clicks = ref(0)
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(
+              Button,
+              {
+                icon: true,
+                'aria-label': 'Clear',
+                onClick: () => {
+                  clicks.value += 1
+                },
+              },
+              () => h('span', '×'),
+            ),
+        }),
+      ),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'button')).toMatchObject({ label: 'Clear', buttons: ['Clear'] })
+
+    const result = await agent.act({ steps: [{ ref: 'Clear', action: 'press' }] })
+
+    expect(result.ok).toBe(true)
+    expect(clicks.value).toBe(1)
+  })
+
+  it('should say which step failed', async () => {
+    track(mount(Input, { attrs: { 'aria-label': 'Project name' } }))
+    const agent = createAgent()
+
+    const result = await agent.act({
+      steps: [
+        { ref: 'Project name', action: 'setValue', args: ['Atlas'] },
+        { ref: 'Project name', action: 'submit' },
+      ],
+    })
+
+    expect(result.ok).toBe(false)
+    expect(result.error).toMatchObject({ ref: find(agent.snapshot(), 'input').ref, step: 1 })
+    expect(result.results).toHaveLength(1)
+  })
+
   it('should set a date', async () => {
     const bound = mountBound(DatePicker, { 'aria-label': 'Due' }, '')
     const agent = createAgent()

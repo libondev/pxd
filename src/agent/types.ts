@@ -74,5 +74,5 @@ export interface AgentStepResult {
 export interface AgentActResult {
   ok: boolean
   results: AgentStepResult[]
-  error?: { message: string; ref?: string }
+  error?: { message: string; ref?: string; step?: number }
 }
