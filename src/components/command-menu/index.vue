@@ -35,7 +35,7 @@ const filterKeyword = shallowRef('')
 const listRef = shallowRef<InstanceType<typeof PList>>()
 
 const configProvider = useConfigProvider()
-const { modelValue } = useModelValue(props, emits)
+const { modelValue, change } = useModelValue(props, emits)
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 const { listOptions, pending } = useListSearch(() => props.options ?? [], filterKeyword, {
   filterMethod: () => props.filterMethod,
@@ -60,7 +60,7 @@ useAgentNode({
   state: () => ({ open: modelValue.value, query: filterKeyword.value }),
   actions: {
     setOpen: (open) => {
-      modelValue.value = Boolean(open)
+      change(Boolean(open), { reason: 'api' })
     },
     setQuery: (query) => {
       filterKeyword.value = query == null ? '' : String(query)
@@ -68,6 +68,9 @@ useAgentNode({
   },
 })
 
+function onModelUpdate(open: boolean) {
+  change(open, { reason: open ? 'trigger-press' : 'close-press' })
+}
 function onModalKeydown(ev: KeyboardEvent) {
   // On small screens the modal wrapper owns the focus, not the input.
   if (ev.target === ev.currentTarget) {
@@ -85,7 +88,7 @@ function showModal() {
 }
 
 function closeModal() {
-  modelValue.value = false
+  change(false, { reason: 'close-press' })
 }
 
 function onListItemSelect() {
@@ -103,7 +106,8 @@ watch(listOptions, async () => {
 <template>
   <PModal
     data-command-menu
-    v-model="modelValue"
+    :model-value="modelValue"
+    @update:model-value="onModelUpdate"
     :width="width"
     class="pxd-command-menu max-sm:h-full"
     content-class="!p-0 overflow-hidden"

@@ -246,7 +246,7 @@ useAgentNode({
         next.reverse()
       }
 
-      commit(setValue(next))
+      commit(setValue(next), { reason: 'api' })
     },
   },
 })
@@ -401,7 +401,7 @@ function endDragging(ev: PointerEvent) {
   updateValueFromPosition(ev.clientX)
 
   if (lastUpdatedValue !== null) {
-    commit(lastUpdatedValue)
+    commit(lastUpdatedValue, { reason: 'settle', event: ev })
   }
 
   stopDragging()
@@ -475,7 +475,7 @@ function onThumbKeydown(ev: KeyboardEvent, index: ThumbIndex) {
     return
   }
 
-  commit(setValue(next))
+  commit(setValue(next), { reason: 'settle' })
 }
 
 function selectMark(value: number) {
@@ -493,7 +493,7 @@ function selectMark(value: number) {
     return
   }
 
-  commit(setValue(next))
+  commit(setValue(next), { reason: 'item-press' })
 }
 
 watch(() => [startPercentage.value, endPercentage.value], updateLabelShifts, { flush: 'post' })

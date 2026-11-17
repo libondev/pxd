@@ -2,13 +2,13 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vite-plus/test'
 
-// Every change is meant to go through one entry that names why it happened. Until a
-// component is migrated it keeps writing the way it used to, and this list is the ledger:
-// a component that is not in it may not introduce another raw write, and removing a name
-// happens in the commit that migrates that component.
-const RAW_VALUE_WRITES = new Set(['command-menu', 'date-picker', 'split-button'])
+// Every change goes through one entry that names why it happened. Each set below is the
+// ledger of components still on the old path: it is empty now, and a name only enters it in
+// a commit that knowingly leaves one behind. A new raw write, an unreasoned commit or a
+// template write past the entry fails here rather than quietly reporting no source.
+const RAW_VALUE_WRITES = new Set<string>()
 
-const UNREASONED_COMMITS = new Set(['slider', 'tabs'])
+const UNREASONED_COMMITS = new Set<string>()
 
 const TEMPLATE_WRITES = new Set([
   'color-selector',

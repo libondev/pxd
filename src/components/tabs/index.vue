@@ -123,7 +123,7 @@ function select(value: ComponentValue) {
   }
 
   activeValue.value = value
-  commit(value)
+  commit(value, { reason: 'item-press' })
 }
 function isActivated(option: TabsOptions) {
   return isActiveOption(option) || activatedValues.value.includes(option.value)

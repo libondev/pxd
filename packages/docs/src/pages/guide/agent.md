@@ -147,7 +147,7 @@ function onChange(value: string, details: ChangeDetails) {
 
 `source` is worked out, not declared: a step the bridge runs names itself, a write that carries the event behind it can only be a person's, and a write with no event is a person's only when its reason is an interaction (`'typed'`, `'item-press'`, …) — otherwise the call has to say `'programmatic'`, or the change reports no source at all. A write that says nothing claims nothing.
 
-Components move onto that entry one at a time, so today `input` and `toggle` name their person, and the rest still report no source for a person's change. `'agent'` is reported by every wired component.
+Every component that reports a value now writes through that entry, so a person's change carries `source: 'user'` and a reason like `'typed'` or `'item-press'`. The table below is what a handler can rely on; where a component has no event to hand — a clear button calling `clear()` — the reason still says a person did it.
 
 A change the component commits, like a field on blur or a slider once the drag ends, carries no `cancel` — the value has already been applied.
 

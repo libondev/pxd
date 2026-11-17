@@ -17,7 +17,7 @@ defineOptions({
 const props = defineProps<SplitButtonProps>()
 const emits = defineEmits<SplitButtonEmits>()
 
-const { modelValue } = useModelValue(props, emits)
+const { modelValue, change } = useModelValue(props, emits)
 const selectedItem = useSelectedListItem(() => props.options || [], modelValue)
 const configProvider = useConfigProvider()
 
@@ -28,16 +28,20 @@ useAgentNode({
   state: () => ({ value: modelValue.value ?? null }),
   actions: {
     setValue: (value) => {
-      modelValue.value = value
+      change(value, { reason: 'api' })
     },
   },
 })
+function onModelUpdate(value: SplitButtonProps['modelValue']) {
+  change(value, { reason: 'item-press' })
+}
 </script>
 
 <template>
   <PMenu
     data-split-button
-    v-model="modelValue"
+    :model-value="modelValue"
+    @update:model-value="onModelUpdate"
     data-group
     position="bottom-end"
     class="pxd-split-button items-center"

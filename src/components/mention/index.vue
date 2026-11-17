@@ -52,7 +52,7 @@ const editorRef = shallowRef<InstanceType<typeof PMentionEditor>>()
 const listRef = shallowRef<InstanceType<typeof PList>>()
 const searchInputRef = shallowRef<HTMLInputElement>()
 
-const { modelValue } = useModelValue(props, emits)
+const { modelValue, change } = useModelValue(props, emits)
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
@@ -110,6 +110,9 @@ useAgentNode({
   },
 })
 
+function onModelUpdate(text: string) {
+  change(text, { reason: 'typed' })
+}
 function resolveOptions(trigger: string): ListOptions | Promise<ListOptions> {
   return typeof props.options === 'function' ? props.options(trigger) : props.options
 }
@@ -244,7 +247,8 @@ defineExpose({
   >
     <PMentionEditor
       ref="editorRef"
-      v-model="modelValue"
+      :model-value="modelValue"
+      @update:model-value="onModelUpdate"
       :size="computedSize"
       :data-disabled="disabled"
       :class="{ 'is-disabled': disabled }"

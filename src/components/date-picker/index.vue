@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ChangeAt } from '../../types/shared/change'
 import type { ComponentDateTimeValue } from '../../types/shared/props'
 import type { DatePickerEmits, DatePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
@@ -34,7 +35,7 @@ const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
 const calendarModelValue = computed(() => dayjsDateTime.value?.valueOf() ?? null)
 
 const { isAdaptive, responsiveClasses } = usePopoverResponsive()
-const { modelValue } = useModelValue(props, emits, {
+const { modelValue, change } = useModelValue(props, emits, {
   get() {
     if (draftInput.value !== null) {
       return draftInput.value
@@ -51,7 +52,7 @@ useAgentNode({
       const date = parseIncomingValue(value as DatePickerProps['modelValue'])
 
       if (date) {
-        commitDate(date)
+        commitDate(date, { reason: 'api' })
       }
     },
     setOpen: (open) => {
@@ -79,7 +80,7 @@ function isSameCommittedDate(date: dayjs.Dayjs | null) {
 
   return date.isSame(dayjsDateTime.value, 'day')
 }
-function commitDate(date: dayjs.Dayjs | null) {
+function commitDate(date: dayjs.Dayjs | null, at: ChangeAt) {
   const shouldEmit = !isSameCommittedDate(date)
 
   dayjsDateTime.value = date
@@ -89,7 +90,7 @@ function commitDate(date: dayjs.Dayjs | null) {
     return
   }
 
-  modelValue.value = date ? formatEmittedValue(date) : null
+  change(date ? formatEmittedValue(date) : null, at)
 }
 
 function parseIncomingValue(value: DatePickerProps['modelValue']): dayjs.Dayjs | null {
@@ -200,7 +201,7 @@ function consumeDateToken(token: string, input: string): { value: number; length
 
 function tryCommitInput(value: string): boolean {
   if (value === '') {
-    commitDate(null)
+    commitDate(null, { reason: 'cleared' })
     return true
   }
 
@@ -209,7 +210,7 @@ function tryCommitInput(value: string): boolean {
     return false
   }
 
-  commitDate(parsed)
+  commitDate(parsed, { reason: 'typed' })
   return true
 }
 
@@ -229,7 +230,7 @@ function onCalendarChange(value: ComponentDateTimeValue) {
     return
   }
 
-  commitDate(date)
+  commitDate(date, { reason: 'item-press' })
   togglePopoverVisible(false)
 }
 

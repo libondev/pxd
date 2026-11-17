@@ -7,6 +7,7 @@ import Checkbox from '../../src/components/checkbox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
 import Input from '../../src/components/input/index.vue'
 import Radio from '../../src/components/radio/index.vue'
+import Tabs from '../../src/components/tabs/index.vue'
 import Toggle from '../../src/components/toggle/index.vue'
 
 const detailsOf = (wrapper: { emitted: (event: string) => unknown[][] | undefined }) =>
@@ -126,6 +127,24 @@ describe('change source', () => {
     )
 
     await wrapper.find('input').setValue(true)
+
+    expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'item-press' })
+  })
+
+  it('should name a person who picked a tab', async () => {
+    const wrapper = track(
+      mount(Tabs, {
+        props: {
+          modelValue: 'one',
+          options: [
+            { label: 'One', value: 'one' },
+            { label: 'Two', value: 'two' },
+          ],
+        },
+      }),
+    )
+
+    await wrapper.findAll('[role="tab"]')[1].trigger('click')
 
     expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'item-press' })
   })
