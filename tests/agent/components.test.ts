@@ -214,6 +214,70 @@ describe('agent components', () => {
     expect(find(agent.snapshot(), 'select')).toMatchObject({ value: 2, open: false })
   })
 
+  it('should refuse a value a closed select does not offer, and take one by its label', async () => {
+    track(
+      mount(Select, {
+        props: {
+          options: [
+            { label: 'One', value: 1 },
+            { label: 'Two', value: 2 },
+          ],
+        },
+        attrs: { 'aria-label': 'Region' },
+      }),
+    )
+    const agent = createAgent()
+
+    const byName = await agent.act({
+      steps: [{ ref: 'Region', action: 'setValue', args: ['Three'] }],
+    })
+
+    expect(byName.ok).toBe(false)
+    expect(byName.error?.message).toContain('No item "Three"')
+    expect(byName.error?.message).toContain('One')
+
+    const byValue = await agent.act({
+      steps: [{ ref: 'Region', action: 'setValue', args: [9] }],
+    })
+
+    expect(byValue.ok).toBe(false)
+    expect(byValue.error?.message).toContain('No item 9')
+
+    const byLabel = await agent.act({
+      steps: [{ ref: 'Region', action: 'setValue', args: ['Two'] }],
+    })
+
+    expect(byLabel.ok).toBe(true)
+    expect(find(agent.snapshot(), 'select')).toMatchObject({ value: 2 })
+  })
+
+  it('should read the choices inside a group', async () => {
+    track(
+      mount(Select, {
+        props: {
+          options: [
+            { type: 'group', label: 'Grouped', options: [{ label: 'One', value: 1 }] },
+            { label: 'Two', value: 2 },
+          ],
+        },
+        attrs: { 'aria-label': 'Region' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'select').items).toEqual([
+      { value: 1, label: 'One' },
+      { value: 2, label: 'Two' },
+    ])
+
+    const result = await agent.act({
+      steps: [{ ref: 'Region', action: 'setValue', args: ['One'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(find(agent.snapshot(), 'select')).toMatchObject({ value: 1 })
+  })
+
   it('should flip a toggle', async () => {
     const bound = mountBound(Toggle, { 'aria-label': 'Notifications' }, false)
     const agent = createAgent()
@@ -469,6 +533,24 @@ describe('agent components', () => {
     hidden.unmount()
   })
 
+  it('should read the description a dialog points at', () => {
+    track(
+      mount(Modal, {
+        props: {
+          modelValue: true,
+          title: 'Settings',
+          subtitle: 'Applies to this project',
+          'onUpdate:model-value': () => {},
+        },
+      }),
+    )
+
+    expect(find(createAgent().snapshot(), 'modal')).toMatchObject({
+      label: 'Settings',
+      text: ['Applies to this project'],
+    })
+  })
+
   it('should ask a person before pressing a marked button', async () => {
     const removed = ref(false)
     const open = ref(true)
@@ -641,6 +723,27 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'approval-card')).toMatchObject({ status: 'approved' })
+  })
+
+  it('should report an approval card that is busy as pending, and refuse it', async () => {
+    track(
+      mount(ApprovalCard, {
+        props: { title: 'Run command', command: 'rm -rf dist', loading: true },
+        attrs: { 'aria-label': 'Approval' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'approval-card')).toMatchObject({
+      pending: true,
+      disabled: true,
+      actions: [],
+    })
+
+    const result = await agent.act({ steps: [{ ref: 'Approval', action: 'approve' }] })
+
+    expect(result.ok).toBe(false)
+    expect(result.error?.message).toContain('disabled now')
   })
 
   it('should tell a subscriber who changed what', async () => {

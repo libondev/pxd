@@ -38,12 +38,19 @@ const labelsOf = (items: AgentItem[]) =>
     .map((item) => valueText(item.label ?? item.value))
     .join(', ')
 
+const held = (value: unknown, chosen: unknown) =>
+  (Array.isArray(value) ? value : [value]).some(
+    (item) => item != null && keyOfValue(item) === keyOfValue(chosen),
+  )
+
 // A value from an item's label, so an agent can write "Europe" without looking up "eu".
-// A closed list refuses anything else and names the items it does have.
+// A closed list refuses anything else and names the items it does have, unless the list
+// already holds that value: a choice that is no longer offered stays, as a chip does.
 function resolveLabel(
   entry: AgentEntry,
   items: AgentItem[],
   label: string,
+  current: unknown,
 ): { value: unknown } | { error: string } {
   if (items.some((item) => keyOfValue(item.value) === keyOfValue(label))) {
     return { value: label }
@@ -66,7 +73,7 @@ function resolveLabel(
     }
   }
 
-  if (entry.node.closed) {
+  if (entry.node.closed && !held(current, label)) {
     return {
       error: `No item "${label}" in ${nameOfEntry(entry)}. Its items: ${labelsOf(items) || 'none'}.`,
     }
@@ -74,11 +81,6 @@ function resolveLabel(
 
   return { value: label }
 }
-
-const held = (value: unknown, chosen: unknown) =>
-  (Array.isArray(value) ? value : [value]).some(
-    (item) => item != null && keyOfValue(item) === keyOfValue(chosen),
-  )
 
 // What a step passes to its action, checked against the state the component reports: a label
 // becomes its item's value, a number stays a number, a boolean is never a string, and a
@@ -125,7 +127,7 @@ export function stepArgs(
     let value = input
 
     if (typeof value === 'string' && items.length) {
-      const found = resolveLabel(entry, items, value)
+      const found = resolveLabel(entry, items, value, current)
 
       if ('error' in found) {
         return found
@@ -149,6 +151,14 @@ export function stepArgs(
     if (item?.disabled && !held(current, value)) {
       return {
         error: `"${String(item.label ?? value)}" in ${nameOfEntry(entry)} is disabled now.`,
+      }
+    }
+
+    // A closed list takes only its own items, whatever the value's type: a step that names
+    // a number, an object or a value the list dropped is refused with the ones it has.
+    if (!item && items.length && entry.node.closed && !held(current, value)) {
+      return {
+        error: `No item ${JSON.stringify(value)} in ${nameOfEntry(entry)}. Its items: ${labelsOf(items) || 'none'}.`,
       }
     }
 

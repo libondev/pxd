@@ -90,7 +90,8 @@ const computedRememberLabel = computed(
 
 useAgentNode({
   name: 'approval-card',
-  state: () => ({ status: status.value }),
+  state: () => ({ status: status.value, disabled: isDisabled.value }),
+  pending: () => isTruthyProp(props.loading),
   actions: {
     approve,
     reject,

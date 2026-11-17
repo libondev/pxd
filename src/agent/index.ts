@@ -19,6 +19,9 @@ import { agentTools } from './tools.js'
 export type * from './types'
 export { agentTools } from './tools.js'
 export { registerTools } from './register.js'
+export { elementOf, observe } from './observe.js'
+export { stageChanges, type StagedChange, type StagedChangeResult } from './stage.js'
+export { createHistory, type AgentHistoryEntry, type AgentHistoryOptions } from './history.js'
 
 export interface AgentOptions {
   /** Asked before every step, marked or not. Return false to refuse it. A step the app marked

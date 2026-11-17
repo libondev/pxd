@@ -62,6 +62,7 @@ useAgentNode({
   name: 'command-menu',
   items: () => optionItems(listOptions.value),
   state: () => ({ open: modelValue.value, query: filterKeyword.value }),
+  pending: () => pending.value,
   actions: {
     setOpen: (open) => {
       change(Boolean(open), { reason: 'api' })

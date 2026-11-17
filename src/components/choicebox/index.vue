@@ -20,6 +20,7 @@ const notify = useAgentChange(emits)
 
 useAgentNode({
   name: 'choicebox',
+  closed: true,
   items: () => optionItems(props.options, props.modelValue),
   state: () => ({ value: props.modelValue ?? (props.multiple ? [] : null) }),
   actions: {

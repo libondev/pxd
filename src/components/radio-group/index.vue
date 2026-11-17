@@ -20,6 +20,7 @@ const notify = useAgentChange(emits)
 
 useAgentNode({
   name: 'radio-group',
+  closed: true,
   items: () => optionItems(props.options, props.modelValue),
   state: () => ({ value: props.modelValue ?? null }),
   actions: {

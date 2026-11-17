@@ -87,6 +87,7 @@ const { onKeydown: onNavKeydown } = useListKeyboardController({
 
 useAgentNode({
   name: 'tabs',
+  closed: true,
   items: () => optionItems(props.options, activeValue.value),
   el: () => rootRef.value,
   state: () => ({ value: activeValue.value }),

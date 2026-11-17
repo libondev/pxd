@@ -263,6 +263,54 @@ describe('agent targeting', () => {
     expect(chosen).toEqual([30, 'eu'])
   })
 
+  it('should report what a step changed and what it took off the page', async () => {
+    const root = host()
+    const chip = host()
+    let value = ''
+
+    register({
+      name: 'field',
+      el: () => root,
+      state: () => ({ value }),
+      actions: {
+        setValue: (next) => {
+          value = String(next)
+        },
+      },
+    })
+
+    const removeChip = register({
+      name: 'chip',
+      el: () => chip,
+      state: () => ({ value: 'inside' }),
+      actions: {},
+    })
+
+    register({
+      name: 'panel',
+      el: () => host(),
+      state: () => ({ open: true }),
+      actions: { close: () => removeChip() },
+    })
+
+    const agent = createAgent()
+    const field = find(agent.snapshot(), 'field')
+    const panel = find(agent.snapshot(), 'panel')
+    const chipRef = find(agent.snapshot(), 'chip').ref
+
+    const written = await agent.act({
+      steps: [{ ref: field.ref, action: 'setValue', args: ['Atlas'] }],
+    })
+
+    expect(written.results[0].changes).toEqual([
+      { ref: field.ref, component: 'field', key: 'value', value: 'Atlas' },
+    ])
+
+    const closed = await agent.act({ steps: [{ ref: panel.ref, action: 'close' }] })
+
+    expect(closed.results[0].gone).toEqual([`${chipRef} chip`])
+  })
+
   it('should fail a step whose component reports an error', async () => {
     const root = host()
 

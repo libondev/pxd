@@ -169,6 +169,7 @@ const { attrs, classes } = useTailwindVariant(
 
 useAgentNode({
   name: 'effort-slider',
+  closed: true,
   items: () => optionItems(optionList.value, activeValue.value),
   state: () => ({
     value: activeValue.value ?? null,

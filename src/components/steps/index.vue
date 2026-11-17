@@ -72,6 +72,7 @@ const computedStyle = computed(() => {
 
 useAgentNode({
   name: 'steps',
+  closed: true,
   items: () =>
     optionItems(
       props.options.map((option, index) => ({

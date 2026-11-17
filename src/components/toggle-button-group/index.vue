@@ -46,6 +46,7 @@ const { attrs, classes } = useTailwindVariant(
 
 useAgentNode({
   name: 'toggle-button-group',
+  closed: true,
   items: () => optionItems(props.options, props.modelValue),
   state: () => ({ value: props.modelValue ?? null }),
   actions: {

@@ -52,6 +52,8 @@ export interface AgentComponent {
   itemCount?: number
   /** `query({ text })` names the choices that made this component match, even past the cut. */
   matchedItems?: (string | number)[]
+  /** What it shows besides its label, like a dialog's description. */
+  text?: string[]
   /** Whether its own work is running right now. */
   pending?: boolean
   /** Why its last action failed. */
@@ -137,6 +139,26 @@ export type AgentAllow = (step: AgentAllowedStep) => boolean | Promise<boolean>
 export interface AgentStepResult {
   ref: string
   result: unknown
+  /** The values this step changed, with the value each holds now. */
+  changes?: AgentStepChange[]
+  /** The components this step took off the page, by ref and name. */
+  gone?: string[]
+}
+
+/** The bridge's own three calls, as a helper built around it sees them. */
+export interface AgentBridge {
+  snapshot: () => AgentComponent[]
+  act: (options: AgentActOptions) => Promise<AgentActResult>
+  query: (options?: AgentQuery) => AgentComponent[]
+}
+
+/** One value a step changed. */
+export interface AgentStepChange {
+  ref: string
+  component: string
+  label?: string
+  key: string
+  value: unknown
 }
 
 export interface AgentActResult {

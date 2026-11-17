@@ -23,6 +23,7 @@ const notify = useAgentChange(emits)
 
 useAgentNode({
   name: 'checkbox-group',
+  closed: true,
   items: () => optionItems(props.options, props.modelValue),
   state: () => ({ value: props.modelValue ?? [] }),
   actions: {

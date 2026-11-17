@@ -136,6 +136,7 @@ agent.snapshot()
 - `incomplete: true` means one of the component's own state or item getters threw. The entry stays addressable instead of taking down the whole snapshot, but its data is not complete.
 - `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`, and one a person cannot pick `disabled`. A list longer than 100 stops there and reports `itemCount`; `query({ within })` reads the rest. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen.
 - `buttons` lists the name of each button inside it — its accessible name, so an icon-only button carrying `aria-label` is listed and pressable too. A link with an `href` counts as a button, so a pager's Prev and Next can be pressed.
+- `text` carries what it says besides its name, like a dialog's description, read from the element its own `aria-describedby` points at.
 - `actions` lists what can be called right now.
 - `source` says where the app writes it, when the element carries `data-agent-source`, like `src/pages/settings.vue:24`.
 - A component that left the page follows with `offPage: true` and the state it had, like a closed tab's fields. Only what left while the bridge was listening is reported, fifty at most.
@@ -159,9 +160,10 @@ await agent.act({
 ```
 
 - A step names its component by `ref`, by its `label`, by the text on its `row`, or by its kind like `select`. A name matches exactly, or as whole words within the label and row, so `name` finds `Display name` but not `Username`. Two components that answer to the same name are refused, and the error lists each one's ref.
-- A value can be written as the choice's label rather than its value: `setValue: ['Europe']` picks the option whose value is `eu`. A list that holds only its own items refuses anything else and names the items it does have. A number is read out of text — `'40'` becomes `40` — and a checkbox takes `true` or `false`, never the string `'true'`.
+- A value can be written as the choice's label rather than its value: `setValue: ['Europe']` picks the option whose value is `eu`. A list that holds only its own items — `select`, `list`, `menu`, `tabs`, `radio-group`, `checkbox-group`, `choicebox`, `toggle-button-group`, `steps` and `effort-slider` — refuses anything else and names the items it does have, except a value it already holds. A number is read out of text — `'40'` becomes `40` — and a checkbox takes `true` or `false`, never the string `'true'`.
 - The result is `{ ok, results, error?, values, appeared }`. `results` holds `{ ref, result }` for the steps that ran; the run stops at the first failure, and `error` carries `{ message, ref, step }`, where `step` is the index that failed.
 - `values` holds every field's value after the run, named by ref and label, so an agent checks its work without another snapshot. A long page keeps the fields the steps touched first and ends with `more`. `appeared` lists the components the run brought onto the page, like an opened dialog's buttons.
+- Each entry in `results` carries what that step did: `changes` names the values it changed and what each holds now, and `gone` names the components it took off the page, like a removed row's menu.
 - A step on a component that reports `disabled` or `readonly` fails instead of writing to it, checked again after `allow` answers.
 - A step waits for the component's own work: while it reports `pending`, up to fifteen seconds, and a component that reports `error` fails the step with it.
 - A change made by a step reports `source: 'agent'` in its `change` event (see below).
@@ -210,6 +212,36 @@ const stop = agent.subscribe((change) => {
 - Only the component a snapshot shows reports: an inner field whose wrapper owns the same element stays silent, and the wrapper announces the change it took from it. A region marked `data-agent-hidden` says nothing at all.
 - `stop()` ends the subscription. A bridge nobody subscribed to builds no report at all.
 
+## Watching and stepping back
+
+Four calls build on the same registry, for an app that wants more than a step's result:
+
+```ts
+import { createHistory, elementOf, observe, stageChanges } from 'pxd/agent'
+
+const stop = observe((change) => log(change.key, change.previous, change.value), {
+  within: panel,
+})
+
+const staged = await stageChanges(agent, [{ ref: 'Volume', value: 80 }])
+await staged.revert()
+
+const history = createHistory(agent, { keys: ['value', 'checked'] })
+await history.undo()
+await history.redo()
+
+highlight(elementOf(ref))
+```
+
+| Call | What it does |
+| --- | --- |
+| `observe(listener, { within })` | Every change, from a person or an agent, with `ref`, `key`, `value`, `previous`, `reason` and `source`. A change arrives once it commits: a slider's drag is one change, not one per pixel. |
+| `elementOf(ref)` | The element a ref names, for pointing at what an agent just changed. |
+| `stageChanges(agent, changes)` | Puts values on the real controls and returns `{ applied, revert }`: a suggestion a person can look at, then put back. A secret field's value before reads `[redacted]`, so it is never restored. |
+| `createHistory(agent, { keys, within, limit })` | Records changes and steps back and forth over them through the bridge. A change made after stepping back drops the ones ahead, as undo in an editor does. A secret value is never recorded. |
+
+`createHistory` records every source, so a person's change and an agent's live in one list; its `entries()` say who made each one.
+
 ## Handing it to a model
 
 `agentTools` describes the three calls as JSON Schema, ready to pass as tool definitions:
@@ -254,7 +286,7 @@ agent.query({ within: 'Region' })
 
 - `text` matches any part of a label or of the text on a row, or of one of the choices inside a component, ignoring case and accents.
 - `kind` matches the component name, like `checkbox`.
-- `within` names one component and returns it with its own choices, fifty at most, matching `text` when given — a select's five hundred options can be read without listing the page. It never opens anything, so a list whose choices are only in the DOM says so and a step opens it. An unknown name returns an empty list.
+- `within` names one component and returns it with its own choices, fifty at most, matching `text` when given — a select's five hundred options can be read without listing the page. Past fifty it carries `more`, the count left out. It never opens anything: a list that keeps its choices only in the DOM comes back without them, and a step opens it first. An unknown name returns an empty list.
 - Without `within`, it reads every choice, not only the first hundred a snapshot shows. `matchedItems` names the choices that made a component match, including ones past that cut.
 - More than a hundred matches stop there, with a `more` entry at the end, the same as a snapshot.
 

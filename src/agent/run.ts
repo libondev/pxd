@@ -1,11 +1,13 @@
 import type { RefuseUnlessAllowed } from './allow.js'
 import type { PressOutcome } from './press.js'
 import type { AgentEntry } from './registry.js'
-import type { AgentActOptions, AgentAllow, AgentStepResult } from './types'
+import type { AgentActOptions, AgentAllow, AgentStepChange, AgentStepResult } from './types'
 import { nextTick } from 'vue'
 import { withChangeDetails } from '../composables/_internal/use-change-details.js'
 import { agentDisabled, messageOf } from './describe.js'
+import { REDACTED } from './marks.js'
 import { agentShownEntries, findAgentTarget } from './query.js'
+import { agentLabelSafe, agentSecret } from './registry.js'
 import { stepArgs } from './values.js'
 
 // A step that outlasts the run's budget, or one the caller cancels, ends the run where it is.
@@ -104,6 +106,81 @@ interface RunnerDeps {
   refuseUnlessAllowed: RefuseUnlessAllowed
 }
 
+// What every component showed before a step, so the step can report what it changed and
+// what it took off the page.
+interface StepSnapshot {
+  refs: Set<string>
+  states: Map<
+    string,
+    { component: string; label?: string; secret: boolean; state: Record<string, unknown> }
+  >
+}
+
+const differs = (was: unknown, now: unknown) =>
+  !Object.is(was, now) && JSON.stringify(was) !== JSON.stringify(now)
+
+function captureStep(): StepSnapshot {
+  const refs = new Set<string>()
+  const states: StepSnapshot['states'] = new Map()
+
+  for (const entry of agentShownEntries()) {
+    refs.add(entry.ref)
+
+    try {
+      states.set(entry.ref, {
+        component: entry.node.name,
+        label: agentLabelSafe(entry.node),
+        secret: agentSecret(entry),
+        state: entry.node.state?.() ?? {},
+      })
+    } catch {
+      states.set(entry.ref, {
+        component: entry.node.name,
+        label: agentLabelSafe(entry.node),
+        secret: agentSecret(entry),
+        state: {},
+      })
+    }
+  }
+
+  return { refs, states }
+}
+
+function diffStep(before: StepSnapshot, after: StepSnapshot) {
+  const changes: AgentStepChange[] = []
+
+  for (const [ref, now] of after.states) {
+    const was = before.states.get(ref)
+
+    if (!was) {
+      continue
+    }
+
+    for (const key of new Set([...Object.keys(was.state), ...Object.keys(now.state)])) {
+      if (!differs(was.state[key], now.state[key])) {
+        continue
+      }
+
+      changes.push({
+        ref,
+        component: now.component,
+        ...(now.label && { label: now.label }),
+        key,
+        value: now.secret ? REDACTED : now.state[key],
+      })
+    }
+  }
+
+  const left = [...before.refs].filter((ref) => !after.refs.has(ref))
+  const gone = left.map((ref) => {
+    const was = before.states.get(ref)
+
+    return [ref, was?.label ?? was?.component].filter(Boolean).join(' ')
+  })
+
+  return { changes, gone: gone.length > 10 ? left : gone }
+}
+
 export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerDeps) {
   return async (
     { steps, timeout: budget = actTimeout, signal }: AgentActOptions,
@@ -166,6 +243,7 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
         }
 
         if (step.action === 'press') {
+          const prior = captureStep()
           const outcome = await settle(press(entry, staged.args[0], signal), deadline, signal)
 
           if ('error' in outcome) {
@@ -180,7 +258,15 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
 
           await settle(nextTick(), deadline, signal)
           touched.add(entry.ref)
-          results.push({ ref: entry.ref, result: outcome.pressed })
+
+          const { changes, gone } = diffStep(prior, captureStep())
+
+          results.push({
+            ref: entry.ref,
+            result: outcome.pressed,
+            ...(changes.length && { changes }),
+            ...(gone.length && { gone }),
+          })
 
           continue
         }
@@ -237,6 +323,7 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
           }
         }
 
+        const prior = captureStep()
         const result = await settle(
           withChangeDetails({ source: 'agent' }, () => action(...staged.args)),
           deadline,
@@ -260,9 +347,14 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
 
         await settle(nextTick(), deadline, signal)
         touched.add(entry.ref)
+
+        const { changes, gone } = diffStep(prior, captureStep())
+
         results.push({
           ref: entry.ref,
           result: settled.pending ? `${step.action} is still running.` : (result ?? null),
+          ...(changes.length && { changes }),
+          ...(gone.length && { gone }),
         })
       }
     } catch (error) {

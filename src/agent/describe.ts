@@ -33,6 +33,7 @@ const RESERVED = new Set([
   'confirm',
   'pending',
   'error',
+  'text',
   'offPage',
   'source',
   'more',
@@ -114,6 +115,25 @@ export function buttonsOf(el: Element | null | undefined) {
   )
 }
 
+// What a component says about itself besides its name, like a dialog's description, read
+// from the element its own `aria-describedby` points at.
+function describedText(el: Element | null): string | undefined {
+  const ids = el?.getAttribute('aria-describedby')
+
+  if (!ids) {
+    return
+  }
+
+  const doc = el!.ownerDocument
+  const text = ids
+    .split(/\s+/)
+    .map((id) => textOf(doc.getElementById(id)))
+    .filter(Boolean)
+    .join(' ')
+
+  return text || undefined
+}
+
 export function describe(entry: AgentEntry): AgentComponent {
   try {
     return buildComponent(entry)
@@ -148,6 +168,12 @@ function buildComponent(entry: AgentEntry): AgentComponent {
 
     if (source) {
       component.source = source
+    }
+
+    const text = describedText(el)
+
+    if (text) {
+      component.text = [text]
     }
   }
 

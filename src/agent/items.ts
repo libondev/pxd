@@ -1,9 +1,11 @@
 import type { AgentItem } from './types'
 
 interface OptionLike {
+  type?: string
   label?: unknown
   value?: unknown
   disabled?: boolean
+  options?: readonly OptionLike[]
 }
 
 interface TreeOptionLike extends OptionLike {
@@ -36,12 +38,27 @@ function toItem(option: OptionLike, selected: unknown): AgentItem {
   return item
 }
 
-// The choices a component's own options prop describes, in the order it renders them.
+// The choices a component's own options prop describes, in the order it renders them. A
+// group is a heading, not a choice, so its options are flattened into their place.
 export function optionItems(
   options: readonly OptionLike[] | undefined,
   selected?: unknown,
 ): AgentItem[] {
-  return (options ?? []).map((option) => toItem(option, selected))
+  const items: AgentItem[] = []
+
+  const add = (entries: readonly OptionLike[]) => {
+    for (const entry of entries) {
+      if (entry.type === 'group' && entry.options) {
+        add(entry.options)
+      } else {
+        items.push(toItem(entry, selected))
+      }
+    }
+  }
+
+  add(options ?? [])
+
+  return items
 }
 
 // The same, flattened in reading order, for a tree whose rows are nested branches.

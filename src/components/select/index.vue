@@ -91,12 +91,14 @@ const { listOptions, pending } = useListSearch(() => props.options ?? [], filter
 
 useAgentNode({
   name: 'select',
+  closed: true,
   items: () => optionItems(props.options, selected.value),
   state: () => ({
     value: selected.value ?? null,
     open: popoverVisible.value,
     multiple: props.multiple ?? false,
   }),
+  pending: () => pending.value,
   actions: {
     setValue: (value) => {
       if (apply((value ?? null) as NonNullable<ListModelValue>)) {

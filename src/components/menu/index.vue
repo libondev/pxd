@@ -63,6 +63,7 @@ const { onKeydown } = useListKeyboardController({
 
 useAgentNode({
   name: 'menu',
+  closed: true,
   items: () => optionItems(props.options, selected.value),
   state: () => ({ value: selected.value ?? null, open: popoverVisible.value }),
   actions: {

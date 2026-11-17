@@ -1,18 +1,6 @@
-import type {
-  AgentActOptions,
-  AgentActResult,
-  AgentAllow,
-  AgentComponent,
-  AgentQuery,
-} from './types'
+import type { AgentActOptions, AgentAllow, AgentBridge } from './types'
 import { agentCallers } from './callers.js'
 import { agentTools } from './tools.js'
-
-interface AgentBridge {
-  snapshot: () => AgentComponent[]
-  act: (options: AgentActOptions) => Promise<AgentActResult>
-  query: (options?: AgentQuery) => AgentComponent[]
-}
 
 interface ModelContext {
   registerTool: (tool: object, options: { signal: AbortSignal }) => Promise<void>
@@ -61,7 +49,9 @@ export function registerTools(agent: AgentBridge, { allow }: { allow: AgentAllow
         },
         { signal: controller.signal },
       )
-      .catch(() => {})
+      .catch((error: unknown) => {
+        console.warn(`[pxd] registerTools could not register "${tool.name}"`, error)
+      })
   }
 
   return () => controller.abort()

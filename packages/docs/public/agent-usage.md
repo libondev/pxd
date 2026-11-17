@@ -34,7 +34,8 @@ Composable pages have their own shape: `## Exports` for the signatures, `## Type
 - **Theming is the `.dark` class on `<html>`**, flipped by `<PThemeSwitcher />` or `useColorScheme()`, which stores `'dark'`, `'light'` or `'auto'` (`auto` follows the OS) under the `fe.system.color-scheme` key in `localStorage`. Scale, locale and overlay motion go through `<PConfigProvider>`: `size` is `sm`, `md` or `lg` and is inherited by every descendant, `locale` takes one of `pxd/locales/*` and merges a partial object over `enUS`, `enter-motion` and `leave-motion` switch overlay transitions off.
 - **Durations come from the `--duration` custom property** (0.2s by default), which drops to `0` on its own under `prefers-reduced-motion`. Set it to `0` for a build that never animates.
 - **Popovers become bottom sheets on small screens**, so lay out against that rather than against a panel floating next to its trigger.
-- **Entry points.** Components resolve from templates through the resolver; composables, locales and utils come from `pxd/composables/*`, `pxd/locales/*` and `pxd/utils/*`; anything else named is imported from `pxd`.
+- **The bridge is opt-in and separate from the components.** `createAgent()` from `pxd/agent` exposes `snapshot`, `act` and `query` over the components that declare themselves, so a model can drive the page without reading the DOM. A component is reachable only once it is wired; the guide lists which ones are. Read `/guide/agent.md` before promising an agent can do something in this app.
+- **Entry points.** Components resolve from templates through the resolver; composables, locales and utils come from `pxd/composables/*`, `pxd/locales/*` and `pxd/utils/*`; the agent bridge comes from `pxd/agent`; anything else named is imported from `pxd`.
 
 ## When the pages and the installed version disagree
 
