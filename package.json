@@ -1,18 +1,22 @@
 {
   "name": "pxd",
   "version": "0.2.0",
-  "description": "A universal Vue 3.3+ component library built from one codebase. Built-in light/dark theme. PC & mobile ready. Animation-free mode supported.",
+  "description": "A universal Vue 3.3+ component library with an agent-ready bridge: AI agents read and drive your UI through snapshot/act/query, WebMCP-ready, with a per-step policy gate and secret redaction. Built-in light/dark theme, PC & mobile ready, animation-free mode.",
   "keywords": [
+    "agent",
+    "ai",
     "component-library",
     "dark-mode",
     "design-system",
+    "llm",
     "responsive",
     "tailwind",
     "typescript",
     "ui",
     "vue",
     "vue-components",
-    "vue3"
+    "vue3",
+    "webmcp"
   ],
   "homepage": "https://github.com/libondev/pxd#readme",
   "bugs": {

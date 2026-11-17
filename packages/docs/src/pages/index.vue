@@ -15,6 +15,13 @@ const AGENT_INSTALL_PROMPT = `Read ${siteUrl}/agent-install.md and follow it to 
 
 const CAPABILITIES = [
   {
+    title: 'An agent bridge for your UI',
+    detail:
+      'pxd/agent exposes your components to AI agents through snapshot, act and query — WebMCP-ready, with a per-step policy gate and secret redaction. Components opt in, so it costs nothing until you import it.',
+    href: '/guide/agent',
+    linkLabel: 'Read the Agent guide',
+  },
+  {
     title: 'One codebase, one runtime',
     detail:
       'The same source compiles straight to Vue 3.3+ — no version forks, nothing maintained twice.',
@@ -88,12 +95,12 @@ const inventory = computed(
       <div class="gap-5 px-6 py-5 relative flex items-start">
         <span
           class="max-sm:hidden pt-3 shrink-0 basis-[132px] font-mono text-[10px] tracking-[0.06em] whitespace-nowrap text-foreground-secondary uppercase"
-          >01 — One codebase</span
+          >01 — Complete</span
         >
         <h1
           class="font-semibold max-sm:whitespace-normal text-[clamp(32px,calc(10.2cqw_-_20.5px),148px)] leading-[0.94] tracking-[-0.045em] whitespace-nowrap"
         >
-          One codebase.
+          Everything you need.
         </h1>
       </div>
 
@@ -102,12 +109,12 @@ const inventory = computed(
       >
         <span
           class="max-sm:hidden pt-3 shrink-0 basis-[132px] font-mono text-[10px] tracking-[0.06em] whitespace-nowrap text-foreground-secondary uppercase"
-          >02 — Vue 3 only</span
+          >02 — Agent-ready</span
         >
         <h1
           class="font-semibold max-sm:whitespace-normal text-[clamp(32px,calc(10.2cqw_-_20.5px),148px)] leading-[0.94] tracking-[-0.045em] whitespace-nowrap"
         >
-          Built for Vue 3.3+.
+          Ready for agents.
         </h1>
       </div>
 
@@ -117,7 +124,11 @@ const inventory = computed(
         <p class="max-w-[62ch] text-[15px] leading-[1.55] text-foreground-secondary">
           A universal UI component library: {{ componentList.length }} components and
           {{ composableList.length }} composables, built-in light/dark theme, PC &amp; mobile ready,
-          and every animation can be turned off.
+          and every animation can be turned off. It also ships with an
+          <RouterLink to="/guide/agent" class="text-foreground underline underline-offset-2">
+            agent bridge
+          </RouterLink>
+          — let AI agents read your page and drive your components directly.
         </p>
       </div>
     </section>
@@ -217,6 +228,13 @@ const inventory = computed(
               </th>
               <td class="py-3.5 max-w-[68ch] align-top text-[13px] text-foreground-secondary">
                 {{ capability.detail }}
+                <RouterLink
+                  v-if="capability.href"
+                  :to="capability.href"
+                  class="ms-1 whitespace-nowrap text-foreground underline decoration-gray-300 underline-offset-2 hover:decoration-current motion-safe:transition-colors"
+                >
+                  {{ capability.linkLabel }} →
+                </RouterLink>
               </td>
             </tr>
           </tbody>
