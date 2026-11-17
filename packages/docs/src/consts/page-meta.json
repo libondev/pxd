@@ -585,7 +585,7 @@
   },
   "/guide/introduction": {
     "title": "PXD",
-    "description": "PXD is a universal UI component library for Vue 3.3+, built from one codebase."
+    "description": "PXD is a universal UI component library for Vue 3.3+, with a built-in agent bridge that lets AI agents read your page and drive your components directly — no s…"
   },
   "/guide/problems": {
     "title": "问题记录",
@@ -597,6 +597,6 @@
   },
   "/guide/why": {
     "title": "为什么做 PXD",
-    "description": "pxd 是一个面向 Vue 3.3+ 的 UI 组件库，内置亮暗色主题、动效开关与移动端适配。"
+    "description": "pxd 是一个面向 Vue 3.3+ 的 UI 组件库，内置亮暗色主题、动效开关与移动端适配，并把 agent 桥接做进底层——AI 可以直接读取页面上的组件、调用它们的动作，而不需要截图或模拟点击。"
   }
 }
