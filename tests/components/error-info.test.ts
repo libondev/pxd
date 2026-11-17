@@ -1,16 +1,16 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
-import Error from '../../src/components/error/index.vue'
+import ErrorInfo from '../../src/components/error-info/index.vue'
 
-describe('error', () => {
+describe('error-info', () => {
   it('render default', () => {
-    const wrapper = mount(Error, {
+    const wrapper = mount(ErrorInfo, {
       slots: {
         default: 'This email address is already in use.',
       },
     })
 
-    expect(wrapper.find('.pxd-error').exists()).toBe(true)
+    expect(wrapper.find('.pxd-error-info').exists()).toBe(true)
     expect(wrapper.find('svg').exists()).toBe(true)
     expect(wrapper.text()).toContain('This email address is already in use.')
 
@@ -18,7 +18,7 @@ describe('error', () => {
   })
 
   it('should render label', async () => {
-    const wrapper = mount(Error, {
+    const wrapper = mount(ErrorInfo, {
       props: {
         label: 'Error',
       },
@@ -38,7 +38,7 @@ describe('error', () => {
   })
 
   it('should render with action and link', () => {
-    const wrapper = mount(Error, {
+    const wrapper = mount(ErrorInfo, {
       props: {
         error: {
           message: 'File not found',
@@ -58,7 +58,7 @@ describe('error', () => {
   })
 
   it('should render external link', () => {
-    const wrapper = mount(Error, {
+    const wrapper = mount(ErrorInfo, {
       props: {
         error: {
           message: 'Need more information',

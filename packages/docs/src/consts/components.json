@@ -170,8 +170,8 @@
     "category": "Feedback"
   },
   {
-    "camelized": "Error",
-    "name": "error",
+    "camelized": "Error Info",
+    "name": "error-info",
     "category": "Feedback"
   },
   {

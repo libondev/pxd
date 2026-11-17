@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ErrorProps } from './types'
+import type { ErrorInfoProps } from './types'
 import ExternalIcon from '@gdsicon/vue/external'
 import StopIcon from '@gdsicon/vue/stop'
 import { computed } from 'vue'
@@ -8,11 +8,11 @@ import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isExternalLink } from '../../utils/format.js'
 
 defineOptions({
-  name: 'PError',
+  name: 'PErrorInfo',
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<ErrorProps>(), {
+const props = withDefaults(defineProps<ErrorInfoProps>(), {
   variant: 'default',
 })
 
@@ -27,7 +27,7 @@ const configProvider = useConfigProvider()
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-error flex text-red-900',
+    base: 'pxd-error-info flex text-red-900',
     variants: {
       variant: {
         default: '',
@@ -51,7 +51,7 @@ const { attrs, classes } = useTailwindVariant(
 </script>
 
 <template>
-  <div data-error :class="classes" :data-variant="variant" v-bind="attrs">
+  <div data-error-info :class="classes" :data-variant="variant" v-bind="attrs">
     <StopIcon class="me-2 mbs-(--mt) size-em shrink-0" />
 
     <div class="flex-1 shrink-0">
