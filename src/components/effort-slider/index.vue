@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { EffortSliderEmits, EffortSliderProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { optionItems } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import {
@@ -168,6 +169,7 @@ const { attrs, classes } = useTailwindVariant(
 
 useAgentNode({
   name: 'effort-slider',
+  items: () => optionItems(optionList.value, activeValue.value),
   state: () => ({
     value: activeValue.value ?? null,
     options: optionList.value.map((option) => option.value),

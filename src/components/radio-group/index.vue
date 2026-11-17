@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { RadioGroupEmits, RadioGroupProps } from './types'
+import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
@@ -19,6 +20,7 @@ const notify = useAgentChange(emits)
 
 useAgentNode({
   name: 'radio-group',
+  items: () => optionItems(props.options, props.modelValue),
   state: () => ({ value: props.modelValue ?? null }),
   actions: {
     setValue: (value) => {

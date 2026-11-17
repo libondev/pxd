@@ -754,6 +754,91 @@ describe('agent components', () => {
     expect(find(agent.snapshot(), 'popover')).toMatchObject({ open: false })
   })
 
+  it('should report the choices a select offers', async () => {
+    track(
+      mount(Select, {
+        props: {
+          options: [
+            { label: 'One', value: 1 },
+            { label: 'Two', value: 2, disabled: true },
+          ],
+        },
+        attrs: { 'aria-label': 'Region' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'select')).toMatchObject({
+      items: [
+        { value: 1, label: 'One' },
+        { value: 2, label: 'Two', disabled: true },
+      ],
+    })
+
+    await agent.act({ steps: [{ ref: 'Region', action: 'setValue', args: [1] }] })
+
+    const [first, second] = find(agent.snapshot(), 'select').items as { selected?: boolean }[]
+
+    expect(first.selected).toBe(true)
+    expect(second.selected).toBeUndefined()
+  })
+
+  it('should report a flattened tree with what is open', () => {
+    track(
+      mount(Tree, {
+        props: {
+          data: [
+            { value: 'a', label: 'A', children: [{ value: 'a1', label: 'A1' }] },
+            { value: 'b', label: 'B' },
+          ],
+          expandedKeys: ['a'],
+        },
+        attrs: { 'aria-label': 'Files' },
+      }),
+    )
+
+    expect(find(createAgent().snapshot(), 'tree')).toMatchObject({
+      items: [
+        { value: 'a', label: 'A', expanded: true },
+        { value: 'a1', label: 'A1' },
+        { value: 'b', label: 'B' },
+      ],
+    })
+  })
+
+  it('should find a component by one of its choices', () => {
+    track(
+      mount(Menu, {
+        props: {
+          options: [
+            { label: 'Edit', value: 'edit' },
+            { label: 'Delete', value: 'delete' },
+          ],
+        },
+        attrs: { 'aria-label': 'Actions' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(agent.query({ text: 'delete' })).toHaveLength(1)
+    expect(agent.query({ text: 'delete' })[0]).toMatchObject({ component: 'menu' })
+    expect(agent.query({ text: 'nothing here' })).toHaveLength(0)
+  })
+
+  it('should cut a long option list and say how many there are', () => {
+    const options = Array.from({ length: 120 }, (_, index) => ({
+      label: `Item ${index}`,
+      value: index,
+    }))
+
+    track(mount(List, { props: { options }, attrs: { 'aria-label': 'Rows' } }))
+
+    const entry = find(createAgent().snapshot(), 'list')
+
+    expect(entry.items).toHaveLength(100)
+    expect(entry.itemCount).toBe(120)
+  })
+
   it('should set a date', async () => {
     const bound = mountBound(DatePicker, { 'aria-label': 'Due' }, '')
     const agent = createAgent()

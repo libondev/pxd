@@ -12,6 +12,7 @@ import type {
   TreeProps,
 } from './types'
 import { computed, shallowRef, useSlots, watch } from 'vue'
+import { treeItems } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
@@ -332,6 +333,7 @@ const dragNode = computed(() =>
 
 useAgentNode({
   name: 'tree',
+  items: () => treeItems(props.data, { selected: props.modelValue, expanded: expandedKeys.value }),
   el: () => containerRef.value,
   state: () => ({
     value: props.modelValue ?? [],

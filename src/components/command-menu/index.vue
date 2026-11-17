@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { CommandMenuEmits, CommandMenuProps } from './types'
 import { nextTick, shallowRef, watch } from 'vue'
+import { optionItems } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSearch } from '../../composables/_internal/use-list-search.js'
@@ -55,6 +56,7 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
 
 useAgentNode({
   name: 'command-menu',
+  items: () => optionItems(listOptions.value),
   state: () => ({ open: modelValue.value, query: filterKeyword.value }),
   actions: {
     setOpen: (open) => {

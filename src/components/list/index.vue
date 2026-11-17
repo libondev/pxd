@@ -3,6 +3,7 @@ import type { ListNavigationCommand } from '../../composables/_internal/use-list
 import type { ListItemRow, ListRow } from '../../composables/_internal/use-list-rows'
 import type { ListProps, ListOption, ListOptionSelected, ListEmits } from './types'
 import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
+import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
@@ -108,6 +109,7 @@ const renderEntries = computed<RenderEntry[]>(() => {
 
 useAgentNode({
   name: 'list',
+  items: () => optionItems(props.options, props.modelValue),
   state: () => ({ value: props.modelValue ?? null, multiple: props.multiple ?? false }),
   actions: {
     setValue: (value) => {

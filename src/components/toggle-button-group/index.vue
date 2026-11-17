@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ToggleButtonGroupProps, ToggleButtonGroupEmits } from './types'
+import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
@@ -45,6 +46,7 @@ const { attrs, classes } = useTailwindVariant(
 
 useAgentNode({
   name: 'toggle-button-group',
+  items: () => optionItems(props.options, props.modelValue),
   state: () => ({ value: props.modelValue ?? null }),
   actions: {
     setValue: (value) => {

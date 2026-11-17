@@ -71,6 +71,16 @@ function describe(entry: AgentEntry): AgentComponent {
     component.buttons = buttons
   }
 
+  const items = node.items?.() ?? []
+
+  if (items.length) {
+    component.items = items.slice(0, ITEM_LIMIT)
+
+    if (items.length > ITEM_LIMIT) {
+      component.itemCount = items.length
+    }
+  }
+
   component.actions = Object.keys(node.actions)
 
   return component
@@ -84,6 +94,9 @@ export interface AgentOptions {
 }
 
 const DEFAULT_TIMEOUT = 5 * 60 * 1000
+// A snapshot has to stay readable to a model: a list of ten thousand rows would crowd out
+// everything else, so items stop here and `itemCount` says how many there really are.
+const ITEM_LIMIT = 100
 
 export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions = {}) {
   const entries = () => agentVisibleEntries().filter((entry) => !isHidden(entry.node.el()))
@@ -311,7 +324,15 @@ export function createAgent({ allow, timeout = DEFAULT_TIMEOUT }: AgentOptions =
         if (needle) {
           const label = agentLabel(entry.node)
 
-          return !!label && fold(label).includes(needle)
+          if (label && fold(label).includes(needle)) {
+            return true
+          }
+
+          // A choice inside it matches too, so "the component holding Atlas" is findable
+          // even when the label says something else.
+          return (entry.node.items?.() ?? []).some(
+            (item) => item.label !== undefined && fold(String(item.label)).includes(needle),
+          )
         }
 
         return true

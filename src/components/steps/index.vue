@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { StepsOption, StepsEmits, StepsProps, StepsStatus } from './types'
 import { computed } from 'vue'
+import { optionItems } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -70,6 +71,15 @@ const computedStyle = computed(() => {
 
 useAgentNode({
   name: 'steps',
+  items: () =>
+    optionItems(
+      props.options.map((option, index) => ({
+        label: option.title,
+        value: index,
+        disabled: option.disabled,
+      })),
+      activeIndex.value,
+    ),
   state: () => ({ value: activeIndex.value }),
   actions: {
     setValue: (value) => select(Number(value)),

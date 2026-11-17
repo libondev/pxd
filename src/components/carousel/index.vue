@@ -4,6 +4,7 @@ import type { CarouselEmits, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, shallowRef, useSlots } from 'vue'
+import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
@@ -131,6 +132,11 @@ useSwipeGesture(sliderRef, {
 })
 useAgentNode({
   name: 'carousel',
+  items: () =>
+    optionItems(
+      props.options.map((option, index) => ({ label: option.label, value: index })),
+      currentIndex.value,
+    ),
   state: () => ({
     index: currentIndex.value,
     count: slideCount.value,

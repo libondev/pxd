@@ -2,6 +2,7 @@
 import type { ListModelValue } from '../list/types'
 import type { MenuEmits, MenuProps } from './types'
 import { computed, nextTick, shallowRef, watch } from 'vue'
+import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
@@ -62,6 +63,7 @@ const { onKeydown } = useListKeyboardController({
 
 useAgentNode({
   name: 'menu',
+  items: () => optionItems(props.options, selected.value),
   state: () => ({ value: selected.value ?? null, open: popoverVisible.value }),
   actions: {
     setValue: (value) => {

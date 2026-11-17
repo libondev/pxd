@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ColorSelectorEmits, ColorSelectorProps } from './types'
+import { optionItems } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
@@ -23,6 +24,11 @@ const modelValue = useModelValue(props, emits)
 
 useAgentNode({
   name: 'color-selector',
+  items: () =>
+    optionItems(
+      props.colors?.map((color) => ({ label: color, value: color })),
+      modelValue.value,
+    ),
   state: () => ({ value: modelValue.value ?? null }),
   actions: {
     setValue: (value) => {

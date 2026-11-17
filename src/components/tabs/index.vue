@@ -3,6 +3,7 @@ import type { ComponentValue } from '../../types/shared/props'
 import type { TabsEmits, TabsProps, TabsOptions } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
+import { optionItems } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
@@ -86,6 +87,7 @@ const { onKeydown: onNavKeydown } = useListKeyboardController({
 
 useAgentNode({
   name: 'tabs',
+  items: () => optionItems(props.options, activeValue.value),
   el: () => rootRef.value,
   state: () => ({ value: activeValue.value }),
   actions: {

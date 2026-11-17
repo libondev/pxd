@@ -28,6 +28,7 @@ agent.snapshot()
 - `ref` names the component in a step, and stays the same while the component stays mounted.
 - `label` is the name a person reads for it, from `aria-label`, `aria-labelledby` or its `<label>`.
 - The state keys after `label` are the component's own, like `value`, `checked` or `disabled`.
+- `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`. A list longer than 100 stops there and reports `itemCount`. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen.
 - `buttons` lists the text of the buttons inside it, when it has any, for a `press` step.
 - `actions` lists what can be called right now.
 
@@ -96,7 +97,7 @@ agent.query({ text: 'project' })
 agent.query({ within: 'Views' })
 ```
 
-- `text` matches any part of a label, ignoring case and accents.
+- `text` matches any part of a label, or of one of the choices inside a component, ignoring case and accents.
 - `kind` matches the component name, like `checkbox`.
 - `within` limits the result to components inside the one it names; an unknown name returns an empty list.
 

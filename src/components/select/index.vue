@@ -4,6 +4,7 @@ import type { ListModelValue } from '../list/types'
 import type { SelectEmits, SelectProps } from './types'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import { computed, nextTick, shallowRef, watch } from 'vue'
+import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetails } from '../../composables/_internal/use-change-details.js'
@@ -90,6 +91,7 @@ const { listOptions, pending } = useListSearch(() => props.options ?? [], filter
 
 useAgentNode({
   name: 'select',
+  items: () => optionItems(props.options, selected.value),
   state: () => ({
     value: selected.value ?? null,
     open: popoverVisible.value,
