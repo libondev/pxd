@@ -44,6 +44,12 @@ export interface AgentStep {
   args?: any[]
 }
 
+export interface AgentQuery {
+  text?: string
+  within?: string
+  kind?: string
+}
+
 export interface AgentActOptions {
   steps: AgentStep[]
   /** How long the whole run may take, in milliseconds. Thirty seconds by default. */

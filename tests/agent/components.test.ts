@@ -183,6 +183,7 @@ describe('agent components', () => {
     const result = await agent.act({ steps: [{ ref: 'Show More', action: 'press' }] })
 
     expect(result.ok).toBe(true)
+    expect(result.results[0].result).toBe('Show More')
     expect(expanded.value).toBe(true)
     expect(find(agent.snapshot(), 'more-button')).toMatchObject({ expanded: true })
 
@@ -1021,6 +1022,62 @@ describe('agent components', () => {
 
     expect(seen).toHaveLength(1)
     expect(seen[0]).toMatchObject({ component: 'number-input', label: 'Count' })
+  })
+
+  it('should wait a render for a button that arrives late', async () => {
+    const open = ref(false)
+    const ready = ref(false)
+    const removed = ref(false)
+
+    track(
+      mount(
+        defineComponent({
+          setup() {
+            setTimeout(() => {
+              ready.value = true
+            }, 0)
+
+            return () =>
+              h(
+                Modal,
+                {
+                  modelValue: open.value,
+                  title: 'Settings',
+                  'onUpdate:model-value': (next: unknown) => {
+                    open.value = Boolean(next)
+                  },
+                },
+                {
+                  default: () => h('p', 'Body'),
+                  footer: () =>
+                    ready.value
+                      ? h(
+                          Button,
+                          {
+                            onClick: () => {
+                              removed.value = true
+                            },
+                          },
+                          () => 'Delete',
+                        )
+                      : null,
+                },
+              )
+          },
+        }),
+      ),
+    )
+
+    const agent = createAgent()
+    const entry = find(agent.snapshot(), 'modal')
+
+    const result = await agent.act({
+      steps: [{ ref: entry.ref, action: 'press', args: ['Delete'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(result.results[0].result).toBe('Delete')
+    expect(removed.value).toBe(true)
   })
 
   it('should set a date', async () => {
