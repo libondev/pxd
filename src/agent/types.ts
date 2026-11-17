@@ -173,7 +173,8 @@ export interface AgentActResult {
   ok: boolean
   results: AgentStepResult[]
   error?: { message: string; ref?: string; step?: number }
-  /** Every field's value after the run, named by ref and label, cut at its own limit. */
+  /** The fields the run touched or that changed, named by ref and label, cut at its own
+   *  limit; `more` says how many other fields the page has. */
   values: Record<string, unknown>
   /** The components the run brought onto the page, like an opened dialog's buttons. */
   appeared: AgentComponent[]

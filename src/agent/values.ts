@@ -18,11 +18,16 @@ export interface AgentFieldState {
 const FIELD_LIMIT = 100
 
 /**
- * Every field's value after a run, named by ref and label, so an agent checks its work
- * without another snapshot. A long page keeps the fields the steps touched first.
+ * Every field the run touched or that changed, so an agent checks its work without another
+ * snapshot. A field it neither set nor saw change holds what it already knew, so it is left
+ * out and `more` says how many such fields the page still has.
  */
-export function valuesOf(states: Map<string, AgentFieldState>, touched: Set<string>) {
-  const fields: { name: string; value: unknown; first: boolean }[] = []
+export function valuesOf(
+  states: Map<string, AgentFieldState>,
+  touched: Set<string>,
+  changed: Set<string>,
+) {
+  const fields: { name: string; value: unknown; included: boolean }[] = []
 
   for (const [ref, entry] of states) {
     if (entry.state.open === true) {
@@ -40,13 +45,17 @@ export function valuesOf(states: Map<string, AgentFieldState>, touched: Set<stri
     fields.push({
       name: `${ref} ${entry.label ?? entry.component}`,
       value: entry.secret && value != null && value !== '' ? REDACTED : (value ?? null),
-      first: touched.has(ref),
+      included: touched.has(ref) || changed.has(ref),
     })
   }
 
-  const kept = new Set(fields.filter((field) => field.first))
+  const kept = new Set<(typeof fields)[number]>()
 
   for (const field of fields) {
+    if (!field.included) {
+      continue
+    }
+
     if (kept.size >= FIELD_LIMIT) {
       break
     }

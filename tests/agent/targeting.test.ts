@@ -194,7 +194,7 @@ describe('agent targeting', () => {
     })
   })
 
-  it('should report the values after a run and the components it brought onto the page', async () => {
+  it('should report the fields a run touched, and count the ones it left out', async () => {
     const root = host()
 
     register({
@@ -222,7 +222,10 @@ describe('agent targeting', () => {
 
     expect(result.ok).toBe(true)
     expect(result.appeared.map((component) => component.component)).toContain('chip')
-    expect(Object.values(result.values)).toEqual(expect.arrayContaining(['closed', 'inside']))
+
+    // The panel is the field the step touched; the chip it brought on was never touched,
+    // so it is counted rather than listed — an agent reads it from `appeared` or a snapshot.
+    expect(result.values).toEqual({ [`${entry.ref} panel`]: 'closed', more: 1 })
   })
 
   it('should wait for a component whose own work is running', async () => {

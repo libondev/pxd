@@ -97,6 +97,8 @@ export interface AgentRunResult {
   error?: { message: string; ref?: string; step?: number }
   /** The components the run acted on. */
   touched: Set<string>
+  /** The components whose state changed during the run, on their own or as a side effect. */
+  changed: Set<string>
   /** The components that were on the page when the run began. */
   before: Set<string>
   /** What the page showed after the last step, for the run's own report. */
@@ -189,6 +191,7 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
     const deadline = Date.now() + budget
     const results: AgentStepResult[] = []
     const touched = new Set<string>()
+    const changed = new Set<string>()
     // One capture to begin, then each step's own: what a step leaves behind is what the
     // next one starts from, so a run of steps reads the page half as often.
     let current = captureStep()
@@ -199,6 +202,7 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
       ok: false,
       results,
       touched,
+      changed,
       before,
       after: current,
       error: { message, ...(at.ref ? { ref: at.ref } : {}), step: at.index },
@@ -246,6 +250,7 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
           const { changes, gone } = diffStep(current, after)
 
           current = after
+          changes.forEach((change) => changed.add(change.ref))
 
           results.push({
             ref: entry.ref,
@@ -301,6 +306,7 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
         const { changes, gone } = diffStep(current, after)
 
         current = after
+        changes.forEach((change) => changed.add(change.ref))
 
         results.push({
           ref: entry.ref,
@@ -321,6 +327,6 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
       )
     }
 
-    return { ok: true, results, touched, before, after: current }
+    return { ok: true, results, touched, changed, before, after: current }
   }
 }

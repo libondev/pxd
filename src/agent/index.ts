@@ -84,7 +84,7 @@ export function createAgent({
     ok: result.ok,
     results: result.results,
     ...(result.error && { error: result.error }),
-    values: valuesOf(result.after.states, result.touched),
+    values: valuesOf(result.after.states, result.touched, result.changed),
     appeared: agentShownEntries()
       .filter((entry) => !result.before.has(entry.ref))
       .map((entry) => describe(entry))
