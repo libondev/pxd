@@ -60,6 +60,7 @@ const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
   elementRef: drawerRef,
   onOutsideClick: (ev) => emits('outside-click', ev),
   onClose: (reason) => {
+    emits('close', reason)
     change(false, { reason })
   },
 })

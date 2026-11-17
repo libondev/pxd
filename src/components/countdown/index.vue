@@ -3,7 +3,7 @@ import type { CountdownEmits, CountdownProps } from './types'
 import { computed } from 'vue'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useCountdown } from '../../composables/use-countdown.js'
 import { dayjs, dayjsDurationPlugin, dayjsMillisecondTokenPlugin } from '../../utils/date.js'
 
@@ -36,7 +36,7 @@ const { reset, timestamp } = useCountdown({
   duration: () => props.duration,
   millisecond: () => props.millisecond,
   intuitive: () => props.intuitive,
-  onChange: (enabled) => notify(enabled, changeDetails()),
+  onChange: (enabled) => notify(enabled, changeDetailsFor({ reason: 'sync' })),
   onReset: () => emits('reset'),
   onFinish: () => emits('finish'),
 })

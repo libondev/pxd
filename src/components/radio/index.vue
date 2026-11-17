@@ -57,7 +57,7 @@ function onInputChange(event: Event) {
     return
   }
 
-  change(props.value, { reason: 'trigger-press', event })
+  change(props.value, { reason: 'item-press', event })
 }
 </script>
 

@@ -14,7 +14,7 @@ import type {
 import { computed, shallowRef, useSlots, watch } from 'vue'
 import { treeItems } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import {
@@ -512,7 +512,7 @@ function onCheck(row: TreeFlatNode, event?: MouseEvent): void {
       checkedValues,
       halfCheckedValues: next.halfCheckedValues,
     },
-    changeDetails(),
+    changeDetailsFor({ reason: 'item-press' }),
   )
 }
 

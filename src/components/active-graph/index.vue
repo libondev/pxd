@@ -9,7 +9,7 @@ import type {
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useDelayChange } from '../../composables/use-delay-change.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getAllDatesBetween } from '../../utils/date.js'
@@ -128,7 +128,7 @@ useAgentNode({
       }
 
       selectedDate.value = next
-      notify(next, changeDetails())
+      notify(next, changeDetailsFor({ reason: 'api' }))
     },
   },
 })
@@ -419,7 +419,7 @@ function onCellClick(event: MouseEvent) {
 
   selectedDate.value = selectedDate.value === date ? '' : date
 
-  notify(date, changeDetails())
+  notify(date, changeDetailsFor({ reason: 'item-press' }))
 }
 // when pointer leaves the table area, hide the tooltip
 function onPointerLeave() {

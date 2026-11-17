@@ -9,7 +9,6 @@ interface ChangeCause {
 // somebody, even when the handler has no event to hand (a clear button calling clear()).
 const INTERACTION_REASONS: ReadonlySet<ChangeReason> = new Set<ChangeReason>([
   'typed',
-  'pasted',
   'cleared',
   'item-press',
   'trigger-press',

@@ -7,7 +7,7 @@ import { computed, nextTick, shallowRef, useSlots } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
 import { useCarousel } from '../../composables/use-carousel.js'
 import { awaitAnimationEnd } from '../../utils/dom.js'
@@ -96,7 +96,7 @@ const {
   autoplay: () => props.autoplay,
   interval: () => props.interval,
   transition: animateMove,
-  onChange: (index) => notify(index, changeDetails()),
+  onChange: (index) => notify(index, changeDetailsFor({ reason: 'sync' })),
 })
 const slots = useSlots()
 

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ChangeReason } from '../../types/shared/change'
 import type { CommandMenuEmits, CommandMenuProps } from './types'
 import { nextTick, shallowRef, watch } from 'vue'
 import { optionItems } from '../../agent/items.js'
@@ -30,6 +31,9 @@ const emits = defineEmits<CommandMenuEmits>()
 
 const uniqueId = getUniqueId()
 const listId = getUniqueId('command-menu-list')
+
+// The dialog says which way it closed; the menu passes that on instead of assuming.
+let closeReason: ChangeReason = 'close-press'
 
 const filterKeyword = shallowRef('')
 const listRef = shallowRef<InstanceType<typeof PList>>()
@@ -68,8 +72,12 @@ useAgentNode({
   },
 })
 
+function onDialogClose(reason: ChangeReason) {
+  closeReason = reason
+}
+
 function onModelUpdate(open: boolean) {
-  change(open, { reason: open ? 'trigger-press' : 'close-press' })
+  change(open, { reason: open ? 'trigger-press' : closeReason })
 }
 function onModalKeydown(ev: KeyboardEvent) {
   // On small screens the modal wrapper owns the focus, not the input.
@@ -87,13 +95,13 @@ function showModal() {
   emits('show')
 }
 
-function closeModal() {
-  change(false, { reason: 'close-press' })
+function closeModal(reason: ChangeReason = 'close-press') {
+  change(false, { reason })
 }
 
 function onListItemSelect() {
   if (props.closeOnSelectItem) {
-    closeModal()
+    closeModal('item-press')
   }
 }
 
@@ -108,6 +116,7 @@ watch(listOptions, async () => {
     data-command-menu
     :model-value="modelValue"
     @update:model-value="onModelUpdate"
+    @close="onDialogClose"
     :width="width"
     class="pxd-command-menu max-sm:h-full"
     content-class="!p-0 overflow-hidden"
@@ -147,7 +156,7 @@ watch(listOptions, async () => {
         <button
           type="button"
           class="px-1.5 h-5 text-xs shrink-0 cursor-pointer appearance-none rounded-sm border bg-background-100 self-focus-ring hover:bg-background-hover active:bg-background-active motion-safe:transition-colors"
-          @click="closeModal"
+          @click="closeModal('close-press')"
         >
           <kbd class="font-sans appearance-none">Esc</kbd>
         </button>

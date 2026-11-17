@@ -3,7 +3,7 @@ import type { Reaction, ReactionsEmits, ReactionsProps } from './types'
 import { computed, shallowRef } from 'vue'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PPopover from '../popover/index.vue'
 
@@ -47,7 +47,7 @@ function commit(next: Reaction[], action: 'add' | 'remove', emoji: string) {
     emits('remove', emoji)
   }
 
-  notify(next, changeDetails())
+  notify(next, changeDetailsFor({ reason: 'item-press' }))
   emits('update:model-value', next)
 }
 

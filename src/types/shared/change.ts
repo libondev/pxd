@@ -8,7 +8,6 @@ export type ChangeSource = 'user' | 'agent' | 'programmatic'
 /** Why a value changed, from a closed list, so a consumer can rely on the word. */
 export type ChangeReason =
   | 'typed'
-  | 'pasted'
   | 'cleared'
   | 'item-press'
   | 'trigger-press'

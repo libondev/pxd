@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ChangeDetails } from '../../types/shared/change'
 import type { CalendarDay } from '../calendar/types'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 
 defineOptions({
@@ -77,7 +77,7 @@ function selectDate() {
     return
   }
 
-  emits('change', props.day, changeDetails())
+  emits('change', props.day, changeDetailsFor({ reason: 'item-press' }))
 }
 </script>
 

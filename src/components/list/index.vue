@@ -7,7 +7,7 @@ import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetails } from '../../composables/_internal/use-change-details.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useListNavigation } from '../../composables/_internal/use-list-navigation.js'
 import { flattenListOptions } from '../../composables/_internal/use-list-rows.js'
 import { resolveNextListValue } from '../../composables/_internal/use-list-selection.js'
@@ -178,7 +178,7 @@ function onItemSelect(value: ListOptionSelected['value']): void {
   const nextValue = resolveNextListValue(props.modelValue, value, props.multiple)
 
   emits('update:model-value', nextValue)
-  notify(toSelectedOption(option), changeDetails())
+  notify(toSelectedOption(option), changeDetailsFor({ reason: 'item-press' }))
 }
 
 function onActivateItem(navIndex: number) {

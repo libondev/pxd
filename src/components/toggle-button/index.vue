@@ -105,16 +105,16 @@ function onToggleClick() {
         newCheckedState
           ? [...formattedValue, props.value]
           : formattedValue.filter((v) => v !== props.value),
-        { reason: 'trigger-press' },
+        { reason: 'item-press' },
       )
     } else {
-      change(props.value, { reason: 'trigger-press' })
+      change(props.value, { reason: 'item-press' })
     }
 
     return
   }
 
-  change(newCheckedState, { reason: 'trigger-press' })
+  change(newCheckedState, { reason: 'item-press' })
 }
 </script>
 

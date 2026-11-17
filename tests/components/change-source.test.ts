@@ -111,7 +111,7 @@ describe('change source', () => {
 
     await wrapper.find('input').setValue(true)
 
-    expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'trigger-press' })
+    expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'item-press' })
   })
 
   it('should name a person who picked a radio', async () => {
@@ -119,7 +119,7 @@ describe('change source', () => {
 
     await wrapper.find('input').setValue(true)
 
-    expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'trigger-press' })
+    expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'item-press' })
   })
 
   it('should name a person who picked a colour', async () => {

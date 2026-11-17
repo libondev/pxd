@@ -1,3 +1,4 @@
+import type { OverlayCloseReason } from '../../composables/_internal/use-overlay-dialog'
 import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentClass, ComponentText } from '../../types/shared/props'
 
@@ -22,6 +23,7 @@ export interface ModalProps {
 export interface ModalEmits {
   show: []
   hide: []
+  close: [reason: OverlayCloseReason]
   change: [boolean, details: ChangeDetails]
   'outside-click': [PointerEvent]
   'visible-change': [visible: boolean]

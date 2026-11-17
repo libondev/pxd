@@ -17,7 +17,7 @@ import MinusIcon from '@gdsicon/vue/minus'
 import { computed, shallowRef, useSlots, watch } from 'vue'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -187,7 +187,7 @@ function commit(index: number, status: TodoStatus) {
 
   const detail: TodoChangeDetail = { item, index, status, prevStatus, options }
 
-  notify(detail, changeDetails())
+  notify(detail, changeDetailsFor({ reason: 'item-press' }))
   emits('update:model-value', options)
 }
 

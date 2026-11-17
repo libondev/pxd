@@ -545,7 +545,8 @@ function handleClose() {
 | --- | --- | --- |
 | show | `() => void` | Emitted when the drawer becomes visible. |
 | hide | `() => void` | Emitted when the drawer stops being visible. |
-| change | `(visible: boolean, details: ChangeDetails) => void` | Emitted together with `update:model-value` when the open state of the drawer changes. |
+| close | `(reason: 'escape-key' \| 'outside-press' \| 'close-press') => void` | Emitted before the drawer closes itself, saying which of the three ways it happened. |
+| change | `(visible: boolean, details: ChangeDetails) => void` | Emitted together with `update:model-value` when the open state of the drawer changes; a close carries its reason in `details.reason`. |
 | outside-click | `(ev: PointerEvent) => void` | Emitted when the overlay behind the drawer is clicked. |
 | visible-change | `(visible: boolean) => void` | Emitted after every change of the drawer's open state. |
 | update:model-value | `(visible: boolean) => void` | Emitted when the open state of the drawer changes. |

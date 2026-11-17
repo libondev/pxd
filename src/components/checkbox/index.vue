@@ -117,13 +117,13 @@ function onInputChange(event: Event) {
       checked
         ? [...modelValue.value, props.value]
         : modelValue.value.filter((v) => v !== props.value),
-      { reason: 'trigger-press', event },
+      { reason: 'item-press', event },
     )
 
     return
   }
 
-  change(checked, { reason: 'trigger-press', event })
+  change(checked, { reason: 'item-press', event })
 }
 </script>
 

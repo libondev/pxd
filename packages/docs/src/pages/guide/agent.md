@@ -141,7 +141,7 @@ function onChange(value: string, details: ChangeDetails) {
 | Field | Type | Meaning |
 | --- | --- | --- |
 | source | `'user' \| 'agent' \| 'programmatic' \| undefined` | Who changed it: a person, a step, or code. |
-| reason | `string \| undefined` | Why it changed, from a closed list: `'typed'`, `'cleared'`, `'item-press'`, `'trigger-press'`, `'escape-key'`, `'settle'`, `'api'`, … |
+| reason | `string \| undefined` | Why it changed, from a closed list: a person's `'typed'`, `'cleared'`, `'item-press'`, `'trigger-press'`, `'escape-key'`, `'outside-press'`, `'close-press'`, `'step'`, `'settle'`; or `'api'` and `'sync'` when nobody pressed anything. |
 | cancel | `() => void` | Refuses the write, where the component owns it: the value stays, and `update:model-value` is not emitted. |
 | canceled | `boolean` | Whether `cancel()` was called. |
 

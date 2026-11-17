@@ -7,7 +7,7 @@ import { computed, nextTick, shallowRef, watch } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSearch } from '../../composables/_internal/use-list-search.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
@@ -77,7 +77,7 @@ const { selected, apply, reset, commit } = useListSelection({
   modelValue: () => props.modelValue,
   multiple: () => props.multiple,
   onUpdateModelValue: (value) => emits('update:model-value', value),
-  onChange: (value) => notify(value, changeDetails()),
+  onChange: (value) => notify(value, changeDetailsFor({ reason: 'item-press' })),
 })
 const { onKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value,

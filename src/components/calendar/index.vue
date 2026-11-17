@@ -6,7 +6,7 @@ import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { dayjs } from '../../utils/date.js'
 import { isNil, isUndefined } from '../../utils/is.js'
@@ -155,7 +155,7 @@ function selectDate(day: CalendarDay) {
     uncontrolledValue.value = value
   }
 
-  notify(value, changeDetails())
+  notify(value, changeDetailsFor({ reason: 'item-press' }))
   emits('update:model-value', value)
 }
 

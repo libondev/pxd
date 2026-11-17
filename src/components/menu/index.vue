@@ -5,7 +5,7 @@ import { computed, nextTick, shallowRef, watch } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
 import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
@@ -34,7 +34,7 @@ const { selected, apply, reset, commit } = useListSelection({
   modelValue: () => props.modelValue,
   multiple: () => props.multiple,
   onUpdateModelValue: (value) => emits('update:model-value', value),
-  onChange: (value) => notify(value, changeDetails()),
+  onChange: (value) => notify(value, changeDetailsFor({ reason: 'item-press' })),
 })
 
 // Action menus (no v-model) keep List uncontrolled so checkmarks never appear.

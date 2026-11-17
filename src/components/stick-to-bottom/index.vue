@@ -4,7 +4,7 @@ import { cn } from 'cn'
 import { computed, shallowRef, watch } from 'vue'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { changeDetails } from '../../composables/_internal/use-change-details.js'
+import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useStickToBottom } from '../../composables/use-stick-to-bottom.js'
 
 defineOptions({
@@ -52,7 +52,7 @@ useAgentNode({
 watch(
   () => isAtBottom.value,
   (value) => {
-    notify(value, changeDetails())
+    notify(value, changeDetailsFor({ reason: 'sync' }))
   },
 )
 

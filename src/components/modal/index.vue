@@ -58,6 +58,7 @@ const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
   elementRef: modalRef,
   onOutsideClick: (ev) => emits('outside-click', ev),
   onClose: (reason) => {
+    emits('close', reason)
     change(false, { reason })
   },
 })
