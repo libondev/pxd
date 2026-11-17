@@ -2,6 +2,7 @@
 import type { ToggleEmits, ToggleProps } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getUniqueId, getFallbackValue } from '../../utils/helper.js'
@@ -35,6 +36,32 @@ const computedSize = computed(() => getFallbackValue(props.size, SIZES, configPr
 const modelValue = useModelValue(props, emits)
 
 const isChecked = computed(() => modelValue.value === props.activeValue)
+
+useAgentNode({
+  name: 'toggle',
+  state: () => ({
+    value: modelValue.value,
+    checked: modelValue.value === props.activeValue,
+    disabled: props.disabled ?? false,
+  }),
+  actions: {
+    setValue: async (value) => {
+      if (props.loading) {
+        return
+      }
+
+      if (typeof props.beforeChange === 'function') {
+        const allowed = await props.beforeChange(modelValue.value)
+
+        if (!allowed) {
+          return
+        }
+      }
+
+      modelValue.value = value
+    },
+  },
+})
 
 async function onCheckboxChange(e: Event) {
   if (props.loading) {

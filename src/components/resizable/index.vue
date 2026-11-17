@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ResizableEmits, ResizableProps } from './types'
 import { computed, onMounted, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import { throttleByRaf } from '../../utils/event.js'
@@ -136,6 +137,21 @@ const separatorRange = computed(() =>
 const { modelValue, commit } = useModelCommit(props, emits)
 
 useResizeObserver(containerRef, syncContainerSize)
+
+useAgentNode({
+  name: 'resizable',
+  state: () => ({ value: sizes.value }),
+  actions: {
+    setValue: (value) => {
+      const pair = Array.isArray(value) ? value : []
+      const changed = setSizes([Number(pair[0] ?? 0), Number(pair[1] ?? 0)])
+
+      if (changed) {
+        commit(modelValue.value)
+      }
+    },
+  },
+})
 
 function roundSize(value: number): number {
   return Math.round(value * 100) / 100

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { EffortSliderEmits, EffortSliderProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import {
   createTailwindVariant,
@@ -164,6 +165,30 @@ const { attrs, classes } = useTailwindVariant(
     }),
   },
 )
+
+useAgentNode({
+  name: 'effort-slider',
+  state: () => ({
+    value: activeValue.value ?? null,
+    options: optionList.value.map((option) => option.value),
+    disabled: props.disabled ?? false,
+  }),
+  actions: {
+    setValue: (value) => {
+      const index = optionList.value.findIndex((option) => option.value === value)
+
+      if (index < 0) {
+        return
+      }
+
+      const next = setValue(index)
+
+      if (next !== null) {
+        commit(next)
+      }
+    },
+  },
+})
 
 function particleSeed(index: number, salt: number) {
   const value = Math.sin(index * HASH_X + salt * HASH_Y) * HASH_SCALE

@@ -9,6 +9,7 @@ import Choicebox from '../../src/components/choicebox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
 import CommandMenu from '../../src/components/command-menu/index.vue'
 import DatePicker from '../../src/components/date-picker/index.vue'
+import EffortSlider from '../../src/components/effort-slider/index.vue'
 import List from '../../src/components/list/index.vue'
 import Menu from '../../src/components/menu/index.vue'
 import Modal from '../../src/components/modal/index.vue'
@@ -17,12 +18,14 @@ import NumberInput from '../../src/components/number-input/index.vue'
 import PinInput from '../../src/components/pin-input/index.vue'
 import RadioGroup from '../../src/components/radio-group/index.vue'
 import Rating from '../../src/components/rating/index.vue'
+import Resizable from '../../src/components/resizable/index.vue'
 import Select from '../../src/components/select/index.vue'
 import Slider from '../../src/components/slider/index.vue'
 import Steps from '../../src/components/steps/index.vue'
 import Switch from '../../src/components/switch/index.vue'
 import Textarea from '../../src/components/textarea/index.vue'
 import TimePicker from '../../src/components/time-picker/index.vue'
+import Toggle from '../../src/components/toggle/index.vue'
 
 const mounted: { unmount: () => void }[] = []
 
@@ -190,6 +193,58 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'select')).toMatchObject({ value: 2, open: false })
+  })
+
+  it('should flip a toggle', async () => {
+    const bound = mountBound(Toggle, { 'aria-label': 'Notifications' }, false)
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'toggle')).toMatchObject({
+      label: 'Notifications',
+      value: false,
+      checked: false,
+      actions: ['setValue'],
+    })
+
+    const result = await agent.act({
+      steps: [{ ref: 'Notifications', action: 'setValue', args: [true] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(bound.value).toBe(true)
+    expect(find(agent.snapshot(), 'toggle')).toMatchObject({ value: true, checked: true })
+  })
+
+  it('should move an effort slider to one of its options', async () => {
+    track(
+      mount(EffortSlider, {
+        props: { options: ['low', 'medium', 'high'] },
+        attrs: { 'aria-label': 'Effort' },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'effort-slider')).toMatchObject({
+      label: 'Effort',
+      value: 'low',
+      options: ['low', 'medium', 'high'],
+    })
+
+    await agent.act({ steps: [{ ref: 'Effort', action: 'setValue', args: ['high'] }] })
+
+    expect(find(agent.snapshot(), 'effort-slider')).toMatchObject({ value: 'high' })
+  })
+
+  it('should resize panels', async () => {
+    track(mount(Resizable, { attrs: { 'aria-label': 'Panels' } }))
+    const agent = createAgent()
+
+    const result = await agent.act({
+      steps: [{ ref: 'Panels', action: 'setValue', args: [[60, 40]] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(find(agent.snapshot(), 'resizable')).toMatchObject({ value: [60, 40] })
   })
 
   it('should set a date', async () => {

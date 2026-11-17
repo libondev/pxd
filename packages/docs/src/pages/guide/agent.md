@@ -116,6 +116,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `command-menu` | `setOpen`, `setQuery` |
 | `date-picker` | `setValue`, `setOpen` |
 | `drawer` | `setOpen` |
+| `effort-slider` | `setValue` |
 | `input` | `setValue`, `focus`, `blur`, `select` |
 | `list` | `setValue`, `focus`, `dispatch` |
 | `menu` | `setValue`, `setOpen`, `toggle` |
@@ -125,6 +126,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `pin-input` | `setValue` |
 | `radio-group` | `setValue` |
 | `rating` | `setValue` |
+| `resizable` | `setValue` |
 | `select` | `setValue`, `setOpen`, `toggle` |
 | `slider` | `setValue` |
 | `steps` | `setValue` |
@@ -132,6 +134,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `tabs` | `setValue` |
 | `textarea` | `setValue`, `focus`, `blur` |
 | `time-picker` | `setValue` |
+| `toggle` | `setValue` |
 | `toggle-button-group` | `setValue` |
 
 A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-button-group` — holds no value of its own: `setValue` announces the change and asks for the update, and the value follows only when the app's `v-model` accepts it.
