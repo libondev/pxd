@@ -19,6 +19,7 @@ const TEMPLATE_WRITES = new Set([
 ])
 
 const components = join(process.cwd(), 'src/components')
+const vocabularyFile = join(process.cwd(), 'src/types/shared/change.ts')
 
 const sources = readdirSync(components, { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
@@ -59,6 +60,22 @@ const assignsTheFunnelRef = (text: string) => {
 }
 
 describe('change entry', () => {
+  it('should use only words the vocabulary declares', () => {
+    const declared = new Set(
+      [...readFileSync(vocabularyFile, 'utf8').matchAll(/^\s*\|\s*'([a-z-]+)'/gm)].map(
+        (match) => match[1],
+      ),
+    )
+    const used = new Set(
+      read().flatMap((source) =>
+        [...source.text.matchAll(/reason:\s*'([a-z-]+)'/g)].map((match) => match[1]),
+      ),
+    )
+
+    expect(declared.size).toBeGreaterThan(8)
+    expect([...used].filter((word) => !declared.has(word)).sort()).toEqual([])
+  })
+
   it('should not let a value funnel announce a change nobody explained', () => {
     const offenders = read()
       .filter((source) => assignsTheFunnelRef(source.text))
