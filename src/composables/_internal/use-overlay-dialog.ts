@@ -4,13 +4,16 @@ import { computed, toValue } from 'vue'
 import { isTruthyProp } from '../../utils/format.js'
 import { useFocusTrap } from './use-focus-trap.js'
 
+/** The three ways a dialog closes on its own, each with its own word. */
+export type OverlayCloseReason = 'escape-key' | 'outside-press' | 'close-press'
+
 interface OverlayDialogOptions {
   autoFocusElement?: MaybeRefOrGetter<string | boolean | undefined>
   loading?: MaybeRefOrGetter<boolean | undefined>
   closeOnClickOverlay?: MaybeRefOrGetter<boolean | undefined>
   elementRef: Ref<HTMLElement | undefined>
   onOutsideClick?: (ev: PointerEvent) => void
-  onClose: () => void
+  onClose: (reason: OverlayCloseReason) => void
 }
 
 /**
@@ -18,7 +21,7 @@ interface OverlayDialogOptions {
  * click/escape close handlers.
  */
 export function useOverlayDialog(options: OverlayDialogOptions): {
-  closeOverlayIfNeed: () => void
+  closeOverlayIfNeed: (reason: OverlayCloseReason) => void
   onOverlayClick: (ev: PointerEvent) => void
 } {
   // Esc and outside clicks only request a close (vetoed while loading) - never deactivate the trap.
@@ -28,12 +31,12 @@ export function useOverlayDialog(options: OverlayDialogOptions): {
 
   useFocusTrap(options.elementRef, focusTrapOptions)
 
-  function closeOverlayIfNeed() {
+  function closeOverlayIfNeed(reason: OverlayCloseReason) {
     if (isTruthyProp(toValue(options.loading))) {
       return
     }
 
-    options.onClose()
+    options.onClose(reason)
   }
 
   function onOverlayClick(ev: PointerEvent) {
@@ -43,7 +46,7 @@ export function useOverlayDialog(options: OverlayDialogOptions): {
       return
     }
 
-    closeOverlayIfNeed()
+    closeOverlayIfNeed('outside-press')
   }
 
   return { closeOverlayIfNeed, onOverlayClick }

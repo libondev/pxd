@@ -1,11 +1,12 @@
 import type { ChangeDetails } from '../../src/types/shared/change'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, nextTick, ref } from 'vue'
 import { createAgent } from '../../src/agent'
 import Checkbox from '../../src/components/checkbox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
 import Input from '../../src/components/input/index.vue'
+import Modal from '../../src/components/modal/index.vue'
 import Radio from '../../src/components/radio/index.vue'
 import Tabs from '../../src/components/tabs/index.vue'
 import Toggle from '../../src/components/toggle/index.vue'
@@ -147,6 +148,65 @@ describe('change source', () => {
     await wrapper.findAll('[role="tab"]')[1].trigger('click')
 
     expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'item-press' })
+  })
+
+  it('should name the close button as the reason a dialog closed', async () => {
+    const open = ref(true)
+    const wrapper = track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(Modal, {
+              modelValue: open.value,
+              title: 'Settings',
+              closeable: true,
+              'onUpdate:model-value': (next: unknown) => {
+                open.value = Boolean(next)
+              },
+            }),
+        }),
+      ),
+    )
+    // The dialog renders through a teleport, so its buttons live in the document rather than
+    // under the wrapper's element.
+    const close = [...document.querySelectorAll('button')].find((button) =>
+      /close/i.test(button.getAttribute('aria-label') ?? ''),
+    )
+
+    close!.click()
+    await nextTick()
+
+    expect(detailsOf(wrapper.findComponent(Modal))).toMatchObject({
+      source: 'user',
+      reason: 'close-press',
+    })
+    expect(open.value).toBe(false)
+  })
+
+  it('should name Escape as the reason a dialog closed', async () => {
+    const open = ref(true)
+    const wrapper = track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(Modal, {
+              modelValue: open.value,
+              title: 'Settings',
+              'onUpdate:model-value': (next: unknown) => {
+                open.value = Boolean(next)
+              },
+            }),
+        }),
+      ),
+    )
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await nextTick()
+
+    expect(detailsOf(wrapper.findComponent(Modal))).toMatchObject({
+      source: 'user',
+      reason: 'escape-key',
+    })
   })
 
   it('should name an agent step that flipped a toggle', async () => {

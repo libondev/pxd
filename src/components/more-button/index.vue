@@ -18,23 +18,23 @@ const props = withDefaults(defineProps<MoreButtonProps>(), {
 
 const emits = defineEmits<MoreButtonEmits>()
 
-const { modelValue: isExpanded } = useModelValue(props, emits)
+const { modelValue: isExpanded, change } = useModelValue(props, emits)
 
 useAgentNode({
   name: 'more-button',
   state: () => ({ expanded: isExpanded.value }),
   actions: {
     setValue: (value) => {
-      isExpanded.value = Boolean(value)
+      change(Boolean(value), { reason: 'api' })
     },
     toggle: () => {
-      isExpanded.value = !isExpanded.value
+      change(!isExpanded.value, { reason: 'api' })
     },
   },
 })
 
 function onToggleExpand() {
-  isExpanded.value = !isExpanded.value
+  change(!isExpanded.value, { reason: 'trigger-press' })
 }
 </script>
 

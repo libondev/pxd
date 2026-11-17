@@ -51,7 +51,7 @@ const computedStyle = computed(() => ({
   '--drawer-size': getCssUnitValue(props.size),
 }))
 
-const { modelValue: isVisible } = useModelValue(props, emits)
+const { modelValue: isVisible, change } = useModelValue(props, emits)
 const configProvider = useConfigProvider()
 const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
   autoFocusElement: () => props.autoFocusElement,
@@ -59,8 +59,8 @@ const { closeOverlayIfNeed, onOverlayClick } = useOverlayDialog({
   closeOnClickOverlay: () => props.closeOnClickOverlay,
   elementRef: drawerRef,
   onOutsideClick: (ev) => emits('outside-click', ev),
-  onClose: () => {
-    isVisible.value = false
+  onClose: (reason) => {
+    change(false, { reason })
   },
 })
 
@@ -70,7 +70,7 @@ useAgentNode({
   state: () => ({ open: isVisible.value }),
   actions: {
     setOpen: (open) => {
-      isVisible.value = Boolean(open)
+      change(Boolean(open), { reason: 'api' })
     },
   },
 })
@@ -95,7 +95,7 @@ watch(
     :model-value="isVisible"
     :z-index="zIndex"
     :close-on-press-escape="closeOnPressEscape"
-    @escape="closeOverlayIfNeed"
+    @escape="closeOverlayIfNeed('escape-key')"
     @click="onOverlayClick"
   >
     <Transition
@@ -150,7 +150,7 @@ watch(
             class="top-5 right-4 absolute"
             :aria-label="configProvider.locale.interaction.close"
             :title="configProvider.locale.interaction.close"
-            @click="closeOverlayIfNeed"
+            @click="closeOverlayIfNeed('close-press')"
           >
             <CrossIcon class="size-3" />
           </PButton>

@@ -45,7 +45,7 @@ describe('useOverlayDialog', () => {
       }),
     )
 
-    closeOverlayIfNeed()
+    closeOverlayIfNeed('close-press')
 
     expect(onClose).not.toHaveBeenCalled()
 

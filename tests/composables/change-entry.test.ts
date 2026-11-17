@@ -36,11 +36,32 @@ const sources = readdirSync(components, { withFileTypes: true })
 
 const read = () => sources.filter((source) => source.text)
 
+// The ref a component gets from the funnel can be renamed (`modelValue: isVisible`), so the
+// scan reads the destructuring instead of trusting the name.
+const assignsTheFunnelRef = (text: string) => {
+  const destructured = text.match(/const\s*\{([^}]*)\}\s*=\s*useModelValue\(/)
+
+  if (!destructured) {
+    return false
+  }
+
+  const local = destructured[1]
+    .split(',')
+    .map((part) => part.trim())
+    .map((part) => {
+      const [key, alias] = part.split(':').map((piece) => piece.trim())
+
+      return key === 'modelValue' ? (alias ?? key) : undefined
+    })
+    .find(Boolean)
+
+  return !!local && new RegExp(`\\b${local}\\.value\\s*=(?!=)`).test(text)
+}
+
 describe('change entry', () => {
   it('should not let a value funnel announce a change nobody explained', () => {
     const offenders = read()
-      .filter((source) => source.text.includes('useModelValue('))
-      .filter((source) => /modelValue\.value\s*=(?!=)/.test(source.text))
+      .filter((source) => assignsTheFunnelRef(source.text))
       .map((source) => source.name)
 
     const unlisted = offenders.filter((name) => !RAW_VALUE_WRITES.has(name))

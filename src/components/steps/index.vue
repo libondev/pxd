@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ChangeAt } from '../../types/shared/change'
 import type { StepsOption, StepsEmits, StepsProps, StepsStatus } from './types'
 import { computed } from 'vue'
 import { optionItems } from '../../agent/items.js'
@@ -47,7 +48,7 @@ const SIZES = {
   },
 }
 
-const { modelValue: activeValue } = useModelValue(props, emits, {
+const { modelValue: activeValue, change } = useModelValue(props, emits, {
   defaultValue: () => props.defaultValue,
 })
 const activeIndex = computed(() => activeValue.value ?? 0)
@@ -82,7 +83,7 @@ useAgentNode({
     ),
   state: () => ({ value: activeIndex.value }),
   actions: {
-    setValue: (value) => select(Number(value)),
+    setValue: (value) => select(Number(value), { reason: 'api' }),
   },
 })
 
@@ -102,14 +103,14 @@ function resolveStatus(option: StepsOption, index: number): StepsStatus {
   return 'wait'
 }
 
-function select(index: number) {
+function select(index: number, at: ChangeAt = { reason: 'item-press' }) {
   const option = props.options[index]
 
   if (!props.clickable || !option || option.disabled || index === activeIndex.value) {
     return
   }
 
-  activeValue.value = index
+  change(index, at)
 }
 </script>
 
