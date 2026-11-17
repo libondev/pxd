@@ -62,6 +62,28 @@ describe('bubble-group', () => {
     wrapper.unmount()
   })
 
+  it('renders a vertical fader by default and honors the switch', () => {
+    const wrapper = mount(BubbleGroup)
+
+    expect(wrapper.find('[data-fader]').exists()).toBe(true)
+    expect(wrapper.find('.pxd-fader--item.vertical').exists()).toBe(true)
+    expect(wrapper.find('.pxd-fader--item.horizontal').exists()).toBe(false)
+
+    wrapper.unmount()
+
+    const disabled = mount(BubbleGroup, { props: { fader: false } })
+    expect(disabled.find('[data-fader]').exists()).toBe(false)
+    disabled.unmount()
+  })
+
+  it('lets the fader direction be overridden', () => {
+    const wrapper = mount(BubbleGroup, { attrs: { 'fader-direction': 'both' } })
+
+    expect(wrapper.find('.pxd-fader--item.horizontal').exists()).toBe(true)
+
+    wrapper.unmount()
+  })
+
   it('should render default slot', () => {
     const wrapper = mount(BubbleGroup, {
       slots: {

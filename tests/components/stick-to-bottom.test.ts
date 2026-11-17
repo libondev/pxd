@@ -426,6 +426,57 @@ describe('PStickToBottom', () => {
     expect(vm.containerRef).toBe(wrapper.find('.pxd-stick-to-bottom').element)
   })
 
+  it('does not render a fader by default', () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div>content</div>' },
+    })
+
+    expect(wrapper.find('[data-fader]').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('wires the fader to the scroll container', async () => {
+    const wrapper = mount(StickToBottom, {
+      attachTo: document.body,
+      props: { fader: true },
+      slots: { default: '<div>content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    await nextTick()
+
+    patchScrollMetrics(container, {
+      scrollHeight: 300,
+      clientHeight: 100,
+      scrollTop: 100,
+    })
+    container.dispatchEvent(new Event('scroll'))
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+    })
+    await nextTick()
+
+    const vertical = wrapper.find('.pxd-fader--item.vertical')
+
+    expect(vertical.exists()).toBe(true)
+    expect(vertical.classes('top')).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('honors fader direction', () => {
+    const wrapper = mount(StickToBottom, {
+      props: { fader: true, faderDirection: 'horizontal' },
+      slots: { default: '<div>content</div>' },
+    })
+
+    expect(wrapper.find('.pxd-fader--item.horizontal').exists()).toBe(true)
+    expect(wrapper.find('.pxd-fader--item.vertical').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
   it('renders action slot with stick-to-bottom scope', async () => {
     const wrapper = mount(StickToBottom, {
       slots: {

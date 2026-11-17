@@ -62,6 +62,26 @@ function append() {
 </template>
 ```
 
+## Fader
+
+Set `fader` to show a gradient at the scrollable edges.
+
+```vue demo
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const items = ref(Array.from({ length: 20 }, (_, index) => `Item ${index + 1}`))
+</script>
+
+<template>
+  <PStickToBottom fader class="h-40 rounded-lg border border-dashed" wrapper-class="p-2">
+    <div v-for="item in items" :key="item" class="p-2 rounded bg-background-100">
+      {{ item }}
+    </div>
+  </PStickToBottom>
+</template>
+```
+
 ## Interaction keeps the position
 
 A resize the user causes — expanding a collapse, selecting text — never pulls the view to the bottom: while the layout that interaction started is still moving, the viewport belongs to it. Pointerdowns inside the `action` slot are excluded, so controls there keep following.
@@ -141,6 +161,10 @@ function append() {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | threshold | `number` | `16` | Distance from bottom considered "at bottom" |
+| fader | `boolean` | `false` | Show gradient faders at the scrollable edges, hidden within `threshold` of an edge |
+| fader-size | `number` | - | Fader gradient length in `px`, defaulting to `16` |
+| fader-color | `string` | - | Fader gradient color, any CSS color value |
+| fader-direction | `'horizontal' \| 'vertical' \| 'both'` | - | Edges to fade: `horizontal`, `vertical` or `both` |
 | disabled | `boolean` | `false` | Stop auto-scrolling while the container is at the bottom |
 | content-class | `ComponentClass` | - | Extra class on the inner content wrapper |
 | wrapper-class | `ComponentClass` | - | Extra class on the scroll container; the wrapper receives `class` and attributes |

@@ -14,7 +14,9 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<BubbleGroupProps>()
+const props = withDefaults(defineProps<BubbleGroupProps>(), {
+  fader: true,
+})
 
 const ITEM_STYLE_CACHE_LIMIT = 512
 const itemStyles = new Map<number, CSSProperties>()
@@ -207,6 +209,8 @@ defineExpose({
     wrapper-class="overflow-x-hidden px-1 py-4 scrollbar-gutter-both"
     content-class="pxd-bubble-group--content relative w-full h-(--bubble-group-height)"
     :style="contentStyle"
+    :fader="props.fader"
+    fader-direction="vertical"
     v-bind="$attrs"
   >
     <template v-if="data && virtual">
@@ -215,7 +219,7 @@ defineExpose({
         :key="virtualItem.key"
         :ref="measureElement"
         :data-index="virtualItem.index"
-        class="pxd-bubble-group--item sibling:pbs-3 left-0 top-0 absolute w-full"
+        class="pxd-bubble-group--item sibling:pbs-4 left-0 top-0 absolute w-full"
         :style="getItemStyle(virtualItem.start)"
       >
         <slot name="item" :item="data[virtualItem.index]" :index="virtualItem.index" />
@@ -227,7 +231,7 @@ defineExpose({
         v-for="(item, index) in data"
         :key="getDataItemKey(item, index)"
         :data-index="index"
-        class="pxd-bubble-group--item sibling:pbs-3 w-full"
+        class="pxd-bubble-group--item sibling:pbs-4 w-full"
       >
         <slot name="item" :item="item" :index="index" />
       </div>

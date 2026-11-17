@@ -6,6 +6,7 @@ import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useStickToBottom } from '../../composables/use-stick-to-bottom.js'
+import PFader from '../fader/index.vue'
 
 defineOptions({
   name: 'PStickToBottom',
@@ -15,6 +16,7 @@ defineOptions({
 const props = withDefaults(defineProps<StickToBottomProps>(), {
   disabled: false,
   threshold: 16,
+  fader: false,
 })
 
 const emits = defineEmits<StickToBottomEmits>()
@@ -25,7 +27,7 @@ const actionRef = shallowRef<HTMLElement>()
 
 const wrapperClasses = computed(() =>
   cn(
-    'pxd-stick-to-bottom min-h-0 size-full max-w-full overflow-y-auto [overflow-anchor:none]',
+    'pxd-stick-to-bottom min-h-0 size-full max-h-inherit max-w-full overflow-y-auto [overflow-anchor:none]',
     props.wrapperClass,
   ),
 )
@@ -78,6 +80,15 @@ defineExpose({
         <slot />
       </div>
     </div>
+
+    <PFader
+      v-if="fader"
+      :size="faderSize"
+      :color="faderColor"
+      :direction="faderDirection"
+      :threshold="threshold"
+      :scroll-target="containerRef"
+    />
 
     <div
       v-if="$slots.action"

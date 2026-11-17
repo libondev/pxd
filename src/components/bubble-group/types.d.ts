@@ -4,4 +4,5 @@ export interface BubbleGroupProps {
   dataKey?: string
   itemSize?: number | ((index: number) => number)
   overScan?: number
+  fader?: boolean
 }

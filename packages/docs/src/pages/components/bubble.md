@@ -138,6 +138,8 @@ function addMessage() {
 </template>
 ```
 
+`PBubbleGroup` shows a vertical fader by default; pass `:fader="false"` to hide it.
+
 ## Group With Virtual Scroll
 
 Pass `data` together with `virtual` to enable virtual scrolling for large message lists.
@@ -205,6 +207,9 @@ function addMessage() {
 | data-key | `string` | - | Unique key field name for list items |
 | item-size | `number \| ((index: number) => number)` | `80` | Height of an unmeasured row when `virtual` is enabled, or a per-index guess |
 | over-scan | `number` | `3` | Number of items to render beyond the visible area when `virtual` is enabled |
+| fader | `boolean` | `true` | Show a vertical gradient fader when messages overflow |
+
+`fader-size`, `fader-color` and `fader-direction` are forwarded to the inner [PStickToBottom](/components/stick-to-bottom); the direction defaults to `vertical`.
 
 ## BubbleGroup Slots
 
