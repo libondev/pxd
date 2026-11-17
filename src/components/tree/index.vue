@@ -70,6 +70,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
   highlightMatch: false,
   searchPlaceholder: '',
   defaultSearchValue: '',
+  errorText: 'Request failed. Click to reload',
 })
 
 const emits = defineEmits<TreeEmits>()
@@ -132,6 +133,8 @@ const {
   matches: remoteMatches,
   remote: remoteMode,
   pending: searchPending,
+  error: searchError,
+  retry: retrySearch,
   active: remoteActive,
 } = useTreeSearch({
   query: () => searchValue.value,
@@ -339,6 +342,7 @@ useAgentNode({
     value: props.modelValue ?? [],
     expanded: expandedKeys.value.length,
   }),
+  error: () => searchError.value,
   actions: {
     expandKey: (value) => setExpandedByValue(value, true),
     collapseKey: (value) => setExpandedByValue(value, false),
@@ -523,6 +527,11 @@ function onSearchInput(value: string): void {
 
   internalSearchValue.value = value
   emits('update:searchValue', value)
+}
+
+function onSearchRetry(): void {
+  retrySearch()
+  emits('retry')
 }
 function isNodeDisabled(row: TreeFlatNode): boolean {
   return props.disabled || row.node[fields.value.disabled] === true
@@ -877,6 +886,14 @@ defineExpose({
 
       <PLoadingMask v-if="loading" />
 
+      <div
+        v-else-if="searchError"
+        role="alert"
+        class="pxd-tree--error py-8.5 text-sm cursor-pointer text-center text-foreground-secondary hover:text-foreground motion-safe:transition-colors"
+        @click="onSearchRetry"
+      >
+        <slot name="error">{{ errorText }}</slot>
+      </div>
       <div
         v-else-if="!rows.length"
         class="pxd-tree--empty py-8.5 text-sm text-center text-foreground-secondary"

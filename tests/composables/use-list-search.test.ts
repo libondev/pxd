@@ -1,10 +1,7 @@
 import type { ListFilterMethodFn, ListRemoteFilterFn } from '../../src/components/list/types'
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 import { ref } from 'vue'
-import {
-  filterListOptions,
-  useListSearch,
-} from '../../src/composables/_internal/use-list-search'
+import { filterListOptions, useListSearch } from '../../src/composables/_internal/use-list-search'
 import { useSetupWrapper } from '../helpers/setup'
 
 const options = [
@@ -194,6 +191,57 @@ describe('useListSearch', () => {
 
     expect(api.listOptions.value).toEqual([])
     expect(api.pending.value).toBe(false)
+
+    api.unmount()
+  })
+
+  it('should expose the rejection and clear it on a settled retry', async () => {
+    vi.useFakeTimers()
+
+    const query = ref('')
+    const remoteFilter = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce([{ label: 'Back', value: 'back' }])
+    const api = useSetupWrapper(() =>
+      useListSearch(options, query, { remoteFilter: () => remoteFilter }),
+    )
+
+    query.value = 'sr'
+    await vi.advanceTimersByTimeAsync(200)
+    expect((api.error.value as Error)?.message).toBe('offline')
+
+    api.retry()
+    expect(api.error.value).toBeUndefined()
+    expect(api.pending.value).toBe(true)
+    await vi.advanceTimersByTimeAsync(0)
+
+    expect(remoteFilter).toHaveBeenCalledTimes(2)
+    expect(api.listOptions.value).toEqual([{ label: 'Back', value: 'back' }])
+    expect(api.error.value).toBeUndefined()
+    expect(api.pending.value).toBe(false)
+
+    api.unmount()
+  })
+
+  it('should clear the error when a new query starts', async () => {
+    vi.useFakeTimers()
+
+    const query = ref('')
+    const remoteFilter = vi.fn(async () => {
+      throw new Error('offline')
+    })
+    const api = useSetupWrapper(() =>
+      useListSearch(options, query, { remoteFilter: () => remoteFilter }),
+    )
+
+    query.value = 'a'
+    await vi.advanceTimersByTimeAsync(200)
+    expect(api.error.value).toBeDefined()
+
+    query.value = 'ab'
+    await vi.advanceTimersByTimeAsync(0)
+    expect(api.error.value).toBeUndefined()
 
     api.unmount()
   })

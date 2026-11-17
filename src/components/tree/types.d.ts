@@ -140,6 +140,7 @@ export interface TreeProps {
   searchValue?: string
   defaultSearchValue?: string
   itemClass?: ComponentClass
+  errorText?: ComponentText
 }
 
 export interface TreeEmits {
@@ -153,4 +154,5 @@ export interface TreeEmits {
   'node-click': [TreeNodeDetail, MouseEvent]
   'node-contextmenu': [TreeNodeDetail, MouseEvent]
   'update:searchValue': [string]
+  retry: []
 }

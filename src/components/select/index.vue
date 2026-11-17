@@ -100,10 +100,14 @@ const { onKeydown } = useListKeyboardController({
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
   keymap: () => (props.filterable ? FILTERABLE_KEYMAP : DEFAULT_KEYMAP),
 })
-const { listOptions, pending } = useListSearch(() => props.options ?? [], filterKeyword, {
-  filterMethod: () => props.filterMethod,
-  remoteFilter: () => props.remoteFilter,
-})
+const { listOptions, pending, error, retry } = useListSearch(
+  () => props.options ?? [],
+  filterKeyword,
+  {
+    filterMethod: () => props.filterMethod,
+    remoteFilter: () => props.remoteFilter,
+  },
+)
 
 useAgentNode({
   name: 'select',
@@ -115,6 +119,7 @@ useAgentNode({
     multiple: props.multiple ?? false,
   }),
   pending: () => pending.value,
+  error: () => error.value,
   actions: {
     setValue: (value) => {
       if (apply((value ?? null) as NonNullable<ListModelValue>)) {
@@ -140,6 +145,11 @@ function onSearchInput(ev: Event) {
 function clear() {
   clearSelection()
   popoverVisible.value = false
+}
+
+function onRetry() {
+  retry()
+  emits('retry')
 }
 
 function onListUpdate(next: ListModelValue) {
@@ -273,12 +283,14 @@ watch(listOptions, async () => {
         :model-value="selected"
         :options="listOptions"
         :loading="pending"
+        :error="Boolean(error)"
         :multiple="multiple"
         :virtual="virtual"
         :loop="!filterable"
         :default-active-index="filterable ? 0 : -1"
         class="max-h-68 min-h-0 flex-1 overflow-auto"
         @update:model-value="onListUpdate"
+        @retry="onRetry"
       >
         <template v-if="$slots.item" #item="itemSlotProps">
           <slot name="item" v-bind="itemSlotProps" />

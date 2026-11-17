@@ -32,4 +32,5 @@ export interface SelectProps {
 export interface SelectEmits {
   change: [ListModelValue, details: ChangeDetails]
   'update:model-value': [ListModelValue]
+  retry: []
 }

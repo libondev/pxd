@@ -584,7 +584,8 @@ function load({ node }, resolve) {
 | loading | `boolean` | `false` | Cover the tree with a loading mask; the search input and the keyboard are ignored |
 | filterable | `boolean` | `false` | Render the search field |
 | filter-method | `(node: TreeOption, query: string) => boolean` | fuzzy match | Predicate deciding which node shows while the query is being typed |
-| remote-filter | `(query: string) => TreeOptions \| Promise<TreeOptions>` | - | Search through it instead of the local `filter-method`: it returns the matched nodes with their ancestors, which replace `data` while the query is active |
+| remote-filter | `(query: string) => TreeOptions \| Promise<TreeOptions>` | - | Search through it instead of the local `filter-method`: it returns the matched nodes with their ancestors, which replace `data` while the query is active. A rejection shows the error message and emits `retry` |
+| error-text | `ComponentText` | `'Request failed. Click to reload'` | Default text of the remote search error, replaceable through the `error` slot |
 | highlight-match | `boolean` | `false` | Mark the matched substring of the label; a fuzzy hit that is not a contiguous run stays unmarked |
 | search-placeholder | `string` | - | Placeholder of the search field |
 | search-value | `string` | - | Controlled search query |
@@ -625,6 +626,7 @@ Fields are read through `field-names`: `value`, `label`, `children`, `disabled` 
 | node-click | `(detail: TreeNodeDetail, event: MouseEvent) => void` | Emitted when a row is clicked; a click that ends a drag stays silent. |
 | node-contextmenu | `(detail: TreeNodeDetail, event: MouseEvent) => void` | Emitted when a row is right-clicked; the browser menu is left alone, so the caller decides whether to `preventDefault`. |
 | update:searchValue | `(query: string) => void` | Emitted when the search field changes while not loading. Write it back through `search-value` to control the field. |
+| retry | `() => void` | Emitted when the remote search error is clicked; the rejected query is re-run first. |
 
 ```ts
 interface TreeNodeDetail {
@@ -664,6 +666,7 @@ interface TreeMoveDetail {
 | node-suffix | Content appended to the row. Slot props: `node`, `hasChildren`. |
 | node-drag-preview | Card that follows the pointer while dragging. Slot props: `node`. |
 | search | Replaces the search field. |
+| error | Error message shown when a remote search rejects; click it to emit `retry`. |
 | empty | Content shown when the tree has no row, or the search matched nothing. |
 
 ## Methods

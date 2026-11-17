@@ -20,6 +20,10 @@ export interface UseRemoteSearchReturn<T> {
   needle: ComputedRef<string>
   /** Whether a request is in flight, the debounce window included. */
   pending: ShallowRef<boolean>
+  /** The last rejected request's error, cleared once a new query starts or one settles. */
+  error: ShallowRef<unknown>
+  /** Re-run the current query, or a no-op when there is no remote request to repeat. */
+  retry: () => void
 }
 
 export function useRemoteSearch<T>({
@@ -28,6 +32,7 @@ export function useRemoteSearch<T>({
 }: UseRemoteSearchOptions<T>): UseRemoteSearchReturn<T> {
   const matches = shallowRef<T[]>()
   const pending = shallowRef(false)
+  const error = shallowRef<unknown>()
   const remote = computed(() => typeof toValue(search) === 'function')
   const needle = computed(() => (toValue(query) ?? '').trim())
 
@@ -51,10 +56,12 @@ export function useRemoteSearch<T>({
 
       if (at === requestId) {
         matches.value = Array.isArray(result) ? result : []
+        error.value = undefined
       }
-    } catch {
+    } catch (cause) {
       if (at === requestId) {
         matches.value = []
+        error.value = cause
       }
     } finally {
       if (at === requestId) {
@@ -67,10 +74,24 @@ export function useRemoteSearch<T>({
     void run(current)
   }, REMOTE_SEARCH_DEBOUNCE)
 
+  function retry(): void {
+    const current = needle.value
+
+    if (!remote.value || !current) {
+      return
+    }
+
+    invalidate()
+    error.value = undefined
+    pending.value = true
+    void run(current)
+  }
+
   watch(
     [remote, needle],
     ([isRemote, current]) => {
       invalidate()
+      error.value = undefined
 
       // An answer from an earlier query must not outlive it.
       if (!isRemote || !current) {
@@ -88,5 +109,5 @@ export function useRemoteSearch<T>({
 
   onScopeDispose(invalidate)
 
-  return { matches, remote, needle, pending }
+  return { matches, remote, needle, pending, error, retry }
 }

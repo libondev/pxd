@@ -263,7 +263,7 @@ const options = [
 | clearable | `boolean` | `false` | Show a clear control in the trigger when a value is selected; clearing emits `null` (or `[]` in `multiple` mode) and a `change` with reason `cleared` |
 | filter-placeholder | `string` | - | Placeholder of the search input shown when `filterable` is on |
 | filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match on `label` and `description` | Predicate deciding which option shows while the query is being typed |
-| remote-filter | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`, only while `filterable` is on: the options it returns replace `options` until the query is cleared |
+| remote-filter | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`, only while `filterable` is on: the options it returns replace `options` until the query is cleared. A rejection shows a retryable error in the list |
 | label-format | `(items: ListOption[]) => string` | - | Build the trigger label from the selected options |
 | close-on-press-escape | `boolean` | - | Close the menu when `Escape` is pressed |
 
@@ -273,6 +273,7 @@ const options = [
 | --- | --- | --- |
 | change | `(value: ListModelValue, details: ChangeDetails) => void` | Emitted when the selection is committed, right after an option is picked in single mode and once when the popover closes in multiple mode. |
 | update:model-value | `(value: ListModelValue) => void` | Emitted whenever the selected value changes. In multiple mode this fires on every toggle. |
+| retry | `() => void` | Emitted when the remote-search error message is clicked; the rejected query is re-run first. |
 
 ## Slots
 

@@ -280,4 +280,37 @@ describe('select', () => {
 
     wrapper.unmount()
   })
+
+  it('should show a retryable error when a remote filter rejects', async () => {
+    const remoteFilter = vi.fn().mockRejectedValueOnce(new Error('offline'))
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { options, filterable: true, remoteFilter },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flushPopover()
+
+    const searchInput = document.body.querySelector<HTMLInputElement>(
+      '.pxd-select--search',
+    ) as HTMLInputElement
+
+    vi.useFakeTimers()
+    searchInput.value = 'thr'
+    searchInput.dispatchEvent(new Event('input'))
+    await vi.advanceTimersByTimeAsync(200)
+
+    const alert = document.body.querySelector('[role="alert"]') as HTMLElement
+    expect(alert?.textContent).toContain('Request failed. Click to reload')
+
+    alert.click()
+    await vi.advanceTimersByTimeAsync(200)
+
+    expect(wrapper.emitted('retry')).toHaveLength(1)
+    expect(remoteFilter).toHaveBeenCalledTimes(2)
+    expect(document.body.querySelector('[role="alert"]')).toBeNull()
+
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
 })

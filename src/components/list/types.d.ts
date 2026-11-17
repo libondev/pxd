@@ -49,6 +49,8 @@ export interface ListProps {
   itemClass?: ComponentClass
   defaultActiveIndex?: number
   loading?: boolean
+  error?: boolean
+  errorText?: ComponentText
   virtual?: boolean
   itemSize?: number
   overScan?: number
@@ -57,4 +59,5 @@ export interface ListProps {
 export interface ListEmits {
   change: [ListOptionSelected, details: ChangeDetails]
   'update:model-value': [ListModelValue]
+  retry: []
 }

@@ -2365,4 +2365,36 @@ describe('tree', () => {
 
     wrapper.unmount()
   })
+
+  it('should show a retryable error when a remote search rejects', async () => {
+    vi.useFakeTimers()
+
+    const remoteFilter = vi
+      .fn<TreeRemoteFilterFn>()
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce(remoteForest)
+    const wrapper = mount(Tree, {
+      props: {
+        data,
+        filterable: true,
+        remoteFilter,
+      },
+    })
+
+    await wrapper.find('input').setValue('tree')
+    await vi.advanceTimersByTimeAsync(200)
+
+    expect(wrapper.find('[role="alert"]').text()).toBe('Request failed. Click to reload')
+
+    await wrapper.find('[role="alert"]').trigger('click')
+    expect(wrapper.emitted('retry')).toHaveLength(1)
+    expect(wrapper.find('[role="alert"]').exists()).toBe(false)
+
+    await vi.advanceTimersByTimeAsync(0)
+    expect(remoteFilter).toHaveBeenCalledTimes(2)
+    expect(wrapper.findAll('[data-tree-item]').length).toBeGreaterThan(0)
+
+    vi.useRealTimers()
+    wrapper.unmount()
+  })
 })

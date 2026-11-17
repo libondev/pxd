@@ -247,11 +247,15 @@ export interface UseTreeSearchReturn {
   remote: ComputedRef<boolean>
   /** Whether a request is in flight, the debounce window included. */
   pending: ShallowRef<boolean>
+  /** The last rejected remote search, cleared once a new query starts or one settles. */
+  error: ShallowRef<unknown>
+  /** Re-run the current remote query. */
+  retry: () => void
   active: ComputedRef<boolean>
 }
 
 export function useTreeSearch(options: UseTreeSearchOptions): UseTreeSearchReturn {
-  const { matches, needle, remote, pending } = useRemoteSearch<TreeOption>({
+  const { matches, needle, remote, pending, error, retry } = useRemoteSearch<TreeOption>({
     query: options.query,
     search: options.remoteFilter,
   })
@@ -259,7 +263,7 @@ export function useTreeSearch(options: UseTreeSearchOptions): UseTreeSearchRetur
   // Before the first answer the tree keeps rendering `data`: the empty slot covers the gap.
   const active = computed(() => remote.value && needle.value !== '' && matches.value !== undefined)
 
-  return { matches, remote, pending, active }
+  return { matches, remote, pending, error, retry, active }
 }
 
 export interface UseTreeRowsOptions {

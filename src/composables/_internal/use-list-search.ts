@@ -72,6 +72,10 @@ export interface UseListSearchReturn {
   listOptions: ComputedRef<ListOptions>
   /** Whether a remote request is in flight, the debounce window included. */
   pending: ShallowRef<boolean>
+  /** The last rejected remote search, cleared once a new query starts or one settles. */
+  error: ShallowRef<unknown>
+  /** Re-run the current remote query. */
+  retry: () => void
 }
 
 export function useListSearch(
@@ -79,7 +83,7 @@ export function useListSearch(
   query: MaybeRefOrGetter<string>,
   { filterMethod, remoteFilter }: UseListSearchOptions = {},
 ): UseListSearchReturn {
-  const { matches, needle, remote, pending } = useRemoteSearch<ListOptionEntry>({
+  const { matches, needle, remote, pending, error, retry } = useRemoteSearch<ListOptionEntry>({
     query,
     search: remoteFilter,
   })
@@ -91,5 +95,5 @@ export function useListSearch(
 
   const listOptions = computed(() => (active.value ? (matches.value ?? []) : localOptions.value))
 
-  return { listOptions, pending }
+  return { listOptions, pending, error, retry }
 }
