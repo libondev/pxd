@@ -32,9 +32,15 @@ pnpm build:lib
 node --input-type=module -e "console.log(Object.keys(await import('pxd/agent')))"
 ```
 
-开发态 `dev:lib` 会把 `dist` 换成指向 `src` 的符号链接，`exports` 里的 `dist/agent/index.js` 因此经由
-链接解析到 `src/agent/index.js`。这条路径是**推理**而非实测：本地沙箱禁止删除 `dist`，`dev-stub` 起不来。
-要确认就自己跑一次 `pnpm dev` 后在 docs 里 `import('pxd/agent')`。
+开发态 `dev:lib` 会把 `dist` 换成指向 `src` 的符号链接。**实测：此时 Node 下 `import('pxd/agent')`
+与 `import('pxd')` / `import('pxd/components')` 一样是 `ERR_MODULE_NOT_FOUND`** —— exports 指向
+`dist/**/*.js`，而 `src` 里只有 `.ts` 和 `.vue`。这不是 `./agent` 独有的问题，所有 exports 入口都如此。
+
+文档站开发时仍能跑，因为 `packages/docs/vite.config.ts` 把 `pxd` 放进 `ssr.noExternal`，由 Vite 直接
+编译源码，不走 Node 的 exports 解析。
+
+所以从包名导入任何子入口之前都要先 `pnpm build:lib`。注意本沙箱禁止批量删除 `dist`，而
+`build:core` 的 mkdist 第一步会删它 —— 这一步要在本机跑。
 
 ## Safety
 
