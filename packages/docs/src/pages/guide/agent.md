@@ -175,6 +175,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `more-button` | `setValue`, `toggle` |
 | `number-input` | `setValue`, `increment`, `decrement` |
 | `pin-input` | `setValue` |
+| `popover` | `setOpen`, `toggle` |
 | `radio-group` | `setValue` |
 | `rating` | `setValue` |
 | `reactions` | `pick`, `toggle` |

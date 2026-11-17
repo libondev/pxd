@@ -24,6 +24,7 @@ import Modal from '../../src/components/modal/index.vue'
 import MoreButton from '../../src/components/more-button/index.vue'
 import NumberInput from '../../src/components/number-input/index.vue'
 import PinInput from '../../src/components/pin-input/index.vue'
+import Popover from '../../src/components/popover/index.vue'
 import RadioGroup from '../../src/components/radio-group/index.vue'
 import Rating from '../../src/components/rating/index.vue'
 import Resizable from '../../src/components/resizable/index.vue'
@@ -721,6 +722,36 @@ describe('agent components', () => {
     // The change did happen — it just never reaches the bridge.
     expect(wrapper.findComponent(Input).emitted('change')).toHaveLength(1)
     expect(seen).toHaveLength(0)
+  })
+
+  it('should open and close a popover', async () => {
+    track(
+      mount(Popover, {
+        attrs: { 'aria-label': 'Details' },
+        slots: {
+          default: () => h(Button, null, () => 'Details'),
+          content: () => h('p', 'Body'),
+        },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'popover')).toMatchObject({
+      label: 'Details',
+      open: false,
+      actions: ['setOpen', 'toggle'],
+    })
+
+    const opened = await agent.act({
+      steps: [{ ref: 'Details', action: 'setOpen', args: [true] }],
+    })
+
+    expect(opened.ok).toBe(true)
+    expect(find(agent.snapshot(), 'popover')).toMatchObject({ open: true })
+
+    await agent.act({ steps: [{ ref: 'Details', action: 'toggle' }] })
+
+    expect(find(agent.snapshot(), 'popover')).toMatchObject({ open: false })
   })
 
   it('should set a date', async () => {

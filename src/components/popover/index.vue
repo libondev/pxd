@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { PopoverEmits, PopoverProps } from './types'
 import { computed, shallowRef } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useFocusTrap } from '../../composables/_internal/use-focus-trap.js'
 import { usePopupEngine } from '../../composables/_internal/use-popup-engine.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -91,6 +92,19 @@ useFocusTrap(engine.focusTrapContainer, () => {
   }
 
   return isTruthyProp(props.autoFocusElement) ? options : { ...options, initialFocus: false }
+})
+
+useAgentNode({
+  name: 'popover',
+  state: () => ({ open: engine.isVisible.value }),
+  actions: {
+    setOpen: async (open) => {
+      await (open ? engine.handlePopoverShow() : engine.handlePopoverHide())
+    },
+    toggle: async () => {
+      await (engine.isVisible.value ? engine.handlePopoverHide() : engine.handlePopoverShow())
+    },
+  },
 })
 
 defineExpose({
