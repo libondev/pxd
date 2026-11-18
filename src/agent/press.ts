@@ -3,7 +3,7 @@ import type { AgentEntry } from './registry.js'
 import { nextTick } from 'vue'
 import { withChangeDetails } from '../composables/_internal/use-change-details.js'
 import { agentDisabled, buttonsOf, fold, nameOf } from './describe.js'
-import { agentElement, agentPressable } from './registry.js'
+import { agentPressable, agentPressRoots } from './registry.js'
 
 export type PressOutcome = { pressed: string } | { error: string }
 
@@ -24,7 +24,7 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
     )
 
     const read = () =>
-      buttonsOf(agentElement(entry), agentPressable(entry))
+      buttonsOf(agentPressRoots(entry), agentPressable(entry))
         .map((el) => ({ el, name: nameOf(el) }))
         .filter((button) => button.name)
 

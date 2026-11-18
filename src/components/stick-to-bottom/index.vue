@@ -45,6 +45,7 @@ const { isAtBottom, scrollToBottom, forceStickToBottom, stickIfNeeded, update } 
 
 useAgentNode({
   name: 'stick-to-bottom',
+  pressRoots: () => [],
   state: () => ({ atBottom: isAtBottom.value }),
   actions: {
     scrollToBottom,

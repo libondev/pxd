@@ -411,6 +411,35 @@ describe('agent components', () => {
     expect(entry.ref).toMatch(/^c\d+$/)
   })
 
+  it('should leave the buttons in a container to the app', async () => {
+    let clicks = 0
+
+    track(
+      mount(Resizable, {
+        slots: {
+          leading: () =>
+            h('div', [
+              h(
+                'button',
+                { 'aria-label': 'What this setting means', onClick: () => (clicks += 1) },
+                'i',
+              ),
+            ]),
+        },
+      }),
+    )
+    const agent = createAgent()
+    const entry = find(agent.snapshot(), 'resizable')
+
+    expect(entry.buttons).toBeUndefined()
+
+    const refused = await agent.act({ steps: [{ ref: entry.ref, action: 'press' }] })
+
+    expect(refused.ok).toBe(false)
+    expect(refused.error?.message).toContain('is not pressed by a click')
+    expect(clicks).toBe(0)
+  })
+
   it('should report a scroll indicator with nothing to call', () => {
     track(mount(ScrollProgress, { attrs: { 'aria-label': 'Read' } }))
     const agent = createAgent()
@@ -2224,6 +2253,34 @@ describe('agent groups', () => {
 
     expect(names).toContain('checkbox-group')
     expect(names).not.toContain('checkbox')
+  })
+
+  it('should name a group by the element it points at', () => {
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h('div', [
+              h('span', { id: 'group-label' }, 'View'),
+              h(ToggleButtonGroup, {
+                modelValue: 'list',
+                options: [{ label: 'List', value: 'list' }],
+                'aria-labelledby': 'group-label',
+              }),
+              h(Choicebox, {
+                modelValue: null,
+                options: [{ label: 'One', value: 1 }],
+                'aria-labelledby': 'group-label',
+              }),
+            ]),
+        }),
+        { attachTo: document.body },
+      ),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'toggle-button-group')).toMatchObject({ label: 'View' })
+    expect(find(agent.snapshot(), 'choicebox')).toMatchObject({ label: 'View' })
   })
 
   it('should drive a radio a group holds in its slot', async () => {

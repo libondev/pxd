@@ -353,6 +353,23 @@ export function agentOwnedRoots(entry: AgentEntry): Element[] {
   }
 }
 
+/** The elements whose buttons a press reaches: the component's own, unless it says otherwise. */
+export function agentPressRoots(entry: AgentEntry): Element[] {
+  if (!entry.node.pressRoots) {
+    const el = agentElement(entry)
+
+    return el ? [el] : []
+  }
+
+  try {
+    const roots = entry.node.pressRoots()
+
+    return (Array.isArray(roots) ? roots : [roots]).filter((el): el is Element => !!el)
+  } catch {
+    return []
+  }
+}
+
 /** Whether a click on the component's own element does what a person's press does. */
 export function agentPressable(entry: AgentEntry): boolean {
   try {

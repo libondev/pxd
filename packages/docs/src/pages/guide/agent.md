@@ -136,7 +136,7 @@ agent.snapshot()
 - `incomplete: true` means one of the component's own state or item getters threw. The entry stays addressable instead of taking down the whole snapshot, but its data is not complete.
 - `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`, one a person cannot pick `disabled`, and one a person must approve `confirm`. A list longer than 100 stops there and reports `itemCount`; `query({ within })` reads the rest. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen, and a list that counts its own rows reports the rest through `itemCount` without building them.
 - `snapshot({ items: false })` leaves the choices out entirely — the component's items getter is not even read — for a page whose long lists would crowd out everything else. `query({ within })` then reads one list at a time.
-- `buttons` lists the name of each button inside it — its accessible name, so an icon-only button carrying `aria-label` is listed and pressable too. A link with an `href` counts as a button, so a pager's Prev and Next can be pressed.
+- `buttons` lists the name of each button it renders — its accessible name, so an icon-only button carrying `aria-label` is listed and pressable too. A link with an `href` counts as a button, so a pager's Prev and Next can be pressed. A component that only arranges your markup reports none: `resizable`, `steps`, `list`, `virtual-list` and `stick-to-bottom` leave their content's buttons to the app.
 - `text` carries what it says besides its name, like a dialog's description, read from the element its own `aria-describedby` points at.
 - `actions` lists what can be called right now.
 - `source` says where the app writes it, when the element carries `data-agent-source`, like `src/pages/settings.vue:24`.
@@ -181,7 +181,8 @@ await agent.act({ steps: [{ ref: 'Show More', action: 'press' }] })
 await agent.act({ steps: [{ ref: 'Views', action: 'press', args: ['Two'] }] })
 ```
 
-- With no argument it presses the only button inside the component; a component with several asks you to name one.
+- With no argument it presses the only button the component shows; a component with several asks you to name one.
+- A button counts as the component's when the component renders it, or when it sits in content that component reveals — a dialog, a swipe cell, a popover. A container that only arranges your markup, like `resizable`, refuses the press instead of reaching into its panels.
 - With an argument it presses the button whose text matches — the whole text first, then a part of it. Several matches are refused rather than guessed. A link with an `href`, like a pager's Prev, is pressed the same way.
 - A closed popup renders no buttons, and a press does not open one to look inside: the step fails and names the action that opens it. Open it as a step of its own, then press. That way the page never changes under a person just to find out what a press would click, and opening something is a step `allow` sees.
 - A disabled component, or a disabled button, is refused rather than clicked.
@@ -485,6 +486,6 @@ A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-butt
 
 A dialog renders nothing while it is closed, so it reports no `label` until it opens. A step reaches it by `ref`, opens it, and every later step can use the title as its name.
 
-A tooltip is an explanation rather than a control: the popover under it stays out of `snapshot`, `act` and `query`, so an info icon neither adds an entry nor offers a way to open it. `PPopover` takes `:agent="false"` for the same reason on a popover you build yourself.
+A tooltip is an explanation rather than a control: the popover under it stays out of `snapshot`, `act` and `query`, so an info icon neither adds an entry nor offers a way to open it. `PPopover` takes `:agent="false"` for the same reason on a popover you build yourself. An icon whose only job is that explanation can also carry `data-agent-hidden` itself, which keeps it out of `buttons` on the component that holds it — a `resizable`'s panel or a card's content — while the rest of that component stays reachable.
 
 Any other component stays out of `snapshot`, `act` and `query`, so an agent cannot half-see or half-drive it.

@@ -140,6 +140,8 @@ useResizeObserver(containerRef, syncContainerSize)
 
 useAgentNode({
   name: 'resizable',
+  pressable: () => false,
+  pressRoots: () => [],
   state: () => ({ value: sizes.value }),
   actions: {
     setValue: (value) => {

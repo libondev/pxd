@@ -43,6 +43,7 @@ const {
 
 useAgentNode({
   name: 'virtual-list',
+  pressRoots: () => [],
   state: () => ({
     count: props.items.length,
     rendered: virtualItems.value.length,

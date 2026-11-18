@@ -46,6 +46,10 @@ export interface AgentNode {
    *  component a click cannot drive, like a hold button, so `press` is refused instead of
    *  reported as done. */
   pressable?: () => boolean | undefined
+  /** The elements whose buttons it presses: its own element by default. A component that only
+   *  arranges the app's content, like a resizable's panels, reports none, so a press never
+   *  reaches the buttons inside it. */
+  pressRoots?: () => (Element | null | undefined)[] | Element | null | undefined
   /** Whether its own work is running, like a save, so a step waits for it to finish. */
   pending?: () => boolean | undefined
   /** Why its last action failed, so a step reports the failure instead of a silent success. */

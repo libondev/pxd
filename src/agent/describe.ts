@@ -8,6 +8,7 @@ import {
   agentLabelSafe,
   agentMarkElement,
   agentPressable,
+  agentPressRoots,
   agentRow,
   agentSecret,
 } from './registry.js'
@@ -98,21 +99,19 @@ export function safeItems(entry: AgentEntry): AgentItem[] {
   }
 }
 
-// The buttons a step can press: a closed popup renders nothing, so it can't be pressed
-// until the step that opens it has rendered. A button inside a hidden region, an inert one
-// or a hidden link is not there either, even when the component around it is visible. Its
-// own element is one only when a click does there what a person's press does.
-export function buttonsOf(el: Element | null | undefined, own = true) {
-  if (!el) {
-    return []
-  }
-
+// The buttons a step can press, read from the elements the component presses on: a closed
+// popup renders nothing, so it can't be pressed until the step that opens it has rendered. A
+// button inside a hidden region, an inert one or a hidden link is not there either, even when
+// the component around it is visible. Its own element is one only when a click does there what
+// a person's press does.
+export function buttonsOf(roots: Element[], own = true) {
   const selector = 'button, [role="button"], a[href]'
-  const root = own && el.matches(selector) ? [el as HTMLElement] : []
+  const found = roots.flatMap((el) => [
+    ...(own && el.matches(selector) ? [el as HTMLElement] : []),
+    ...el.querySelectorAll<HTMLElement>(selector),
+  ])
 
-  return [...root, ...el.querySelectorAll<HTMLElement>(selector)].filter(
-    (button) => !isHidden(button) && !button.closest('[inert]'),
-  )
+  return found.filter((button) => !isHidden(button) && !button.closest('[inert]'))
 }
 
 // What a component says about itself besides its name, like a dialog's description, read
@@ -199,7 +198,9 @@ function buildComponent(entry: AgentEntry, withItems: boolean): AgentComponent {
   }
 
   if (!secret) {
-    const buttons = buttonsOf(el, agentPressable(entry)).map(nameOf).filter(Boolean)
+    const buttons = buttonsOf(agentPressRoots(entry), agentPressable(entry))
+      .map(nameOf)
+      .filter(Boolean)
 
     if (buttons.length) {
       component.buttons = buttons

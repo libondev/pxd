@@ -111,6 +111,7 @@ const renderEntries = computed<RenderEntry[]>(() => {
 
 useAgentNode({
   name: 'list',
+  pressRoots: () => [],
   closed: true,
   items: () => optionItems(props.options, props.modelValue),
   itemElement: (value) => elementOfItem(value),

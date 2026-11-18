@@ -6,6 +6,7 @@ import {
   agentEntryOf,
   agentLabel,
   agentOwnerEntry,
+  agentPressRoots,
   agentVisibleEntries,
   registerAgentNode,
 } from '../../src/agent/registry'
@@ -98,6 +99,23 @@ describe('agent registry', () => {
 
     expect(visible).toHaveLength(1)
     expect(visible[0].node.el).toBe(ownEl)
+
+    offs.forEach((off) => off())
+  })
+
+  it('should press on its own element unless it says which', () => {
+    const own = document.createElement('div')
+    const part = document.createElement('div')
+    const offs = registered(
+      { node: nodeOf({ el: () => own }) },
+      { node: nodeOf({ el: () => own, pressRoots: () => [part] }) },
+      { node: nodeOf({ el: () => own, pressRoots: () => [] }) },
+    )
+    const [fallback, scoped, none] = agentEntries().slice(-3)
+
+    expect(agentPressRoots(fallback)).toEqual([own])
+    expect(agentPressRoots(scoped)).toEqual([part])
+    expect(agentPressRoots(none)).toEqual([])
 
     offs.forEach((off) => off())
   })

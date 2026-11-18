@@ -72,6 +72,7 @@ const computedStyle = computed(() => {
 
 useAgentNode({
   name: 'steps',
+  pressRoots: () => [],
   closed: true,
   items: () =>
     optionItems(
