@@ -1193,7 +1193,7 @@ describe('agent components', () => {
   })
 
   it('should wait a render for a button that arrives late', async () => {
-    const open = ref(false)
+    const open = ref(true)
     const ready = ref(false)
     const removed = ref(false)
 
@@ -1653,7 +1653,7 @@ describe('agent components', () => {
     expect(value.value).toBe('on')
   })
 
-  it('should open a closed dialog to press the button inside it', async () => {
+  it('should leave a closed dialog shut, and press inside it once it opens', async () => {
     const open = ref(false)
     const removed = ref(false)
     track(
@@ -1693,11 +1693,24 @@ describe('agent components', () => {
     expect(closed).toMatchObject({ open: false, actions: ['setOpen'] })
     expect(closed.label).toBeUndefined()
 
-    const result = await agent.act({
+    const refused = await agent.act({
       steps: [{ ref: closed.ref, action: 'press', args: ['Delete'] }],
     })
 
-    expect(result.ok).toBe(true)
+    expect(refused.ok).toBe(false)
+    expect(refused.error?.message).toContain('has no buttons to press')
+    expect(refused.error?.message).toContain('Open it first with setOpen')
+    expect(removed.value).toBe(false)
+    expect(find(agent.snapshot(), 'modal')).toMatchObject({ open: false })
+
+    const opened = await agent.act({
+      steps: [
+        { ref: closed.ref, action: 'setOpen', args: [true] },
+        { ref: closed.ref, action: 'press', args: ['Delete'] },
+      ],
+    })
+
+    expect(opened.ok).toBe(true)
     expect(removed.value).toBe(true)
     expect(find(agent.snapshot(), 'modal')).toMatchObject({ open: true, label: 'Settings' })
   })
@@ -1725,6 +1738,7 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(false)
     expect(result.error?.message).toContain('no button matching "Save"')
+    expect(result.error?.message).toContain('Open it first with toggle')
     expect(expanded.value).toBe(false)
   })
 })

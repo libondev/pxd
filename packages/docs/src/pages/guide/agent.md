@@ -183,7 +183,7 @@ await agent.act({ steps: [{ ref: 'Views', action: 'press', args: ['Two'] }] })
 
 - With no argument it presses the only button inside the component; a component with several asks you to name one.
 - With an argument it presses the button whose text matches — the whole text first, then a part of it. Several matches are refused rather than guessed. A link with an `href`, like a pager's Prev, is pressed the same way.
-- A closed popup renders no buttons, so a component that declares `setOpen` is opened first and read again. If the button is not there after all, the popup closes again.
+- A closed popup renders no buttons, and a press does not open one to look inside: the step fails and names the action that opens it. Open it as a step of its own, then press. That way the page never changes under a person just to find out what a press would click, and opening something is a step `allow` sees.
 - A disabled component, or a disabled button, is refused rather than clicked.
 - It waits through three renders, each across a macrotask, within the run's timeout. Content that arrives from a network request later than that still needs the app to have it ready; `press` does not poll indefinitely.
 

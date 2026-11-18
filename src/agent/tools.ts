@@ -25,7 +25,7 @@ export const agentTools: AgentTool[] = [
   },
   {
     name: 'act',
-    description: `Run steps in order, each one an action a component listed in snapshot. Name the component by its ref, its label, the text on its row or its kind; the run stops at the first failure and reports which step it was. The result carries what each step returned, the components the run brought onto the page, and every field's value afterwards, so there is no need to call snapshot to check. Set a value with the choice's label, like "Europe", or its value. press clicks a button by its text and opens a closed dialog or menu first. A step that fails with "Needs a person" is one a person must do: tell them what it does. ${INJECTION}`,
+    description: `Run steps in order, each one an action a component listed in snapshot. Name the component by its ref, its label, the text on its row or its kind; the run stops at the first failure and reports which step it was. The result carries what each step returned, the components the run brought onto the page, and every field's value afterwards, so there is no need to call snapshot to check. Set a value with the choice's label, like "Europe", or its value. press clicks a button by its text, on the page as it is: a closed dialog or menu is opened by its own step first, not by one that reaches inside it. A step that fails with "Needs a person" is one a person must do: tell them what it does. ${INJECTION}`,
     inputSchema: {
       type: 'object',
       properties: {

@@ -7,16 +7,21 @@ import { agentElement, agentPressable } from './registry.js'
 
 export type PressOutcome = { pressed: string } | { error: string }
 
-// How many renders press waits through for a popup whose content arrives late.
+// How many renders press waits through for a part whose content arrives late.
 const PRESS_ATTEMPTS = 3
 
-// Clicks the button a step names. A popup that has not rendered yet, or whose content is
-// still arriving, is read again a few times inside the run's budget rather than once.
+// Clicks the button a step names, and nothing else. A closed popup is opened by its own
+// step, so a press never renders one to find out what it would click: the page stays as the
+// person left it, and the step that opens something is one `allow` sees.
 export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
   return async (entry: AgentEntry, text?: unknown, signal?: AbortSignal): Promise<PressOutcome> => {
     const asked = typeof text === 'string' && text ? text : undefined
     const wanted = asked ? fold(asked) : undefined
     const names = (buttons: { name: string }[]) => buttons.map((button) => button.name).join(', ')
+    // How a step of its own would open this component, when it has a way.
+    const opens = ['setOpen', 'toggle'].find(
+      (action) => typeof entry.node.actions[action] === 'function',
+    )
 
     const read = () =>
       buttonsOf(agentElement(entry), agentPressable(entry))
@@ -38,7 +43,12 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
           }
         }
 
-        return { message: `"${entry.node.name}" has no buttons to press.`, retry: true }
+        return {
+          message: `"${entry.node.name}" has no buttons to press.${
+            opens ? ` Open it first with ${opens}, then press.` : ''
+          }`,
+          retry: true,
+        }
       }
 
       if (wanted === undefined) {
@@ -67,25 +77,13 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
       }
 
       return {
-        message: `"${entry.node.name}" has no button matching "${asked}"; it has: ${names(buttons)}.`,
+        message: `"${entry.node.name}" has no button matching "${asked}"; it has: ${names(buttons)}.${
+          opens ? ` Open it first with ${opens}, then press.` : ''
+        }`,
         retry: true,
       }
     }
 
-    // A popup opened only to find a button closes again when the search fails, so the next
-    // step and the person see the page as it was.
-    const close = async () => {
-      if (!opened) {
-        return
-      }
-
-      opened = false
-
-      withChangeDetails({ source: 'agent' }, () => entry.node.actions.setOpen?.(false))
-      await nextTick()
-    }
-
-    let opened = false
     let message = ''
 
     for (let attempt = 0; attempt < PRESS_ATTEMPTS; attempt++) {
@@ -99,8 +97,6 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
 
       if ('target' in found && found.target) {
         if (agentDisabled(entry)) {
-          await close()
-
           return { error: `${entry.node.name} ${entry.ref} is disabled now.` }
         }
 
@@ -112,8 +108,6 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
         })
 
         if (refused) {
-          await close()
-
           return { error: refused }
         }
 
@@ -125,21 +119,10 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
 
       message = found.message ?? message
 
-      // A closed popup renders nothing: open it once, then give the content a render or two.
-      if (!opened && entry.node.actions.setOpen) {
-        opened = true
-
-        withChangeDetails({ source: 'agent' }, () => entry.node.actions.setOpen?.(true))
-
-        continue
-      }
-
       if (!found.retry) {
         break
       }
     }
-
-    await close()
 
     return { error: message }
   }
