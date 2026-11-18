@@ -15,15 +15,17 @@ const props = withDefaults(defineProps<ContextUsageProps>(), {
 })
 
 const SEGMENT_COLORS = [
-  'var(--color-primary)',
   'var(--color-gray-600)',
-  'var(--color-blue-700)',
   'var(--color-red-700)',
+  'var(--color-blue-700)',
+  'var(--color-teal-700)',
   'var(--color-amber-700)',
   'var(--color-green-700)',
-  'var(--color-teal-700)',
+  'var(--color-orange-300)',
   'var(--color-purple-700)',
+  'var(--color-emerald-600)',
   'var(--color-pink-700)',
+  'var(--color-rose-400)',
 ] as const
 
 const DIM_OPACITY = 0.2
@@ -117,7 +119,7 @@ function onItemLeave() {
       <div
         v-for="(item, index) in viewItems"
         :key="item.name"
-        class="pxd-context-usage--segment basis-0 min-w-[2%] border-l bg-(--context-usage-color) motion-safe:transition-opacity"
+        class="pxd-context-usage--segment basis-0 min-w-[2%] bg-(--context-usage-color) not-first:border-l motion-safe:transition-opacity"
         :style="{
           '--context-usage-color': item.color,
           flexGrow: item.tokens,
