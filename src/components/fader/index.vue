@@ -124,6 +124,10 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="postcss">
+.pxd-fader {
+  --fader-feather: calc(var(--fader-size) * 0.5);
+}
+
 .pxd-fader--item::before,
 .pxd-fader--item::after {
   content: '';
@@ -143,6 +147,20 @@ onBeforeUnmount(() => {
 }
 
 .pxd-fader--item.horizontal {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(0 0 0 / 16%) calc(var(--fader-feather) * 0.25),
+    rgb(0 0 0 / 50%) calc(var(--fader-feather) * 0.5),
+    rgb(0 0 0 / 84%) calc(var(--fader-feather) * 0.75),
+    black var(--fader-feather),
+    black calc(100% - var(--fader-feather)),
+    rgb(0 0 0 / 84%) calc(100% - var(--fader-feather) * 0.75),
+    rgb(0 0 0 / 50%) calc(100% - var(--fader-feather) * 0.5),
+    rgb(0 0 0 / 16%) calc(100% - var(--fader-feather) * 0.25),
+    transparent
+  );
+
   &::before,
   &::after {
     top: 0;
@@ -164,6 +182,20 @@ onBeforeUnmount(() => {
 }
 
 .pxd-fader--item.vertical {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    rgb(0 0 0 / 16%) calc(var(--fader-feather) * 0.25),
+    rgb(0 0 0 / 50%) calc(var(--fader-feather) * 0.5),
+    rgb(0 0 0 / 84%) calc(var(--fader-feather) * 0.75),
+    black var(--fader-feather),
+    black calc(100% - var(--fader-feather)),
+    rgb(0 0 0 / 84%) calc(100% - var(--fader-feather) * 0.75),
+    rgb(0 0 0 / 50%) calc(100% - var(--fader-feather) * 0.5),
+    rgb(0 0 0 / 16%) calc(100% - var(--fader-feather) * 0.25),
+    transparent
+  );
+
   &::before,
   &::after {
     left: 0;
