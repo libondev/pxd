@@ -122,6 +122,7 @@ describe('agent registerTools', () => {
     })
 
     expect(result.ok).toBe(false)
+    expect(result.error?.message).toContain("registerTools' allow")
 
     unregister()
   })

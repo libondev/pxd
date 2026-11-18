@@ -72,10 +72,24 @@ describe('agent gate', () => {
 
     expect(refused.ok).toBe(false)
     expect(refused.error?.message).toContain('Refused')
+    expect(refused.error?.message).toContain('by the app')
     expect(value.value).toBe('')
     expect(asked).toHaveLength(1)
     expect(asked[0]).toMatchObject({ component: 'input', action: 'setValue', args: ['Atlas'] })
     expect(asked[0].signal).toBeInstanceOf(AbortSignal)
+  })
+
+  it('should say when nobody answered in time', async () => {
+    const value = mountBound(Input, { modelValue: '', 'aria-label': 'Project name' })
+    const agent = createAgent({ allow: () => new Promise<boolean>(() => {}), allowTimeout: 10 })
+
+    const refused = await agent.act({
+      steps: [{ ref: 'Project name', action: 'setValue', args: ['Atlas'] }],
+    })
+
+    expect(refused.ok).toBe(false)
+    expect(refused.error?.message).toContain('Nobody answered in time')
+    expect(value.value).toBe('')
   })
 
   it('should run the step once allow answers yes', async () => {

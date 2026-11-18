@@ -22,43 +22,51 @@ interface AllowGateOptions {
   allowTimeout: number
 }
 
+/** Which gate turned a step down: the app's own `allow`, or the one `registerTools` was given. */
+type Refusal = 'app' | 'tools' | 'none'
+
+interface Check {
+  allow: AgentAllow
+  by: Exclude<Refusal, 'none'>
+}
+
 // Every step is asked about, marked or not, so an app can refuse one for its own reasons.
 // A step the app marked with `data-agent-confirm` fails without an `allow`: a person has to
 // make that change, and the bridge never guesses at their answer.
 export function createAllowGate({ allow, allowTimeout }: AllowGateOptions) {
   const ask = async (
     base: Omit<AgentAllowedStep, 'signal'>,
-    checks: AgentAllow[],
+    checks: Check[],
     outer?: AbortSignal,
-  ) => {
+  ): Promise<true | Refusal> => {
     const controller = new AbortController()
     const question: AgentAllowedStep = { ...base, signal: controller.signal }
     let timer: ReturnType<typeof setTimeout> | undefined
     let onAbort: (() => void) | undefined
 
-    const late = new Promise<boolean>((resolve) => {
-      timer = setTimeout(() => resolve(false), allowTimeout)
+    const late = new Promise<Refusal>((resolve) => {
+      timer = setTimeout(() => resolve('none'), allowTimeout)
     })
-    const stopped = new Promise<boolean>((resolve) => {
+    const stopped = new Promise<Refusal>((resolve) => {
       if (outer?.aborted) {
-        resolve(false)
+        resolve('none')
 
         return
       }
 
-      onAbort = () => resolve(false)
+      onAbort = () => resolve('none')
       outer?.addEventListener('abort', onAbort, { once: true })
     })
 
     try {
-      const guarded = (async () => {
+      const guarded = (async (): Promise<true | Refusal> => {
         for (const check of checks) {
           if (controller.signal.aborted) {
-            return false
+            return 'none'
           }
 
-          if (!(await check(question))) {
-            return false
+          if (!(await check.allow(question))) {
+            return check.by
           }
         }
 
@@ -79,7 +87,15 @@ export function createAllowGate({ allow, allowTimeout }: AllowGateOptions) {
 
   const refuseUnlessAllowed: RefuseUnlessAllowed = async (entry, gate) => {
     const confirm = confirmOf(gate.el ?? agentMarkElement(entry))
-    const checks = [allow, gate.allow].filter((check): check is AgentAllow => !!check)
+    const checks: Check[] = []
+
+    if (allow) {
+      checks.push({ allow, by: 'app' })
+    }
+
+    if (gate.allow) {
+      checks.push({ allow: gate.allow, by: 'tools' })
+    }
 
     if (!checks.length) {
       return confirm ? `Needs a person: ${confirm}` : undefined
@@ -101,13 +117,21 @@ export function createAllowGate({ allow, allowTimeout }: AllowGateOptions) {
       question.confirm = confirm
     }
 
-    if (await ask(question, checks, gate.signal)) {
+    const refused = await ask(question, checks, gate.signal)
+
+    if (refused === true) {
       return
     }
 
-    return confirm
-      ? `Refused ${gate.action} on ${entry.ref}: ${confirm}`
-      : `Refused ${gate.action} on ${entry.ref}.`
+    const target = `${gate.action} on ${entry.ref}`
+
+    if (refused === 'none') {
+      return `Nobody answered in time for ${target}.`
+    }
+
+    const by = refused === 'tools' ? "registerTools' allow" : 'the app'
+
+    return `Refused ${target} by ${by}${confirm ? `: ${confirm}` : '.'}`
   }
 
   return { refuseUnlessAllowed }

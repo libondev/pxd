@@ -359,6 +359,7 @@ const agent = createAgent({
 - Without `allow`, a marked step fails with `Needs a person` and nothing happens; unmarked steps run.
 - The mark is read from the component's place in the page, so a dialog that has not rendered yet still asks before `setOpen`.
 - A step waits `allowTimeout` milliseconds for the answer, five minutes by default, and then fails without running.
+- A failure says which gate refused: `Refused setValue on c3 by the app.`, or `by registerTools' allow` when the browser's tools refused it, or `Nobody answered in time for setValue on c3.` when `allow` never answered.
 
 ## Naming what you want driven
 
