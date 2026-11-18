@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ChangeAt } from '../../types/shared/change'
 import type { ToggleButtonProps, ToggleButtonEmits } from './types'
 import { computed } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
@@ -95,7 +96,9 @@ const { attrs, classes } = useTailwindVariant(
   },
 )
 
-if (!toggleButtonGroupContext) {
+// A group that renders its choices from `options` reports them once; one whose buttons are
+// written by hand leaves each button to report itself.
+if (!toggleButtonGroupContext?.props.options?.length) {
   useAgentNode({
     name: 'toggle-button',
     state: () => ({
@@ -105,36 +108,37 @@ if (!toggleButtonGroupContext) {
     }),
     actions: {
       setValue: (value) => {
-        change(value, { reason: 'api' })
+        applyChecked(Boolean(value), { reason: 'api' })
       },
       toggle: () => {
-        change(!isChecked.value, { reason: 'api' })
+        applyChecked(!isChecked.value, { reason: 'api' })
       },
     },
   })
 }
 
-function onToggleClick() {
-  const newCheckedState = !isChecked.value
+function applyChecked(checked: boolean, at: ChangeAt) {
+  const context = toggleButtonGroupContext
 
-  if (toggleButtonGroupContext) {
-    if (toggleButtonGroupContext.props.multiple) {
-      const formattedValue = toArray(modelValue.value)
-
-      change(
-        newCheckedState
-          ? [...formattedValue, props.value]
-          : formattedValue.filter((v) => v !== props.value),
-        { reason: 'item-press' },
-      )
-    } else {
-      change(props.value, { reason: 'item-press' })
-    }
+  if (!context) {
+    change(checked, at)
 
     return
   }
 
-  change(newCheckedState, { reason: 'item-press' })
+  if (context.props.multiple) {
+    const values = toArray(modelValue.value)
+
+    change(checked ? [...values, props.value] : values.filter((value) => value !== props.value), at)
+
+    return
+  }
+
+  change(props.value, at)
+}
+
+function onToggleClick() {
+  applyChecked(!isChecked.value, { reason: 'item-press' })
 }
 </script>
 

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { RadioEmits, RadioProps } from './types'
 import { computed } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useRadioGroupContext } from '../../contexts/radio.js'
@@ -51,6 +52,20 @@ const { classes } = useTailwindVariant(
     }),
   },
 )
+
+// A group that renders its choices from `options` reports them once; one whose buttons are
+// written by hand leaves each button to report itself.
+if (!radioGroupContext?.props.options?.length) {
+  useAgentNode({
+    name: 'radio',
+    state: () => ({ checked: isSelected.value, disabled: isDisabled.value }),
+    actions: {
+      select: () => {
+        change(props.value, { reason: 'api' })
+      },
+    },
+  })
+}
 
 function onInputChange(event: Event) {
   if (isDisabled.value) {

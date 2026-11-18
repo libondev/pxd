@@ -2,6 +2,7 @@
 import type { VirtualListProps, VirtualListEmits } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed, shallowRef } from 'vue'
+import { ITEM_LIMIT } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useVirtualList, type VirtualListItem } from '../../composables/use-virtual-list.js'
 import { isNil } from '../../utils/is.js'
@@ -47,7 +48,9 @@ useAgentNode({
     rendered: virtualItems.value.length,
     ...(props.status && { status: props.status }),
   }),
-  items: () => props.items.map((item, index) => ({ value: itemKey(item, index) })),
+  items: () =>
+    props.items.slice(0, ITEM_LIMIT).map((item, index) => ({ value: itemKey(item, index) })),
+  count: () => props.items.length,
   actions: {
     scrollToIndex: (index) => scrollToIndex(Number(index)),
     scrollToOffset: (offset) => scrollToOffset(Number(offset)),

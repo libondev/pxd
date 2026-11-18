@@ -11,6 +11,7 @@ import Button from '../../src/components/button/index.vue'
 import Calendar from '../../src/components/calendar/index.vue'
 import Carousel from '../../src/components/carousel/index.vue'
 import CheckboxGroup from '../../src/components/checkbox-group/index.vue'
+import Checkbox from '../../src/components/checkbox/index.vue'
 import Choicebox from '../../src/components/choicebox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
 import CommandMenu from '../../src/components/command-menu/index.vue'
@@ -34,6 +35,7 @@ import PinInput from '../../src/components/pin-input/index.vue'
 import Popover from '../../src/components/popover/index.vue'
 import Progress from '../../src/components/progress/index.vue'
 import RadioGroup from '../../src/components/radio-group/index.vue'
+import Radio from '../../src/components/radio/index.vue'
 import Rating from '../../src/components/rating/index.vue'
 import Reactions from '../../src/components/reactions/index.vue'
 import Resizable from '../../src/components/resizable/index.vue'
@@ -1763,6 +1765,17 @@ describe('agent readings and pages', () => {
     expect(wrapper.emitted('retry')).toHaveLength(1)
   })
 
+  it('should count the rows a virtual list holds without listing them all', () => {
+    const items = Array.from({ length: 150 }, (_, index) => ({ id: index }))
+
+    track(mount(VirtualList, { props: { items } }))
+    const entry = find(createAgent().snapshot(), 'virtual-list')
+
+    expect(entry.items).toHaveLength(100)
+    expect(entry.itemCount).toBe(150)
+    expect(entry.count).toBe(150)
+  })
+
   it('should scroll a table of contents to an entry by its label', async () => {
     const scrolled: number[] = []
     const source = {
@@ -2075,5 +2088,104 @@ describe('agent parts and marks', () => {
     expect(document.querySelector('[data-list]')).not.toBeNull()
     expect(names).toContain('select')
     expect(names).not.toContain('list')
+  })
+})
+
+describe('agent groups', () => {
+  it('should report a group once when it renders its choices from options', () => {
+    track(
+      mount(CheckboxGroup, {
+        props: {
+          modelValue: [],
+          'aria-label': 'Toppings',
+          options: [
+            { label: 'Cheese', value: 'cheese' },
+            { label: 'Ham', value: 'ham' },
+          ],
+        },
+      }),
+    )
+    const names = createAgent()
+      .snapshot()
+      .map((entry) => entry.component)
+
+    expect(names).toContain('checkbox-group')
+    expect(names).not.toContain('checkbox')
+  })
+
+  it('should drive a radio a group holds in its slot', async () => {
+    const value = ref<string | number>('')
+
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(
+              RadioGroup,
+              {
+                modelValue: value.value,
+                'aria-label': 'Plan',
+                'onUpdate:model-value': (next: unknown) => {
+                  value.value = next as string
+                },
+              },
+              {
+                default: () => [
+                  h(Radio, { label: 'Free', value: 'free', 'aria-label': 'Free' }),
+                  h(Radio, { label: 'Pro', value: 'pro', 'aria-label': 'Pro' }),
+                ],
+              },
+            ),
+        }),
+      ),
+    )
+    const agent = createAgent()
+    const radios = agent.snapshot().filter((entry) => entry.component === 'radio')
+
+    expect(radios.map((entry) => entry.label)).toEqual(['Free', 'Pro'])
+    expect(radios[0]).toMatchObject({ checked: false, actions: ['select'] })
+
+    const result = await agent.act({ steps: [{ ref: 'Pro', action: 'select' }] })
+
+    expect(result.ok).toBe(true)
+    expect(value.value).toBe('pro')
+    expect(find(agent.snapshot(), 'radio')).toMatchObject({ label: 'Free', checked: false })
+    expect(agent.snapshot().find((entry) => entry.label === 'Pro')).toMatchObject({ checked: true })
+  })
+
+  it('should add and remove a box a group holds in its slot', async () => {
+    const value = ref<(string | number | boolean)[]>([])
+
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(
+              CheckboxGroup,
+              {
+                modelValue: value.value,
+                'aria-label': 'Extras',
+                'onUpdate:model-value': (next: unknown) => {
+                  value.value = next as (string | number | boolean)[]
+                },
+              },
+              {
+                default: () => [
+                  h(Checkbox, { label: 'Cheese', value: 'cheese', 'aria-label': 'Cheese' }),
+                ],
+              },
+            ),
+        }),
+      ),
+    )
+    const agent = createAgent()
+
+    await agent.act({ steps: [{ ref: 'Cheese', action: 'toggle' }] })
+
+    expect(value.value).toEqual(['cheese'])
+
+    await agent.act({ steps: [{ ref: 'Cheese', action: 'toggle' }] })
+
+    expect(value.value).toEqual([])
   })
 })

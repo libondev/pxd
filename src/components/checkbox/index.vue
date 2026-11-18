@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { ChangeAt } from '../../types/shared/change'
 import type { CheckboxEmits, CheckboxProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
@@ -91,39 +92,45 @@ const { classes } = useTailwindVariant(
   },
 )
 
-useAgentNode({
-  name: 'checkbox',
-  el: () => rootRef.value,
-  state: () => ({
-    checked: isSelected.value,
-    disabled: isDisabled.value,
-    indeterminate: props.indeterminate ?? false,
-  }),
-  actions: {
-    setValue: (value) => {
-      change(value, { reason: 'api' })
+// A group that renders its choices from `options` reports them once, with the group's own
+// `setValue`; one whose boxes are written by hand leaves each box to report itself.
+if (!checkboxGroupContext?.props.options?.length) {
+  useAgentNode({
+    name: 'checkbox',
+    el: () => rootRef.value,
+    state: () => ({
+      checked: isSelected.value,
+      disabled: isDisabled.value,
+      indeterminate: props.indeterminate ?? false,
+    }),
+    actions: {
+      setValue: (value) => {
+        setChecked(Boolean(value), { reason: 'api' })
+      },
+      toggle: () => {
+        setChecked(!isSelected.value, { reason: 'api' })
+      },
     },
-    toggle: () => {
-      change(!isSelected.value, { reason: 'api' })
-    },
-  },
-})
+  })
+}
 
-function onInputChange(event: Event) {
-  const checked = (event.target as HTMLInputElement).checked
-
+function setChecked(checked: boolean, at: ChangeAt) {
   if (Array.isArray(modelValue.value)) {
     change(
       checked
         ? [...modelValue.value, props.value]
         : modelValue.value.filter((v) => v !== props.value),
-      { reason: 'item-press', event },
+      at,
     )
 
     return
   }
 
-  change(checked, { reason: 'item-press', event })
+  change(checked, at)
+}
+
+function onInputChange(event: Event) {
+  setChecked((event.target as HTMLInputElement).checked, { reason: 'item-press', event })
 }
 </script>
 

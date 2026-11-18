@@ -28,6 +28,9 @@ export interface AgentNode {
   /** The choices it offers, read from its own data rather than from the DOM, so a
    *  virtualised list reports what it would show, not only the rows on screen. */
   items?: () => AgentItem[] | undefined
+  /** How many choices it has, when `items` reports only some of them: the snapshot then
+   *  carries the rest as `itemCount` without building them. */
+  count?: () => number | undefined
   /** The element one of its choices renders as, while it is on the page: the marks a step
    *  must read for that choice, like `data-agent-confirm`, live on it. A choice that only
    *  renders while its list is open has none until a step opens it. */

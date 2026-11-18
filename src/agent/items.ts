@@ -1,5 +1,9 @@
 import type { AgentItem } from './types'
 
+// A snapshot has to stay readable to a model: a list of ten thousand rows would crowd out
+// everything else, so items stop here and `itemCount` says how many there really are.
+export const ITEM_LIMIT = 100
+
 interface OptionLike {
   type?: string
   label?: unknown

@@ -134,7 +134,7 @@ agent.snapshot()
 - `disabled: true` means the component takes no action right now: `actions` is empty, `press` is refused, and a step on it fails instead of writing to a control a person cannot use.
 - `pending: true` and `error` report a component whose own work is running or has failed, like a button's save.
 - `incomplete: true` means one of the component's own state or item getters threw. The entry stays addressable instead of taking down the whole snapshot, but its data is not complete.
-- `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`, and one a person cannot pick `disabled`. A list longer than 100 stops there and reports `itemCount`; `query({ within })` reads the rest. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen.
+- `items` lists the choices it offers — a select's options, a tree's rows — with `value` for the step and `label` for you; the chosen one carries `selected`, an open branch `expanded`, and one a person cannot pick `disabled`. A list longer than 100 stops there and reports `itemCount`; `query({ within })` reads the rest. Items come from the component's data, not the DOM, so a virtualised list reports what it would show rather than the rows on screen, and a list that counts its own rows reports the rest through `itemCount` without building them.
 - `snapshot({ items: false })` leaves the choices out entirely — the component's items getter is not even read — for a page whose long lists would crowd out everything else. `query({ within })` then reads one list at a time.
 - `buttons` lists the name of each button inside it — its accessible name, so an icon-only button carrying `aria-label` is listed and pressable too. A link with an `href` counts as a button, so a pager's Prev and Next can be pressed.
 - `text` carries what it says besides its name, like a dialog's description, read from the element its own `aria-describedby` points at.
@@ -409,6 +409,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `popover` | `setOpen`, `toggle` |
 | `progress` | — |
 | `questionnaire` | `answer`, `answerText`, `next`, `previous`, `skip`, `skipAll`, `submit` |
+| `radio` | `select` |
 | `radio-group` | `setValue` |
 | `rating` | `setValue` |
 | `reactions` | `pick`, `toggle` |
@@ -434,7 +435,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `toggle-button-group` | `setValue` |
 | `virtual-list` | `scrollToIndex`, `scrollToOffset`, `scrollBy`, `retry` |
 
-A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-button-group` — holds no value of its own: `setValue` announces the change and asks for the update, and the value follows only when the app's `v-model` accepts it.
+A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-button-group` — holds no value of its own: `setValue` announces the change and asks for the update, and the value follows only when the app's `v-model` accepts it. A group that renders its choices from `options` reports them once, and its boxes, radios or toggle buttons stay out of the snapshot. A group whose choices are written in its slot lists none: each one reports itself, with the state it holds and the action a press on it would take.
 
 `steps` moves only where the app marks it `clickable`, the same as a click. Its `value` is the current step's index.
 
@@ -448,7 +449,7 @@ A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-butt
 
 `search-input` carries the name a person typed and the call that submits it: `setValue` writes the box, and `search` runs what Enter runs on a page whose only way to send it is the key.
 
-`virtual-list` reports the rows its data holds rather than the few the window draws, and `scrollToIndex` reaches one that is not drawn yet.
+`virtual-list` reports the rows its data holds rather than the few the window draws — its state carries `count`, and `items` stops at the hundred a snapshot shows, with `itemCount` for the rest — and `scrollToIndex` reaches one that is not drawn yet.
 
 `image-preview` renders nothing while it is closed, like a dialog: `setOpen` opens it, and the images it knows are the `items` that `setValue` picks from.
 

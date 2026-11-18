@@ -1,5 +1,6 @@
 import type { AgentEntry } from './registry.js'
 import type { AgentComponent, AgentItem, AgentSnapshotOptions } from './types'
+import { ITEM_LIMIT } from './items.js'
 import { accessibleName, textOf } from './label.js'
 import { confirmOf, isHidden, REDACTED, sourceOf } from './marks.js'
 import {
@@ -10,10 +11,6 @@ import {
   agentRow,
   agentSecret,
 } from './registry.js'
-
-// A snapshot has to stay readable to a model: a list of ten thousand rows would crowd out
-// everything else, so items stop here and `itemCount` says how many there really are.
-export const ITEM_LIMIT = 100
 
 // How many of the choices that made `query({ text })` match are named back to the caller.
 export const MATCH_LIMIT = 10
@@ -214,19 +211,25 @@ function buildComponent(entry: AgentEntry, withItems: boolean): AgentComponent {
   // reported either, so they are not read for it.
   if (withItems && !secret) {
     let items: AgentItem[] = []
+    let counted: number | undefined
 
     try {
       items = node.items?.() ?? []
+      counted = node.count?.()
     } catch {
       failed = true
     }
 
-    if (items.length) {
-      component.items = items.slice(0, ITEM_LIMIT)
+    const shown = items.slice(0, ITEM_LIMIT)
 
-      if (items.length > ITEM_LIMIT) {
-        component.itemCount = items.length
-      }
+    if (shown.length) {
+      component.items = shown
+    }
+
+    const total = Math.max(counted ?? items.length, items.length)
+
+    if (total > shown.length) {
+      component.itemCount = total
     }
   }
 
