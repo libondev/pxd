@@ -111,6 +111,7 @@ const { listOptions, pending, error, retry } = useListSearch(
 
 useAgentNode({
   name: 'select',
+  namedBy: 'button',
   closed: true,
   owns: () => listRef.value?.$el,
   items: () => optionItems(props.options, selected.value),

@@ -63,6 +63,7 @@ const { onKeydown } = useListKeyboardController({
 
 useAgentNode({
   name: 'menu',
+  namedBy: 'button',
   closed: true,
   owns: () => listRef.value?.$el,
   items: () => optionItems(props.options, selected.value),

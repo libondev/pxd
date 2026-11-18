@@ -46,6 +46,7 @@ const { modelValue, change } = useModelValue(props, emits, {
 })
 useAgentNode({
   name: 'date-picker',
+  namedBy: 'field',
   state: () => ({ value: modelValue.value ?? null, open: popoverVisible.value }),
   actions: {
     setValue: (value) => {

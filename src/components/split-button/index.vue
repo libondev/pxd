@@ -25,6 +25,7 @@ const computedSize = computed(() => props.size || configProvider.size)
 
 useAgentNode({
   name: 'split-button',
+  namedBy: 'button',
   state: () => ({ value: modelValue.value ?? null }),
   actions: {
     setValue: (value) => {

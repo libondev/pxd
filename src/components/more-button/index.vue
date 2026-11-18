@@ -22,6 +22,7 @@ const { modelValue: isExpanded, change } = useModelValue(props, emits)
 
 useAgentNode({
   name: 'more-button',
+  namedBy: 'button',
   state: () => ({ expanded: isExpanded.value }),
   actions: {
     setValue: (value) => {

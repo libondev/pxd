@@ -52,6 +52,7 @@ const contentClassComputed = computed(() => {
     :arrow-color="computedVariant.bg"
     :content-class="contentClassComputed"
     v-bind="$attrs"
+    :agent="false"
   >
     <slot />
 

@@ -25,6 +25,10 @@ export interface AgentNode {
    *  inside one belongs to it and stays out of the snapshot on its own. */
   owns?: () => (Element | null | undefined)[] | Element | null | undefined
   label?: () => string | undefined
+  /** Which of its own parts names it, when its element carries no name: the button it shows as
+   *  its face, like a menu's trigger, or the field it wraps, like a date picker's input. Unset
+   *  by default, so a container is never named after a button in its content. */
+  namedBy?: 'button' | 'field'
   /** What names it on its row, when that text is the component's own rather than its neighbours'. */
   row?: () => string | undefined
   state?: () => Record<string, unknown>
@@ -152,6 +156,10 @@ export interface AgentAllowedStep {
   action: string
   /** What the step passes to the action, so a policy can read the value it would write. */
   args: unknown[]
+  /** The elements this step touches: the component's own first, as `elementOf(ref)` names it,
+   *  then the button it presses or the choice it names. A closed popup has not rendered them,
+   *  so an entry can be empty. */
+  els?: (Element | undefined)[]
   /** What `data-agent-confirm` says the step does, in the words a person reads. */
   confirm?: string
   /** Aborts when the step stops waiting, so a confirmation the app shows can close. */

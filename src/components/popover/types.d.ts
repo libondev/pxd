@@ -32,6 +32,7 @@ export interface PopoverProps {
   closeOnOutsideClick?: boolean
   lockScrollOnVisible?: boolean
   returnFocusOnDeactivate?: boolean
+  agent?: boolean
 }
 
 export interface PopoverEmits {

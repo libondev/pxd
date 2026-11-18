@@ -56,6 +56,7 @@ import TodoList from '../../src/components/todo-list/index.vue'
 import ToggleButtonGroup from '../../src/components/toggle-button-group/index.vue'
 import ToggleButton from '../../src/components/toggle-button/index.vue'
 import Toggle from '../../src/components/toggle/index.vue'
+import Tooltip from '../../src/components/tooltip/index.vue'
 import Tour from '../../src/components/tour/index.vue'
 import Tree from '../../src/components/tree/index.vue'
 import VirtualList from '../../src/components/virtual-list/index.vue'
@@ -393,6 +394,21 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(find(agent.snapshot(), 'resizable')).toMatchObject({ value: [60, 40] })
+  })
+
+  it('should not name a container after a button in its content', () => {
+    track(
+      mount(Resizable, {
+        slots: {
+          leading: () => h('div', [h('button', { 'aria-label': 'What this setting means' }, 'i')]),
+        },
+      }),
+    )
+
+    const entry = find(createAgent().snapshot(), 'resizable')
+
+    expect(entry.label).toBeUndefined()
+    expect(entry.ref).toMatch(/^c\d+$/)
   })
 
   it('should report a scroll indicator with nothing to call', () => {
@@ -926,6 +942,19 @@ describe('agent components', () => {
     await agent.act({ steps: [{ ref: 'Details', action: 'toggle' }] })
 
     expect(find(agent.snapshot(), 'popover')).toMatchObject({ open: false })
+  })
+
+  it('should keep a tooltip out of the bridge', () => {
+    track(
+      mount(Tooltip, {
+        props: { content: 'Files are saved here' },
+        slots: { default: () => h('button', { 'aria-label': 'Files are saved here' }, 'i') },
+      }),
+    )
+
+    const agent = createAgent()
+
+    expect(agent.snapshot().some((entry) => entry.component === 'popover')).toBe(false)
   })
 
   it('should report the choices a select offers', async () => {

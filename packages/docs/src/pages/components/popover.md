@@ -480,6 +480,7 @@ const chips = [
 | close-on-outside-click | `boolean` | `true` | Close the Popover when the pointer is pressed outside of it and its trigger |
 | close-on-press-escape | `boolean` | `true` | Close the Popover when pressing `Escape` |
 | lock-scroll-on-visible | `boolean` | - | Currently unused: the overlay is bound to `adaptive` instead, so scroll locks only in adaptive mode |
+| agent | `boolean` | `true` | Register with the agent bridge, so a snapshot lists it and a step can open it. Set `false` on a popover that only explains something, as a tooltip does. |
 
 ## Events
 

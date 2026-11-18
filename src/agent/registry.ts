@@ -223,7 +223,7 @@ export function agentMarkElement(entry: AgentEntry): Element | null {
 }
 
 export function agentLabel(node: AgentNode): string | undefined {
-  return node.label?.() || accessibleName(node.el())
+  return node.label?.() || accessibleName(node.el(), node.namedBy)
 }
 
 export function agentLabelSafe(node: AgentNode): string | undefined {

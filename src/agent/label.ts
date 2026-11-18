@@ -27,7 +27,12 @@ export function textOf(el: Element | null | undefined): string {
 }
 
 // The name a person would read for the component, so a step can find it by that name.
-export function accessibleName(el: Element | null | undefined): string | undefined {
+// `namedBy` names the part a component says it is: nothing by default, so a container is never
+// named after a button in its content.
+export function accessibleName(
+  el: Element | null | undefined,
+  namedBy: 'none' | 'button' | 'field' = 'none',
+): string | undefined {
   if (!el) {
     return
   }
@@ -91,11 +96,15 @@ export function accessibleName(el: Element | null | undefined): string | undefin
     return textOf(el) || undefined
   }
 
-  // A component whose face is one button, like a more/less toggle, is named by that button.
-  const button = el.querySelector('button, [role="button"]')
+  if (namedBy === 'none') {
+    return undefined
+  }
 
-  if (button) {
-    return accessibleName(button)
+  // A component whose face is one button, like a more/less toggle, is named by that button.
+  if (namedBy === 'button') {
+    const button = el.querySelector('button, [role="button"]')
+
+    return button ? accessibleName(button) : undefined
   }
 
   // A wrapper whose name lives on the field it renders, like a date picker's input.

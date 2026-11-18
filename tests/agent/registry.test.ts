@@ -123,4 +123,39 @@ describe('agent registry', () => {
 
     offs.forEach((off) => off())
   })
+
+  it('should not name a container after a button in its content', () => {
+    const el = document.createElement('div')
+    const button = document.createElement('button')
+
+    button.setAttribute('aria-label', 'What this setting means')
+    el.append(button)
+
+    const offs = registered({ node: nodeOf({ el: () => el }) })
+
+    expect(agentLabel(agentEntries().at(-1)!.node)).toBeUndefined()
+
+    offs.forEach((off) => off())
+  })
+
+  it('should name a component after the part it says names it', () => {
+    const el = document.createElement('div')
+    const button = document.createElement('button')
+    const field = document.createElement('input')
+
+    button.setAttribute('aria-label', 'Show More')
+    field.setAttribute('aria-label', 'Due')
+    el.append(button, field)
+
+    const offs = registered(
+      { node: nodeOf({ el: () => el, namedBy: 'button' }) },
+      { node: nodeOf({ el: () => el, namedBy: 'field' }) },
+    )
+    const [byButton, byField] = agentEntries().slice(-2)
+
+    expect(agentLabel(byButton.node)).toBe('Show More')
+    expect(agentLabel(byField.node)).toBe('Due')
+
+    offs.forEach((off) => off())
+  })
 })

@@ -29,6 +29,7 @@ const props = withDefaults(defineProps<PopoverProps>(), {
   closeOnPressEscape: true,
   closeOnOutsideClick: true,
   returnFocusOnDeactivate: true,
+  agent: true,
 })
 
 const emits = defineEmits<PopoverEmits>()
@@ -94,18 +95,21 @@ useFocusTrap(engine.focusTrapContainer, () => {
   return isTruthyProp(props.autoFocusElement) ? options : { ...options, initialFocus: false }
 })
 
-useAgentNode({
-  name: 'popover',
-  state: () => ({ open: engine.isVisible.value }),
-  actions: {
-    setOpen: async (open) => {
-      await (open ? engine.handlePopoverShow() : engine.handlePopoverHide())
+if (props.agent) {
+  useAgentNode({
+    name: 'popover',
+    namedBy: 'button',
+    state: () => ({ open: engine.isVisible.value }),
+    actions: {
+      setOpen: async (open) => {
+        await (open ? engine.handlePopoverShow() : engine.handlePopoverHide())
+      },
+      toggle: async () => {
+        await (engine.isVisible.value ? engine.handlePopoverHide() : engine.handlePopoverShow())
+      },
     },
-    toggle: async () => {
-      await (engine.isVisible.value ? engine.handlePopoverHide() : engine.handlePopoverShow())
-    },
-  },
-})
+  })
+}
 
 defineExpose({
   show: engine.handlePopoverShow,

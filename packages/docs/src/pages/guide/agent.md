@@ -357,7 +357,8 @@ const agent = createAgent({
 })
 ```
 
-- `allow` is asked about **every** step, marked or not, and receives `{ ref, component, label?, action, args, confirm?, signal }`. Return `true`, `false`, or a promise of either, for your own confirmation UI — so an app can refuse a step for its own reasons, like an amount it will not let an agent set, or a control only its owner may change. `signal` aborts when the step stops waiting, so a dialog you opened can close.
+- `allow` is asked about **every** step, marked or not, and receives `{ ref, component, label?, action, args, els, confirm?, signal }`. Return `true`, `false`, or a promise of either, for your own confirmation UI — so an app can refuse a step for its own reasons, like an amount it will not let an agent set, or a control only its owner may change. `signal` aborts when the step stops waiting, so a dialog you opened can close.
+- `els` is what the step would touch: the component's own element first, as `elementOf(ref)` names it, then the button `press` would click or the choice the step names. Its positions are fixed, so the second entry is always that button or choice, and an entry is empty when the page has not rendered it — a closed popup's choice, or a closed dialog's own element. Read the app's own marks off it, like `step.els?.[1]?.hasAttribute('data-press-ok')`.
 - Without `allow`, a marked step fails with `Needs a person` and nothing happens; unmarked steps run.
 - The mark is read from the component's place in the page, so a dialog that has not rendered yet still asks before `setOpen`.
 - A step waits `allowTimeout` milliseconds for the answer, five minutes by default, and then fails without running.
@@ -382,13 +383,15 @@ await view.run({ ref: "Region", action: "setValue", args: ["eu"] })
 
 ## Naming what you want driven
 
-A component is found by its label, and the label is the name a person reads: its `aria-label`, its `<label>`, the text of its button, or the name of the field it wraps. Nothing is invented, so a control with no text of its own appears in `snapshot` with a `ref` and no `label`:
+A component is found by its label, and the label is the name a person reads: its `aria-label`, its `aria-labelledby`, its `<label>`. A component whose face is a control of its own is named by that control: a `popover`, `menu`, `select` or `split-button` by its trigger button, a `more-button` by the button it shows, a `date-picker` or `time-picker` by its field. Nothing else is invented, so a component with no name of its own appears in `snapshot` with a `ref` and no `label`:
 
 - a `slider`, a `rating`, a `steps` bar or an `effort-slider` — the value is visual, the name is yours to give;
-- `carousel`, `active-graph`, `calendar` — the content names nothing;
+- `carousel`, `active-graph`, `calendar`, `tabs`, `resizable` — the content names nothing;
+- `approval-card`, `radio-group`, `choicebox`, `toggle-button-group` — their buttons and choices are theirs to press, not their name;
+- `drawer` and `modal` without a title — the title names them when there is one;
 - any field without a visible `<label>`, like a `time-picker` or a `number-input`.
 
-Pass `aria-label` to those and they are reachable by name; leave them and a step can still use their `ref`. The library deliberately ships no default names: two unlabeled slider used to answer to the same word, which is worse than having none.
+Pass `aria-label` to those and they are reachable by name; leave them and a step can still use their `ref`. The library deliberately ships no default names: two unlabeled slider used to answer to the same word, which is worse than having none, and a container named after a button in its content is worse still, since a step that reads right then changes something else.
 
 ## What is wired
 
@@ -481,5 +484,7 @@ A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-butt
 `questionnaire` is named by the current question's header, with the question itself on its `row`, so an agent can find it by either. Its `items` are the current question's options, and `answer` takes one by its label — a single choice replaces the answer and moves on, a multiple one toggles and stays. `answerText` types the freeform answer, and `submit` reports the answers through `submit`, so put `data-agent-confirm` on the questionnaire if sending them needs a person.
 
 A dialog renders nothing while it is closed, so it reports no `label` until it opens. A step reaches it by `ref`, opens it, and every later step can use the title as its name.
+
+A tooltip is an explanation rather than a control: the popover under it stays out of `snapshot`, `act` and `query`, so an info icon neither adds an entry nor offers a way to open it. `PPopover` takes `:agent="false"` for the same reason on a popover you build yourself.
 
 Any other component stays out of `snapshot`, `act` and `query`, so an agent cannot half-see or half-drive it.

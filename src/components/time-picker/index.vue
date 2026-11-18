@@ -64,6 +64,7 @@ const { modelValue, change } = useModelValue(props, emits, {
 })
 useAgentNode({
   name: 'time-picker',
+  namedBy: 'field',
   state: () => ({ value: modelValue.value ?? '' }),
   actions: {
     setValue: (value) => {

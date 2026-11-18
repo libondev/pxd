@@ -3,7 +3,7 @@ import type { AgentAllow, AgentAllowedStep } from './types'
 import { safeItems } from './describe.js'
 import { itemKey } from './items.js'
 import { confirmOf, confirmOn } from './marks.js'
-import { agentLabelSafe, agentMarkElement } from './registry.js'
+import { agentElement, agentLabelSafe, agentMarkElement } from './registry.js'
 import { CHOOSING } from './values.js'
 
 /** One step, as the gate sees it: its action, its arguments, where its marks live. */
@@ -138,6 +138,7 @@ export function createAllowGate({ allow, allowTimeout }: AllowGateOptions) {
       component: entry.node.name,
       action: gate.action,
       args: gate.args,
+      els: [agentElement(entry) ?? undefined, ...(gate.els ?? []).map((el) => el ?? undefined)],
     }
     const label = agentLabelSafe(entry.node)
 

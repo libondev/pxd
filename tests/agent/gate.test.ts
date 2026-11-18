@@ -229,6 +229,39 @@ describe('agent gate', () => {
     expect(agent.snapshot().some((entry) => entry.label === 'Inside')).toBe(true)
   })
 
+  it('should give allow the elements a step touches', async () => {
+    const root = document.createElement('div')
+    const plain = document.createElement('button')
+    const ok = document.createElement('button')
+
+    plain.textContent = 'Plain'
+    ok.textContent = 'Allowed'
+    ok.setAttribute('data-press-ok', '')
+    root.append(plain, ok)
+
+    const seen: (Element | undefined)[][] = []
+    const agent = createAgent({
+      allow: (step) => {
+        seen.push(step.els ?? [])
+
+        return step.els?.[1] === ok
+      },
+    })
+
+    register({ name: 'demo', el: () => root, actions: {} })
+
+    const ref = find(agent.snapshot(), 'demo').ref
+    const refused = await agent.act({ steps: [{ ref, action: 'press', args: ['Plain'] }] })
+
+    expect(refused.ok).toBe(false)
+    expect(seen[0]).toEqual([root, plain])
+
+    const ran = await agent.act({ steps: [{ ref, action: 'press', args: ['Allowed'] }] })
+
+    expect(ran.ok).toBe(true)
+    expect(seen[1]).toEqual([root, ok])
+  })
+
   it('should name a button without the text a screen reader skips', () => {
     const root = document.createElement('div')
     const button = document.createElement('button')

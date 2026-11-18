@@ -72,7 +72,7 @@ export const valueText = (value: unknown) => {
 
 // What a button is called: its accessible name first, so an icon-only button that carries
 // aria-label is still pressable by the word a person hears.
-export const nameOf = (el: Element) => accessibleName(el) ?? textOf(el)
+export const nameOf = (el: Element) => accessibleName(el, 'button') ?? textOf(el)
 
 export const messageOf = (error: unknown) =>
   error instanceof Error ? error.message : String(error)
