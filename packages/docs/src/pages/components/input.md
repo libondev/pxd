@@ -159,6 +159,7 @@ const value = ref('')
 | align | `'left' \| 'center' \| 'right'` | `left` | Horizontal text alignment inside the field |
 | readonly | `boolean` | - | Native `readonly` attribute, the value stays selectable |
 | disabled | `boolean` | - | Native `disabled` attribute, blocks editing and focus |
+| required | `boolean` | - | Native `required` attribute, the browser asks for a value before the form submits |
 | password | `boolean` | - | Mask the value and add a button to reveal it |
 | autofocus | `boolean` | - | Focus the input as soon as it is mounted |
 | input-type | `string` | - | Native `type` attribute, when set it wins over `password` masking |

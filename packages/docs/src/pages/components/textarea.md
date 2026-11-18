@@ -87,6 +87,7 @@ const outsideValue = ref('Hello')
 | error | `boolean \| string` | - | Show the error style, also applied when the word limit is exceeded |
 | readonly | `boolean` | - | Native `readonly` attribute, the value stays selectable |
 | disabled | `boolean` | - | Native `disabled` attribute, blocks editing and focus |
+| required | `boolean` | - | Native `required` attribute, the browser asks for a value before the form submits |
 | autofocus | `boolean` | - | Focus the field as soon as it is mounted |
 | min-length | `number \| string` | - | Native `minlength` attribute, validated by the browser |
 | max-length | `number \| string` | - | Native `maxlength`, lifted while composing and shown by the word limit |

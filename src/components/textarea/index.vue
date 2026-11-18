@@ -91,6 +91,7 @@ useAgentNode({
     value: modelValue.value ?? '',
     disabled: props.disabled ?? false,
     readonly: props.readonly ?? false,
+    ...(props.required && { required: true }),
   }),
   actions: {
     setValue: (value) => {
@@ -160,6 +161,7 @@ function onCompositionEnd(event: CompositionEvent) {
       :cols="cols"
       :readonly="readonly"
       :disabled="disabled"
+      :required="required"
       :autofocus="autofocus"
       :minlength="minLength"
       :maxlength="nativeMaxLength"

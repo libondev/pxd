@@ -9,6 +9,7 @@ export interface InputProps {
   align?: 'left' | 'center' | 'right'
   readonly?: boolean
   disabled?: boolean
+  required?: boolean
   password?: boolean
   autofocus?: boolean
   inputType?: string

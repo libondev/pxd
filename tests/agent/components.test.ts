@@ -128,6 +128,25 @@ describe('agent components', () => {
     expect(change?.[1]).toMatchObject({ source: 'agent' })
   })
 
+  it('should report a field as required, and only a required one', () => {
+    track(
+      mount(Input, { props: { modelValue: '', required: true }, attrs: { 'aria-label': 'Email' } }),
+    )
+    track(mount(Input, { props: { modelValue: '' }, attrs: { 'aria-label': 'Nickname' } }))
+    track(
+      mount(Textarea, {
+        props: { modelValue: '', required: true },
+        attrs: { 'aria-label': 'Notes' },
+      }),
+    )
+
+    const found = createAgent().snapshot()
+
+    expect(find(found, 'textarea')).toMatchObject({ label: 'Notes', required: true })
+    expect(found.find((entry) => entry.label === 'Email')).toMatchObject({ required: true })
+    expect(found.find((entry) => entry.label === 'Nickname')?.required).toBeUndefined()
+  })
+
   it('should clamp what a slider is set to', async () => {
     track(mount(Slider, { attrs: { 'aria-label': 'Volume' } }))
     const agent = createAgent()
@@ -1255,7 +1274,14 @@ describe('agent components', () => {
 
     const closed = find(agent.snapshot(), 'command-menu')
 
-    expect(closed).toMatchObject({ open: false, actions: ['setOpen', 'setQuery'] })
+    expect(closed).toMatchObject({
+      open: false,
+      actions: ['setOpen', 'setQuery'],
+      items: [
+        { label: 'Edit', value: 'edit' },
+        { label: 'Delete', value: 'delete' },
+      ],
+    })
 
     const opened = await agent.act({
       steps: [{ ref: closed.ref, action: 'setOpen', args: [true] }],
@@ -1263,6 +1289,15 @@ describe('agent components', () => {
 
     expect(opened.ok).toBe(true)
     expect(bound.value).toBe(true)
+
+    // Once its list is on the page, the list is the one that reports the commands.
+    expect(find(agent.snapshot(), 'command-menu').items).toBeUndefined()
+    expect(find(agent.snapshot(), 'list')).toMatchObject({
+      items: [
+        { label: 'Edit', value: 'edit' },
+        { label: 'Delete', value: 'delete' },
+      ],
+    })
 
     const filtered = await agent.act({
       steps: [{ ref: closed.ref, action: 'setQuery', args: ['edi'] }],
@@ -1505,6 +1540,35 @@ describe('agent components', () => {
 
     expect(result.ok).toBe(true)
     expect(value.value).toEqual(['ham'])
+  })
+
+  it('should set a list of one when a multiple group takes a single value', async () => {
+    const value = ref<(string | number | boolean)[]>([])
+
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(CheckboxGroup, {
+              modelValue: value.value,
+              'aria-label': 'Counts',
+              options: [
+                { label: 'One', value: 1 },
+                { label: 'Two', value: 2 },
+              ],
+              'onUpdate:model-value': (next: unknown) => {
+                value.value = next as (string | number | boolean)[]
+              },
+            }),
+        }),
+      ),
+    )
+    const agent = createAgent()
+
+    const result = await agent.act({ steps: [{ ref: 'Counts', action: 'setValue', args: [2] }] })
+
+    expect(result.ok).toBe(true)
+    expect(value.value).toEqual([2])
   })
 
   it('should pick a value in a switch', async () => {

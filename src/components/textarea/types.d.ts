@@ -8,6 +8,7 @@ export interface TextareaProps {
   error?: boolean | string
   readonly?: boolean
   disabled?: boolean
+  required?: boolean
   autofocus?: boolean
   minLength?: number | string
   maxLength?: number | string

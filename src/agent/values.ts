@@ -262,7 +262,7 @@ export function stepArgs(
 
   return {
     args: [
-      Array.isArray(current) && typeof first === 'string' ? [found.value] : found.value,
+      Array.isArray(current) && !Array.isArray(first) ? [found.value] : found.value,
       ...args.slice(1),
     ],
   }

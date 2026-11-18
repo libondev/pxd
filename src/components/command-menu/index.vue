@@ -60,7 +60,8 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
 
 useAgentNode({
   name: 'command-menu',
-  items: () => optionItems(listOptions.value),
+  // The list inside reports them while it is on the page, and a step reaches it there.
+  items: () => (listRef.value ? [] : optionItems(listOptions.value)),
   state: () => ({ open: modelValue.value, query: filterKeyword.value }),
   pending: () => pending.value,
   actions: {

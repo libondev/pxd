@@ -3,6 +3,19 @@ import { describe, expect, it } from 'vite-plus/test'
 import Textarea from '../../src/components/textarea/index.vue'
 
 describe('textarea', () => {
+  it('should pass required to the native field', () => {
+    const wrapper = mount(Textarea, {
+      props: {
+        modelValue: '',
+        required: true,
+      },
+    })
+
+    expect(wrapper.find('textarea').attributes('required')).toBeDefined()
+
+    wrapper.unmount()
+  })
+
   it('renders properly', async () => {
     const wrapper = mount(Textarea, {
       props: {

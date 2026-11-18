@@ -106,6 +106,7 @@ useAgentNode({
     value: modelValue.value ?? '',
     disabled: props.disabled ?? false,
     readonly: props.readonly ?? false,
+    ...(props.required && { required: true }),
     placeholder: props.placeholder,
   }),
   actions: {
@@ -275,6 +276,7 @@ defineExpose({
       :value="modelValue"
       :readonly="readonly"
       :disabled="disabled"
+      :required="required"
       :inputmode="inputMode"
       :minlength="minLength"
       :maxlength="nativeMaxLength"

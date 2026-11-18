@@ -338,9 +338,11 @@ Three attributes on your own elements decide what an agent may do alone:
 
 | Attribute | Effect |
 | --- | --- |
-| `data-agent-confirm="Deletes the project"` | A step on it, or inside it, is asked about first. Write the sentence for the person who will be asked. |
+| `data-agent-confirm="Deletes the project"` | A step on it, and a `press` on a button inside it, is asked about first. Write the sentence for the person who will be asked. |
 | `data-agent-secret` | Its value reads as `[redacted]` — in a snapshot, in a `subscribe` change and in an `act` result — and it reports no `label`, `row`, `items` or `buttons`, which can be as revealing as the value. It can still be set. A password field, `autocomplete="one-time-code"` or a `cc-*` field is secret without the attribute. |
 | `data-agent-hidden` | The region stays out of `snapshot`, `act` and `query`, as if it were not on the page — including a step that names a component by its `ref`. A hidden button cannot be pressed either. |
+
+A mark on a component covers every step on that component — `setValue`, `setOpen`, and a press on its own button. A mark on one of its choices is not read: choices come from the component's data, so they have no element to carry a mark. Put the mark on the component, or on a wrapper around it, to gate the whole set.
 
 A `data-agent-source` attribute, on a component or an element around it, puts its location in the snapshot, like `src/pages/settings.vue:24`, so a model can say where a control is written. A misspelled `data-agent-*` name warns in development and does nothing.
 

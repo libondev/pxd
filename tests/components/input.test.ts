@@ -27,6 +27,19 @@ describe('input', () => {
     wrapper.unmount()
   })
 
+  it('should pass required to the native field', () => {
+    const wrapper = mount(Input, {
+      props: {
+        modelValue: '',
+        required: true,
+      },
+    })
+
+    expect(wrapper.find('input').attributes('required')).toBeDefined()
+
+    wrapper.unmount()
+  })
+
   it('should emit update:model-value', async () => {
     const wrapper = mount(Input, {
       props: {
