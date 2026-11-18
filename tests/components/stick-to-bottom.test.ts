@@ -61,7 +61,7 @@ describe('PStickToBottom', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-stick-to-bottom').exists()).toBe(true)
+    expect(wrapper.find('.pxd-stick-to-bottom--wrapper').exists()).toBe(true)
     expect(wrapper.find('.pxd-stick-to-bottom--content .item').exists()).toBe(true)
   })
 
@@ -70,7 +70,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div>content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { scrollTo } = patchScrollMetrics(container, {
       scrollHeight: 200,
       clientHeight: 100,
@@ -105,7 +105,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div>content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     patchScrollMetrics(container, {
       scrollHeight: 400,
       clientHeight: 100,
@@ -143,7 +143,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div>content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { metrics } = patchScrollMetrics(container, {
       scrollHeight: 1920,
       clientHeight: 800,
@@ -176,7 +176,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div class="panel">content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { metrics } = patchScrollMetrics(container, {
       scrollHeight: 200,
       clientHeight: 100,
@@ -219,7 +219,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div>content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { metrics } = patchScrollMetrics(container, {
       scrollHeight: 200,
       clientHeight: 100,
@@ -250,7 +250,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div>content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { metrics } = patchScrollMetrics(container, {
       scrollHeight: 200,
       clientHeight: 100,
@@ -285,7 +285,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div>content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { metrics } = patchScrollMetrics(container, {
       scrollHeight: 200,
       clientHeight: 100,
@@ -307,7 +307,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div>content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     patchScrollMetrics(container, {
       scrollHeight: 400,
       clientHeight: 100,
@@ -341,7 +341,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div>content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     patchScrollMetrics(container, {
       scrollHeight: 400,
       clientHeight: 100,
@@ -390,8 +390,8 @@ describe('PStickToBottom', () => {
       slots: { default: '<div>content</div>' },
     })
 
-    const root = wrapper.find('.pxd-stick-to-bottom--root')
-    const scroller = wrapper.find('.pxd-stick-to-bottom')
+    const root = wrapper.find('.pxd-stick-to-bottom')
+    const scroller = wrapper.find('.pxd-stick-to-bottom--wrapper')
 
     expect(root.classes()).toContain('outer-class')
     expect(scroller.classes()).toContain('inner-class')
@@ -408,7 +408,7 @@ describe('PStickToBottom', () => {
       },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom')
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper')
     const action = wrapper.find('.pxd-stick-to-bottom--action')
 
     expect(container.element.contains(action.element)).toBe(false)
@@ -423,7 +423,7 @@ describe('PStickToBottom', () => {
     })
 
     const vm = wrapper.vm as unknown as { containerRef?: HTMLElement }
-    expect(vm.containerRef).toBe(wrapper.find('.pxd-stick-to-bottom').element)
+    expect(vm.containerRef).toBe(wrapper.find('.pxd-stick-to-bottom--wrapper').element)
   })
 
   it('does not render a fader by default', () => {
@@ -443,7 +443,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div>content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     await nextTick()
 
     patchScrollMetrics(container, {
@@ -495,7 +495,7 @@ describe('PStickToBottom', () => {
       },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     patchScrollMetrics(container, {
       scrollHeight: 200,
       clientHeight: 100,
@@ -530,7 +530,7 @@ describe('PStickToBottom', () => {
       },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { metrics } = patchScrollMetrics(container, {
       scrollHeight: 200,
       clientHeight: 100,
@@ -554,7 +554,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div class="item">content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { metrics } = patchScrollMetrics(container, {
       scrollHeight: 1920,
       clientHeight: 800,
@@ -589,7 +589,7 @@ describe('PStickToBottom', () => {
       slots: { default: '<div class="item">content</div>' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { metrics } = patchScrollMetrics(container, {
       scrollHeight: 2000,
       clientHeight: 800,

@@ -27,7 +27,7 @@ const actionRef = shallowRef<HTMLElement>()
 
 const wrapperClasses = computed(() =>
   cn(
-    'pxd-stick-to-bottom min-h-0 size-full max-h-inherit max-w-full overflow-y-auto [overflow-anchor:none]',
+    'pxd-stick-to-bottom--wrapper min-h-0 size-full max-h-inherit max-w-full overflow-y-auto [overflow-anchor:none]',
     props.wrapperClass,
   ),
 )
@@ -72,7 +72,7 @@ defineExpose({
 <template>
   <div
     data-stick-to-bottom
-    class="pxd-stick-to-bottom--root min-h-0 relative w-full max-w-full"
+    class="pxd-stick-to-bottom min-h-0 relative w-full max-w-full"
     v-bind="$attrs"
   >
     <div ref="containerRef" :class="wrapperClasses">

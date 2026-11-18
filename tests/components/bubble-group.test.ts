@@ -101,7 +101,7 @@ describe('bubble-group', () => {
       props: { data: [{ id: 1 }, { id: 2 }], dataKey: 'id' },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { metrics, scrollTo } = patchScrollMetrics(container, {
       scrollHeight: 200,
       clientHeight: 100,
@@ -134,7 +134,7 @@ describe('bubble-group', () => {
       },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { scrollTo } = patchScrollMetrics(container, {
       scrollHeight: 1920,
       clientHeight: 800,
@@ -157,7 +157,7 @@ describe('bubble-group', () => {
       },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     patchScrollMetrics(container, {
       scrollHeight: 1920,
       clientHeight: 800,
@@ -185,7 +185,7 @@ describe('bubble-group', () => {
       },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     patchScrollMetrics(container, {
       scrollHeight: 1000,
       clientHeight: 100,
@@ -215,7 +215,7 @@ describe('bubble-group', () => {
       },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { scrollTo } = patchScrollMetrics(container, {
       scrollHeight: 300,
       clientHeight: 100,
@@ -295,7 +295,7 @@ describe('bubble-group', () => {
       props: { data: [{ id: 1 }, { id: 2 }, { id: 3 }], dataKey: 'id', virtual: true },
     })
 
-    const container = wrapper.find('.pxd-stick-to-bottom').element as HTMLElement
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
     const { scrollTo } = patchScrollMetrics(container, {
       scrollHeight: 500,
       clientHeight: 100,
