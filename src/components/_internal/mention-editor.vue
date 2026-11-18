@@ -7,7 +7,7 @@ import { changeDetailsFor } from '../../composables/_internal/use-change-details
 import { useMentionEditor } from '../../composables/_internal/use-mention-editor.js'
 import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { DEFAULT_TRIGGER } from '../../utils/_internal/mention-html.js'
+import { DEFAULT_TRIGGER } from '../../utils/mention-html.js'
 
 defineOptions({
   name: 'PMentionEditor',

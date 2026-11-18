@@ -1,16 +1,14 @@
 import { describe, expect, it } from 'vite-plus/test'
 import {
   createMentionElement,
+  escapePlainTextAsHtml,
   getMentionLabel,
+  mentionHtmlToText,
+  parseMentionHtml,
   queryMentionElements,
   sanitizeMentionClipboardHtml,
   serializeMentionHtml,
   setMentionEditorContent,
-} from '../../src/utils/_internal/mention-html'
-import {
-  escapePlainTextAsHtml,
-  mentionHtmlToText,
-  parseMentionHtml,
 } from '../../src/utils/mention-html'
 
 const ZWSP = '\u200B'

@@ -16,7 +16,7 @@ import {
   serializeMentionHtml,
   setMentionEditorContent,
   trimMentionEdgeBreaks,
-} from '../../utils/_internal/mention-html.js'
+} from '../../utils/mention-html.js'
 
 export interface MentionChipRef {
   key: string

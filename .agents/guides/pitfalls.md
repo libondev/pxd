@@ -392,7 +392,7 @@ a comment beside the fix.
 
 - **Symptom**: A mention chip inserted `chip + U+200B + ' '`, and the space was gone the moment the user typed the next character — the value came out as `@Alicex`. Backspace then needed three presses to delete the chip: the space, the invisible anchor, and only then the chip.
 - **Cause**: Chrome normalizes a trailing collapsible space out of the text node as part of the next insertion, so the character lands *before* it and the space disappears. Verified over CDP against a bare contenteditable: `"\u200B "` + typing `x` gives `"\u200Bx"`. The anchor then sits between the caret and the chip, which is why each invisible character costs its own key press.
-- **Fix**: Use `\u00A0` for a separator that must survive typing and normalize it back to a space when serializing (`CHIP_SEPARATOR` in `src/utils/_internal/mention-html.ts`), and treat the chip's `U+200B` + separator prefix as one unit when deciding whether a deletion targets the chip.
+- **Fix**: Use `\u00A0` for a separator that must survive typing and normalize it back to a space when serializing (`CHIP_SEPARATOR` in `src/utils/mention-html.ts`), and treat the chip's `U+200B` + separator prefix as one unit when deciding whether a deletion targets the chip.
 - **Related**: the same class of problem hits any inline token whose separator is ordinary whitespace — the DOM is not a stable place to keep it.
 
 ### A control must not write state the current view derives

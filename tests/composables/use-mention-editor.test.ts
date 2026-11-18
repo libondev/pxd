@@ -7,7 +7,7 @@ import {
   CHIP_SEPARATOR,
   DEFAULT_TRIGGER,
   queryMentionElements,
-} from '../../src/utils/_internal/mention-html'
+} from '../../src/utils/mention-html'
 import { useSetupWrapper } from '../helpers/setup'
 
 /**
