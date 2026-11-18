@@ -55,7 +55,7 @@ describe('slider', () => {
 
   it('should keep its own value without modelValue', async () => {
     const wrapper = mount(Slider, { props: { defaultValue: 20 } })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -128,7 +128,7 @@ describe('slider', () => {
 
   it('should emit change once with the final pointer position', async () => {
     const wrapper = mount(Slider)
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -149,7 +149,7 @@ describe('slider', () => {
     const wrapper = mount(Slider, {
       props: { min: 5, max: 105, step: 10, modelValue: 55 },
     })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -165,7 +165,7 @@ describe('slider', () => {
     const wrapper = mount(Slider, {
       props: { min: 0, max: 100, step: [10, 30, 60, 100], modelValue: 10 },
     })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -181,7 +181,7 @@ describe('slider', () => {
     const wrapper = mount(Slider, {
       props: { min: 0, max: 100, step: [10, 30, 60, 100], modelValue: 10 },
     })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -197,7 +197,7 @@ describe('slider', () => {
     const wrapper = mount(Slider, {
       props: { min: 0, max: 100, step: [80, 0, 20, 150, -10] },
     })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -212,7 +212,7 @@ describe('slider', () => {
     const wrapper = mount(Slider, {
       props: { min: 20, max: 100, step: [], modelValue: 20 },
     })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -439,7 +439,7 @@ describe('slider', () => {
     const wrapper = mount(Slider, {
       props: { min: 5, max: 105, step: 10, modelValue: 5 },
     })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -453,7 +453,7 @@ describe('slider', () => {
 
   it('should keep the label inside the slider when it is clamped', async () => {
     const wrapper = mount(Slider, { props: { modelValue: 50 } })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
     const label = wrapper.find('.pxd-slider--label')
 
     stubWidths([
@@ -472,7 +472,7 @@ describe('slider', () => {
 
   it('should re-clamp the label when the thumb is hovered', async () => {
     const wrapper = mount(Slider, { props: { modelValue: 100 } })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
     const thumb = wrapper.find('.pxd-slider--thumb')
     const label = wrapper.find('.pxd-slider--label')
 
@@ -493,7 +493,7 @@ describe('slider', () => {
 
   it('should clamp each label of a range slider to its own side', async () => {
     const wrapper = mount(Slider, { props: { range: true, modelValue: [0, 100] } })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
     const labels = wrapper.findAll('.pxd-slider--label')
 
     stubWidths([
@@ -542,7 +542,7 @@ describe('slider', () => {
 
   it('should ignore pointer and keyboard input when disabled', async () => {
     const wrapper = mount(Slider, { props: { disabled: true, modelValue: 50 } })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
     const thumb = wrapper.find('.pxd-slider--thumb')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
@@ -560,7 +560,7 @@ describe('slider', () => {
     const wrapper = mount(Slider, {
       props: { range: true, min: 0, max: 100, modelValue: [20, 80] },
     })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -575,7 +575,7 @@ describe('slider', () => {
 
   it('should clamp pointer positions outside the track', async () => {
     const wrapper = mount(Slider, { props: { modelValue: 50 } })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 50, width: 100 }) as DOMRect
 
@@ -591,7 +591,7 @@ describe('slider', () => {
 
   it('should keep the raw value when the numeric step is zero or negative', async () => {
     const wrapper = mount(Slider, { props: { min: 0, max: 100, step: 0, modelValue: 50 } })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -604,7 +604,7 @@ describe('slider', () => {
 
   it('should emit change with the final value when a drag returns to its starting point', async () => {
     const wrapper = mount(Slider, { props: { defaultValue: 50 } })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -619,7 +619,7 @@ describe('slider', () => {
 
   it('should not emit change when the drag is cancelled', async () => {
     const wrapper = mount(Slider, { props: { defaultValue: 50 } })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
 
     slider.element.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect
 
@@ -634,7 +634,7 @@ describe('slider', () => {
 
   it('should not shift the label when it is wider than the slider', async () => {
     const wrapper = mount(Slider, { props: { modelValue: 50 } })
-    const slider = wrapper.find('.pxd-slider')
+    const slider = wrapper.find('.pxd-slider--wrapper')
     const thumb = wrapper.find('.pxd-slider--thumb')
     const label = wrapper.find('.pxd-slider--label')
 
