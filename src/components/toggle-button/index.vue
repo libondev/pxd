@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ToggleButtonProps, ToggleButtonEmits } from './types'
 import { computed } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
@@ -93,6 +94,25 @@ const { attrs, classes } = useTailwindVariant(
     }),
   },
 )
+
+if (!toggleButtonGroupContext) {
+  useAgentNode({
+    name: 'toggle-button',
+    state: () => ({
+      value: modelValue.value,
+      checked: isChecked.value,
+      disabled: isDisabled.value,
+    }),
+    actions: {
+      setValue: (value) => {
+        change(value, { reason: 'api' })
+      },
+      toggle: () => {
+        change(!isChecked.value, { reason: 'api' })
+      },
+    },
+  })
+}
 
 function onToggleClick() {
   const newCheckedState = !isChecked.value

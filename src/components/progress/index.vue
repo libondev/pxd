@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ProgressProps } from './types'
 import { computed } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { VARIANT_COLORS } from '../../constants/variant-colors.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -75,6 +76,17 @@ const { classes } = useTailwindVariant(
     selection: () => ({ size: props.size || configProvider.size }),
   },
 )
+
+useAgentNode({
+  name: 'progress',
+  state: () => ({
+    value: progress.value,
+    min: props.min,
+    max: props.max,
+    percentage: Math.round(percentage.value),
+  }),
+  actions: {},
+})
 </script>
 
 <template>

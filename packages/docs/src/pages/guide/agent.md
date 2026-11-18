@@ -385,10 +385,13 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `collapse` | `setOpen`, `toggle` |
 | `color-selector` | `setValue` |
 | `command-menu` | `setOpen`, `setQuery` |
+| `context-usage` | — |
 | `countdown` | `reset` |
 | `date-picker` | `setValue`, `setOpen` |
 | `drawer` | `setOpen` |
 | `effort-slider` | `setValue` |
+| `gauge` | — |
+| `image-preview` | `setOpen`, `setValue`, `zoomIn`, `zoomOut`, `rotate`, `reset` |
 | `input` | `setValue`, `focus`, `blur`, `select` |
 | `list` | `setValue`, `focus`, `dispatch` |
 | `mention` | `setValue`, `insertText`, `insertMention`, `replaceQuery`, `focus`, `blur`, `clear` |
@@ -396,37 +399,56 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `modal` | `setOpen` |
 | `more-button` | `setValue`, `toggle` |
 | `number-input` | `setValue`, `increment`, `decrement` |
+| `page-number` | `setValue`, `setPageSize` |
 | `pagination` | — |
 | `pin-input` | `setValue` |
 | `popover` | `setOpen`, `toggle` |
+| `progress` | — |
 | `questionnaire` | `answer`, `answerText`, `next`, `previous`, `skip`, `skipAll`, `submit` |
 | `radio-group` | `setValue` |
 | `rating` | `setValue` |
 | `reactions` | `pick`, `toggle` |
 | `resizable` | `setValue` |
 | `scroll-progress` | — |
+| `search-input` | `setValue`, `search`, `focus`, `blur`, `select` |
 | `select` | `setValue`, `setOpen`, `toggle` |
 | `slider` | `setValue` |
 | `split-button` | `setValue` |
 | `steps` | `setValue` |
 | `stick-to-bottom` | `scrollToBottom` |
+| `swipe-cell` | `open`, `close` |
 | `switch` | `setValue` |
 | `tabs` | `setValue` |
 | `textarea` | `setValue`, `focus`, `blur` |
 | `time-picker` | `setValue` |
+| `toc` | `setValue` |
 | `todo-list` | `start`, `complete`, `cancel`, `reset` |
 | `toggle` | `setValue` |
+| `toggle-button` | `setValue`, `toggle` |
 | `tour` | `next`, `previous`, `goTo`, `close` |
 | `tree` | `expandKey`, `collapseKey`, `expandAll`, `collapseAll`, `setActiveKey`, `scrollToKey`, `focus` |
 | `toggle-button-group` | `setValue` |
+| `virtual-list` | `scrollToIndex`, `scrollToOffset`, `scrollBy`, `retry` |
 
 A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-button-group` — holds no value of its own: `setValue` announces the change and asks for the update, and the value follows only when the app's `v-model` accepts it.
 
 `steps` moves only where the app marks it `clickable`, the same as a click. Its `value` is the current step's index.
 
-`scroll-progress` reports its percentage and offers no action: a reading some other component's scroll produces, listed so an agent can see it. `button` is the same shape the other way round — no action of its own, because `press` already clicks it. `pagination` is the third: it holds no value, and its Prev and Next links are pressed by their text.
+`scroll-progress` reports its percentage and offers no action: a reading some other component's scroll produces, listed so an agent can see it. `progress`, `gauge` and `context-usage` are the same: they show a reading and no step sets it. `button` is the same shape the other way round — no action of its own, because `press` already clicks it. `pagination` is the third: it holds no value, and its Prev and Next links are pressed by their text. `page-number` reports the page it is on, how many there are and the size it lists, so a step can take a page directly.
 
 `collapse` reveals its content: while it is closed, the controls inside it stay out of the snapshot, and a step that names one is told which closed section to open first.
+
+`search-input` carries the name a person typed and the call that submits it: `setValue` writes the box, and `search` runs what Enter runs on a page whose only way to send it is the key.
+
+`virtual-list` reports the rows its data holds rather than the few the window draws, and `scrollToIndex` reaches one that is not drawn yet.
+
+`image-preview` renders nothing while it is closed, like a dialog: `setOpen` opens it, and the images it knows are the `items` that `setValue` picks from.
+
+`toc` is `closed`: `setValue` takes an entry's label or id, refuses anything else with the ones it has, and scrolls there.
+
+`swipe-cell` reports the side it has open, or `false` when it is shut; `open` and `close` move it as a drag would.
+
+`toggle-button` is reported only on its own. Inside a `toggle-button-group` the group holds the value, so the buttons stay out of the snapshot.
 
 `questionnaire` is named by the current question's header, with the question itself on its `row`, so an agent can find it by either. Its `items` are the current question's options, and `answer` takes one by its label — a single choice replaces the answer and moves on, a multiple one toggles and stays. `answerText` types the freeform answer, and `submit` reports the answers through `submit`, so put `data-agent-confirm` on the questionnaire if sending them needs a person.
 

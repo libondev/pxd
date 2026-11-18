@@ -4,6 +4,7 @@ import type { ListModelValue, ListOptions } from '../list/types'
 import type { PageNumberEmits, PageNumberProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, ref, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { BASIC_HEIGHTS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isCompositionKeydown } from '../../utils/event.js'
@@ -80,6 +81,36 @@ const pagesBtnSize = computed(() => {
   }[inheritSize] as ComponentSize
 })
 const pageItemSizeClass = computed(() => BASIC_HEIGHTS[pagesBtnSize.value])
+
+useAgentNode({
+  name: 'page-number',
+  state: () => ({
+    value: props.modelValue,
+    pageCount: pageCount.value,
+    pageSize: internalPageSize.value,
+    total: props.total,
+    disabled: props.disabled,
+  }),
+  actions: {
+    setValue: (page) => setPage(clampPage(Number(page))),
+    setPageSize: (size) => {
+      const next = Number(size)
+
+      if (!props.pageSizeOptions.includes(next)) {
+        throw new Error(
+          `page-number takes one of ${props.pageSizeOptions.join(', ')}, not ${next}.`,
+        )
+      }
+
+      internalPageSize.value = next
+      onPageSizeChange(next)
+    },
+  },
+})
+
+function clampPage(page: number) {
+  return Math.min(Math.max(Math.round(page), 1), pageCount.value)
+}
 
 function setPage(page: number) {
   if (!props.disabled && page !== props.modelValue) {

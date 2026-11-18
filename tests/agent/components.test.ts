@@ -13,10 +13,13 @@ import CheckboxGroup from '../../src/components/checkbox-group/index.vue'
 import Choicebox from '../../src/components/choicebox/index.vue'
 import ColorSelector from '../../src/components/color-selector/index.vue'
 import CommandMenu from '../../src/components/command-menu/index.vue'
+import ContextUsage from '../../src/components/context-usage/index.vue'
 import Countdown from '../../src/components/countdown/index.vue'
 import DatePicker from '../../src/components/date-picker/index.vue'
 import Drawer from '../../src/components/drawer/index.vue'
 import EffortSlider from '../../src/components/effort-slider/index.vue'
+import Gauge from '../../src/components/gauge/index.vue'
+import ImagePreview from '../../src/components/image-preview/index.vue'
 import Input from '../../src/components/input/index.vue'
 import List from '../../src/components/list/index.vue'
 import Mention from '../../src/components/mention/index.vue'
@@ -24,26 +27,33 @@ import Menu from '../../src/components/menu/index.vue'
 import Modal from '../../src/components/modal/index.vue'
 import MoreButton from '../../src/components/more-button/index.vue'
 import NumberInput from '../../src/components/number-input/index.vue'
+import PageNumber from '../../src/components/page-number/index.vue'
 import PinInput from '../../src/components/pin-input/index.vue'
 import Popover from '../../src/components/popover/index.vue'
+import Progress from '../../src/components/progress/index.vue'
 import RadioGroup from '../../src/components/radio-group/index.vue'
 import Rating from '../../src/components/rating/index.vue'
 import Reactions from '../../src/components/reactions/index.vue'
 import Resizable from '../../src/components/resizable/index.vue'
 import ScrollProgress from '../../src/components/scroll-progress/index.vue'
+import SearchInput from '../../src/components/search-input/index.vue'
 import Select from '../../src/components/select/index.vue'
 import Slider from '../../src/components/slider/index.vue'
 import SplitButton from '../../src/components/split-button/index.vue'
 import Steps from '../../src/components/steps/index.vue'
 import StickToBottom from '../../src/components/stick-to-bottom/index.vue'
+import SwipeCell from '../../src/components/swipe-cell/index.vue'
 import Switch from '../../src/components/switch/index.vue'
 import Textarea from '../../src/components/textarea/index.vue'
 import TimePicker from '../../src/components/time-picker/index.vue'
+import Toc from '../../src/components/toc/index.vue'
 import TodoList from '../../src/components/todo-list/index.vue'
 import ToggleButtonGroup from '../../src/components/toggle-button-group/index.vue'
+import ToggleButton from '../../src/components/toggle-button/index.vue'
 import Toggle from '../../src/components/toggle/index.vue'
 import Tour from '../../src/components/tour/index.vue'
 import Tree from '../../src/components/tree/index.vue'
+import VirtualList from '../../src/components/virtual-list/index.vue'
 
 const mounted: { unmount: () => void }[] = []
 
@@ -1604,5 +1614,312 @@ describe('agent components', () => {
     expect(result.ok).toBe(false)
     expect(result.error?.message).toContain('no button matching "Save"')
     expect(expanded.value).toBe(false)
+  })
+})
+
+describe('agent readings and pages', () => {
+  it('should report a progress bar with nothing to call', () => {
+    track(mount(Progress, { props: { modelValue: 30 }, attrs: { 'aria-label': 'Upload' } }))
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'progress')).toMatchObject({
+      label: 'Upload',
+      value: 30,
+      min: 0,
+      max: 100,
+      percentage: 30,
+      actions: [],
+    })
+  })
+
+  it('should report a gauge as a reading', () => {
+    track(mount(Gauge, { props: { modelValue: 45 }, attrs: { 'aria-label': 'CPU' } }))
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'gauge')).toMatchObject({
+      label: 'CPU',
+      value: 45,
+      indeterminate: false,
+      actions: [],
+    })
+  })
+
+  it('should report the segments a context meter is made of', () => {
+    track(
+      mount(ContextUsage, {
+        props: {
+          total: 200,
+          data: [
+            { name: 'Code', tokens: 50 },
+            { name: 'Docs', tokens: 25 },
+          ],
+        },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'context-usage')).toMatchObject({
+      percentage: 38,
+      used: 75,
+      total: 200,
+      segments: [
+        { name: 'Code', tokens: 50, percentage: 25 },
+        { name: 'Docs', tokens: 25, percentage: 12.5 },
+      ],
+      actions: [],
+    })
+  })
+
+  it('should list the rows a virtual list holds and retry a failed load', async () => {
+    const wrapper = track(
+      mount(VirtualList, {
+        props: {
+          items: [{ id: 'a' }, { id: 'b' }],
+          status: 'error',
+        },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'virtual-list')).toMatchObject({
+      count: 2,
+      status: 'error',
+      items: [{ value: 'a' }, { value: 'b' }],
+      actions: ['scrollToIndex', 'scrollToOffset', 'scrollBy', 'retry'],
+    })
+
+    const result = await agent.act({
+      steps: [{ ref: 'virtual-list', action: 'retry' }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(wrapper.emitted('retry')).toHaveLength(1)
+  })
+
+  it('should scroll a table of contents to an entry by its label', async () => {
+    const scrolled: number[] = []
+    const source = {
+      getOffsetForIndex: () => 0,
+      getScrollOffset: () => 0,
+      getMaxScrollOffset: () => 100,
+      scrollToIndex: (index: number) => {
+        scrolled.push(index)
+      },
+    }
+
+    track(
+      mount(Toc, {
+        props: {
+          data: [
+            { id: 'one', label: 'One', level: 2 },
+            { id: 'two', label: 'Two', level: 2 },
+          ],
+          source,
+        },
+        attrs: { 'aria-label': 'Outline' },
+      }),
+    )
+    const agent = createAgent()
+    const entry = find(agent.snapshot(), 'toc')
+
+    expect(entry).toMatchObject({
+      label: 'Outline',
+      value: 'two',
+      items: [
+        { label: 'One', value: 'one' },
+        { label: 'Two', value: 'two', selected: true },
+      ],
+    })
+
+    const result = await agent.act({
+      steps: [{ ref: 'Outline', action: 'setValue', args: ['One'] }],
+    })
+
+    expect(result.ok).toBe(true)
+    expect(scrolled).toEqual([0])
+
+    const refused = await agent.act({
+      steps: [{ ref: 'Outline', action: 'setValue', args: ['Nope'] }],
+    })
+
+    expect(refused.ok).toBe(false)
+    expect(refused.error?.message).toContain('No item "Nope"')
+  })
+
+  it('should open and shut a swipe cell as a drag would', async () => {
+    track(
+      mount(SwipeCell, {
+        slots: {
+          default: 'Row',
+          suffix: () => h('button', 'Delete'),
+        },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'swipe-cell')).toMatchObject({ value: false })
+
+    const opened = await agent.act({
+      steps: [{ ref: 'swipe-cell', action: 'open', args: ['suffix'] }],
+    })
+
+    expect(opened.ok).toBe(true)
+    expect(find(agent.snapshot(), 'swipe-cell')).toMatchObject({ value: 'suffix' })
+
+    await agent.act({ steps: [{ ref: 'swipe-cell', action: 'close' }] })
+
+    expect(find(agent.snapshot(), 'swipe-cell')).toMatchObject({ value: false })
+
+    const refused = await agent.act({
+      steps: [{ ref: 'swipe-cell', action: 'open', args: ['middle'] }],
+    })
+
+    expect(refused.ok).toBe(false)
+    expect(refused.error?.message).toContain('No "middle" actions')
+  })
+
+  it('should open an image preview and pick the image it shows', async () => {
+    track(
+      mount(ImagePreview, {
+        props: {
+          data: [
+            { src: 'a.png', alt: 'Beach' },
+            { src: 'b.png', alt: 'Desk' },
+          ],
+        },
+      }),
+    )
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'image-preview')).toMatchObject({
+      open: false,
+      value: 0,
+      count: 2,
+      items: [
+        { label: 'Beach', value: 0, selected: true },
+        { label: 'Desk', value: 1 },
+      ],
+      actions: ['setOpen', 'setValue', 'zoomIn', 'zoomOut', 'rotate', 'reset'],
+    })
+
+    const opened = await agent.act({
+      steps: [{ ref: 'image-preview', action: 'setOpen', args: [true] }],
+    })
+
+    expect(opened.ok).toBe(true)
+    expect(find(agent.snapshot(), 'image-preview')).toMatchObject({ open: true, label: 'Beach' })
+
+    await agent.act({ steps: [{ ref: 'image-preview', action: 'setValue', args: ['Desk'] }] })
+
+    expect(find(agent.snapshot(), 'image-preview')).toMatchObject({ value: 1, label: 'Desk' })
+  })
+
+  it('should take a page number and refuse a page size it does not offer', async () => {
+    const bound = mountBound(PageNumber, { total: 100 }, 3)
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'page-number')).toMatchObject({
+      value: 3,
+      pageCount: 10,
+      pageSize: 10,
+      total: 100,
+      actions: ['setValue', 'setPageSize'],
+    })
+
+    await agent.act({ steps: [{ ref: 'page-number', action: 'setValue', args: [99] }] })
+
+    expect(bound.value).toBe(10)
+
+    await agent.act({ steps: [{ ref: 'page-number', action: 'setPageSize', args: [25] }] })
+
+    expect(find(agent.snapshot(), 'page-number')).toMatchObject({ pageSize: 25 })
+
+    const refused = await agent.act({
+      steps: [{ ref: 'page-number', action: 'setPageSize', args: [7] }],
+    })
+
+    expect(refused.ok).toBe(false)
+    expect(refused.error?.message).toContain('one of 10, 25, 50, 100')
+  })
+
+  it('should drive a toggle button that stands on its own', async () => {
+    const bound = mountBound(ToggleButton, { 'aria-label': 'Bold' }, false)
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'toggle-button')).toMatchObject({
+      label: 'Bold',
+      value: false,
+      checked: false,
+      actions: ['setValue', 'toggle'],
+    })
+
+    await agent.act({ steps: [{ ref: 'Bold', action: 'toggle' }] })
+
+    expect(bound.value).toBe(true)
+    expect(find(agent.snapshot(), 'toggle-button')).toMatchObject({ checked: true })
+  })
+
+  it('should leave the buttons of a toggle button group to the group', () => {
+    track(
+      mount(ToggleButtonGroup, {
+        props: {
+          modelValue: 'left',
+          options: [
+            { label: 'Left', value: 'left' },
+            { label: 'Right', value: 'right' },
+          ],
+        },
+      }),
+    )
+    const agent = createAgent()
+    const names = agent.snapshot().map((entry) => entry.component)
+
+    expect(names).toContain('toggle-button-group')
+    expect(names).not.toContain('toggle-button')
+  })
+
+  it('should write a search box and submit it', async () => {
+    const value = ref('')
+    const updates: unknown[] = []
+    const searched: string[] = []
+
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(SearchInput, {
+              modelValue: value.value,
+              'aria-label': 'Find',
+              'onUpdate:model-value': (next: unknown) => {
+                updates.push(next)
+                value.value = String(next)
+              },
+              onSearch: (next: string) => {
+                searched.push(next)
+              },
+            }),
+        }),
+      ),
+    )
+    const agent = createAgent()
+    const names = agent.snapshot().map((entry) => entry.component)
+
+    expect(names).not.toContain('input')
+    expect(find(agent.snapshot(), 'search-input')).toMatchObject({
+      label: 'Find',
+      value: '',
+      loading: false,
+      actions: ['setValue', 'search', 'focus', 'blur', 'select'],
+    })
+
+    await agent.act({ steps: [{ ref: 'Find', action: 'setValue', args: ['atlas'] }] })
+
+    expect(value.value).toBe('atlas')
+    expect(updates).toEqual(['atlas'])
+    expect(find(agent.snapshot(), 'search-input')).toMatchObject({ value: 'atlas' })
+
+    await agent.act({ steps: [{ ref: 'Find', action: 'search' }] })
+
+    expect(searched).toEqual(['atlas'])
   })
 })

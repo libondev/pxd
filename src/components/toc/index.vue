@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { TocEmits, TocItem, TocProps } from './types'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useMotionReduced } from '../../composables/use-motion-reduce.js'
 import { useMutationObserver } from '../../composables/use-mutation-observer.js'
@@ -116,6 +117,21 @@ const activeIndex = computed(() => {
 })
 
 const activeId = computed(() => items.value[activeIndex.value]?.id ?? null)
+
+useAgentNode({
+  name: 'toc',
+  closed: true,
+  items: () =>
+    items.value.map((item) => ({
+      label: item.label,
+      value: item.id,
+      ...(item.id === activeId.value && { selected: true }),
+    })),
+  state: () => ({ value: activeId.value }),
+  actions: {
+    setValue: (id) => scrollTo(String(id)),
+  },
+})
 
 function outlineRoot(): HTMLElement {
   return props.scrollTarget ?? document.body

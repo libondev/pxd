@@ -87,6 +87,7 @@ SearchInput extends the [Input component](/components/input): every other prop a
 | Name | Type | Description |
 | --- | --- | --- |
 | search | `(value: string) => void` | Emitted when Enter is pressed with a non-empty value while not loading. |
+| update:model-value | `(value: string) => void` | Emitted when the query changes, forwarded from `PInput`. |
 
 ## Slots
 

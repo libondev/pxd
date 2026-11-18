@@ -2,6 +2,7 @@
 import type { GaugeProps } from './types'
 import ChartActivityIcon from '@gdsicon/vue/chart-activity'
 import { computed } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getColorByThreshold, getFallbackValue } from '../../utils/helper.js'
 
@@ -96,6 +97,15 @@ const progressColors = computed(() => {
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
+
+useAgentNode({
+  name: 'gauge',
+  state: () => ({
+    value: progress.value,
+    indeterminate: props.indeterminate ?? false,
+  }),
+  actions: {},
+})
 </script>
 
 <template>

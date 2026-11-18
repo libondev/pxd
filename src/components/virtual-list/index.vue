@@ -2,7 +2,9 @@
 import type { VirtualListProps, VirtualListEmits } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed, shallowRef } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useVirtualList, type VirtualListItem } from '../../composables/use-virtual-list.js'
+import { isNil } from '../../utils/is.js'
 
 defineOptions({
   name: 'PVirtualList',
@@ -37,6 +39,28 @@ const {
   scrollToOffset,
   scrollBy,
 } = useVirtualList(containerRef, props)
+
+useAgentNode({
+  name: 'virtual-list',
+  state: () => ({
+    count: props.items.length,
+    rendered: virtualItems.value.length,
+    ...(props.status && { status: props.status }),
+  }),
+  items: () => props.items.map((item, index) => ({ value: itemKey(item, index) })),
+  actions: {
+    scrollToIndex: (index) => scrollToIndex(Number(index)),
+    scrollToOffset: (offset) => scrollToOffset(Number(offset)),
+    scrollBy: (delta) => scrollBy(Number(delta)),
+    retry: () => onRetryClick(),
+  },
+})
+
+function itemKey(item: unknown, index: number) {
+  const key = (item as Record<string, unknown> | null)?.[props.dataKey]
+
+  return isNil(key) ? index : key
+}
 
 function getItemStyle(virtualItem: VirtualListItem) {
   const y = `translateY(${virtualItem.start}px)`

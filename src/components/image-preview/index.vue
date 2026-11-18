@@ -15,6 +15,7 @@ import MagnifyingGlassPlusIcon from '@gdsicon/vue/magnifying-glass-plus'
 import RefreshCounterClockwiseIcon from '@gdsicon/vue/refresh-counter-clockwise'
 import RotateClockwiseIcon from '@gdsicon/vue/rotate-clockwise'
 import { computed, onBeforeUnmount, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useFocusTrap } from '../../composables/_internal/use-focus-trap.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isServer } from '../../utils/is.js'
@@ -98,6 +99,35 @@ const dialogStyle = computed(() => ({
 
 const configProvider = useConfigProvider()
 useFocusTrap(dialogRef)
+
+useAgentNode({
+  name: 'image-preview',
+  el: () => dialogRef.value,
+  state: () => ({
+    open: isVisible.value,
+    value: currentIndex.value,
+    count: images.value.length,
+    zoom: zoom.value,
+    rotation: rotation.value,
+  }),
+  items: () =>
+    images.value.map((image, index) => ({
+      ...(image.alt && { label: image.alt }),
+      value: index,
+      ...(index === currentIndex.value && { selected: true }),
+    })),
+  actions: {
+    setOpen: (value) => (value ? open() : close()),
+    setValue: (index) => {
+      switchTo(Number(index))
+      requestCurrent()
+    },
+    zoomIn,
+    zoomOut,
+    rotate,
+    reset,
+  },
+})
 
 function isLoader(src: ImagePreviewItem['src']): src is ImagePreviewLoader {
   return typeof src === 'function'

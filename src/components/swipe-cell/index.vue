@@ -8,6 +8,7 @@ import type {
   SwipeCellSlotState,
 } from './types'
 import { nextTick, onBeforeUnmount, onMounted, shallowReactive, shallowRef, watch } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
 import { useOutsideClick } from '../../composables/use-outside-click.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
@@ -135,6 +136,24 @@ useOutsideClick(getRootEl, {
 })
 
 useResizeObserver([prefixRef, suffixRef], measureWidths)
+
+useAgentNode({
+  name: 'swipe-cell',
+  state: () => ({ value: openedSide.value, disabled: props.disabled ?? false }),
+  actions: {
+    open: (side) => {
+      const actions =
+        side === 'prefix' ? prefixRef.value : side === 'suffix' ? suffixRef.value : null
+
+      if (!actions) {
+        throw new Error(`No "${String(side)}" actions on this swipe-cell.`)
+      }
+
+      return setOpen(side)
+    },
+    close: () => close(),
+  },
+})
 
 function getRootEl() {
   return getElement(rootRef)

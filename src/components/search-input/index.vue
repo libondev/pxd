@@ -3,6 +3,7 @@ import type { SearchInputEmits, SearchInputProps } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
 import { shallowRef } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useForwardRefExpose } from '../../composables/_internal/use-forward-ref-expose.js'
 import { isCompositionKeydown } from '../../utils/event.js'
 import PInput from '../input/index.vue'
@@ -16,6 +17,31 @@ const props = defineProps<SearchInputProps>()
 const emits = defineEmits<SearchInputEmits>()
 
 const inputRef = shallowRef<InstanceType<typeof PInput>>()
+
+useAgentNode({
+  name: 'search-input',
+  state: () => ({
+    value: props.modelValue ?? '',
+    loading: props.loading ?? false,
+    disabled: props.disabled ?? false,
+    readonly: props.readonly ?? false,
+  }),
+  actions: {
+    setValue: (value) => {
+      emits('update:model-value', value == null ? '' : String(value))
+    },
+    search: () => {
+      const value = props.modelValue == null ? '' : String(props.modelValue)
+
+      if (value && !props.loading) {
+        emits('search', value)
+      }
+    },
+    focus: () => inputRef.value?.focus(),
+    blur: () => inputRef.value?.blur(),
+    select: () => inputRef.value?.select(),
+  },
+})
 
 function onKeydown(event: KeyboardEvent) {
   if (event.key !== 'Enter' || props.loading || isCompositionKeydown(event)) {
@@ -40,7 +66,11 @@ defineExpose(useForwardRefExpose(inputRef))
     ref="inputRef"
     :default-prefix-style="false"
     v-bind="$attrs"
+    :model-value="modelValue"
+    :disabled="disabled"
+    :readonly="readonly"
     @keydown="onKeydown"
+    @update:model-value="emits('update:model-value', $event)"
   >
     <template #prefix>
       <div class="pxd-search-input--prefix-icon ps-3">

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ContextUsageProps } from './types'
 import { computed, ref } from 'vue'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 
@@ -75,6 +76,21 @@ const { classes, attrs } = useTailwindVariant(
     selection: () => ({ size: props.size || configProvider.size }),
   },
 )
+
+useAgentNode({
+  name: 'context-usage',
+  state: () => ({
+    percentage: usedPercentage.value,
+    used: usedTokens.value,
+    total: props.total,
+    segments: items.value.map((segment) => ({
+      name: segment.name,
+      tokens: segment.tokens,
+      percentage: Math.round(segment.percentage * 10) / 10,
+    })),
+  }),
+  actions: {},
+})
 
 function onItemEnter(index: number) {
   hoveredIndex.value = index
