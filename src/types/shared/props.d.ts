@@ -34,6 +34,9 @@ export interface ComponentOption {
   label: ComponentText
   value: ComponentValue
   disabled?: boolean
+  /** What choosing this option does, in the words a person reads, when an agent must ask
+   *  before it does. The option's own element carries the same sentence while it renders. */
+  confirm?: string
 }
 
 export interface ComponentOptionWithDescription extends ComponentOption {

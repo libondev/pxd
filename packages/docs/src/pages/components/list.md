@@ -282,6 +282,7 @@ as expected.
 | icon | `string \| Component` | Icon rendered before the label |
 | variant | `'default' \| 'error' \| 'warning'` | Text and background colors of the option |
 | disabled | `boolean` | Ignore clicks and skip the option while navigating |
+| confirm | `string` | What choosing it does, in the words a person reads; an agent asks before it picks this option, even while the list is closed |
 | as | `string \| object` | Element or component rendered as the option root |
 
 ### ListOptionGroup

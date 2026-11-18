@@ -1,7 +1,10 @@
 import type { AgentEntry } from './registry.js'
 import type { AgentAllow, AgentAllowedStep } from './types'
+import { safeItems } from './describe.js'
+import { itemKey } from './items.js'
 import { confirmOf, confirmOn } from './marks.js'
 import { agentLabelSafe, agentMarkElement } from './registry.js'
+import { CHOOSING } from './values.js'
 
 /** One step, as the gate sees it: its action, its arguments, where its marks live. */
 export interface StepGate {
@@ -15,12 +18,30 @@ export interface StepGate {
   signal?: AbortSignal
 }
 
+// The sentences the choices a step names carry in their own data, which is where a list that
+// has not rendered them keeps them: a closed menu, a row past the window.
+function confirmOfItems(entry: AgentEntry, gate: StepGate) {
+  const first = gate.args[0]
+
+  if (!CHOOSING.has(gate.action) || first === undefined) {
+    return []
+  }
+
+  const items = safeItems(entry)
+
+  return (Array.isArray(first) ? first : [first])
+    .map((value) => items.find((item) => itemKey(item.value) === itemKey(value))?.confirm)
+    .filter((text): text is string => !!text)
+}
+
 // Every mark the step touches, said once each: a choice marked the same as the component
 // around it is one sentence, not two.
 function confirmFor(entry: AgentEntry, gate: StepGate) {
-  const texts = [confirmOf(agentMarkElement(entry)), ...(gate.els ?? []).map(confirmOn)].filter(
-    (text): text is string => !!text,
-  )
+  const texts = [
+    confirmOf(agentMarkElement(entry)),
+    ...(gate.els ?? []).map(confirmOn),
+    ...confirmOfItems(entry, gate),
+  ].filter((text): text is string => !!text)
 
   return [...new Set(texts)].join('; ')
 }

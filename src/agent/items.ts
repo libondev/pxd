@@ -9,6 +9,7 @@ interface OptionLike {
   label?: unknown
   value?: unknown
   disabled?: boolean
+  confirm?: string
   options?: readonly OptionLike[]
 }
 
@@ -41,6 +42,10 @@ function toItem(option: OptionLike, selected: unknown): AgentItem {
 
   if (option.disabled) {
     item.disabled = true
+  }
+
+  if (option.confirm) {
+    item.confirm = option.confirm
   }
 
   return item

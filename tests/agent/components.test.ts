@@ -1364,6 +1364,49 @@ describe('agent components', () => {
     expect(bound.value).toBe('delete')
   })
 
+  it('should ask about a choice that carries its sentence in the option', async () => {
+    const bound = mountBound(
+      Menu,
+      {
+        'aria-label': 'Actions',
+        options: [
+          { label: 'Edit', value: 'edit' },
+          { label: 'Delete', value: 'delete', confirm: 'Deletes the project' },
+        ],
+      },
+      null,
+    )
+    const agent = createAgent()
+    const entry = find(agent.snapshot(), 'menu')
+
+    expect(entry.items).toContainEqual({
+      label: 'Delete',
+      value: 'delete',
+      confirm: 'Deletes the project',
+    })
+
+    const unmarked = await agent.act({
+      steps: [{ ref: 'Actions', action: 'setValue', args: ['edit'] }],
+    })
+
+    expect(unmarked.ok).toBe(true)
+
+    const refused = await agent.act({
+      steps: [{ ref: 'Actions', action: 'setValue', args: ['delete'] }],
+    })
+
+    expect(refused.ok).toBe(false)
+    expect(refused.error?.message).toContain('Needs a person: Deletes the project')
+    expect(bound.value).toBe('edit')
+
+    const allowed = await createAgent({ allow: () => true }).act({
+      steps: [{ ref: 'Actions', action: 'setValue', args: ['delete'] }],
+    })
+
+    expect(allowed.ok).toBe(true)
+    expect(bound.value).toBe('delete')
+  })
+
   it('should clamp a rating to its count', async () => {
     const bound = mountBound(Rating, { count: 5, 'aria-label': 'Score' }, 0)
     const agent = createAgent()

@@ -5,7 +5,7 @@ import { itemKey } from './items.js'
 import { REDACTED } from './marks.js'
 
 // The actions whose argument names a value or a choice. Others, like `setQuery`, take text.
-const CHOOSING = new Set(['setValue', 'setChecked', 'select'])
+export const CHOOSING = new Set(['setValue', 'setChecked', 'select'])
 
 /** What one component showed, as a run remembers it before and after a step. */
 export interface AgentFieldState {

@@ -12,6 +12,9 @@ export interface ListOption {
   label?: ComponentText
   value: ComponentValue
   disabled?: boolean
+  /** What choosing this option does, in the words a person reads, when an agent must ask
+   *  before it does. Read without the list being open, unlike a mark on its element. */
+  confirm?: string
   variant?: 'default' | 'error' | 'warning'
   description?: string
   icon?: string | Component

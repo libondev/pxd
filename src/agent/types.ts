@@ -10,6 +10,9 @@ export interface AgentItem {
   selected?: boolean
   disabled?: boolean
   expanded?: boolean
+  /** What choosing it does, when a person must make that change. A step that names this
+   *  choice is asked about first, marks or no marks on the page. */
+  confirm?: string
 }
 
 export interface AgentNode {
