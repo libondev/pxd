@@ -68,8 +68,7 @@ const { attrs, classes } = useTailwindVariant(
       variant: {
         simple: '',
         link: 'font-medium hover:underline hover:opacity-70 active:opacity-90 motion-safe:transition-opacity',
-        default:
-          'bg-background-100 text-foreground hover:bg-background-hover active:bg-background-active',
+        default: 'bg-background-100 text-foreground hover:bg-gray-200 active:bg-gray-300',
         ghost:
           'border-transparent bg-transparent text-foreground hover:bg-background-hover active:bg-background-active',
         primary:
