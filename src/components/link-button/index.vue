@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { LinkButtonEmits, LinkButtonProps } from './types'
 import ExternalIcon from '@gdsicon/vue/external'
-import { computed, useAttrs } from 'vue'
+import { computed, getCurrentInstance, useAttrs } from 'vue'
 import { isExternalLink } from '../../utils/format.js'
 import PButton from '../button/index.vue'
 
@@ -17,53 +17,47 @@ const props = withDefaults(defineProps<LinkButtonProps>(), {
 
 const emits = defineEmits<LinkButtonEmits>()
 
+const hasRouterLink = Boolean(getCurrentInstance()?.appContext.components.RouterLink)
 const attrs = useAttrs()
 
-const computedAttrs = computed(() => {
-  const { align, target, href } = props
-
-  const baseAttrs = {
-    align,
-    target,
-    rel: 'noopener noreferrer',
-    ...attrs,
-  }
+const linkAttrs = computed(() => {
+  const { href, target } = props
 
   if (!href) {
-    return baseAttrs
+    return { as: 'button', type: 'button' }
   }
 
   if (isExternalLink(href)) {
-    return {
-      ...baseAttrs,
-      as: 'a',
-      href,
-    } as const
+    return { as: 'a', href, target, rel: attrs.rel ?? 'noopener noreferrer' }
   }
 
-  return {
-    ...baseAttrs,
-    as: 'router-link',
-    to: href,
-  } as const
+  return hasRouterLink ? { as: 'router-link', to: href } : { as: 'a', href }
 })
 
-function onLinkClick(ev: MouseEvent) {
-  emits('click', ev)
+const buttonAttrs = computed(() => ({ ...attrs, ...linkAttrs.value }))
+
+function onLinkClick(event: MouseEvent) {
+  emits('click', event)
 }
 </script>
 
 <template>
-  <PButton data-link-button class="pxd-link-button" v-bind="computedAttrs" @click="onLinkClick">
-    <template #prefix>
+  <PButton
+    data-link-button
+    class="pxd-link-button"
+    v-bind="buttonAttrs"
+    :align="align"
+    @click="onLinkClick"
+  >
+    <template v-if="$slots.prefix" #prefix>
       <slot name="prefix" />
     </template>
 
-    <slot>
-      {{ text }}
-    </slot>
+    <template v-if="$slots.default" #default>
+      <slot />
+    </template>
 
-    <template #suffix>
+    <template v-if="$slots.suffix || externalIcon" #suffix>
       <ExternalIcon v-if="externalIcon" class="text-xs scale-y-90 opacity-50" />
       <slot name="suffix" />
     </template>
