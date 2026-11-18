@@ -22,6 +22,7 @@ export interface CommandMenuProps {
 export interface CommandMenuEmits {
   'update:model-value': [boolean]
   change: [boolean, details: ChangeDetails]
+  select: [item: ListOptionSelected]
   close: [reason: ChangeReason]
   show: []
   hide: []

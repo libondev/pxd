@@ -67,6 +67,30 @@ describe('command-menu', () => {
     wrapper.unmount()
   })
 
+  it('should emit the command a person picks', async () => {
+    const wrapper = mount(CommandMenu, {
+      props: {
+        modelValue: true,
+        options: [
+          { label: 'Edit', value: 'edit' },
+          { label: 'Delete', value: 'delete' },
+        ],
+      },
+    })
+
+    await vi.waitFor(() =>
+      expect(document.body.querySelectorAll('[data-list-item]')).toHaveLength(2),
+    )
+
+    document.body.querySelector<HTMLElement>('[data-list-item]')!.click()
+    await nextTick()
+
+    expect(wrapper.emitted('select')?.[0]?.[0]).toMatchObject({ label: 'Edit', value: 'edit' })
+    expect(wrapper.emitted('close')?.[0]?.[0]).toBe('item-press')
+
+    wrapper.unmount()
+  })
+
   it('should delegate navigation keys from the input to the list', async () => {
     const wrapper = mount(CommandMenu, {
       props: {

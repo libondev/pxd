@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ChangeReason } from '../../types/shared/change'
+import type { ListOptionSelected } from '../list/types'
 import type { CommandMenuEmits, CommandMenuProps } from './types'
 import { nextTick, shallowRef, watch } from 'vue'
 import { optionItems } from '../../agent/items.js'
@@ -103,7 +104,9 @@ function closeModal(reason: ChangeReason = 'close-press') {
   change(false, { reason })
 }
 
-function onListItemSelect() {
+function onListItemSelect(item: ListOptionSelected) {
+  emits('select', item)
+
   if (props.closeOnSelectItem) {
     closeModal('item-press')
   }
