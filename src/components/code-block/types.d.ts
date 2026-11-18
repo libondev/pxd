@@ -11,7 +11,7 @@ export interface CodeBlockSwitcherProps {
 }
 
 export interface CodeBlockProps {
-  code: string
+  content: string
   language?: string
   title?: ComponentText
   size?: 'sm' | 'md' | 'lg'

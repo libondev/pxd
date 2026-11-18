@@ -31,7 +31,7 @@ const bodyEl = shallowRef<HTMLElement | null>(null)
 const expanded = shallowRef(false)
 const isOverflowing = shallowRef(false)
 const activeLine = shallowRef<number | null>(null)
-const lines = computed(() => props.code.split('\n'))
+const lines = computed(() => props.content.split('\n'))
 
 const highlightedSet = computed(() => new Set(props.highlightedLines))
 const addedSet = computed(() => new Set(props.addedLines))
@@ -43,7 +43,7 @@ const isLineMode = computed(
     addedSet.value.size > 0 ||
     removedSet.value.size > 0,
 )
-const isOversized = computed(() => props.code.length > MAX_HIGHLIGHT_LENGTH)
+const isOversized = computed(() => props.content.length > MAX_HIGHLIGHT_LENGTH)
 const maxHeight = computed(() => getCssUnitValue(props.maxHeight, DEFAULT_MAX_HEIGHT))
 const isClipped = computed(() => props.collapsible && !expanded.value)
 const languageClass = computed(() => {
@@ -52,7 +52,7 @@ const languageClass = computed(() => {
   // Oversized blocks drop the language class so the scanner skips them instead of tokenizing.
   return language && !isOversized.value ? `language-${language}` : undefined
 })
-const lineAnchorPrefix = computed(() => getLineAnchorPrefix(props.code))
+const lineAnchorPrefix = computed(() => getLineAnchorPrefix(props.content))
 const activeSwitcherValue = computed(
   () => props.switcher?.value ?? props.switcher?.options[0]?.value,
 )
@@ -92,7 +92,6 @@ const { attrs, classes } = useTailwindVariant(
   },
 )
 
-/** FNV-1a over the code: line anchors must stay stable across reloads to be shareable. */
 function getLineAnchorPrefix(code: string) {
   let hash = 0x811c9dc5
 
@@ -203,7 +202,7 @@ function onTabsKeydown(event: KeyboardEvent) {
 
 watch(
   () => [
-    props.code,
+    props.content,
     props.language,
     props.lineNumbers,
     props.highlightedLines,
@@ -217,7 +216,7 @@ watch(
 )
 
 watch(
-  () => [props.maxHeight, props.collapsible, expanded.value, props.code, props.size],
+  () => [props.maxHeight, props.collapsible, expanded.value, props.content, props.size],
   () => {
     measureOverflow()
   },
@@ -225,7 +224,7 @@ watch(
 )
 
 watch(
-  () => props.code,
+  () => props.content,
   () => {
     activeLine.value = null
   },
@@ -301,7 +300,7 @@ onUnmounted(() => {
           v-if="copyBtn !== 'hidden'"
           size="xs"
           variant="ghost"
-          :content="code"
+          :content="content"
           @copy="onCopy"
         />
       </div>
@@ -353,7 +352,7 @@ onUnmounted(() => {
             v-else
             class="pxd-code-block--pre p-3 notranslate min-w-0 flex-1 overflow-x-auto font-mono"
             translate="no"
-          ><code v-text="code" class="bg-transparent! border-0! p-0! m-0!" :class="languageClass" /></pre>
+          ><code v-text="content" class="bg-transparent! border-0! p-0! m-0!" :class="languageClass" /></pre>
         </div>
 
         <div
@@ -366,7 +365,7 @@ onUnmounted(() => {
           class="end-3.5 top-2 max-sm:opacity-100 absolute focus-within:opacity-100 motion-safe:transition-opacity"
           :class="{ 'opacity-0 group-hover/code-block:opacity-100': copyBtn === 'hover' }"
         >
-          <PCopyButton size="sm" variant="ghost" :content="code" @copy="onCopy" />
+          <PCopyButton size="sm" variant="ghost" :content="content" @copy="onCopy" />
         </div>
       </div>
 

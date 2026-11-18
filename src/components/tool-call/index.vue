@@ -176,7 +176,7 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
           <slot name="input">
             <PCodeBlock
               class="pxd-tool-call--code"
-              :code="inputPayload.text"
+              :content="inputPayload.text"
               :language="inputPayload.isJson ? 'json' : undefined"
               copy-btn="hidden"
               size="sm"
@@ -196,7 +196,7 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
           <slot name="output">
             <PCodeBlock
               class="pxd-tool-call--code"
-              :code="outputPayload.text"
+              :content="outputPayload.text"
               :language="outputPayload.isJson ? 'json' : undefined"
               copy-btn="hidden"
               size="sm"

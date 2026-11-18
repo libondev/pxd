@@ -15,7 +15,7 @@ const code = [
 </script>
 
 <template>
-  <PCodeBlock :code="code" language="ts" class="w-full max-w-[560px]" />
+  <PCodeBlock :content="code" language="ts" class="w-full max-w-[560px]" />
 </template>
 ```
 
@@ -34,7 +34,7 @@ const code = [
 
 <template>
   <PCodeBlock
-    :code="code"
+    :content="code"
     language="ts"
     title="greet.ts"
     line-numbers
@@ -63,7 +63,7 @@ const code = [
 
 <template>
   <PCodeBlock
-    :code="code"
+    :content="code"
     language="jsx"
     title="highlighted.jsx"
     :highlighted-lines="[1, 4]"
@@ -91,7 +91,7 @@ const code = [
 
 <template>
   <PCodeBlock
-    :code="code"
+    :content="code"
     language="js"
     title="next.config.js"
     :added-lines="[5]"
@@ -136,7 +136,7 @@ const options = [
 
 <template>
   <PCodeBlock
-    :code="snippets[language].code"
+    :content="snippets[language].code"
     :title="snippets[language].title"
     :language="language"
     line-numbers
@@ -181,7 +181,7 @@ const options = [
 
 <template>
   <PCodeBlock
-    :code="snippets[language].code"
+    :content="snippets[language].code"
     :title="snippets[language].title"
     :language="language"
     line-numbers
@@ -217,7 +217,7 @@ const code = [
 
 <template>
   <PCodeBlock
-    :code="code"
+    :content="code"
     language="ts"
     collapsible
     :max-height="160"
@@ -237,7 +237,7 @@ const code = ["const message = 'hello'", 'console.log(message)'].join('\n')
 
 <template>
   <PCodeBlock
-    :code="code"
+    :content="code"
     language="js"
     style="--syntax-keyword: hsl(var(--color-red-900-value))"
     class="w-full max-w-[560px]"

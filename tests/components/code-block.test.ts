@@ -9,7 +9,7 @@ vi.mock('microlighter', () => ({ highlightAll: vi.fn(() => Promise.resolve()) })
 describe('code-block', () => {
   it('renders the code as the only node inside pre > code', () => {
     const code = 'const a = 1\nconst b = 2'
-    const wrapper = mount(CodeBlock, { props: { code, language: 'ts' } })
+    const wrapper = mount(CodeBlock, { props: { content: code, language: 'ts' } })
 
     const pre = wrapper.get('pre')
     const element = wrapper.get('pre > code')
@@ -24,7 +24,7 @@ describe('code-block', () => {
   })
 
   it('omits the language class without a language', () => {
-    const wrapper = mount(CodeBlock, { props: { code: 'plain' } })
+    const wrapper = mount(CodeBlock, { props: { content: 'plain' } })
 
     expect(
       wrapper
@@ -38,7 +38,7 @@ describe('code-block', () => {
 
   it('drops the language class above the highlight length limit', () => {
     const wrapper = mount(CodeBlock, {
-      props: { code: 'x'.repeat(MAX_HIGHLIGHT_LENGTH + 1), language: 'ts' },
+      props: { content: 'x'.repeat(MAX_HIGHLIGHT_LENGTH + 1), language: 'ts' },
     })
 
     expect(wrapper.get('code').classes()).not.toContain('language-ts')
@@ -48,7 +48,7 @@ describe('code-block', () => {
 
   it('renders one line row with a clickable number per line', () => {
     const wrapper = mount(CodeBlock, {
-      props: { code: 'a\nb\nc', language: 'ts', lineNumbers: true },
+      props: { content: 'a\nb\nc', language: 'ts', lineNumbers: true },
     })
 
     const rows = wrapper.findAll('.pxd-code-block--line')
@@ -65,7 +65,7 @@ describe('code-block', () => {
   it('marks highlighted, added and removed lines', () => {
     const wrapper = mount(CodeBlock, {
       props: {
-        code: 'a\nb\nc\nd',
+        content: 'a\nb\nc\nd',
         highlightedLines: [2],
         addedLines: [3],
         removedLines: [4],
@@ -84,7 +84,7 @@ describe('code-block', () => {
 
   it('toggles the line anchor in the URL from the line number', async () => {
     const wrapper = mount(CodeBlock, {
-      props: { code: 'a\nb\nc', lineNumbers: true },
+      props: { content: 'a\nb\nc', lineNumbers: true },
       attachTo: document.body,
     })
 
@@ -112,7 +112,7 @@ describe('code-block', () => {
 
     const wrapper = mount(CodeBlock, {
       props: {
-        code: 'a',
+        content: 'a',
         title: 'Table.jsx',
         switcher: {
           options: [
@@ -141,7 +141,7 @@ describe('code-block', () => {
   it('emits tabs-change from the tab bar', async () => {
     const wrapper = mount(CodeBlock, {
       props: {
-        code: 'a',
+        content: 'a',
         tabs: {
           options: [
             { label: 'JavaScript', value: 'js' },
@@ -170,7 +170,7 @@ describe('code-block', () => {
       value: { writeText: () => Promise.resolve() },
     })
 
-    const wrapper = mount(CodeBlock, { props: { code: 'npm run build' } })
+    const wrapper = mount(CodeBlock, { props: { content: 'npm run build' } })
 
     await wrapper.get('[data-copy-button]').trigger('click')
     await flushPromises()
@@ -184,8 +184,8 @@ describe('code-block', () => {
     vi.stubGlobal('CSS', { highlights: new Map() })
     vi.stubGlobal('Highlight', class {})
 
-    const first = mount(CodeBlock, { props: { code: 'const a = 1', language: 'ts' } })
-    const second = mount(CodeBlock, { props: { code: 'const b = 2', language: 'ts' } })
+    const first = mount(CodeBlock, { props: { content: 'const a = 1', language: 'ts' } })
+    const second = mount(CodeBlock, { props: { content: 'const b = 2', language: 'ts' } })
 
     await new Promise((resolve) => setTimeout(resolve, 10))
 
