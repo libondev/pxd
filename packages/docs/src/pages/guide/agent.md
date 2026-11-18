@@ -342,7 +342,7 @@ Three attributes on your own elements decide what an agent may do alone:
 | `data-agent-secret` | Its value reads as `[redacted]` — in a snapshot, in a `subscribe` change and in an `act` result — and it reports no `label`, `row`, `items` or `buttons`, which can be as revealing as the value. It can still be set. A password field, `autocomplete="one-time-code"` or a `cc-*` field is secret without the attribute. |
 | `data-agent-hidden` | The region stays out of `snapshot`, `act` and `query`, as if it were not on the page — including a step that names a component by its `ref`. A hidden button cannot be pressed either. |
 
-A mark on a component covers every step on that component — `setValue`, `setOpen`, and a press on its own button. A mark on one of its choices is not read: choices come from the component's data, so they have no element to carry a mark. Put the mark on the component, or on a wrapper around it, to gate the whole set.
+A mark on a component covers every step on that component — `setValue`, `setOpen`, and a press on its own button. A mark on one of its choices is read once that choice is on the page, so a list or a menu row can be marked on its own, inside the row's content or around it. A choice that only renders while a list is open has no element to read until a step opens it: mark the component, or a wrapper around it, to cover every choice.
 
 A `data-agent-source` attribute, on a component or an element around it, puts its location in the snapshot, like `src/pages/settings.vue:24`, so a model can say where a control is written. A misspelled `data-agent-*` name warns in development and does nothing.
 
@@ -394,6 +394,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `drawer` | `setOpen` |
 | `effort-slider` | `setValue` |
 | `gauge` | — |
+| `hold-button` | `hold` |
 | `image-preview` | `setOpen`, `setValue`, `zoomIn`, `zoomOut`, `rotate`, `reset` |
 | `input` | `setValue`, `focus`, `blur`, `select` |
 | `list` | `setValue`, `focus`, `dispatch` |
@@ -439,7 +440,11 @@ A group — `checkbox-group`, `choicebox`, `radio-group`, `switch`, `toggle-butt
 
 `scroll-progress` reports its percentage and offers no action: a reading some other component's scroll produces, listed so an agent can see it. `progress`, `gauge` and `context-usage` are the same: they show a reading and no step sets it. `button` is the same shape the other way round — no action of its own, because `press` already clicks it. `pagination` is the third: it holds no value, and its Prev and Next links are pressed by their text. `page-number` reports the page it is on, how many there are and the size it lists, so a step can take a page directly.
 
+`hold-button` is the reverse of a button: `press` is refused on it, because a click cannot confirm a hold, and `hold` runs the same confirmation a person's press-and-hold does. A step that names it waits for the hold to confirm, and a mark on it asks before the hold starts.
+
 `collapse` reveals its content: while it is closed, the controls inside it stay out of the snapshot, and a step that names one is told which closed section to open first.
+
+`select` and `menu` report themselves alone while their list is open: the list is part of the control, and the control takes the same value. Their list is left out of the snapshot, since it is the same choice set twice. A `command-menu` keeps its list instead, and reports no choices while it is there: choosing a command is what that list does, and the menu itself only opens and filters.
 
 `search-input` carries the name a person typed and the call that submits it: `setValue` writes the box, and `search` runs what Enter runs on a page whose only way to send it is the key.
 

@@ -321,5 +321,52 @@ export function agentVisibleEntries(): AgentEntry[] {
     }
   }
 
-  return pairs.filter(({ entry, el }) => !el || owner.get(el) === entry).map(({ entry }) => entry)
+  const visible = pairs
+    .filter(({ entry, el }) => !el || owner.get(el) === entry)
+    .map(({ entry }) => entry)
+
+  // A component that says a part is its own, like a menu's list, absorbs what renders in
+  // it: a step reaches those controls through the component a person reads them on.
+  const owned = visible.flatMap((entry) =>
+    agentOwnedRoots(entry).map((root) => ({ owner: entry, root })),
+  )
+
+  if (!owned.length) {
+    return visible
+  }
+
+  return visible.filter((entry) => {
+    const el = agentElement(entry)
+
+    return !el || !owned.some((part) => part.owner !== entry && part.root.contains(el))
+  })
+}
+
+/** The elements a component declares as its own parts, like the list inside a menu. */
+export function agentOwnedRoots(entry: AgentEntry): Element[] {
+  try {
+    const owned = entry.node.owns?.()
+
+    return (Array.isArray(owned) ? owned : [owned]).filter((el): el is Element => !!el)
+  } catch {
+    return []
+  }
+}
+
+/** Whether a click on the component's own element does what a person's press does. */
+export function agentPressable(entry: AgentEntry): boolean {
+  try {
+    return entry.node.pressable?.() !== false
+  } catch {
+    return true
+  }
+}
+
+/** The element one of a component's choices renders as, while it is on the page. */
+export function agentItemElement(entry: AgentEntry, value: unknown): Element | null {
+  try {
+    return entry.node.itemElement?.(value) ?? null
+  } catch {
+    return null
+  }
 }

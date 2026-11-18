@@ -20,6 +20,17 @@ export function confirmOf(el: Element | null | undefined): string | undefined {
   )
 }
 
+// What an element a step touches says about itself: a mark on it or around it first, since
+// that covers the region it sits in, else the first one inside it, which is where a choice's
+// slot renders the sentence about that choice.
+export function confirmOn(el: Element | null | undefined): string | undefined {
+  return (
+    confirmOf(el) ??
+    el?.querySelector('[data-agent-confirm]')?.getAttribute('data-agent-confirm')?.trim() ??
+    undefined
+  )
+}
+
 // Whether the element shows at all: out of a hidden region, out of a closed `<details>`
 // that is not its summary, off the accessibility tree, and not hidden by its own styles.
 export function isHidden(el: Element | null | undefined): boolean {

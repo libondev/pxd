@@ -1,17 +1,28 @@
 import type { AgentEntry } from './registry.js'
 import type { AgentAllow, AgentAllowedStep } from './types'
-import { confirmOf } from './marks.js'
+import { confirmOf, confirmOn } from './marks.js'
 import { agentLabelSafe, agentMarkElement } from './registry.js'
 
 /** One step, as the gate sees it: its action, its arguments, where its marks live. */
 export interface StepGate {
   action: string
   args: unknown[]
-  /** Where the marks for this step are read, when it is not the component's own element. */
-  el?: Element | null
+  /** The elements this step touches besides the component itself, like the choice it names
+   *  or the button it presses. Every mark among them is read. */
+  els?: (Element | null | undefined)[]
   /** The caller's own check, added beside the bridge's when a browser agent asks. */
   allow?: AgentAllow
   signal?: AbortSignal
+}
+
+// Every mark the step touches, said once each: a choice marked the same as the component
+// around it is one sentence, not two.
+function confirmFor(entry: AgentEntry, gate: StepGate) {
+  const texts = [confirmOf(agentMarkElement(entry)), ...(gate.els ?? []).map(confirmOn)].filter(
+    (text): text is string => !!text,
+  )
+
+  return [...new Set(texts)].join('; ')
 }
 
 export type RefuseUnlessAllowed = (entry: AgentEntry, gate: StepGate) => Promise<string | undefined>
@@ -86,7 +97,7 @@ export function createAllowGate({ allow, allowTimeout }: AllowGateOptions) {
   }
 
   const refuseUnlessAllowed: RefuseUnlessAllowed = async (entry, gate) => {
-    const confirm = confirmOf(gate.el ?? agentMarkElement(entry))
+    const confirm = confirmFor(entry, gate)
     const checks: Check[] = []
 
     if (allow) {

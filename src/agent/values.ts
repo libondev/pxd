@@ -1,6 +1,7 @@
 import type { AgentEntry } from './registry.js'
 import type { AgentItem } from './types'
 import { fold, valueText } from './describe.js'
+import { itemKey } from './items.js'
 import { REDACTED } from './marks.js'
 
 // The actions whose argument names a value or a choice. Others, like `setQuery`, take text.
@@ -80,10 +81,6 @@ export function valuesOf(
 
 const nameOfEntry = (entry: AgentEntry) => `${entry.node.name} ${entry.ref}`
 
-// A value as a key, so an object is compared by its contents rather than by "[object Object]".
-const keyOfValue = (value: unknown) =>
-  value !== null && typeof value === 'object' ? JSON.stringify(value) : String(value)
-
 // The state key an action writes: `setValue` writes `value`, `setOpen` writes `open`.
 function actionKey(action: string) {
   return /^set[A-Z]/.test(action) ? action[3].toLowerCase() + action.slice(4) : undefined
@@ -113,7 +110,7 @@ const labelsOf = (items: AgentItem[]) =>
 
 const held = (value: unknown, chosen: unknown) =>
   (Array.isArray(value) ? value : [value]).some(
-    (item) => item != null && keyOfValue(item) === keyOfValue(chosen),
+    (item) => item != null && itemKey(item) === itemKey(chosen),
   )
 
 // A value from an item's label, so an agent can write "Europe" without looking up "eu".
@@ -125,7 +122,7 @@ function resolveLabel(
   label: string,
   current: unknown,
 ): { value: unknown } | { error: string } {
-  if (items.some((item) => keyOfValue(item.value) === keyOfValue(label))) {
+  if (items.some((item) => itemKey(item.value) === itemKey(label))) {
     return { value: label }
   }
 
@@ -141,7 +138,7 @@ function resolveLabel(
   if (found.length > 1) {
     return {
       error: `"${label}" names ${found.length} items in ${nameOfEntry(entry)}: ${found
-        .map((item) => keyOfValue(item.value))
+        .map((item) => itemKey(item.value))
         .join(', ')}. Use a value.`,
     }
   }
@@ -219,7 +216,7 @@ export function stepArgs(
       value = number
     }
 
-    const item = items.find((candidate) => keyOfValue(candidate.value) === keyOfValue(value))
+    const item = items.find((candidate) => itemKey(candidate.value) === itemKey(value))
 
     if (item?.disabled && !held(current, value)) {
       return {

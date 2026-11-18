@@ -6,6 +6,7 @@ import {
   agentElement,
   agentLabelSafe,
   agentMarkElement,
+  agentPressable,
   agentRow,
   agentSecret,
 } from './registry.js'
@@ -102,14 +103,15 @@ export function safeItems(entry: AgentEntry): AgentItem[] {
 
 // The buttons a step can press: a closed popup renders nothing, so it can't be pressed
 // until the step that opens it has rendered. A button inside a hidden region, an inert one
-// or a hidden link is not there either, even when the component around it is visible.
-export function buttonsOf(el: Element | null | undefined) {
+// or a hidden link is not there either, even when the component around it is visible. Its
+// own element is one only when a click does there what a person's press does.
+export function buttonsOf(el: Element | null | undefined, own = true) {
   if (!el) {
     return []
   }
 
   const selector = 'button, [role="button"], a[href]'
-  const root = el.matches(selector) ? [el as HTMLElement] : []
+  const root = own && el.matches(selector) ? [el as HTMLElement] : []
 
   return [...root, ...el.querySelectorAll<HTMLElement>(selector)].filter(
     (button) => !isHidden(button) && !button.closest('[inert]'),
@@ -200,7 +202,7 @@ function buildComponent(entry: AgentEntry, withItems: boolean): AgentComponent {
   }
 
   if (!secret) {
-    const buttons = buttonsOf(el).map(nameOf).filter(Boolean)
+    const buttons = buttonsOf(el, agentPressable(entry)).map(nameOf).filter(Boolean)
 
     if (buttons.length) {
       component.buttons = buttons

@@ -130,4 +130,45 @@ describe('agent registerTools', () => {
   it('should need an allow of its own', () => {
     expect(() => registerTools(createAgent(), {} as never)).toThrow('allow')
   })
+
+  it('should do nothing where the browser carries no tools', () => {
+    delete (document as { modelContext?: unknown }).modelContext
+    mountInput('Project name')
+
+    const unregister = registerTools(createAgent(), { allow: () => true })
+
+    expect(() => unregister()).not.toThrow()
+  })
+
+  it('should end a step waiting on allow when the browser cancels the call', async () => {
+    const tools: { name: string; execute: Function }[] = []
+
+    ;(document as { modelContext?: unknown }).modelContext = {
+      registerTool: (tool: (typeof tools)[number]) => {
+        tools.push(tool)
+
+        return Promise.resolve()
+      },
+    }
+    mountInput('Project name')
+
+    const agent = createAgent({ allow: () => new Promise<boolean>(() => {}) })
+    const unregister = registerTools(agent, { allow: () => true })
+    const act = tools.find((tool) => tool.name === 'act')!
+    const controller = new AbortController()
+
+    const running = act.execute(
+      { steps: [{ ref: 'Project name', action: 'setValue', args: ['Atlas'] }] },
+      { signal: controller.signal },
+    )
+
+    controller.abort()
+
+    const result = await running
+
+    expect(result.ok).toBe(false)
+    expect(result.error?.message).toBe('Canceled.')
+
+    unregister()
+  })
 })

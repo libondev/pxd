@@ -59,6 +59,26 @@ describe('agent registry', () => {
     offs.forEach((off) => off())
   })
 
+  it('should absorb the entries a component says are its own part', () => {
+    const outer = document.createElement('div')
+    const inner = document.createElement('div')
+    const ownEl = () => outer
+    const partEl = () => inner
+
+    outer.append(inner)
+
+    const offs = registered(
+      { node: nodeOf({ el: ownEl, owns: () => inner }) },
+      { node: nodeOf({ el: partEl }) },
+    )
+    const visible = agentVisibleEntries()
+
+    expect(visible).toContain(agentEntries().find((entry) => entry.node.el === ownEl))
+    expect(visible).not.toContain(agentEntries().find((entry) => entry.node.el === partEl))
+
+    offs.forEach((off) => off())
+  })
+
   it('should own its own element when nothing shares it', () => {
     const offs = registered({ node: nodeOf({ el: () => document.createElement('div') }) })
     const entry = agentEntries().at(-1)!

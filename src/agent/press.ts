@@ -3,7 +3,7 @@ import type { AgentEntry } from './registry.js'
 import { nextTick } from 'vue'
 import { withChangeDetails } from '../composables/_internal/use-change-details.js'
 import { agentDisabled, buttonsOf, fold, nameOf } from './describe.js'
-import { agentElement } from './registry.js'
+import { agentElement, agentPressable } from './registry.js'
 
 export type PressOutcome = { pressed: string } | { error: string }
 
@@ -19,7 +19,7 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
     const names = (buttons: { name: string }[]) => buttons.map((button) => button.name).join(', ')
 
     const read = () =>
-      buttonsOf(agentElement(entry))
+      buttonsOf(agentElement(entry), agentPressable(entry))
         .map((el) => ({ el, name: nameOf(el) }))
         .filter((button) => button.name)
 
@@ -29,6 +29,15 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
       const buttons = read()
 
       if (!buttons.length) {
+        if (!agentPressable(entry)) {
+          const actions = Object.keys(entry.node.actions)
+
+          return {
+            message: `"${entry.node.name}" is not pressed by a click. It takes: ${actions.join(', ') || 'nothing'}.`,
+            retry: false,
+          }
+        }
+
         return { message: `"${entry.node.name}" has no buttons to press.`, retry: true }
       }
 
@@ -98,7 +107,7 @@ export function createPress(refuseUnlessAllowed: RefuseUnlessAllowed) {
         const refused = await refuseUnlessAllowed(entry, {
           action: 'press',
           args: [found.target.name],
-          el: found.target.el,
+          els: [found.target.el],
           signal,
         })
 

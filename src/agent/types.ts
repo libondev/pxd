@@ -18,6 +18,9 @@ export interface AgentNode {
   /** Filled in by `useAgentNode`: the DOM anchor to read `data-agent-*` from when `el` is
    *  empty, as a closed dialog's is. A component never writes this itself. */
   scope?: () => Element | null
+  /** The elements whose subtree is this component's own, like a menu's list: a component
+   *  inside one belongs to it and stays out of the snapshot on its own. */
+  owns?: () => (Element | null | undefined)[] | Element | null | undefined
   label?: () => string | undefined
   /** What names it on its row, when that text is the component's own rather than its neighbours'. */
   row?: () => string | undefined
@@ -25,6 +28,14 @@ export interface AgentNode {
   /** The choices it offers, read from its own data rather than from the DOM, so a
    *  virtualised list reports what it would show, not only the rows on screen. */
   items?: () => AgentItem[] | undefined
+  /** The element one of its choices renders as, while it is on the page: the marks a step
+   *  must read for that choice, like `data-agent-confirm`, live on it. A choice that only
+   *  renders while its list is open has none until a step opens it. */
+  itemElement?: (value: unknown) => Element | null | undefined
+  /** Whether a click on its own element does what a person's press does. False for a
+   *  component a click cannot drive, like a hold button, so `press` is refused instead of
+   *  reported as done. */
+  pressable?: () => boolean | undefined
   /** Whether its own work is running, like a save, so a step waits for it to finish. */
   pending?: () => boolean | undefined
   /** Why its last action failed, so a step reports the failure instead of a silent success. */

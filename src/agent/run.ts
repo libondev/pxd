@@ -8,7 +8,7 @@ import { withChangeDetails } from '../composables/_internal/use-change-details.j
 import { agentDisabled, messageOf } from './describe.js'
 import { REDACTED } from './marks.js'
 import { agentShownEntries, findAgentTarget } from './query.js'
-import { agentLabelSafe, agentSecret } from './registry.js'
+import { agentItemElement, agentLabelSafe, agentSecret } from './registry.js'
 import { stepArgs } from './values.js'
 
 // A step that outlasts the run's budget, or one the caller cancels, ends the run where it is.
@@ -22,6 +22,19 @@ class Stop extends Error {
 // still running.
 const PENDING_TIMEOUT = 15_000
 const PENDING_POLL = 50
+
+// The elements the choices a step names render as, so the gate reads their marks too.
+function itemElementsOf(entry: AgentEntry, args: unknown[]) {
+  const first = args[0]
+
+  if (first === undefined || !entry.node.itemElement) {
+    return []
+  }
+
+  return (Array.isArray(first) ? first : [first])
+    .map((value) => agentItemElement(entry, value))
+    .filter((el): el is Element => !!el)
+}
 
 const settle = <T>(work: Promise<T> | T, deadline: number, signal?: AbortSignal) =>
   new Promise<T>((resolve, reject) => {
@@ -266,6 +279,7 @@ export function createRunner({ actTimeout, press, refuseUnlessAllowed }: RunnerD
           refuseUnlessAllowed(entry, {
             action: step.action,
             args: staged.args,
+            els: itemElementsOf(entry, staged.args),
             allow,
             signal,
           }),

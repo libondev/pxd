@@ -6,6 +6,7 @@ import {
   agentElement,
   agentLabelSafe,
   agentMarkElement,
+  agentPressable,
   agentRow,
   agentVisibleEntries,
 } from './registry.js'
@@ -87,7 +88,9 @@ function settle(candidates: AgentEntry[], ref: string, action?: string, text?: s
   if (action === 'press' && text) {
     const wanted = fold(text)
     const holding = able.filter((entry) =>
-      buttonsOf(agentElement(entry)).some((el) => fold(nameOf(el)) === wanted),
+      buttonsOf(agentElement(entry), agentPressable(entry)).some(
+        (el) => fold(nameOf(el)) === wanted,
+      ),
     )
 
     if (holding.length === 1) {

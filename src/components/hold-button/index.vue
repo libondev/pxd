@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { HoldButtonEmits, HoldButtonProps } from './types'
+import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useHold } from '../../composables/use-hold.js'
 import PButton from '../button/index.vue'
 
@@ -16,6 +17,8 @@ const props = withDefaults(defineProps<HoldButtonProps>(), {
 const emits = defineEmits<HoldButtonEmits>()
 
 let activePointerId: number | null = null
+// An agent's `hold` waits here for the confirm or the cancel it produces.
+let settleHold: (() => void) | undefined
 
 const { status, progress, start, pause, resume, stop } = useHold({
   duration: () => props.duration,
@@ -23,8 +26,37 @@ const { status, progress, start, pause, resume, stop } = useHold({
   onConfirm: () => {
     emits('confirm')
     onTriggerVibrate()
+    settleHold?.()
   },
-  onCancel: (progress) => emits('cancel', progress),
+  onCancel: (progress) => {
+    emits('cancel', progress)
+    settleHold?.()
+  },
+})
+
+useAgentNode({
+  name: 'hold-button',
+  pressable: () => false,
+  state: () => ({
+    status: status.value,
+    disabled: props.disabled ?? false,
+  }),
+  actions: {
+    hold: () => {
+      if (props.disabled || settleHold) {
+        return
+      }
+
+      return new Promise<void>((resolve) => {
+        settleHold = () => {
+          settleHold = undefined
+          resolve()
+        }
+
+        start()
+      })
+    },
+  },
 })
 
 function onTriggerVibrate() {

@@ -1,4 +1,5 @@
 import type { AgentChange } from '../../src/agent'
+import type { ListOption } from '../../src/components/list/types'
 import type { Component } from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
@@ -19,6 +20,7 @@ import DatePicker from '../../src/components/date-picker/index.vue'
 import Drawer from '../../src/components/drawer/index.vue'
 import EffortSlider from '../../src/components/effort-slider/index.vue'
 import Gauge from '../../src/components/gauge/index.vue'
+import HoldButton from '../../src/components/hold-button/index.vue'
 import ImagePreview from '../../src/components/image-preview/index.vue'
 import Input from '../../src/components/input/index.vue'
 import List from '../../src/components/list/index.vue'
@@ -54,6 +56,7 @@ import Toggle from '../../src/components/toggle/index.vue'
 import Tour from '../../src/components/tour/index.vue'
 import Tree from '../../src/components/tree/index.vue'
 import VirtualList from '../../src/components/virtual-list/index.vue'
+import { flushPopover } from '../helpers/flush-popover'
 
 const mounted: { unmount: () => void }[] = []
 
@@ -1985,5 +1988,92 @@ describe('agent readings and pages', () => {
     await agent.act({ steps: [{ ref: 'Find', action: 'search' }] })
 
     expect(searched).toEqual(['atlas'])
+  })
+})
+describe('agent parts and marks', () => {
+  it('should hold a hold button, and refuse the press a click cannot do', async () => {
+    const wrapper = track(
+      mount(HoldButton, {
+        props: { duration: 20 },
+        attrs: { 'aria-label': 'Delete project' },
+        slots: { default: 'Delete' },
+      }),
+    )
+    const agent = createAgent()
+    const entry = find(agent.snapshot(), 'hold-button')
+
+    expect(entry).toMatchObject({
+      label: 'Delete project',
+      status: 'idle',
+      disabled: false,
+      actions: ['hold'],
+    })
+    expect(entry.buttons).toBeUndefined()
+    expect(agent.snapshot().some((component) => component.component === 'button')).toBe(false)
+
+    const pressed = await agent.act({ steps: [{ ref: 'Delete project', action: 'press' }] })
+
+    expect(pressed.ok).toBe(false)
+    expect(pressed.error?.message).toContain('is not pressed by a click')
+    expect(wrapper.emitted('confirm')).toBeUndefined()
+
+    const held = await agent.act({ steps: [{ ref: 'Delete project', action: 'hold' }] })
+
+    expect(held.ok).toBe(true)
+    expect(wrapper.emitted('confirm')).toHaveLength(1)
+  })
+
+  it('should ask before a step takes an item whose row carries the mark', async () => {
+    const wrapper = track(
+      mount(List, {
+        props: {
+          modelValue: null,
+          'aria-label': 'Members',
+          options: [
+            { label: 'Ada', value: 1 },
+            { label: 'Bo', value: 2 },
+          ],
+        },
+        slots: {
+          item: ({ item }: { item: ListOption }) =>
+            item.value === 2
+              ? h('span', { 'data-agent-confirm': 'Removes Bo' }, String(item.label))
+              : String(item.label),
+        },
+      }),
+    )
+    const agent = createAgent()
+
+    const refused = await agent.act({
+      steps: [{ ref: 'Members', action: 'setValue', args: [2] }],
+    })
+
+    expect(refused.ok).toBe(false)
+    expect(refused.error?.message).toContain('Needs a person: Removes Bo')
+
+    const allowed = await createAgent({ allow: () => true }).act({
+      steps: [{ ref: 'Members', action: 'setValue', args: [2] }],
+    })
+
+    expect(allowed.ok).toBe(true)
+    expect(wrapper.emitted('update:model-value')).toBeTruthy()
+  })
+
+  it('should report a select once, with its own list open', async () => {
+    mountBound(
+      Select,
+      { 'aria-label': 'Region', options: [{ label: 'Europe', value: 'eu' }] },
+      null,
+    )
+    const agent = createAgent()
+
+    await agent.act({ steps: [{ ref: 'Region', action: 'setOpen', args: [true] }] })
+    await flushPopover()
+
+    const names = agent.snapshot().map((entry) => entry.component)
+
+    expect(document.querySelector('[data-list]')).not.toBeNull()
+    expect(names).toContain('select')
+    expect(names).not.toContain('list')
   })
 })

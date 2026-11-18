@@ -345,6 +345,7 @@ render-only `as` and `icon`.
 | dispatch | `(command: ListNavigationCommand) => boolean` | Run a navigation command, returns `false` when it cannot be applied or `loading` is set. |
 | setActiveIndex | `(index: number) => void` | Make the option at the given navigable index active. |
 | setFirstAsActive | `() => void` | Make the first enabled option active. |
+| elementOf | `(value: unknown) => HTMLElement \| null` | The element the option with that value renders as, `null` while it is not drawn. |
 | activeIndex | `number` | Navigable index of the active option, `-1` when none is active. |
 | activeItemId | `string \| undefined` | Id of the active row element, for pointing `aria-activedescendant` at it. |
 

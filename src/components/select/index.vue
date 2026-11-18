@@ -112,7 +112,9 @@ const { listOptions, pending, error, retry } = useListSearch(
 useAgentNode({
   name: 'select',
   closed: true,
+  owns: () => listRef.value?.$el,
   items: () => optionItems(props.options, selected.value),
+  itemElement: (value) => listRef.value?.elementOf(value),
   state: () => ({
     value: selected.value ?? null,
     open: popoverVisible.value,

@@ -15,6 +15,10 @@ interface TreeOptionLike extends OptionLike {
 const text = (label: unknown) =>
   typeof label === 'string' || typeof label === 'number' ? label : undefined
 
+/** One value as a key, so an object is compared by its contents rather than by "[object Object]". */
+export const itemKey = (value: unknown) =>
+  value !== null && typeof value === 'object' ? JSON.stringify(value) : String(value)
+
 // A model value is one value or a list of them, and the same test reads both.
 const isChosen = (selected: unknown, value: unknown) =>
   Array.isArray(selected) ? selected.includes(value) : selected === value

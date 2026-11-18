@@ -3,7 +3,7 @@ import type { ListNavigationCommand } from '../../composables/_internal/use-list
 import type { ListItemRow, ListRow } from '../../composables/_internal/use-list-rows'
 import type { ListProps, ListOption, ListOptionSelected, ListEmits } from './types'
 import { computed, nextTick, onMounted, shallowRef, watch } from 'vue'
-import { optionItems } from '../../agent/items.js'
+import { itemKey, optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
@@ -113,6 +113,7 @@ useAgentNode({
   name: 'list',
   closed: true,
   items: () => optionItems(props.options, props.modelValue),
+  itemElement: (value) => elementOfItem(value),
   state: () => ({ value: props.modelValue ?? null, multiple: props.multiple ?? false }),
   actions: {
     setValue: (value) => {
@@ -208,6 +209,14 @@ function dispatchCommand(command: ListNavigationCommand): boolean {
 }
 function findItemElement(navIndex: number): HTMLElement | null {
   return getElement(`[data-list-item][data-index="${navIndex}"]`, containerRef.value)
+}
+
+// The element a choice renders as, while it is on the page: a virtual list draws only the
+// rows around the window, so the ones it did not draw have none to read a mark from.
+function elementOfItem(value: unknown) {
+  const row = itemRows.value.find((entry) => itemKey(entry.option.value) === itemKey(value))
+
+  return row ? findItemElement(row.navIndex) : null
 }
 
 function syncActiveItem(next: number, previous: number): void {
@@ -318,6 +327,7 @@ defineExpose({
   dispatch: dispatchCommand,
   setActiveIndex,
   setFirstAsActive,
+  elementOf: elementOfItem,
   activeIndex,
   activeItemId,
 })
