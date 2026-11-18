@@ -38,9 +38,9 @@ const btnContentClasses = computed(() => {
   const { icon, align } = props
   const internalAlign = icon ? 'center' : align
   const alignClasses = {
-    left: 'justify-start',
-    center: 'justify-center',
-    right: 'justify-end',
+    left: 'me-auto',
+    center: 'mx-auto',
+    right: 'ms-auto',
   }[internalAlign || buttonGroupContext?.props.align || 'center']
 
   return {
@@ -130,6 +130,7 @@ useAgentNode({
     :aria-busy="loading"
     :aria-disabled="isDisabled"
     :class="classes"
+    :data-icon="icon"
     :data-variant="computedVariant"
     :disabled="isDisabled"
     v-bind="attrs"
@@ -137,7 +138,7 @@ useAgentNode({
     <PSpinner v-if="loading" />
     <slot v-else name="prefix" />
 
-    <span class="min-w-0 flex flex-1 items-center whitespace-nowrap" :class="btnContentClasses">
+    <span class="min-w-0 flex items-center whitespace-nowrap" :class="btnContentClasses">
       <slot />
     </span>
 

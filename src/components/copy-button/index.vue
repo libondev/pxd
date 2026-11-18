@@ -42,7 +42,7 @@ async function onCopyClick(ev: PointerEvent) {
     :icon="iconShape"
     @click="onCopyClick"
   >
-    <template #prefix>
+    <template v-if="$slots.prefix" #prefix>
       <span class="shrink-0">
         <slot name="prefix" :copied="isCopied" />
       </span>
@@ -57,7 +57,7 @@ async function onCopyClick(ev: PointerEvent) {
       <CopyIcon v-else />
     </Transition>
 
-    <template #suffix>
+    <template v-if="$slots.suffix" #suffix>
       <span class="shrink-0">
         <slot name="suffix" :copied="isCopied" />
       </span>

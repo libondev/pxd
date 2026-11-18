@@ -64,8 +64,8 @@ function onLinkClick(ev: MouseEvent) {
     </slot>
 
     <template #suffix>
-      <slot name="suffix" />
       <ExternalIcon v-if="externalIcon" class="text-xs scale-y-90 opacity-50" />
+      <slot name="suffix" />
     </template>
   </PButton>
 </template>
