@@ -2,14 +2,6 @@
 
 Keep a scroll container pinned to the bottom while content updates, until the user scrolls away. Scrolling back to the bottom restores auto-follow.
 
-Only an upward scroll that the layout does not explain breaks follow, and a container that mounts with content already taller than the viewport starts at the bottom. A resize the user caused — expanding a collapse, selecting text — never pulls the view down, and if it moves the view off the bottom, auto-follow ends until you scroll back or use the action.
-
-Auto-scroll is always **instant** — smooth scrolling is not supported, so continuous chat-style follow stays stable. The container opts out of scroll anchoring (`overflow-anchor: none`), so browser compensation for reflowed content cannot break follow mid-stream.
-
-**Height required:** the container only scrolls when its height is constrained (for example `h-40`, or a flex child with `min-h-0`). Without that, it grows with content and never scrolls.
-
-The component root is a relative wrapper: `class` and attributes style the wrapper, while `wrapper-class` and the built-in scroll styles apply to the inner scroll container. The `action` slot renders outside that container, so it stays pinned without participating in the scroll.
-
 ## Default
 
 ```vue demo
