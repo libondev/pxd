@@ -2268,7 +2268,6 @@ describe('agent groups', () => {
                 'aria-labelledby': 'group-label',
               }),
               h(Choicebox, {
-                modelValue: null,
                 options: [{ label: 'One', value: 1 }],
                 'aria-labelledby': 'group-label',
               }),
