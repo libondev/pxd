@@ -65,7 +65,7 @@ const { attrs, classes } = useTailwindVariant(
       },
       selectable: {
         true: 'pe-10',
-        false: 'pe-2',
+        false: 'pe-4',
       },
     },
   },
