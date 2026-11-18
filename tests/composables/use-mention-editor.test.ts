@@ -612,6 +612,21 @@ describe('useMentionEditor', () => {
     expect(h.model.value).toBe('hello')
   })
 
+  it('keeps one line break per CRLF newline in pasted plain text', () => {
+    const h = createHarness('')
+
+    const ev = new ClipboardEvent('paste', { bubbles: true, cancelable: true })
+    Object.defineProperty(ev, 'clipboardData', {
+      value: {
+        getData: (type: string) => (type === 'text/plain' ? 'one\r\n\r\ntwo' : ''),
+      },
+    })
+    h.editor.dispatchEvent(ev)
+
+    expect(h.editor.querySelectorAll('br')).toHaveLength(2)
+    expect(h.model.value).toBe('one\n\ntwo')
+  })
+
   it('keeps the value stable across select-all, cut and paste', () => {
     const h = createHarness('hello<br>')
     const store: Record<string, string> = {}

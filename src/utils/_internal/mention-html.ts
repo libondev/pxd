@@ -81,7 +81,7 @@ function escapeMentionAttr(text: string): string {
 
 /** Escape plain text for paste fallback (newlines → `<br>`). */
 export function escapePlainTextAsHtml(text: string): string {
-  return escapeMentionText(text).replace(/\n/g, '<br>')
+  return escapeMentionText(text.replace(/\r\n?/g, '\n')).replace(/\n/g, '<br>')
 }
 
 export interface MentionTreeHandlers {

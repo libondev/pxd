@@ -253,6 +253,12 @@ describe('chip element and clipboard sanitizing', () => {
     expect(host.querySelector('br')).not.toBeNull()
     expectAnchorInvariant(host)
   })
+
+  it('keeps one <br> per pasted CRLF line break', () => {
+    const host = document.createElement('div')
+    host.appendChild(sanitizeMentionClipboardHtml(escapePlainTextAsHtml('one\r\n\r\ntwo')))
+    expect(host.querySelectorAll('br')).toHaveLength(2)
+  })
 })
 
 describe('public mention-html utils', () => {
@@ -315,5 +321,6 @@ describe('public mention-html utils', () => {
   it('escapePlainTextAsHtml keeps markup inert and newlines as <br>', () => {
     expect(escapePlainTextAsHtml('a < b & c')).toBe('a &lt; b &amp; c')
     expect(escapePlainTextAsHtml('one\ntwo')).toBe('one<br>two')
+    expect(escapePlainTextAsHtml('one\r\n\r\ntwo')).toBe('one<br><br>two')
   })
 })
