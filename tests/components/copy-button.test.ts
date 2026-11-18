@@ -27,7 +27,7 @@ describe('copy-button', () => {
   it('renders a button', () => {
     const wrapper = mount(CopyButton, {
       props: {
-        text: 'lorem',
+        content: 'lorem',
       },
     })
 
@@ -38,10 +38,10 @@ describe('copy-button', () => {
     wrapper.unmount()
   })
 
-  it('copies the text prop and emits it with the click event', async () => {
+  it('copies the content prop and emits it with the click event', async () => {
     const wrapper = mount(CopyButton, {
       props: {
-        text: 'lorem',
+        content: 'lorem',
       },
     })
 
@@ -58,10 +58,10 @@ describe('copy-button', () => {
     wrapper.unmount()
   })
 
-  it('resolves the text through a function with the click event', async () => {
+  it('resolves the content through a function with the click event', async () => {
     const wrapper = mount(CopyButton, {
       props: {
-        text: (event: Event) => `type:${event.type}`,
+        content: (event: PointerEvent) => `type:${event.type}`,
       },
     })
 
@@ -73,7 +73,7 @@ describe('copy-button', () => {
     wrapper.unmount()
   })
 
-  it('copies an empty string without writing to the clipboard when text is absent', async () => {
+  it('copies an empty string without writing to the clipboard when content is absent', async () => {
     const wrapper = mount(CopyButton)
 
     await wrapper.trigger('click')
@@ -93,7 +93,7 @@ describe('copy-button', () => {
 
     const wrapper = mount(CopyButton, {
       props: {
-        text: 'lorem',
+        content: 'lorem',
       },
     })
 
@@ -109,15 +109,15 @@ describe('copy-button', () => {
     wrapper.unmount()
   })
 
-  it('should expose the copied state to the default slot and reset it', async () => {
+  it('should expose the copied state to the prefix slot and reset it', async () => {
     vi.useFakeTimers()
 
     const wrapper = mount(CopyButton, {
       props: {
-        text: 'lorem',
+        content: 'lorem',
       },
       slots: {
-        default: ({ copied }: { copied: boolean }) => (copied ? 'Copied' : 'Copy'),
+        prefix: ({ copied }: { copied: boolean }) => (copied ? 'Copied' : 'Copy'),
       },
     })
 
@@ -128,8 +128,7 @@ describe('copy-button', () => {
 
     expect(wrapper.text()).toContain('Copied')
 
-    vi.advanceTimersByTime(1500)
-    await flushPromises()
+    await vi.advanceTimersByTimeAsync(1500)
 
     expect(wrapper.text()).toContain('Copy')
 
