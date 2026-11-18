@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import LogoGithub from '@gdsicon/vue/github'
 import LogoFigmaIcon from '@gdsicon/vue/logo-figma'
 import LogoGeistIcon from '@gdsicon/vue/logo-geist'
 
@@ -15,6 +16,11 @@ const LINKS = [
         label: 'Geist Design System',
         href: 'https://www.figma.com/community/file/1330020847221146106/geist-design-system-vercel',
         icon: LogoFigmaIcon,
+      },
+      {
+        label: 'UI SDK',
+        href: 'https://github.com/vercel-labs/ui',
+        icon: LogoGithub,
       },
     ],
   },
