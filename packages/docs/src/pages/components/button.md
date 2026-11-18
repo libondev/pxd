@@ -121,6 +121,7 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 | shape | `'default' \| 'square' \| 'rounded'` | `default` | Corner radius, `square` removes it and `rounded` makes it fully round |
 | align | `'left' \| 'center' \| 'right'` | - | Content alignment, forced to `center` when `icon` is set |
 | icon | `boolean` | `false` | Render as a square icon-only button with centered content |
+| text | `string` | - | Text rendered when the default slot is empty |
 | loading | `boolean` | - | Show a spinner and treat the button as disabled |
 | disabled | `boolean` | - | Disable the button, also implied by `loading` or a disabled group |
 | full-width | `boolean` | - | Stretch the button to fill the whole line |
@@ -138,4 +139,6 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
+| default | Button label, falls back to the `text` prop. |
+| prefix | Leading content, replaced by the spinner while `loading` is `true`. |
+| suffix | Trailing content. |

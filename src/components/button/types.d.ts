@@ -4,11 +4,13 @@ import type {
   ComponentAlign,
   ComponentShape,
   ComponentSizeWithXxs,
+  ComponentText,
 } from '../../types/shared/props'
 
 export interface ButtonProps {
   as?: ComponentAs
   variant?: ButtonVariant
+  text?: ComponentText
   size?: ComponentSizeWithXxs
   shape?: ComponentShape
   align?: ComponentAlign

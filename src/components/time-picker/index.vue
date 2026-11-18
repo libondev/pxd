@@ -308,13 +308,21 @@ onBeforeUnmount(() => {
 
     <template #content>
       <div class="p-1.5 gap-1 flex items-center justify-between border-b" @click.stop>
-        <PButton size="xs" variant="ghost" class="rounded-md" @click="onCancelClick">
-          {{ configProvider.locale.interaction.cancel }}
-        </PButton>
+        <PButton
+          size="xs"
+          variant="ghost"
+          class="rounded-md"
+          :text="configProvider.locale.interaction.cancel"
+          @click="onCancelClick"
+        />
 
-        <PButton size="xs" variant="ghost" class="rounded-md" @click="onSetNowClick">
-          {{ configProvider.locale.date.now }}
-        </PButton>
+        <PButton
+          size="xs"
+          variant="ghost"
+          class="rounded-md"
+          :text="configProvider.locale.date.now"
+          @click="onSetNowClick"
+        />
       </div>
 
       <div

@@ -345,17 +345,23 @@ defineExpose({
               {{ localCurrent + 1 }}/{{ steps.length }}
             </span>
 
-            <PButton v-if="showSkip && !isLastStep" variant="ghost" size="sm" @click="skip">
-              {{ configProvider.locale.tour.skip }}
-            </PButton>
+            <PButton
+              v-if="showSkip && !isLastStep"
+              variant="ghost"
+              size="sm"
+              :text="configProvider.locale.tour.skip"
+              @click="skip"
+            />
 
-            <PButton v-if="localCurrent > 0" variant="ghost" size="sm" @click="prev">
-              {{ prevText }}
-            </PButton>
+            <PButton
+              v-if="localCurrent > 0"
+              variant="ghost"
+              size="sm"
+              :text="prevText"
+              @click="prev"
+            />
 
-            <PButton variant="primary" size="sm" @click="next">
-              {{ nextText }}
-            </PButton>
+            <PButton variant="primary" size="sm" :text="nextText" @click="next" />
           </div>
         </template>
       </PPopover>

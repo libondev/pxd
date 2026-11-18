@@ -135,7 +135,9 @@ function onPointerUp(event: PointerEvent) {
       <slot name="prefix" />
     </template>
 
-    <slot />
+    <template v-if="$slots.default" #default>
+      <slot />
+    </template>
 
     <template #suffix>
       <slot name="suffix" />

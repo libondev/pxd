@@ -370,9 +370,14 @@ onUnmounted(() => {
       </div>
 
       <div v-if="collapsible && isOverflowing" class="border-t border-gray-alpha-300">
-        <PButton variant="ghost" size="sm" full-width shape="square" @click="toggleExpanded">
-          {{ configProvider.locale.codeBlock[expanded ? 'collapse' : 'expand'] }}
-        </PButton>
+        <PButton
+          variant="ghost"
+          size="sm"
+          full-width
+          shape="square"
+          :text="configProvider.locale.codeBlock[expanded ? 'collapse' : 'expand']"
+          @click="toggleExpanded"
+        />
       </div>
     </div>
   </div>

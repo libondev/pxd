@@ -139,7 +139,7 @@ useAgentNode({
     <slot v-else name="prefix" />
 
     <span class="min-w-0 flex items-center whitespace-nowrap" :class="btnContentClasses">
-      <slot />
+      <slot>{{ text }}</slot>
     </span>
 
     <slot name="suffix" />

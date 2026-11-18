@@ -214,9 +214,12 @@ watch(
         <ChevronRightIcon class="size-em rotate-180" aria-hidden="true" />
       </PButton>
 
-      <PButton size="xs" class="px-0.5" @click="selectToday">
-        {{ configProvider.locale.date.today }}
-      </PButton>
+      <PButton
+        size="xs"
+        class="px-0.5"
+        :text="configProvider.locale.date.today"
+        @click="selectToday"
+      />
 
       <PButton
         icon

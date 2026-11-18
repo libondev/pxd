@@ -564,18 +564,20 @@ watch(
               </div>
 
               <div class="gap-2 ms-auto flex items-center">
-                <PButton size="xs" variant="ghost" @click="skipCurrentQuestion">
-                  {{ configProvider.locale.interaction.skip }}
-                </PButton>
+                <PButton
+                  size="xs"
+                  variant="ghost"
+                  :text="configProvider.locale.interaction.skip"
+                  @click="skipCurrentQuestion"
+                />
 
                 <PButton
                   size="xs"
                   v-show="showSubmitButton"
                   variant="primary"
+                  :text="configProvider.locale.interaction.submit"
                   @click="onSubmitAnswers"
-                >
-                  {{ configProvider.locale.interaction.submit }}
-                </PButton>
+                />
               </div>
             </div>
           </div>

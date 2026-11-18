@@ -16,7 +16,7 @@ function onConfirm() {
 </script>
 
 <template>
-  <PHoldButton @confirm="onConfirm"> Hole me </PHoldButton>
+  <PHoldButton text="Hole me" @confirm="onConfirm" />
 </template>
 ```
 

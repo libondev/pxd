@@ -261,13 +261,20 @@ defineExpose({
       </div>
 
       <div class="gap-2 ms-auto flex items-center">
-        <PButton size="sm" :disabled="isDisabled" @click="reject()">
-          {{ configProvider.locale.approval.reject }}
-        </PButton>
+        <PButton
+          size="sm"
+          :disabled="isDisabled"
+          :text="configProvider.locale.approval.reject"
+          @click="reject()"
+        />
 
-        <PButton size="sm" variant="primary" :loading="loading" @click="approve()">
-          {{ configProvider.locale.approval.approve }}
-        </PButton>
+        <PButton
+          size="sm"
+          variant="primary"
+          :loading="loading"
+          :text="configProvider.locale.approval.approve"
+          @click="approve()"
+        />
       </div>
     </div>
   </div>

@@ -15,6 +15,45 @@ describe('button', () => {
     wrapper.unmount()
   })
 
+  it('renders text when no default slot is provided', () => {
+    const wrapper = mount(Button, {
+      props: {
+        text: 'Save',
+      },
+    })
+
+    expect(wrapper.text()).toBe('Save')
+
+    wrapper.unmount()
+  })
+
+  it('prefers the default slot over text', () => {
+    const wrapper = mount(Button, {
+      props: {
+        text: 'Save',
+      },
+      slots: {
+        default: 'Submit',
+      },
+    })
+
+    expect(wrapper.text()).toBe('Submit')
+
+    wrapper.unmount()
+  })
+
+  it('renders a numeric text value', () => {
+    const wrapper = mount(Button, {
+      props: {
+        text: 0,
+      },
+    })
+
+    expect(wrapper.text()).toBe('0')
+
+    wrapper.unmount()
+  })
+
   it('should render an default button', () => {
     const wrapper = mount(Button, {
       props: {

@@ -167,13 +167,21 @@ watch(
 
       <div class="gap-2 px-2 pbe-2 flex items-center justify-end">
         <slot name="actions" :confirm="onConfirm" :cancel="onCancel" :pending="isPending">
-          <PButton size="sm" variant="ghost" :disabled="isPending" @click="onCancel">
-            {{ computedCancelText }}
-          </PButton>
+          <PButton
+            size="sm"
+            variant="ghost"
+            :disabled="isPending"
+            :text="computedCancelText"
+            @click="onCancel"
+          />
 
-          <PButton size="sm" :variant="confirmVariant" :loading="isPending" @click="onConfirm">
-            {{ computedConfirmText }}
-          </PButton>
+          <PButton
+            size="sm"
+            :variant="confirmVariant"
+            :loading="isPending"
+            :text="computedConfirmText"
+            @click="onConfirm"
+          />
         </slot>
       </div>
     </template>
