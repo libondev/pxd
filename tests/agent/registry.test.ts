@@ -79,6 +79,29 @@ describe('agent registry', () => {
     offs.forEach((off) => off())
   })
 
+  it('should absorb a part that another part holds', () => {
+    const outer = document.createElement('div')
+    const middle = document.createElement('div')
+    const inner = document.createElement('div')
+    const ownEl = () => outer
+    const middleEl = () => middle
+
+    outer.append(middle)
+    middle.append(inner)
+
+    const offs = registered(
+      { node: nodeOf({ el: ownEl, owns: () => middle }) },
+      { node: nodeOf({ el: middleEl, owns: () => inner }) },
+      { node: nodeOf({ el: () => inner }) },
+    )
+    const visible = agentVisibleEntries()
+
+    expect(visible).toHaveLength(1)
+    expect(visible[0].node.el).toBe(ownEl)
+
+    offs.forEach((off) => off())
+  })
+
   it('should own its own element when nothing shares it', () => {
     const offs = registered({ node: nodeOf({ el: () => document.createElement('div') }) })
     const entry = agentEntries().at(-1)!

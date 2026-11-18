@@ -423,6 +423,7 @@ defineExpose({
     <div
       v-if="$slots.prefix"
       ref="prefixRef"
+      :inert="openedSide !== 'prefix'"
       class="pxd-swipe-cell--prefix inset-y-0 left-0 absolute z-0 flex h-full items-center"
       :class="prefixClass"
     >
@@ -440,6 +441,7 @@ defineExpose({
     <div
       v-if="$slots.suffix"
       ref="suffixRef"
+      :inert="openedSide !== 'suffix'"
       class="pxd-swipe-cell--suffix inset-y-0 right-0 absolute z-0 flex h-full items-center"
       :class="suffixClass"
     >

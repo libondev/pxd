@@ -1,8 +1,11 @@
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import { onScopeDispose, shallowRef, toValue } from 'vue'
-import { caf, raf } from '../utils/event.js'
+import { caf, off, on, raf } from '../utils/event.js'
+import { isServer } from '../utils/is.js'
 
 const DEFAULT_DURATION = 2000
+// How far a hidden tab's timer steps, since it fires no animation frames.
+const HIDDEN_TICK = 50
 
 export type HoldStatus = 'idle' | 'loading' | 'confirmed' | 'canceled'
 
@@ -31,6 +34,7 @@ export function useHold(options: HoldOptions = {}): Results {
   const progress = shallowRef(0)
 
   let frameId = 0
+  let timer: ReturnType<typeof setTimeout> | undefined
   let held = 0
   let lastFrameAt = 0
 
@@ -43,19 +47,34 @@ export function useHold(options: HoldOptions = {}): Results {
   }
 
   function stopProgress() {
-    if (!frameId) {
+    if (frameId) {
+      caf(frameId)
+      frameId = 0
+    }
+
+    if (timer) {
+      clearTimeout(timer)
+      timer = undefined
+    }
+  }
+
+  // A hidden tab fires no animation frames, so the hold counts down on a timer there, and
+  // finishes wherever it is running rather than waiting for the tab to be looked at again.
+  function scheduleProgress() {
+    if (!isServer() && document.hidden) {
+      timer = setTimeout(updateProgress, HIDDEN_TICK)
+
       return
     }
 
-    caf(frameId)
-    frameId = 0
+    frameId = raf(updateProgress)
   }
 
   function startProgress() {
     lastFrameAt = Date.now()
 
-    if (!frameId) {
-      frameId = raf(updateProgress)
+    if (!frameId && !timer) {
+      scheduleProgress()
     }
   }
 
@@ -64,6 +83,7 @@ export function useHold(options: HoldOptions = {}): Results {
     const duration = getDuration()
 
     frameId = 0
+    timer = undefined
     held += now - lastFrameAt
     lastFrameAt = now
 
@@ -76,7 +96,16 @@ export function useHold(options: HoldOptions = {}): Results {
     }
 
     progress.value = held / duration
-    frameId = raf(updateProgress)
+    scheduleProgress()
+  }
+
+  function onVisibilityChange() {
+    if (status.value !== 'loading') {
+      return
+    }
+
+    stopProgress()
+    scheduleProgress()
   }
 
   function start() {
@@ -123,7 +152,17 @@ export function useHold(options: HoldOptions = {}): Results {
     }
   }
 
-  onScopeDispose(stopProgress)
+  if (!isServer()) {
+    on(document, 'visibilitychange', onVisibilityChange)
+  }
+
+  onScopeDispose(() => {
+    stopProgress()
+
+    if (!isServer()) {
+      off(document, 'visibilitychange', onVisibilityChange)
+    }
+  })
 
   return { status, progress, start, pause, resume, stop }
 }

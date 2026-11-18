@@ -1870,28 +1870,49 @@ describe('agent readings and pages', () => {
   })
 
   it('should open and shut a swipe cell as a drag would', async () => {
+    let clicks = 0
+
     track(
       mount(SwipeCell, {
         slots: {
           default: 'Row',
-          suffix: () => h('button', 'Delete'),
+          suffix: () => h('button', { onClick: () => (clicks += 1) }, 'Delete'),
         },
       }),
     )
     const agent = createAgent()
 
     expect(find(agent.snapshot(), 'swipe-cell')).toMatchObject({ value: false })
+    expect(find(agent.snapshot(), 'swipe-cell').buttons).toBeUndefined()
+
+    const hidden = await agent.act({
+      steps: [{ ref: 'swipe-cell', action: 'press', args: ['Delete'] }],
+    })
+
+    expect(hidden.ok).toBe(false)
+    expect(hidden.error?.message).toContain('has no buttons to press')
 
     const opened = await agent.act({
       steps: [{ ref: 'swipe-cell', action: 'open', args: ['suffix'] }],
     })
 
     expect(opened.ok).toBe(true)
-    expect(find(agent.snapshot(), 'swipe-cell')).toMatchObject({ value: 'suffix' })
+    expect(find(agent.snapshot(), 'swipe-cell')).toMatchObject({
+      value: 'suffix',
+      buttons: ['Delete'],
+    })
+
+    const pressed = await agent.act({
+      steps: [{ ref: 'swipe-cell', action: 'press', args: ['Delete'] }],
+    })
+
+    expect(pressed.ok).toBe(true)
+    expect(clicks).toBe(1)
 
     await agent.act({ steps: [{ ref: 'swipe-cell', action: 'close' }] })
 
     expect(find(agent.snapshot(), 'swipe-cell')).toMatchObject({ value: false })
+    expect(find(agent.snapshot(), 'swipe-cell').buttons).toBeUndefined()
 
     const refused = await agent.act({
       steps: [{ ref: 'swipe-cell', action: 'open', args: ['middle'] }],
@@ -2131,6 +2152,10 @@ describe('agent parts and marks', () => {
     expect(document.querySelector('[data-list]')).not.toBeNull()
     expect(names).toContain('select')
     expect(names).not.toContain('list')
+    expect(agent.query({ kind: 'list' })).toHaveLength(0)
+    expect(agent.query({ within: 'Region' })[0]).toMatchObject({
+      items: [{ label: 'Europe', value: 'eu' }],
+    })
   })
 })
 
@@ -2230,5 +2255,46 @@ describe('agent groups', () => {
     await agent.act({ steps: [{ ref: 'Cheese', action: 'toggle' }] })
 
     expect(value.value).toEqual([])
+  })
+})
+
+describe('agent readings', () => {
+  it('should ask about a group choice that carries its sentence in the option', async () => {
+    const value = ref<string | number>('')
+
+    track(
+      mount(
+        defineComponent({
+          setup: () => () =>
+            h(RadioGroup, {
+              modelValue: value.value,
+              'aria-label': 'Plan',
+              options: [
+                { label: 'Free', value: 'free' },
+                { label: 'Delete', value: 'delete', confirm: 'Deletes the account' },
+              ],
+              'onUpdate:model-value': (next: unknown) => {
+                value.value = next as string
+              },
+            }),
+        }),
+      ),
+    )
+    const agent = createAgent()
+
+    const refused = await agent.act({
+      steps: [{ ref: 'Plan', action: 'setValue', args: ['delete'] }],
+    })
+
+    expect(refused.ok).toBe(false)
+    expect(refused.error?.message).toContain('Needs a person: Deletes the account')
+    expect(value.value).toBe('')
+
+    const allowed = await createAgent({ allow: () => true }).act({
+      steps: [{ ref: 'Plan', action: 'setValue', args: ['delete'] }],
+    })
+
+    expect(allowed.ok).toBe(true)
+    expect(value.value).toBe('delete')
   })
 })

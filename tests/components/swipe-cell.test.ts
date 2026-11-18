@@ -292,6 +292,25 @@ describe('swipe-cell', () => {
     wrapper.unmount()
   })
 
+  it('should take a covered action side out of focus and press', async () => {
+    const wrapper = mount(SwipeCell, {
+      props: { modelValue: false },
+      slots: {
+        default: 'Content',
+        suffix: '<button>Delete</button>',
+      },
+    })
+
+    expect(wrapper.find('.pxd-swipe-cell--suffix').attributes('inert')).toBeDefined()
+
+    await wrapper.setProps({ modelValue: 'suffix' })
+    await nextTick()
+
+    expect(wrapper.find('.pxd-swipe-cell--suffix').attributes('inert')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
   it('should not let outside click close an external controller update in the same event', async () => {
     prefixWidth = 64
     suffixWidth = 80

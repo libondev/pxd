@@ -153,6 +153,27 @@ describe('hold-button', () => {
     wrapper.unmount()
   })
 
+  it('should finish a hold while the tab is hidden', async () => {
+    Object.defineProperty(document, 'hidden', { configurable: true, value: true })
+
+    try {
+      const wrapper = mount(HoldButton, {
+        props: {
+          duration: 30,
+        },
+      })
+
+      press(wrapper)
+      await sleep(150)
+
+      expect(wrapper.emitted('confirm')).toHaveLength(1)
+
+      wrapper.unmount()
+    } finally {
+      delete (document as { hidden?: boolean }).hidden
+    }
+  })
+
   it('should fall back to the default duration when `duration` is not a positive number', async () => {
     const wrapper = mount(HoldButton, {
       props: {
