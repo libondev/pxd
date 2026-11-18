@@ -283,7 +283,7 @@ defineExpose({
 
         <span
           v-if="summaryText"
-          class="pxd-todo-list--summary font-normal shrink-0 text-foreground-secondary"
+          class="pxd-todo-list--summary font-normal shrink-0 leading-none text-foreground-secondary"
           :class="SIZE_CLASSES[computedSize].meta"
           aria-live="polite"
         >

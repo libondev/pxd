@@ -138,7 +138,7 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
         }"
       />
 
-      <span class="pxd-tool-call--title min-w-0 truncate">
+      <span class="pxd-tool-call--title min-w-0 truncate leading-none">
         {{ title }}
       </span>
 

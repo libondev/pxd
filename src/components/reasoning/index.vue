@@ -47,7 +47,7 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
 
       <PShimmerText
         :variant="shimmerVariant"
-        class="pxd-reasoning--title leading-inherit"
+        class="pxd-reasoning--title leading-none"
         :disabled="!streaming"
       >
         {{ title }}
