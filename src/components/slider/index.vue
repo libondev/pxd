@@ -203,7 +203,7 @@ const thumbList = computed(() => {
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-slider group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
+    base: 'pxd-slider--wrapper group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
     variants: {
       size: {
         sm: 'h-2',
@@ -512,7 +512,7 @@ onBeforeUnmount(stopDragging)
     data-slider
     v-bind="attrs"
     :data-variant="variant"
-    class="pxd-slider--container w-full max-w-full shrink-0"
+    class="pxd-slider w-full max-w-full shrink-0"
   >
     <div
       ref="sliderRef"
@@ -617,5 +617,17 @@ onBeforeUnmount(stopDragging)
 
 .dark .pxd-slider--thumb::before {
   box-shadow: 0 0 0 1px var(--color-background-200);
+}
+
+.pxd-slider--wrapper::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 180%;
+  transform: translateY(-50%);
+  background: transparent;
+  z-index: 0;
 }
 </style>

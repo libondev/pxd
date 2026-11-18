@@ -485,6 +485,18 @@ onBeforeUnmount(() => {
   box-shadow: 0 0 0 1px var(--color-background-200);
 }
 
+.pxd-effort-slider--track::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 180%;
+  transform: translateY(-50%);
+  background: transparent;
+  z-index: 0;
+}
+
 .pxd-effort-slider--particle {
   animation: pxd-effort-slider-particle-flow var(--p-duration) linear infinite;
   animation-delay: var(--p-delay);
