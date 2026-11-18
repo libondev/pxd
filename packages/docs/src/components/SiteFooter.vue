@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import LogoGithub from '@gdsicon/vue/github'
 import LogoFigmaIcon from '@gdsicon/vue/logo-figma'
 import LogoGeistIcon from '@gdsicon/vue/logo-geist'
+import LogoGithub from '@gdsicon/vue/logo-github'
 
 const LINKS = [
   {

@@ -235,7 +235,7 @@ const options = [
 <template>
   <PSelect v-model="value" class="w-full" :suffix-icon="false" :options="options" placeholder="Please select">
     <template #prefix>
-      <span class="inline-flex ms-1.5 size-2 bg-gray-500 rounded-full" :class="{ 'bg-primary': value }"></span>
+      <span class="inline-flex size-2 bg-gray-500 rounded-full" :class="{ 'bg-primary': value }"></span>
     </template>
 
     <template #default="{ label }">
