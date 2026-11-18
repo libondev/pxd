@@ -363,6 +363,23 @@ const agent = createAgent({
 - A step waits `allowTimeout` milliseconds for the answer, five minutes by default, and then fails without running.
 - A failure says which gate refused: `Refused setValue on c3 by the app.`, or `by registerTools' allow` when the browser's tools refused it, or `Nobody answered in time for setValue on c3.` when `allow` never answered.
 
+## Testing what an agent may do
+
+`pxd/agent/testing` reads a bridge the way a test does. Every call throws when the assertion fails, so no test runner is needed:
+
+```ts
+import { inspectAgent } from "pxd/agent/testing"
+
+const view = inspectAgent({ allow: () => true })
+
+view.component("Region", { value: "eu", actions: ["setValue", "setOpen", "toggle"] })
+view.absent("checkbox")
+await view.refuse({ ref: "Account", action: "setValue", args: ["x"] }, "Needs a person")
+await view.run({ ref: "Region", action: "setValue", args: ["eu"] })
+```
+
+`component` finds a component the way a step does — by ref, label, row text or kind — and matches the keys you name, failing with both sides when one differs. `absent` passes only when nothing answers to the name. `run` throws with the step that stopped it, and `refuse` throws when the step ran, matching the words you give it when you give any. `inspectAgent(agent)` wraps a bridge a test already made; with no argument it builds one.
+
 ## Naming what you want driven
 
 A component is found by its label, and the label is the name a person reads: its `aria-label`, its `<label>`, the text of its button, or the name of the field it wraps. Nothing is invented, so a control with no text of its own appears in `snapshot` with a `ref` and no `label`:

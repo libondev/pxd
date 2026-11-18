@@ -5,6 +5,7 @@ import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, ref } from 'vue'
 import { createAgent } from '../../src/agent'
+import { inspectAgent } from '../../src/agent/testing'
 import ActiveGraph from '../../src/components/active-graph/index.vue'
 import ApprovalCard from '../../src/components/approval-card/index.vue'
 import Button from '../../src/components/button/index.vue'
@@ -145,11 +146,12 @@ describe('agent components', () => {
       }),
     )
 
-    const found = createAgent().snapshot()
+    const view = inspectAgent()
 
-    expect(find(found, 'textarea')).toMatchObject({ label: 'Notes', required: true })
-    expect(found.find((entry) => entry.label === 'Email')).toMatchObject({ required: true })
-    expect(found.find((entry) => entry.label === 'Nickname')?.required).toBeUndefined()
+    expect(view.components()).toHaveLength(3)
+    view.component('Notes', { component: 'textarea', required: true })
+    view.component('Email', { component: 'input', required: true })
+    view.component('Nickname', { required: undefined })
   })
 
   it('should clamp what a slider is set to', async () => {

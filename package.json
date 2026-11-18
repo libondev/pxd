@@ -56,6 +56,10 @@
       "types": "./dist/agent/index.d.ts",
       "default": "./dist/agent/index.js"
     },
+    "./agent/testing": {
+      "types": "./dist/agent/testing.d.ts",
+      "default": "./dist/agent/testing.js"
+    },
     "./components": {
       "types": "./dist/components/index.d.ts",
       "default": "./dist/components/index.js"
