@@ -1,7 +1,32 @@
 export const MENTION_TAG = 'MENTION'
 export const MENTION_TAG_LOWER = MENTION_TAG.toLowerCase()
 
-export const BLOCK_TAGS = new Set(['DIV', 'P', 'LI', 'PRE'])
+/** Elements that start a line of their own, typed or pasted. */
+export const BLOCK_TAGS = new Set([
+  'ADDRESS',
+  'ARTICLE',
+  'ASIDE',
+  'BLOCKQUOTE',
+  'DD',
+  'DIV',
+  'DT',
+  'FIGCAPTION',
+  'FIGURE',
+  'FOOTER',
+  'H1',
+  'H2',
+  'H3',
+  'H4',
+  'H5',
+  'H6',
+  'HEADER',
+  'LI',
+  'MAIN',
+  'NAV',
+  'P',
+  'PRE',
+  'SECTION',
+])
 
 /** The trigger a chip falls back to when its markup carries no `trigger` attribute. */
 export const DEFAULT_TRIGGER = '@'
@@ -81,6 +106,7 @@ function escapeMentionAttr(text: string): string {
 
 /** Escape plain text for paste fallback (newlines → `<br>`). */
 export function escapePlainTextAsHtml(text: string): string {
+  // The parser rewrites a leftover `\r` into `\n`, which would become a second <br>.
   return escapeMentionText(text.replace(/\r\n?/g, '\n')).replace(/\n/g, '<br>')
 }
 
@@ -89,22 +115,45 @@ export interface MentionTreeHandlers {
   onText: (text: string) => void
   /** A legal `<mention>` chip. */
   onMention: (el: HTMLElement) => void
-  /** A `<br>`. */
+  /** One line ending, already de-duplicated against the block boundaries around it. */
   onBreak: () => void
-  /** A block element that carries content: emit a line break where one is missing. */
-  onBlock: () => void
+}
+
+/** A block holds lines when it carries text or a chip; `<br>`s mark them otherwise. */
+function blockHoldsContent(el: Element): boolean {
+  return !!(el.textContent || el.querySelector(MENTION_TAG_LOWER))
+}
+
+/** The first `<br>` of a content-less block is the line its boundary opened. */
+function blockOwnBreaks(el: Element): number {
+  return Math.max(0, el.querySelectorAll('br').length - 1)
 }
 
 /**
- * Walk a mention DOM tree in document order — chips, text, breaks and block
- * boundaries — for both the public parser and the serializer.
+ * Walk a mention DOM tree in document order for every reader of the format: the
+ * serializer, the public parser and the paste sanitizer. The line model lives here
+ * so none of them re-implements how blocks and `<br>`s become lines.
  */
 export function walkMentionTree(root: Node, handlers: MentionTreeHandlers): void {
+  // Whether the next output may still land on the current line.
+  let atLineStart = true
+
+  function emitBreak() {
+    handlers.onBreak()
+    atLineStart = true
+  }
+
   function walk(node: Node) {
     if (node.nodeType === Node.TEXT_NODE) {
       // Normalize insert glue NBSP so a public value keeps ordinary spaces, and
       // drop the caret anchor so it never reaches the public value.
-      handlers.onText((node.textContent ?? '').replace(/\u00A0/g, ' ').replace(/\u200B/g, ''))
+      const text = (node.textContent ?? '').replace(/\u00A0/g, ' ').replace(/\u200B/g, '')
+
+      if (text) {
+        handlers.onText(text)
+        atLineStart = text.endsWith('\n')
+      }
+
       return
     }
 
@@ -116,19 +165,33 @@ export function walkMentionTree(root: Node, handlers: MentionTreeHandlers): void
 
     if (isMentionElement(el)) {
       handlers.onMention(el)
+      atLineStart = false
       return
     }
 
     if (el.tagName === 'BR') {
-      handlers.onBreak()
+      emitBreak()
       return
     }
 
-    // Pressing Enter makes the browser wrap content in its own block elements;
-    // nothing in this component creates them. A block only needs a line of its
-    // own when it carries content — an empty one is already just its <br>.
-    if (BLOCK_TAGS.has(el.tagName) && (el.textContent || el.querySelector(MENTION_TAG_LOWER))) {
-      handlers.onBlock()
+    if (BLOCK_TAGS.has(el.tagName)) {
+      if (!atLineStart) {
+        emitBreak()
+      }
+
+      if (blockHoldsContent(el)) {
+        for (const child of Array.from(el.childNodes)) {
+          walk(child)
+        }
+      } else {
+        for (let i = 0, own = blockOwnBreaks(el); i < own; i++) {
+          emitBreak()
+        }
+      }
+
+      // A block keeps its last line even when it stayed empty.
+      atLineStart = false
+      return
     }
 
     for (const child of Array.from(el.childNodes)) {
@@ -163,11 +226,6 @@ export function serializeMentionHtml(root: HTMLElement): string {
     onBreak: () => {
       result += '\n'
     },
-    onBlock: () => {
-      if (result && !result.endsWith('\n')) {
-        result += '\n'
-      }
-    },
   })
 
   // The editor keeps a single <br> so an empty field still has a line box. That
@@ -175,29 +233,31 @@ export function serializeMentionHtml(root: HTMLElement): string {
   return result === '\n' ? '' : result
 }
 
-/**
- * Build a DocumentFragment from public mention HTML (text + legal `<mention>` only).
- */
-function parseMentionFragment(html: string): DocumentFragment {
+/** Build a DocumentFragment from mention HTML (text + legal `<mention>` only). */
+function mentionFragment(html: string): DocumentFragment {
   const fragment = document.createDocumentFragment()
+  const doc = new DOMParser().parseFromString(html, 'text/html')
 
-  if (!html) {
-    return fragment
-  }
+  walkMentionTree(doc.body, {
+    onText: (text) => appendPlainText(fragment, text),
+    onMention: (el) => appendSanitizedMention(fragment, el),
+    onBreak: () => {
+      fragment.appendChild(document.createElement('br'))
+    },
+  })
 
-  const doc = new DOMParser().parseFromString(`<body>${html}</body>`, 'text/html')
-  appendSanitizedChildren(doc.body, fragment)
   return fragment
+}
+
+function parseMentionFragment(html: string): DocumentFragment {
+  return html ? mentionFragment(html) : document.createDocumentFragment()
 }
 
 /**
  * Paste sanitizer: keep legal `<mention key>` nodes; everything else becomes text.
  */
 export function sanitizeMentionClipboardHtml(html: string): DocumentFragment {
-  const fragment = document.createDocumentFragment()
-  const doc = new DOMParser().parseFromString(html, 'text/html')
-  appendSanitizedChildren(doc.body, fragment)
-  return fragment
+  return mentionFragment(html)
 }
 
 /**
@@ -222,41 +282,21 @@ export function trimMentionEdgeBreaks(fragment: DocumentFragment): DocumentFragm
   return fragment
 }
 
-function appendSanitizedChildren(source: Node, target: Node) {
-  for (const child of Array.from(source.childNodes)) {
-    if (child.nodeType === Node.TEXT_NODE) {
-      const text = child.textContent ?? ''
-      if (text) {
-        appendPlainText(target, text)
-      }
-      continue
-    }
+/** A keyless `<mention>` is not ours, so it comes back as plain text. */
+function appendSanitizedMention(target: Node, el: HTMLElement) {
+  const key = el.getAttribute('key')
 
-    if (child.nodeType !== Node.ELEMENT_NODE) {
-      continue
-    }
-
-    const el = child as HTMLElement
-
-    if (isMentionElement(el)) {
-      const key = el.getAttribute('key')
-      if (key != null && key !== '') {
-        const trigger = el.getAttribute('trigger') || DEFAULT_TRIGGER
-        target.appendChild(createMentionElement(key, getMentionLabel(el), trigger))
-        // The anchor merges into the text node that follows, so the chip keeps an
-        // editable node on its right without splitting the surrounding text.
-        target.appendChild(createCaretAnchor())
-        continue
-      }
-    }
-
-    if (el.tagName === 'BR') {
-      target.appendChild(document.createElement('br'))
-      continue
-    }
-
-    appendSanitizedChildren(el, target)
+  if (key == null || key === '') {
+    appendPlainText(target, el.textContent ?? '')
+    return
   }
+
+  target.appendChild(
+    createMentionElement(key, getMentionLabel(el), el.getAttribute('trigger') || DEFAULT_TRIGGER),
+  )
+  // The anchor merges into the text node that follows, so the chip keeps an
+  // editable node on its right without splitting the surrounding text.
+  target.appendChild(createCaretAnchor())
 }
 
 function appendPlainText(target: Node, text: string) {

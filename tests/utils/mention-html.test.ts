@@ -187,6 +187,49 @@ describe('block content created by pressing Enter', () => {
   })
 })
 
+describe('block line model', () => {
+  function fromDom(html: string): string {
+    const root = document.createElement('div')
+    root.setAttribute('contenteditable', 'true')
+    root.innerHTML = html
+    return serializeMentionHtml(root)
+  }
+
+  it('keeps the empty line a second Enter opened', () => {
+    // An empty block's <br> is that line, not a break after it.
+    expect(fromDom('a<div><br></div><div>b</div>')).toBe('a\n\nb')
+    expect(fromDom('a<div><br></div>')).toBe('a\n')
+    expect(fromDom('<div>a</div><div><br></div>')).toBe('a\n')
+  })
+
+  it('keeps a blank paragraph, which carries no <br> at all', () => {
+    expect(fromDom('<p>a</p><p></p><p>b</p>')).toBe('a\n\nb')
+    expect(fromDom('<div>a</div><div></div><div>b</div>')).toBe('a\n\nb')
+  })
+
+  it('reads the wider set of block tags as line boundaries', () => {
+    expect(fromDom('<section>a</section><blockquote>b</blockquote><h2>c</h2>')).toBe('a\nb\nc')
+  })
+
+  it('reads pasted html exactly the way the public parser does', () => {
+    const samples = [
+      '<div>one</div><div>two</div>',
+      '<div>one</div><div><br></div><div>two</div>',
+      '<p>one</p><p></p><p>two</p>',
+      '<div>one</div>\n<div>two</div>',
+      'one<br><br>two',
+      '<section>one</section><blockquote>two</blockquote>',
+      '<div>one<div>two</div></div>',
+    ]
+
+    for (const html of samples) {
+      const host = document.createElement('div')
+      host.appendChild(sanitizeMentionClipboardHtml(html))
+      expect(serializeMentionHtml(host)).toBe(mentionHtmlToText(html))
+    }
+  })
+})
+
 describe('chip element and clipboard sanitizing', () => {
   it('creates a non-editable chip carrying its key', () => {
     const chip = createMentionElement('u1', 'Alice')
@@ -258,6 +301,12 @@ describe('chip element and clipboard sanitizing', () => {
     const host = document.createElement('div')
     host.appendChild(sanitizeMentionClipboardHtml(escapePlainTextAsHtml('one\r\n\r\ntwo')))
     expect(host.querySelectorAll('br')).toHaveLength(2)
+  })
+
+  it('reads pasted blocks as the line breaks they stand for', () => {
+    const host = document.createElement('div')
+    host.appendChild(sanitizeMentionClipboardHtml('<div>one</div><div>two</div>'))
+    expect(host.querySelectorAll('br')).toHaveLength(1)
   })
 })
 

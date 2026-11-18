@@ -44,15 +44,6 @@ export function parseMentionHtml(html: string): MentionHtmlToken[] {
       })
     },
     onBreak: () => appendText('\n'),
-    onBlock: () => {
-      const last = tokens[tokens.length - 1]
-
-      if (last?.type === 'mention') {
-        appendText('\n')
-      } else if (last?.type === 'text' && !last.text.endsWith('\n')) {
-        last.text += '\n'
-      }
-    },
   })
 
   return tokens

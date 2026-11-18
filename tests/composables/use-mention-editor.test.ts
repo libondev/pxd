@@ -627,6 +627,21 @@ describe('useMentionEditor', () => {
     expect(h.model.value).toBe('one\n\ntwo')
   })
 
+  it('keeps the line breaks of pasted html blocks', () => {
+    const h = createHarness('')
+
+    const ev = new ClipboardEvent('paste', { bubbles: true, cancelable: true })
+    Object.defineProperty(ev, 'clipboardData', {
+      value: {
+        getData: (type: string) =>
+          type === 'text/html' ? '<div>one</div><div>two</div>' : 'one\ntwo',
+      },
+    })
+    h.editor.dispatchEvent(ev)
+
+    expect(h.model.value).toBe('one\ntwo')
+  })
+
   it('keeps the value stable across select-all, cut and paste', () => {
     const h = createHarness('hello<br>')
     const store: Record<string, string> = {}
