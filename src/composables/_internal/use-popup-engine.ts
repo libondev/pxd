@@ -1,7 +1,7 @@
 import type { ComponentPosition } from '../../types/shared/props'
 import type { VirtualElement } from '@floating-ui/dom'
 import type { CSSProperties, MaybeRefOrGetter, Ref, ShallowRef } from 'vue'
-import { arrow, autoUpdate, computePosition, flip, hide, shift } from '@floating-ui/dom'
+import { arrow, autoUpdate, computePosition, flip, hide, shift, size } from '@floating-ui/dom'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, toValue, watch } from 'vue'
 import { caf, raf, throttleByRaf } from '../../utils/event.js'
 import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format.js'
@@ -31,6 +31,7 @@ export interface PopupOptions {
   position?: MaybeRefOrGetter<ComponentPosition | undefined>
   showArrow?: MaybeRefOrGetter<boolean | undefined>
   showDelay?: MaybeRefOrGetter<number | undefined>
+  stableHeight?: MaybeRefOrGetter<boolean | undefined>
   toggleOnTrigger?: MaybeRefOrGetter<boolean | undefined>
   trigger?: MaybeRefOrGetter<PopupTrigger | PopupTrigger[] | undefined>
   triggerSelector?: MaybeRefOrGetter<string | undefined>
@@ -121,6 +122,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   const positionReady = shallowRef(false)
+  const lockedHeight = shallowRef(0)
   const localPosition = shallowRef(toValue(options.position))
   const wrapperTransform = shallowRef(HIDDEN_TRANSFORM)
   const triggerMethods = computed<PopupTrigger[]>(() => toArray(toValue(options.trigger)))
@@ -317,6 +319,42 @@ export function usePopupEngine(options: PopupEngineOptions): {
     wrapper.style.minWidth = maxWidth ? `min(${triggerWidth}px, ${maxWidth})` : `${triggerWidth}px`
   }
 
+  function syncStableHeight(availableHeight?: number) {
+    const wrapper = wrapperRef.value
+    const container = wrapper?.firstElementChild as HTMLElement | null | undefined
+
+    if (!wrapper || !container || !toValue(options.stableHeight) || toValue(options.adaptive)) {
+      return
+    }
+
+    // `min-height` would be inherited by the container through `min-h-inherit` and then push the
+    // wrapper past it by its own padding, growing a few pixels every frame. A fixed height has no
+    // such feedback, and `scrollHeight` still reports the content once it outgrows the box.
+    const style = getComputedStyle(wrapper)
+    const padding = (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0)
+    const contentHeight = container.scrollHeight + padding
+
+    if (contentHeight > lockedHeight.value) {
+      lockedHeight.value = contentHeight
+    }
+
+    const capped =
+      availableHeight == null ? lockedHeight.value : Math.min(lockedHeight.value, availableHeight)
+    const value = capped > 0 ? `${capped}px` : ''
+
+    if (wrapper.style.height !== value) {
+      wrapper.style.height = value
+    }
+  }
+
+  function resetStableHeight() {
+    lockedHeight.value = 0
+
+    if (wrapperRef.value) {
+      wrapperRef.value.style.height = ''
+    }
+  }
+
   function roundByDPR(value: number) {
     const dpr = window.devicePixelRatio || 1
 
@@ -327,6 +365,16 @@ export function usePopupEngine(options: PopupEngineOptions): {
     return [
       toValue(options.autoPosition) && flip(),
       shift({ padding: 4, crossAxis: true }),
+      // Cap what is left after flip picked a side: content taller than the space scrolls inside the
+      // panel instead of spilling past the viewport edge.
+      toValue(options.autoPosition) &&
+        !toValue(options.adaptive) &&
+        size({
+          padding: 4,
+          apply({ availableHeight, elements }) {
+            elements.floating.style.maxHeight = `${Math.max(0, availableHeight)}px`
+          },
+        }),
       toValue(options.showArrow) && arrow({ element: arrowRef.value }),
       toValue(options.closeOnInvisible) && hide({ strategy: 'escaped' }),
       toValue(options.closeOnInvisible) && hide({ strategy: 'referenceHidden' }),
@@ -360,6 +408,8 @@ export function usePopupEngine(options: PopupEngineOptions): {
       void handlePopoverHide(true)
       return
     }
+
+    syncStableHeight(middlewareData.size?.availableHeight)
 
     const transform = toValue(options.adaptive)
       ? ''
@@ -448,6 +498,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
     if (!isVisible.value) {
       positionReady.value = false
       wrapperTransform.value = HIDDEN_TRANSFORM
+      resetStableHeight()
     }
 
     const visiblePromise = showPopover()

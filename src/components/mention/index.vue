@@ -231,6 +231,7 @@ defineExpose({
     class="w-full"
     position="bottom-start"
     :trigger="[]"
+    stable-height
     auto-focus-element
     :return-focus-on-deactivate="false"
     fill-trigger-width

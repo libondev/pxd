@@ -21,6 +21,7 @@ vi.mock('@floating-ui/dom', () => ({
   flip: vi.fn(() => ({ name: 'flip' })),
   hide: vi.fn(() => ({ name: 'hide' })),
   shift: vi.fn(() => ({ name: 'shift' })),
+  size: vi.fn((options) => ({ name: 'size', ...options })),
 }))
 
 // happy-dom resolves no stylesheet, so <html> never reports as scrollable and the

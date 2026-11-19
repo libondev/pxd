@@ -27,6 +27,7 @@ export interface PopoverProps {
   toggleOnTrigger?: boolean
   autoFocusElement?: string | boolean
   fillTriggerWidth?: boolean
+  stableHeight?: boolean
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
   closeOnOutsideClick?: boolean

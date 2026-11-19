@@ -23,6 +23,7 @@ vi.mock('@floating-ui/dom', () => ({
   flip: vi.fn(() => ({ name: 'flip' })),
   hide: vi.fn(() => ({ name: 'hide' })),
   shift: vi.fn(() => ({ name: 'shift' })),
+  size: vi.fn((options) => ({ name: 'size', ...options })),
 }))
 
 async function flush() {
@@ -115,6 +116,66 @@ describe('popover', () => {
 
     expect(floating?.dataset.visible).toBe('true')
     expect(floating?.style.transform).toBe('translate(42px, 64px)')
+
+    wrapper.unmount()
+  })
+
+  it('should cap the height to the available space', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click', position: 'top' },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flush()
+
+    const [, , options] = mocks.computePosition.mock.calls.at(-1)!
+    const middleware = options?.middleware ?? []
+    const names = middleware.map((entry) => entry && entry.name)
+
+    expect(names).toContain('flip')
+    expect(names).toContain('size')
+
+    const floating = document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+    const sizeMiddleware = middleware.find(
+      (entry) => entry && entry.name === 'size',
+    ) as unknown as {
+      apply: (args: { availableHeight: number; elements: { floating: HTMLElement } }) => void
+    }
+
+    sizeMiddleware.apply({ availableHeight: 240, elements: { floating } })
+
+    expect(floating.style.maxHeight).toBe('240px')
+
+    wrapper.unmount()
+  })
+
+  it('should keep the content height from shrinking when stable-height is set', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click', position: 'top', stableHeight: true },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flush()
+
+    const floating = document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+    const container = floating.firstElementChild as HTMLElement
+
+    Object.defineProperty(container, 'scrollHeight', { configurable: true, value: 240 })
+
+    ;(wrapper.vm as unknown as { update: () => void }).update()
+    await flush()
+
+    expect(floating.style.height).toBe('240px')
 
     wrapper.unmount()
   })

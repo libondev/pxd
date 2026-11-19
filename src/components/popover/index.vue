@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<PopoverProps>(), {
   autoPosition: true,
   destroyDelay: 3000,
   fillTriggerWidth: true,
+  stableHeight: false,
   toggleOnTrigger: true,
   closeOnInvisible: true,
   autoFocusElement: false,
@@ -70,6 +71,7 @@ const engine = usePopupEngine({
   toggleOnTrigger: () => props.toggleOnTrigger,
   autoFocusElement: () => props.autoFocusElement,
   fillTriggerWidth: () => props.fillTriggerWidth,
+  stableHeight: () => props.stableHeight,
   closeOnInvisible: () => props.closeOnInvisible,
   closeOnOutsideClick: () => props.closeOnOutsideClick,
   zIndex: () => props.zIndex,
@@ -288,6 +290,11 @@ defineExpose({
     .pxd-popover--arrow {
       left: -6px;
     }
+  }
+
+  .pxd-popover--content:has(> [data-list]) {
+    display: flex;
+    flex-direction: column;
   }
 
   .pxd-popover--content.variant-inverted + .pxd-popover--arrow {

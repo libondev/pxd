@@ -2,6 +2,7 @@ import type { ListOption } from '../../src/components/list/types'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import { defineComponent, nextTick, ref } from 'vue'
+import Popover from '../../src/components/popover/index.vue'
 import Select from '../../src/components/select/index.vue'
 import { flushPopover } from '../helpers/flush-popover'
 
@@ -62,6 +63,19 @@ describe('select', () => {
 
     expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBe(2)
     expect(wrapper.emitted('change')?.[0]?.[0]).toBe(2)
+
+    wrapper.unmount()
+  })
+
+  it('should keep the panel height stable while filtering', () => {
+    const wrapper = mount(Select, {
+      props: {
+        options,
+        filterable: true,
+      },
+    })
+
+    expect(wrapper.findComponent(Popover).props('stableHeight')).toBe(true)
 
     wrapper.unmount()
   })

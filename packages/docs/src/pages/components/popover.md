@@ -469,7 +469,8 @@ const chips = [
 | arrow-color | `string` | - | Fill color of the arrow, any CSS color value |
 | model-value | `boolean` | - | Controlled visibility, normally used with the `manual` trigger |
 | interactive | `boolean` | `true` | Keep the Popover open while the pointer moves over it |
-| auto-position | `boolean` | `true` | Reposition on scroll and resize, and flip when it would be clipped |
+| auto-position | `boolean` | `true` | Reposition on scroll and resize, flip when it would be clipped, and cap the content height to the space available |
+| stable-height | `boolean` | `false` | Keep the content height from shrinking while open, so filtering cannot move the anchored edge |
 | wrapper-class | `string \| any[] \| object` | - | Class bound to the Popover wrapper |
 | aria-labelledby | `string` | - | ID of the element that labels the Popover dialog |
 | content-class | `string \| any[] \| object` | - | Class bound to the Popover content |

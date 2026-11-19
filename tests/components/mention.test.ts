@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { nextTick } from 'vue'
 import Mention from '../../src/components/mention/index.vue'
+import Popover from '../../src/components/popover/index.vue'
 import { flushPopover } from '../helpers/flush-popover'
 
 const options = [
@@ -22,6 +23,16 @@ describe('mention', () => {
     })
 
     expect(document.body.querySelector('mention')?.textContent).toBe('@Alice')
+
+    wrapper.unmount()
+  })
+
+  it('should keep the panel height stable while filtering', () => {
+    const wrapper = mount(Mention, {
+      props: { options },
+    })
+
+    expect(wrapper.findComponent(Popover).props('stableHeight')).toBe(true)
 
     wrapper.unmount()
   })
