@@ -1340,6 +1340,107 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
+  it('should follow the trigger element when as-child swaps its root while open', async () => {
+    const box = (width: number) => ({
+      width,
+      height: 10,
+      top: 0,
+      left: 0,
+      right: width,
+      bottom: 10,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    })
+    const widthSpy = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function (this: HTMLElement) {
+        return box(Number(this.dataset.width ?? 100)) as DOMRect
+      })
+
+    const SwappingChild = defineComponent({
+      props: { alt: Boolean },
+      setup: (childProps) => () =>
+        h(
+          'button',
+          { key: String(childProps.alt), 'data-width': childProps.alt ? '200' : '100' },
+          'Trigger',
+        ),
+    })
+
+    const alt = ref(false)
+    const Host = defineComponent({
+      setup: () => () =>
+        h(
+          Popover,
+          { asChild: true, trigger: 'click', matchWidth: true },
+          {
+            default: () => h(SwappingChild, { alt: alt.value }),
+            content: () => h('span', 'Content'),
+          },
+        ),
+    })
+
+    const wrapper = mount(Host, { attachTo: document.body })
+    await flush()
+
+    const trigger = document.body.querySelector<HTMLElement>('[data-popover]')!
+
+    trigger.click()
+    await flush()
+
+    const panel = () => document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+
+    const panelElement = panel()
+
+    expect(panelElement.style.getPropertyValue('--popover-trigger-width')).toBe('100px')
+
+    alt.value = true
+    await flush()
+    await flush()
+
+    const next = document.body.querySelector<HTMLElement>('[data-popover]')!
+
+    expect(next).not.toBe(trigger)
+    expect(next.dataset.width).toBe('200')
+    expect(panel()).toBe(panelElement)
+    expect(panelElement.style.getPropertyValue('--popover-trigger-width')).toBe('200px')
+
+    widthSpy.mockRestore()
+    wrapper.unmount()
+  })
+
+  it('should keep a named dialog sheet modal and leave other roles alone', async () => {
+    const dialog = mount(Popover, {
+      attachTo: document.body,
+      props: { layout: 'sheet', contentRole: 'dialog', trigger: 'manual', modelValue: true },
+      slots: { default: '<button>Trigger</button>', content: '<span>Content</span>' },
+    })
+
+    await flush()
+
+    const panel = () => document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+
+    expect(panel().getAttribute('role')).toBe('dialog')
+    expect(panel().getAttribute('aria-modal')).toBe('true')
+
+    dialog.unmount()
+    await flush()
+
+    const tooltip = mount(Popover, {
+      attachTo: document.body,
+      props: { layout: 'sheet', contentRole: 'tooltip', trigger: 'manual', modelValue: true },
+      slots: { default: '<button>Trigger</button>', content: '<span>Content</span>' },
+    })
+
+    await flush()
+
+    expect(panel().getAttribute('role')).toBe('tooltip')
+    expect(panel().hasAttribute('aria-modal')).toBe(false)
+
+    tooltip.unmount()
+  })
+
   it('should warn when the as-child child drops the merged attributes', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const SilentChild = defineComponent({

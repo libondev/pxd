@@ -353,6 +353,9 @@ export function usePopupEngine(options: PopupEngineOptions): {
       return
     }
 
+    // The active trigger may still name the element this `as-child` child replaced.
+    ensureActiveTrigger()
+
     const trigger = activeTriggerRef.value || triggerRef.value
 
     if (!trigger) {
@@ -918,6 +921,19 @@ export function usePopupEngine(options: PopupEngineOptions): {
         void handlePopoverHide(true)
       }
     },
+  )
+
+  watch(
+    triggerRef,
+    (element, previous) => {
+      if (!element || element === previous || !isVisible.value) {
+        return
+      }
+
+      // `as-child` may swap the element it clones; the panel follows the live node.
+      void syncPosition()
+    },
+    { flush: 'post' },
   )
 
   watch(

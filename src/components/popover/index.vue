@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { PopoverEmits, PopoverProps } from './types'
 import type { ComponentPublicInstance } from 'vue'
-import { computed, mergeProps, shallowRef, useAttrs, watch } from 'vue'
+import { computed, mergeProps, onUpdated, shallowRef, useAttrs, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useFocusTrap } from '../../composables/_internal/use-focus-trap.js'
 import { usePopupEngine } from '../../composables/_internal/use-popup-engine.js'
@@ -53,6 +53,7 @@ const overlayZIndex = computed(() => {
 
   return Number.isFinite(value) ? value : undefined
 })
+const panelRole = computed(() => props.contentRole || 'dialog')
 
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
@@ -62,6 +63,10 @@ const layoutMode = computed(() =>
   props.layout === 'auto' ? (isSmallScreen.value ? 'sheet' : 'anchored') : props.layout,
 )
 const isSheet = computed(() => layoutMode.value === 'sheet')
+// A sheet is modal only when it really is a dialog; a tooltip sheet is not.
+const isPanelModal = computed(
+  () => isSheet.value && (panelRole.value === 'dialog' || panelRole.value === 'alertdialog'),
+)
 
 const configProvider = useConfigProvider()
 const attrs = useAttrs()
@@ -72,6 +77,7 @@ if (props.asChild && props.triggerSelector) {
   )
 }
 
+let triggerInstance: ComponentPublicInstance | null = null
 let warnedResolve = false
 let warnedForward = false
 
@@ -127,11 +133,11 @@ const triggerProps = computed(() =>
     },
     attrs,
     {
-      onClickCapture: engine.onTriggerClick,
-      onContextmenu: engine.onTriggerContextmenu,
-      onFocusinCapture: engine.onTriggerFocusIn,
+      onClickCapture: withTriggerRefresh(engine.onTriggerClick),
+      onContextmenu: withTriggerRefresh(engine.onTriggerContextmenu),
+      onFocusinCapture: withTriggerRefresh(engine.onTriggerFocusIn),
       onFocusoutCapture: engine.onTriggerFocusOut,
-      onPointerover: engine.onTriggerPointerOver,
+      onPointerover: withTriggerRefresh(engine.onTriggerPointerOver),
       onPointerout: engine.onTriggerPointerOut,
       onPointermove: engine.onTriggerPointerMove,
     },
@@ -148,8 +154,10 @@ useFocusTrap(engine.focusTrapContainer, () => {
 })
 
 function setTriggerElement(element: Element | ComponentPublicInstance | null) {
-  const node =
-    element instanceof HTMLElement ? element : (element as ComponentPublicInstance | null)?.$el
+  triggerInstance =
+    element instanceof HTMLElement ? null : ((element as ComponentPublicInstance | null) ?? null)
+
+  const node = element instanceof HTMLElement ? element : triggerInstance?.$el
 
   if (element && !(node instanceof HTMLElement) && !warnedResolve) {
     warnedResolve = true
@@ -157,6 +165,22 @@ function setTriggerElement(element: Element | ComponentPublicInstance | null) {
   }
 
   triggerRef.value = node instanceof HTMLElement ? node : null
+}
+// The element a component renders can change without the ref firing again (a swapped root),
+// and the engine must measure the node that is on screen now.
+function refreshTriggerElement() {
+  const node = triggerInstance?.$el
+
+  if (node instanceof HTMLElement && node !== triggerRef.value) {
+    triggerRef.value = node
+  }
+}
+
+function withTriggerRefresh<T extends (event: never) => void>(handler: T): T {
+  return ((event: never) => {
+    refreshTriggerElement()
+    handler(event)
+  }) as T
 }
 
 watch(
@@ -191,6 +215,8 @@ if (props.agent) {
   })
 }
 
+onUpdated(refreshTriggerElement)
+
 defineExpose({
   show: engine.handlePopoverShow,
   hide: engine.handlePopoverHide,
@@ -216,8 +242,8 @@ defineExpose({
           ref="wrapperRef"
           tabindex="-1"
           :id="engine.contentId"
-          :role="contentRole || 'dialog'"
-          :aria-modal="!contentRole && isSheet ? 'true' : undefined"
+          :role="panelRole"
+          :aria-modal="isPanelModal ? 'true' : undefined"
           :data-visible="engine.isRevealed.value"
           :inert="engine.isRevealed.value ? undefined : true"
           :aria-hidden="engine.isRevealed.value ? undefined : 'true'"
