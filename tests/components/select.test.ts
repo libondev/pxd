@@ -47,6 +47,24 @@ describe('select', () => {
     wrapper.unmount()
   })
 
+  it('should merge trigger-class into the trigger button', () => {
+    const wrapper = mount(Select, {
+      props: {
+        options,
+        triggerClass: 'h-7 rounded-full',
+      },
+    })
+
+    const classes = wrapper.find('button').classes()
+
+    expect(classes).toContain('h-7')
+    expect(classes).toContain('rounded-full')
+    expect(classes).not.toContain('h-9')
+    expect(classes).not.toContain('rounded-md')
+
+    wrapper.unmount()
+  })
+
   it('should emit a scalar value when selecting a single option', async () => {
     const wrapper = mount(Select, {
       attachTo: document.body,

@@ -266,6 +266,7 @@ const options = [
 | remote-filter | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`, only while `filterable` is on: the options it returns replace `options` until the query is cleared. A rejection shows a retryable error in the list |
 | label-format | `(items: ListOption[]) => string` | - | Build the trigger label from the selected options |
 | close-on-press-escape | `boolean` | - | Close the menu when `Escape` is pressed |
+| trigger-class | `string \| any[] \| object` | - | Additional classes merged onto the trigger button |
 
 ## Events
 

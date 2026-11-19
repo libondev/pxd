@@ -218,12 +218,10 @@ defineExpose({
   --popover-padding: calc(var(--popover-offset, 8) * 0.0625rem);
   --popover-origin: center;
 
-  /* One ceiling for the panel: whatever space the engine leaves it, kept under the design limit. */
   &[data-layout='anchored'] {
     max-height: min(var(--popover-available-height, 100dvh), var(--popover-max-height));
   }
 
-  /* The sheet fills the viewport, sits on its bottom edge and hands its own ceiling to the panel. */
   &[data-layout='sheet'] {
     width: 100%;
     height: 100%;

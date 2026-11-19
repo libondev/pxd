@@ -207,7 +207,7 @@ watch(listOptions, async () => {
       class="relative justify-between text-inherit"
       align="left"
       full-width
-      :class="{ 'text-gray-600': !translatedLabel, 'pe-8': showClear }"
+      :class="[{ 'text-gray-600': !translatedLabel, 'pe-8': showClear }, triggerClass]"
       :variant="variant"
       :shape="shape"
       :size="computedSize"
