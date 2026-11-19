@@ -266,11 +266,11 @@ defineExpose({
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-todo-list--header group/todo gap-2 flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center border-none bg-transparent font-inherit self-focus-ring outline-none select-none"
+      class="pxd-todo-list--header group/todo gap-2 flex cursor-pointer touch-manipulation list-none appearance-none items-center border-none bg-transparent font-inherit self-focus-ring outline-none select-none"
       :class="
         variant === 'default'
           ? ['font-medium text-foreground', SIZE_CLASSES[computedSize].header]
-          : 'text-foreground-secondary hover:text-foreground motion-safe:transition-colors'
+          : 'w-max text-foreground-secondary hover:text-foreground motion-safe:transition-colors'
       "
       @click.prevent="onToggleClick"
     >
@@ -283,7 +283,7 @@ defineExpose({
 
         <span
           v-if="summaryText"
-          class="pxd-todo-list--summary font-normal shrink-0 leading-none text-foreground-secondary"
+          class="pxd-todo-list--summary font-normal shrink-0 text-foreground-secondary"
           :class="SIZE_CLASSES[computedSize].meta"
           aria-live="polite"
         >

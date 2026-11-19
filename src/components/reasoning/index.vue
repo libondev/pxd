@@ -35,21 +35,17 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-reasoning--trigger group gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
+      class="pxd-reasoning--trigger group gap-2 text-sm flex cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
       :class="{
         'p-3 font-medium text-foreground': variant === 'default',
-        'text-foreground-secondary hover:text-foreground motion-safe:transition-colors':
+        'w-max text-foreground-secondary hover:text-foreground motion-safe:transition-colors':
           variant === 'simple',
       }"
       @click.prevent="onToggleClick"
     >
       <BrainIcon class="size-em shrink-0" />
 
-      <PShimmerText
-        :variant="shimmerVariant"
-        class="pxd-reasoning--title leading-none"
-        :disabled="!streaming"
-      >
+      <PShimmerText :variant="shimmerVariant" class="pxd-reasoning--title" :disabled="!streaming">
         {{ title }}
       </PShimmerText>
 

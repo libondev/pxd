@@ -120,10 +120,10 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
     @toggle="onDetailsToggle"
   >
     <summary
-      class="pxd-tool-call--trigger group gap-2 text-sm flex w-full cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
+      class="pxd-tool-call--trigger group gap-2 text-sm flex cursor-pointer touch-manipulation list-none appearance-none items-center self-focus-ring outline-none select-none"
       :class="{
         'p-3 font-medium text-foreground': variant === 'default',
-        'text-foreground-secondary hover:text-foreground motion-safe:transition-colors':
+        'w-max text-foreground-secondary hover:text-foreground motion-safe:transition-colors':
           variant === 'simple',
       }"
       @click.prevent="onToggleClick"
@@ -138,7 +138,7 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
         }"
       />
 
-      <span class="pxd-tool-call--title min-w-0 truncate leading-none">
+      <span class="pxd-tool-call--title min-w-0 truncate">
         {{ title }}
       </span>
 

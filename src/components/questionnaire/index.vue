@@ -454,9 +454,7 @@ watch(
         >
           <QuestionIcon class="font-medium size-em shrink-0" />
 
-          <span
-            class="pxd-questionnaire--question min-w-0 font-medium flex-1 truncate leading-none"
-          >
+          <span class="pxd-questionnaire--question min-w-0 font-medium flex-1 truncate">
             {{ currentQuestion.question }}
           </span>
 
