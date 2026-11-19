@@ -73,6 +73,8 @@ reasons above.
 - A composable takes domain values (`MaybeRefOrGetter`) and reports through `onXxx`; it never takes
   a component's `props` object or `emits`.
 - Animation is an injected `transition` callback (`useCarousel` is the reference): the composable
-  owns the state machine, the component owns the DOM.
+  owns the state machine, the component owns the DOM. This targets decoration the consumer may
+  replace; a composable whose behaviour *is* the transition keeps the measurement
+  (`useDetailsCollapse`).
 - Shared geometry lives in `src/utils/_internal/*`; shared state lives in composables.
 - No re-exports. Import a shared type from its defining module.

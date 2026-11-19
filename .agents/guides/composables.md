@@ -46,10 +46,16 @@ Import a shared type from its defining module. Never re-export it through a comp
    })
    ```
 
-3. **No DOM protocol in the signature.** `el` / `rect` / `pointerId` / `scrollTop` / `clientX`
-   parameters mean the seam is wrong. Extract the value or state layer; keep pointer capture, layout
-   reads and browser protocols in the component, or in a dedicated `_internal` DOM composable
+3. **No DOM protocol in the signature.** `rect` / `pointerId` / `scrollTop` / `clientX` parameters
+   mean the seam is wrong. Extract the value or state layer; keep pointer capture, layout reads and
+   browser protocols in the component, or in a dedicated `_internal` DOM composable
    (`use-swipe-gesture`).
+
+   An element ref is not that protocol: `MaybeElementRef` is how a DOM-owning composable names its
+   target (`useStickToBottom`, `useDetailsCollapse`, `useOutsideClick`), and a returned handler may
+   take an `Event` when the module owns that native behaviour (`onDetailsToggle`,
+   `onTrigger(ev: PointerEvent)`). What stays out of a public signature is the *value* layer —
+   `rect`, `scrollTop`, `pointerId` — unless the module is `_internal`.
 
 4. **No imports from `src/components/**`.** A composable that depends on a component's types is a
    component in disguise. Put the shared type under `src/types/` following the type placement table
@@ -118,5 +124,11 @@ No public composable takes `props` or `emits`, and no composable imports a compo
 | Composables | Coupling | Why it is allowed |
 | --- | --- | --- |
 | `_internal/use-model-value.ts` | `props` / `emits` | adapting controlled/uncontrolled prop semantics is its whole job |
+
+Measurement is allowed when the behaviour is the product, not decoration: `useStickToBottom` reads
+scroll geometry, `useDetailsCollapse` reads `transition-duration` and waits for `transitionend`.
+The roadmap's injected-`transition` rule (`useCarousel`) targets components whose animation the
+consumer decides; applying it here would push the two-pass enter — commit `open`, then flip the
+row — onto every caller, so `useDetailsCollapse` keeps the measurement.
 
 The remaining priority queue and the component triage live in `.agents/plans/composables-roadmap.md`.
