@@ -14,8 +14,8 @@ defineOptions({
 
 const props = withDefaults(defineProps<FaderProps>(), {
   direction: 'both',
-  size: 16,
   threshold: 16,
+  size: 24,
 })
 
 const FADER_ITEM_BASE =
@@ -133,8 +133,15 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   border-radius: inherit;
-  background: linear-gradient(var(--dir), transparent, var(--fader-color));
-  mask-image: linear-gradient(var(--dir-revert), var(--fader-color) 50%, transparent);
+  background: var(--fader-color);
+  mask-image: linear-gradient(
+    var(--dir),
+    black,
+    rgb(0 0 0 / 84%) 25%,
+    rgb(0 0 0 / 50%) 50%,
+    rgb(0 0 0 / 16%) 75%,
+    transparent
+  );
   transition-property: opacity;
   opacity: 0;
 }
@@ -170,14 +177,12 @@ onBeforeUnmount(() => {
 
   &::before {
     left: 0;
-    --dir: to left;
-    --dir-revert: to right;
+    --dir: to right;
   }
 
   &::after {
     right: 0;
-    --dir: to right;
-    --dir-revert: to left;
+    --dir: to left;
   }
 }
 
@@ -205,14 +210,12 @@ onBeforeUnmount(() => {
 
   &::before {
     top: 0;
-    --dir: to top;
-    --dir-revert: to bottom;
+    --dir: to bottom;
   }
 
   &::after {
     bottom: 0;
-    --dir: to bottom;
-    --dir-revert: to top;
+    --dir: to top;
   }
 }
 </style>

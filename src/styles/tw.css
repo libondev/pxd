@@ -138,7 +138,7 @@
   --avatar-size: 2rem;
   --chip-size: 0.75rem;
   --fader-size: 1rem;
-  --fader-color: var(--color-gray-100);
+  --fader-color: var(--color-background-100);
   --hold-button-progress-color: var(--color-gray-alpha-600);
   --popover-arrow-color: var(--color-gray-1000);
   --popover-offset: 8;
