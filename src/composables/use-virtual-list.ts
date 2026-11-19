@@ -8,6 +8,7 @@ import {
   Virtualizer,
 } from '@tanstack/virtual-core'
 import { computed, nextTick, onMounted, onScopeDispose, watch, shallowRef, toValue } from 'vue'
+import { getElement } from '../utils/dom.js'
 import { isNil } from '../utils/is.js'
 
 export interface VirtualListItem extends VirtualItem {
@@ -267,7 +268,13 @@ export function useVirtualList<Options extends VirtualListOptions>(
       return
     }
 
-    const htmlEl = el instanceof HTMLElement ? el : (el as ComponentPublicInstance).$el
+    const htmlEl = getElement(el)
+
+    if (!htmlEl) {
+      virtualizer.measureElement(null)
+      return
+    }
+
     virtualizer.measureElement(htmlEl)
 
     // The virtualizer skips its own ref-time read while it believes it is scrolling, and a holder

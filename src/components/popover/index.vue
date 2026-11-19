@@ -7,6 +7,7 @@ import { useFocusTrap } from '../../composables/_internal/use-focus-trap.js'
 import { usePopupEngine } from '../../composables/_internal/use-popup-engine.js'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getElement } from '../../utils/dom.js'
 import { isTruthyProp } from '../../utils/format.js'
 import PPopoverArrow from '../_internal/popover-arrow.vue'
 import PPopoverTrigger from '../_internal/popover-trigger.vue'
@@ -77,7 +78,7 @@ if (props.asChild && props.triggerSelector) {
   )
 }
 
-let triggerInstance: ComponentPublicInstance | null = null
+let triggerSource: Element | ComponentPublicInstance | null = null
 let warnedResolve = false
 let warnedForward = false
 
@@ -154,24 +155,23 @@ useFocusTrap(engine.focusTrapContainer, () => {
 })
 
 function setTriggerElement(element: Element | ComponentPublicInstance | null) {
-  triggerInstance =
-    element instanceof HTMLElement ? null : ((element as ComponentPublicInstance | null) ?? null)
+  triggerSource = element
 
-  const node = element instanceof HTMLElement ? element : triggerInstance?.$el
+  const node = getElement(triggerSource)
 
-  if (element && !(node instanceof HTMLElement) && !warnedResolve) {
+  if (element && !node && !warnedResolve) {
     warnedResolve = true
     console.warn('[pxd] PPopover as-child needs a child that resolves to a single element.')
   }
 
-  triggerRef.value = node instanceof HTMLElement ? node : null
+  triggerRef.value = node
 }
 // The element a component renders can change without the ref firing again (a swapped root),
 // and the engine must measure the node that is on screen now.
 function refreshTriggerElement() {
-  const node = triggerInstance?.$el
+  const node = getElement(triggerSource)
 
-  if (node instanceof HTMLElement && node !== triggerRef.value) {
+  if (node && node !== triggerRef.value) {
     triggerRef.value = node
   }
 }

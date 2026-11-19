@@ -9,6 +9,7 @@ import { changeDetailsFor } from '../../composables/_internal/use-change-details
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
 import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
+import { getElement } from '../../utils/dom.js'
 import { isNil } from '../../utils/is.js'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
@@ -63,7 +64,7 @@ useAgentNode({
   name: 'menu',
   namedBy: 'button',
   closed: true,
-  owns: () => listRef.value?.$el,
+  owns: () => getElement(listRef),
   items: () => optionItems(props.options, selected.value),
   itemElement: (value) => listRef.value?.elementOf(value),
   state: () => ({ value: selected.value ?? null, open: popoverVisible.value }),

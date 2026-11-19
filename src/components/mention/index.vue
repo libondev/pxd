@@ -15,6 +15,7 @@ import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useToggleValue } from '../../composables/use-toggle-value.js'
 import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getElement } from '../../utils/dom.js'
 import { isCompositionKeydown } from '../../utils/event.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { DEFAULT_TRIGGER } from '../../utils/mention-html.js'
@@ -96,7 +97,7 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
 })
 useAgentNode({
   name: 'mention',
-  el: () => editorRef.value?.$el,
+  el: () => getElement(editorRef),
   state: () => ({ value: modelValue.value ?? '' }),
   actions: {
     setValue: (value) => editorRef.value?.setText(value == null ? '' : String(value)),

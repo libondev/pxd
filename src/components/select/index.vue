@@ -136,8 +136,8 @@ useAgentNode({
   name: 'select',
   namedBy: 'button',
   closed: true,
-  el: () => buttonRef.value?.$el,
-  owns: () => listRef.value?.$el,
+  el: () => getElement(buttonRef),
+  owns: () => getElement(listRef),
   items: () => optionItems(props.options, selected.value),
   itemElement: (value) => listRef.value?.elementOf(value),
   state: () => ({

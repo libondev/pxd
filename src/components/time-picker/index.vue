@@ -10,6 +10,7 @@ import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media
 import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { dayjs } from '../../utils/date.js'
+import { getElement } from '../../utils/dom.js'
 import { clampValue } from '../../utils/format.js'
 import { isNil } from '../../utils/is.js'
 import PButton from '../button/index.vue'
@@ -68,7 +69,7 @@ const { modelValue, change } = useModelValue(props, emits, {
 useAgentNode({
   name: 'time-picker',
   namedBy: 'field',
-  el: () => fieldRef.value?.$el,
+  el: () => getElement(fieldRef),
   state: () => ({ value: modelValue.value ?? '' }),
   actions: {
     setValue: (value) => {

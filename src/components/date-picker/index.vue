@@ -10,6 +10,7 @@ import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
 import { dayjs } from '../../utils/date.js'
+import { getElement } from '../../utils/dom.js'
 import { isNil } from '../../utils/is.js'
 import PCalendar from '../calendar/index.vue'
 import PInput from '../input/index.vue'
@@ -50,7 +51,7 @@ const { modelValue, change } = useModelValue(props, emits, {
 useAgentNode({
   name: 'date-picker',
   namedBy: 'field',
-  el: () => fieldRef.value?.$el,
+  el: () => getElement(fieldRef),
   state: () => ({ value: modelValue.value ?? null, open: popoverVisible.value }),
   actions: {
     setValue: (value) => {
