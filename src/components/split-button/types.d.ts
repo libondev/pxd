@@ -12,7 +12,6 @@ export interface SplitButtonProps {
   disabled?: boolean
   modelValue?: ListModelValue
   mainButtonProps?: ButtonProps
-  closeOnPressEscape?: boolean
 }
 
 export interface SplitButtonEmits {

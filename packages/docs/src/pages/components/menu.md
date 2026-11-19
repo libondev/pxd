@@ -4,6 +4,8 @@ Dropdown menu opened via button. Supports typeahead and keyboard navigation.
 
 ## Default
 
+The component inherits from popover and supports all the properties of popover. For details, See: [Popover](/components/popover).
+
 ```vue demo
 <script setup>
 const options = [
@@ -118,7 +120,6 @@ const options = [
 | model-value | `ListOptionSelected['value'] \| ListOptionSelected['value'][]` | - | Selected value, an array when `multiple` is set |
 | multiple | `boolean` | - | Keep the menu open and let several options be selected |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
-| close-on-press-escape | `boolean` | `true` | Close the menu when the `Escape` key is pressed |
 
 ## Events
 

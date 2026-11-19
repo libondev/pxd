@@ -18,7 +18,6 @@ export interface TimePickerProps {
   showSeconds?: boolean
   labelFormat?: string
   valueFormat?: string
-  closeOnPressEscape?: boolean
 }
 
 export interface TimePickerEmits {

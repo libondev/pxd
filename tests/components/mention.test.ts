@@ -240,6 +240,23 @@ describe('mention', () => {
     wrapper.unmount()
   })
 
+  it('should put caller attributes on the editor instead of a wrapper', () => {
+    const wrapper = mount(Mention, {
+      attachTo: document.body,
+      attrs: { 'aria-label': 'Reply', 'data-test': 'mention', class: 'field-class' },
+    })
+
+    const editorRoot = document.body.querySelector<HTMLElement>('[data-mention-editor]')
+
+    expect(editorRoot?.getAttribute('aria-label')).toBe('Reply')
+    expect(editorRoot?.getAttribute('data-test')).toBe('mention')
+    expect(editorRoot?.classList.contains('field-class')).toBe(true)
+    expect(editorRoot?.hasAttribute('data-popover')).toBe(true)
+    expect(document.body.querySelector('.pxd-popover')).toBe(editorRoot)
+
+    wrapper.unmount()
+  })
+
   it('reaches the editor through editorClass and editorAttrs', () => {
     const wrapper = mount(Mention, {
       attachTo: document.body,

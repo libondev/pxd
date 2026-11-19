@@ -4,6 +4,8 @@ Displays a list of options for the user to pick from—triggered by a button.
 
 ## Default
 
+The component inherits from popover and supports all the properties of popover. For details, See: [Popover](/components/popover).
+
 ```vue demo
 <script setup>
 import { ref } from 'vue'
@@ -18,7 +20,7 @@ const options = [
 </script>
 
 <template>
-  <PSelect v-model="value" class="w-full" :options="options" placeholder="Please select"></PSelect>
+  <PSelect v-model="value" :options="options" placeholder="Please select"></PSelect>
 </template>
 ```
 
@@ -38,7 +40,7 @@ const options = [
 </script>
 
 <template>
-  <PSelect v-model="value" class="w-full" :options="options" clearable></PSelect>
+  <PSelect v-model="value" :options="options" clearable></PSelect>
 </template>
 ```
 
@@ -58,7 +60,7 @@ const options = [
 </script>
 
 <template>
-  <PSelect v-model="value" class="w-full" :options="options" multiple />
+  <PSelect v-model="value" :options="options" multiple />
 </template>
 ```
 
@@ -82,7 +84,7 @@ function labelFormatter(valueList) {
 </script>
 
 <template>
-  <PSelect v-model="value" class="w-full" :options="options" multiple :label-format="labelFormatter" />
+  <PSelect v-model="value" :options="options" multiple :label-format="labelFormatter" />
 </template>
 ```
 
@@ -107,7 +109,6 @@ const options = [
 <template>
   <PSelect
     v-model="value"
-    class="w-full"
     filterable
     filter-placeholder="Search"
     :options="options"
@@ -141,7 +142,6 @@ function filter(option, query) {
 <template>
   <PSelect
     v-model="value"
-    class="w-full"
     filterable
     filter-placeholder="Search"
     placeholder="Please select"
@@ -181,7 +181,6 @@ function search(query) {
 <template>
   <PSelect
     v-model="value"
-    class="w-full"
     filterable
     filter-placeholder="Search"
     placeholder="Please select"
@@ -208,7 +207,6 @@ const options = Array.from({ length: 2000 }, (_, index) => ({
 <template>
   <PSelect
     v-model="value"
-    class="w-full"
     virtual
     :options="options"
     placeholder="Please select"
@@ -233,7 +231,7 @@ const options = [
 </script>
 
 <template>
-  <PSelect v-model="value" class="w-full" :suffix-icon="false" :options="options" placeholder="Please select">
+  <PSelect v-model="value" :suffix-icon="false" :options="options" placeholder="Please select">
     <template #prefix>
       <span class="inline-flex size-2 bg-gray-500 rounded-full" :class="{ 'bg-primary': value }"></span>
     </template>
@@ -265,8 +263,6 @@ const options = [
 | filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match on `label` and `description` | Predicate deciding which option shows while the query is being typed |
 | remote-filter | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`, only while `filterable` is on: the options it returns replace `options` until the query is cleared. A rejection shows a retryable error in the list |
 | label-format | `(items: ListOption[]) => string` | - | Build the trigger label from the selected options |
-| close-on-press-escape | `boolean` | - | Close the menu when `Escape` is pressed |
-| trigger-class | `string \| any[] \| object` | - | Additional classes merged onto the trigger button |
 
 ## Events
 

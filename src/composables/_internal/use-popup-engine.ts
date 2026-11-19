@@ -13,6 +13,7 @@ export type PopupTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual
 
 export interface PopupOptions {
   alignPoint?: MaybeRefOrGetter<boolean | undefined>
+  ariaTarget?: MaybeRefOrGetter<HTMLElement | null | undefined>
   arrowColor?: MaybeRefOrGetter<string | undefined>
   autoFocusElement?: MaybeRefOrGetter<string | boolean | undefined>
   autoPosition?: MaybeRefOrGetter<boolean | undefined>
@@ -51,7 +52,7 @@ export interface PopupEngineCallbacks {
 }
 
 export interface PopupEngineOptions extends PopupOptions, PopupEngineCallbacks {
-  triggerRef: Ref<HTMLElement>
+  triggerRef: Ref<HTMLElement | null>
   wrapperRef: Ref<HTMLElement>
   containerRef: Ref<HTMLElement>
   arrowRef: Ref<HTMLElement>
@@ -246,6 +247,10 @@ export function usePopupEngine(options: PopupEngineOptions): {
       return []
     }
 
+    if (!triggerRef.value) {
+      return []
+    }
+
     if (!triggerElements || triggerElementsSelector !== selector) {
       triggerElements = Array.from(triggerRef.value.querySelectorAll<HTMLElement>(selector))
       triggerElementsSelector = selector
@@ -254,14 +259,14 @@ export function usePopupEngine(options: PopupEngineOptions): {
     return triggerElements
   }
 
-  function resolveTriggerElement(target: EventTarget | null) {
+  function resolveTriggerElement(target: EventTarget | null): HTMLElement | null {
     const selector = toValue(options.triggerSelector)
 
     if (!selector) {
       return triggerRef.value
     }
 
-    if (!(target instanceof Element)) {
+    if (!(target instanceof Element) || !triggerRef.value) {
       return null
     }
 
@@ -316,26 +321,29 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
   function ensureActiveTrigger() {
     if (!toValue(options.triggerSelector)) {
-      if (!activeTriggerRef.value) {
+      // A single trigger is the element the caller rendered, which `as-child` may replace on any
+      // re-render; keep the reference on the live node instead of the one first resolved.
+      if (activeTriggerRef.value !== triggerRef.value) {
         setActiveTrigger(triggerRef.value)
       }
 
       return
     }
 
-    if (!activeTriggerRef.value || !triggerRef.value.contains(activeTriggerRef.value)) {
+    if (!activeTriggerRef.value || !triggerRef.value?.contains(activeTriggerRef.value)) {
       setActiveTrigger(getTriggerElements()[0] ?? null)
     }
   }
 
-  function getReferenceElement() {
+  function getReferenceElement(): HTMLElement | VirtualElement {
     if (toValue(options.alignPoint) && pointerPosition.value) {
       return pointReference
     }
 
     ensureActiveTrigger()
 
-    return activeTriggerRef.value || triggerRef.value
+    // Callers only position once a trigger exists; the fallback keeps the type honest.
+    return activeTriggerRef.value || triggerRef.value!
   }
 
   function syncWidth() {
@@ -345,7 +353,13 @@ export function usePopupEngine(options: PopupEngineOptions): {
       return
     }
 
-    const triggerWidth = (activeTriggerRef.value || triggerRef.value).getBoundingClientRect().width
+    const trigger = activeTriggerRef.value || triggerRef.value
+
+    if (!trigger) {
+      return
+    }
+
+    const triggerWidth = trigger.getBoundingClientRect().width
     wrapper.style.setProperty('--popover-trigger-width', `${triggerWidth}px`)
 
     if (toValue(options.alignPoint) || !toValue(options.matchReferenceWidth)) {
@@ -451,7 +465,8 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   async function updatePosition() {
-    if (!wrapperRef.value) {
+    // An as-child trigger that never resolved to an element has nothing to measure.
+    if (!wrapperRef.value || !triggerRef.value) {
       return
     }
 
@@ -508,7 +523,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   function startAutoUpdate() {
-    if (!toValue(options.autoPosition) || !wrapperRef.value) {
+    if (!toValue(options.autoPosition) || !wrapperRef.value || !triggerRef.value) {
       return
     }
 
@@ -708,13 +723,13 @@ export function usePopupEngine(options: PopupEngineOptions): {
     }
 
     const next = ev.relatedTarget
-    const isInside = next instanceof Node && triggerRef.value.contains(next)
+    const isInside = next instanceof Node && (triggerRef.value?.contains(next) ?? false)
 
     if (!isInside) {
       // Focus may still rest on the trigger or the content even after the pointer left.
       if (
         triggerMethods.value.includes('focus') &&
-        (triggerRef.value.contains(document.activeElement) ||
+        ((triggerRef.value?.contains(document.activeElement) ?? false) ||
           wrapperRef.value?.contains(document.activeElement))
       ) {
         return
@@ -799,7 +814,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
     if (
       next instanceof Node &&
-      (triggerRef.value.contains(next) || wrapperRef.value?.contains(next))
+      ((triggerRef.value?.contains(next) ?? false) || (wrapperRef.value?.contains(next) ?? false))
     ) {
       return
     }
@@ -831,9 +846,35 @@ export function usePopupEngine(options: PopupEngineOptions): {
     void handlePopoverHide()
   }
 
+  // Elements the popup announces itself on, and whether the `aria-haspopup` there is its own, so
+  // a target that moves — a field's input mounting after the anchor — leaves nothing behind.
+  const ariaElements = new Map<HTMLElement, boolean>()
+
   function syncTriggerAria() {
-    const triggers = toValue(options.triggerSelector) ? getTriggerElements() : [triggerRef.value]
+    const ariaTarget = toValue(options.ariaTarget)
+    // A field's control is often not the element its popover anchors to: when a target is given,
+    // the popup state is announced there only, never on the anchor.
+    const triggers = ariaTarget
+      ? [ariaTarget]
+      : toValue(options.triggerSelector)
+        ? getTriggerElements()
+        : [triggerRef.value]
     const isTooltip = toValue(options.contentRole) === 'tooltip'
+
+    for (const [element, ownsHaspopup] of ariaElements) {
+      if (triggers.includes(element)) {
+        continue
+      }
+
+      element.removeAttribute('aria-expanded')
+      element.removeAttribute('aria-describedby')
+
+      if (ownsHaspopup) {
+        element.removeAttribute('aria-haspopup')
+      }
+
+      ariaElements.delete(element)
+    }
 
     for (const trigger of triggers) {
       if (!trigger) {
@@ -841,6 +882,8 @@ export function usePopupEngine(options: PopupEngineOptions): {
       }
 
       if (isTooltip) {
+        ariaElements.set(trigger, ariaElements.get(trigger) === true)
+
         if (isVisible.value) {
           trigger.setAttribute('aria-describedby', contentId)
         } else {
@@ -850,10 +893,18 @@ export function usePopupEngine(options: PopupEngineOptions): {
         continue
       }
 
-      trigger.setAttribute('aria-haspopup', 'dialog')
+      // A control that already declares its own popup role, like a select's listbox, knows better
+      // than this default: only an unclaimed trigger is announced as a dialog.
+      if (trigger.hasAttribute('aria-haspopup')) {
+        ariaElements.set(trigger, ariaElements.get(trigger) === true)
+      } else {
+        trigger.setAttribute('aria-haspopup', 'dialog')
+        ariaElements.set(trigger, true)
+      }
+
       trigger.setAttribute(
         'aria-expanded',
-        String(isVisible.value && trigger === activeTriggerRef.value),
+        String(isVisible.value && (Boolean(ariaTarget) || trigger === activeTriggerRef.value)),
       )
     }
   }
@@ -869,7 +920,13 @@ export function usePopupEngine(options: PopupEngineOptions): {
     },
   )
 
-  watch([isVisible, activeTriggerRef], syncTriggerAria, { flush: 'post' })
+  watch(
+    [isVisible, activeTriggerRef, triggerRef, () => toValue(options.ariaTarget)],
+    syncTriggerAria,
+    {
+      flush: 'post',
+    },
+  )
 
   onMounted(() => {
     if (toValue(options.modelValue)) {
@@ -882,6 +939,19 @@ export function usePopupEngine(options: PopupEngineOptions): {
     clearHideTimer()
     disposeAutoUpdate()
     triggerElements = null
+
+    // The announce target may outlive this popover (an external element), and a control that
+    // stays `aria-expanded=true` after its popup is gone lies to assistive tech.
+    for (const [element, ownsHaspopup] of ariaElements) {
+      element.removeAttribute('aria-expanded')
+      element.removeAttribute('aria-describedby')
+
+      if (ownsHaspopup) {
+        element.removeAttribute('aria-haspopup')
+      }
+    }
+
+    ariaElements.clear()
   })
 
   return {

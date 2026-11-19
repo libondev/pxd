@@ -12,6 +12,10 @@ const options = [
   { label: 'Three', value: 3 },
 ]
 
+function trigger() {
+  return document.body.querySelector<HTMLElement>('[data-select]')!
+}
+
 describe('select', () => {
   it('renders properly', () => {
     const wrapper = mount(Select)
@@ -47,20 +51,109 @@ describe('select', () => {
     wrapper.unmount()
   })
 
-  it('should merge trigger-class into the trigger button', () => {
+  it('should merge caller classes into the root and inherit the font size', () => {
     const wrapper = mount(Select, {
-      props: {
-        options,
-        triggerClass: 'h-7 rounded-full',
-      },
+      props: { options },
+      attrs: { class: 'w-1/2 text-lg' },
     })
 
-    const classes = wrapper.find('button').classes()
+    const root = wrapper.find('.pxd-select')
 
-    expect(classes).toContain('h-7')
-    expect(classes).toContain('rounded-full')
-    expect(classes).not.toContain('h-9')
-    expect(classes).not.toContain('rounded-md')
+    expect(root.element.tagName).toBe('DIV')
+    expect(root.classes()).toContain('w-1/2')
+    expect(root.classes()).toContain('text-lg')
+    expect(root.classes()).not.toContain('w-full')
+    expect(root.classes()).not.toContain('text-sm')
+    // The trigger takes its font size from the root, so a caller's text size still lands.
+    expect(wrapper.find('button').classes()).toContain('[font-size:inherit]!')
+
+    wrapper.unmount()
+  })
+
+  it('should put caller attributes and listeners on the trigger button', async () => {
+    let clickTarget: EventTarget | null = null
+    const onClick = vi.fn((event: Event) => {
+      clickTarget = event.currentTarget
+    })
+
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { options },
+      attrs: { id: 'region', 'aria-label': 'Region', onClick },
+    })
+
+    const button = trigger()
+
+    expect(button.tagName).toBe('BUTTON')
+    expect(button.id).toBe('region')
+    expect(button.getAttribute('aria-label')).toBe('Region')
+    expect(button.getAttribute('aria-haspopup')).toBe('listbox')
+    expect(wrapper.find('.pxd-select').element.tagName).toBe('DIV')
+
+    button.click()
+    await flushPopover()
+
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(clickTarget).toBe(button)
+    expect(button.getAttribute('aria-expanded')).toBe('true')
+    expect(document.body.querySelector('div.pxd-popover')).toBeNull()
+
+    wrapper.unmount()
+  })
+
+  it('should let a caller listen to focus on the trigger button', () => {
+    const onFocus = vi.fn()
+
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { options },
+      attrs: { onFocus },
+    })
+
+    trigger().dispatchEvent(new FocusEvent('focus'))
+
+    expect(onFocus).toHaveBeenCalledTimes(1)
+
+    wrapper.unmount()
+  })
+
+  it('should open from the keyboard on the trigger', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { options },
+    })
+
+    const visible = () =>
+      document.body.querySelector('.pxd-popover--wrapper')?.getAttribute('data-visible')
+
+    trigger().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+    await flushPopover()
+
+    expect(visible()).toBe('true')
+
+    wrapper.unmount()
+  })
+
+  it('should navigate the list from the trigger while open', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { options },
+    })
+
+    await wrapper.find('[data-select]').trigger('click')
+    await flushPopover()
+
+    const items = document.body.querySelectorAll<HTMLElement>('[data-list-item]')
+
+    trigger().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+    await nextTick()
+
+    expect(items[0]?.getAttribute('data-active')).toBe('true')
+
+    trigger().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+    await nextTick()
+
+    expect(items[1]?.getAttribute('data-active')).toBe('true')
 
     wrapper.unmount()
   })
@@ -73,7 +166,7 @@ describe('select', () => {
       },
     })
 
-    await wrapper.find('button').trigger('click')
+    await wrapper.find('[data-select]').trigger('click')
     await flushPopover()
 
     document.body.querySelectorAll<HTMLElement>('[data-list-item]')[1]?.click()
@@ -131,7 +224,7 @@ describe('select', () => {
       attachTo: document.body,
     })
 
-    await wrapper.find('button').trigger('click')
+    await wrapper.find('[data-select]').trigger('click')
     await flushPopover()
 
     const items = document.body.querySelectorAll<HTMLElement>('[data-list-item]')
@@ -156,7 +249,7 @@ describe('select', () => {
     expect(wrapper.vm.value).toEqual([3])
     expect(wrapper.vm.changed).toBeUndefined()
 
-    await wrapper.find('button').trigger('click')
+    await wrapper.find('[data-select]').trigger('click')
     await flushPopover()
 
     expect(wrapper.vm.changed).toEqual([3])
@@ -173,7 +266,7 @@ describe('select', () => {
       },
     })
 
-    await wrapper.find('button').trigger('click')
+    await wrapper.find('[data-select]').trigger('click')
     await flushPopover()
 
     const searchInput = document.body.querySelector<HTMLInputElement>(
@@ -203,7 +296,7 @@ describe('select', () => {
       },
     })
 
-    await wrapper.find('button').trigger('click')
+    await wrapper.find('[data-select]').trigger('click')
     await flushPopover()
 
     const searchInput = document.body.querySelector<HTMLInputElement>(
@@ -229,7 +322,7 @@ describe('select', () => {
       },
     })
 
-    await wrapper.find('button').trigger('click')
+    await wrapper.find('[data-select]').trigger('click')
     await flushPopover()
 
     const searchInput = document.body.querySelector<HTMLInputElement>(
@@ -258,7 +351,7 @@ describe('select', () => {
       },
     })
 
-    await wrapper.find('button').trigger('click')
+    await wrapper.find('[data-select]').trigger('click')
     await flushPopover()
 
     const searchInput = document.body.querySelector<HTMLInputElement>(
@@ -285,8 +378,10 @@ describe('select', () => {
 
     await wrapper.setProps({ modelValue: 2 })
     expect(wrapper.find('.pxd-select--clear').exists()).toBe(true)
-    // The chevron gives way to the clear control's icon.
     expect(wrapper.find('.pxd-select--clear svg').exists()).toBe(true)
+    // A real control, so Tab reaches it and Space/Enter clear the value.
+    expect(wrapper.find('.pxd-select--clear').element.tagName).toBe('BUTTON')
+    expect(wrapper.find('.pxd-select--clear').attributes('aria-label')).toBe('Clear selection')
 
     await wrapper.setProps({ disabled: true })
     expect(wrapper.find('.pxd-select--clear').exists()).toBe(false)
@@ -305,8 +400,68 @@ describe('select', () => {
     expect(wrapper.emitted('update:model-value')?.[0]?.[0]).toBeNull()
     expect(wrapper.emitted('change')?.[0]?.[0]).toBeNull()
     expect(wrapper.emitted('change')?.[0]?.[1]).toMatchObject({ reason: 'cleared' })
-    // data-popover-ignore keeps the clear click from toggling the menu open.
-    expect(document.body.querySelector('.pxd-select--content')).toBeNull()
+    expect(document.body.querySelector('.pxd-popover--wrapper')).toBeNull()
+
+    wrapper.unmount()
+  })
+
+  it('should return focus to the trigger after clearing', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { clearable: true, options, modelValue: 1 },
+    })
+
+    const clearButton = wrapper.find('.pxd-select--clear').element as HTMLButtonElement
+
+    clearButton.focus()
+    await wrapper.find('.pxd-select--clear').trigger('click')
+
+    expect(document.activeElement).toBe(trigger())
+
+    wrapper.unmount()
+  })
+
+  it('should close on Escape', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { options },
+    })
+
+    const visible = () =>
+      document.body.querySelector('.pxd-popover--wrapper')?.getAttribute('data-visible')
+
+    await wrapper.find('[data-select]').trigger('click')
+    await flushPopover()
+
+    expect(visible()).toBe('true')
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await flushPopover()
+
+    expect(visible()).toBe('false')
+
+    wrapper.unmount()
+  })
+
+  it('should let a caller turn Escape off through the popover passthrough', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { options },
+      attrs: { closeOnPressEscape: false },
+    })
+
+    const visible = () =>
+      document.body.querySelector('.pxd-popover--wrapper')?.getAttribute('data-visible')
+
+    await wrapper.find('[data-select]').trigger('click')
+    await flushPopover()
+
+    expect(visible()).toBe('true')
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await flushPopover()
+
+    expect(visible()).toBe('true')
 
     wrapper.unmount()
   })
@@ -325,6 +480,21 @@ describe('select', () => {
     wrapper.unmount()
   })
 
+  it('should keep the clear control focusable', () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { clearable: true, options, modelValue: 1 },
+    })
+
+    const clear = document.body.querySelector<HTMLButtonElement>('.pxd-select--clear')!
+
+    clear.focus()
+
+    expect(document.activeElement).toBe(clear)
+
+    wrapper.unmount()
+  })
+
   it('should show a retryable error when a remote filter rejects', async () => {
     const remoteFilter = vi.fn().mockRejectedValueOnce(new Error('offline'))
     const wrapper = mount(Select, {
@@ -332,7 +502,7 @@ describe('select', () => {
       props: { options, filterable: true, remoteFilter },
     })
 
-    await wrapper.find('button').trigger('click')
+    await wrapper.find('[data-select]').trigger('click')
     await flushPopover()
 
     const searchInput = document.body.querySelector<HTMLInputElement>(

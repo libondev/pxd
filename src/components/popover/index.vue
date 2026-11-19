@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { PopoverEmits, PopoverProps } from './types'
-import { computed, shallowRef } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
+import { computed, mergeProps, shallowRef, useAttrs, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useFocusTrap } from '../../composables/_internal/use-focus-trap.js'
 import { usePopupEngine } from '../../composables/_internal/use-popup-engine.js'
@@ -8,6 +9,7 @@ import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isTruthyProp } from '../../utils/format.js'
 import PPopoverArrow from '../_internal/popover-arrow.vue'
+import PPopoverTrigger from '../_internal/popover-trigger.vue'
 import POverlay from '../overlay/index.vue'
 
 defineOptions({
@@ -33,12 +35,13 @@ const props = withDefaults(defineProps<PopoverProps>(), {
   closeOnOutsideClick: true,
   returnFocusOnDeactivate: true,
   agent: true,
+  asChild: false,
 })
 
 const emits = defineEmits<PopoverEmits>()
 
 const arrowRef = shallowRef<HTMLElement>(null!)
-const triggerRef = shallowRef<HTMLElement>(null!)
+const triggerRef = shallowRef<HTMLElement | null>(null)
 const wrapperRef = shallowRef<HTMLElement>(null!)
 const containerRef = shallowRef<HTMLElement>(null!)
 const overlayZIndex = computed(() => {
@@ -61,6 +64,18 @@ const layoutMode = computed(() =>
 const isSheet = computed(() => layoutMode.value === 'sheet')
 
 const configProvider = useConfigProvider()
+const attrs = useAttrs()
+
+if (props.asChild && props.triggerSelector) {
+  console.warn(
+    '[pxd] PPopover as-child renders a single trigger, so trigger-selector is ignored while it is set.',
+  )
+}
+
+let warnedResolve = false
+let warnedForward = false
+
+const isAsChild = computed(() => props.asChild && !props.triggerSelector)
 
 const engine = usePopupEngine({
   modelValue: () => props.modelValue,
@@ -80,6 +95,7 @@ const engine = usePopupEngine({
   autoPosition: () => props.autoPosition,
   destroyDelay: () => props.destroyDelay,
   contentRole: () => props.contentRole,
+  ariaTarget: () => props.ariaTarget,
   toggleOnTrigger: () => props.toggleOnTrigger,
   autoFocusElement: () => props.autoFocusElement,
   matchReferenceWidth: () => props.matchWidth,
@@ -101,6 +117,27 @@ const engine = usePopupEngine({
   onWrapperKeydown: (ev) => emits('wrapper-keydown', ev),
 })
 
+const triggerProps = computed(() =>
+  mergeProps(
+    {
+      'data-popover': '',
+      'data-visible': engine.isVisible.value,
+      'data-disabled': props.disabled,
+      ref: setTriggerElement,
+    },
+    attrs,
+    {
+      onClickCapture: engine.onTriggerClick,
+      onContextmenu: engine.onTriggerContextmenu,
+      onFocusinCapture: engine.onTriggerFocusIn,
+      onFocusoutCapture: engine.onTriggerFocusOut,
+      onPointerover: engine.onTriggerPointerOver,
+      onPointerout: engine.onTriggerPointerOut,
+      onPointermove: engine.onTriggerPointerMove,
+    },
+  ),
+)
+
 useFocusTrap(engine.focusTrapContainer, () => {
   const options = {
     autoFocusElement: props.autoFocusElement,
@@ -110,10 +147,38 @@ useFocusTrap(engine.focusTrapContainer, () => {
   return isTruthyProp(props.autoFocusElement) ? options : { ...options, initialFocus: false }
 })
 
+function setTriggerElement(element: Element | ComponentPublicInstance | null) {
+  const node =
+    element instanceof HTMLElement ? element : (element as ComponentPublicInstance | null)?.$el
+
+  if (element && !(node instanceof HTMLElement) && !warnedResolve) {
+    warnedResolve = true
+    console.warn('[pxd] PPopover as-child needs a child that resolves to a single element.')
+  }
+
+  triggerRef.value = node instanceof HTMLElement ? node : null
+}
+
+watch(
+  triggerRef,
+  (element) => {
+    // A child that drops the merged attributes leaves no `data-popover`, which the engine reads
+    // as a foreign element: the popover would never open, silently.
+    if (warnedForward || !isAsChild.value || !element || element.hasAttribute('data-popover')) {
+      return
+    }
+
+    warnedForward = true
+    console.warn('[pxd] PPopover as-child needs a child that forwards attributes to its element.')
+  },
+  { flush: 'post' },
+)
+
 if (props.agent) {
   useAgentNode({
     name: 'popover',
     namedBy: 'button',
+    el: () => triggerRef.value || undefined,
     state: () => ({ open: engine.isVisible.value }),
     actions: {
       setOpen: async (open) => {
@@ -134,83 +199,73 @@ defineExpose({
 </script>
 
 <template>
-  <div
-    data-popover
-    ref="triggerRef"
-    class="pxd-popover inline-flex max-w-full touch-manipulation active:select-none data-[disabled=true]:pointer-events-none data-[visible=true]:pointer-events-auto"
-    :data-visible="engine.isVisible.value"
-    :data-disabled="disabled"
-    v-bind="$attrs"
-    @click.capture="engine.onTriggerClick"
-    @contextmenu="engine.onTriggerContextmenu"
-    @focusin.capture="engine.onTriggerFocusIn"
-    @focusout.capture="engine.onTriggerFocusOut"
-    @pointerover="engine.onTriggerPointerOver"
-    @pointerout="engine.onTriggerPointerOut"
-    @pointermove="engine.onTriggerPointerMove"
-  >
+  <PPopoverTrigger :as-child="isAsChild" :trigger-props="triggerProps">
     <slot />
 
-    <POverlay
-      v-if="engine.isRender.value"
-      :model-value="engine.isRevealed.value"
-      :z-index="overlayZIndex"
-      :variant="isSheet ? 'default' : 'none'"
-      :close-on-press-escape="closeOnPressEscape"
-      :lock-scroll-on-visible="isSheet"
-      @escape="engine.handlePopoverEscape"
-    >
-      <div
-        ref="wrapperRef"
-        tabindex="-1"
-        :id="engine.contentId"
-        :role="contentRole || 'dialog'"
-        :aria-modal="contentRole ? undefined : 'true'"
-        :data-visible="engine.isRevealed.value"
-        :data-layout="layoutMode"
-        :data-position="engine.localPosition.value"
-        :data-interactive="interactive"
-        :class="wrapperClass"
-        :style="engine.wrapperStyle.value"
-        :aria-labelledby="ariaLabelledby"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) fixed isolate z-(--popover-index) flex max-w-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:invisible"
-        @keydown="engine.onWrapperKeydown"
-        @pointerenter="engine.onWrapperPointerEnter"
-        @pointerleave="engine.onWrapperPointerLeave"
+    <template #panel>
+      <POverlay
+        v-if="engine.isRender.value"
+        :model-value="engine.isRevealed.value"
+        :z-index="overlayZIndex"
+        :variant="isSheet ? 'default' : 'none'"
+        :close-on-press-escape="closeOnPressEscape"
+        :lock-scroll-on-visible="isSheet"
+        @escape="engine.handlePopoverEscape"
       >
         <div
-          ref="containerRef"
-          class="pxd-popover--container pointer-events-none relative z-1 min-h-inherit w-full max-w-inherit default-transition-duration default-transition-timing-function"
-          :data-transition-type="isSheet ? 'fade-slide' : 'fade-scale'"
-          :data-enter-motion="configProvider.enterMotion"
-          :data-leave-motion="configProvider.leaveMotion"
+          ref="wrapperRef"
+          tabindex="-1"
+          :id="engine.contentId"
+          :role="contentRole || 'dialog'"
+          :aria-modal="!contentRole && isSheet ? 'true' : undefined"
+          :data-visible="engine.isRevealed.value"
+          :inert="engine.isRevealed.value ? undefined : true"
+          :aria-hidden="engine.isRevealed.value ? undefined : 'true'"
+          :data-layout="layoutMode"
+          :data-position="engine.localPosition.value"
+          :data-interactive="interactive"
+          :class="wrapperClass"
+          :style="engine.wrapperStyle.value"
+          :aria-labelledby="ariaLabelledby"
+          class="pxd-popover--wrapper sm:max-w-(--popover-max-width) fixed isolate z-(--popover-index) flex max-w-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:invisible"
+          @keydown="engine.onWrapperKeydown"
+          @pointerenter="engine.onWrapperPointerEnter"
+          @pointerleave="engine.onWrapperPointerLeave"
         >
           <div
-            class="pxd-popover--content h-full max-h-inherit max-w-inherit overflow-auto"
-            :class="contentClass"
+            ref="containerRef"
+            class="pxd-popover--container pointer-events-none relative z-1 min-h-inherit w-full max-w-inherit default-transition-duration default-transition-timing-function"
+            :data-transition-type="isSheet ? 'fade-slide' : 'fade-scale'"
+            :data-enter-motion="configProvider.enterMotion"
+            :data-leave-motion="configProvider.leaveMotion"
           >
-            <slot
-              name="content"
-              :active-trigger="engine.activeTriggerRef.value"
-              :active-trigger-index="engine.activeTriggerIndex.value"
-            />
-          </div>
+            <div
+              class="pxd-popover--content h-full max-h-inherit max-w-inherit overflow-auto"
+              :class="contentClass"
+            >
+              <slot
+                name="content"
+                :active-trigger="engine.activeTriggerRef.value"
+                :active-trigger-index="engine.activeTriggerIndex.value"
+              />
+            </div>
 
-          <div
-            v-if="showArrow"
-            ref="arrowRef"
-            class="pxd-popover--arrow pointer-events-none absolute z-1"
-          >
-            <PPopoverArrow
-              fill="var(--popover-arrow-color,transparent)"
-              stroke="var(--popover-arrow-border,transparent)"
-              :position="engine.localPosition.value"
-            />
+            <div
+              v-if="showArrow"
+              ref="arrowRef"
+              class="pxd-popover--arrow pointer-events-none absolute z-1"
+            >
+              <PPopoverArrow
+                fill="var(--popover-arrow-color,transparent)"
+                stroke="var(--popover-arrow-border,transparent)"
+                :position="engine.localPosition.value"
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </POverlay>
-  </div>
+      </POverlay>
+    </template>
+  </PPopoverTrigger>
 </template>
 
 <style lang="postcss">

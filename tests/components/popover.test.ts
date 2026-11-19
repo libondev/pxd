@@ -1,7 +1,7 @@
 import type { computePosition } from '@floating-ui/dom'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
-import { h } from 'vue'
+import { defineComponent, h, ref } from 'vue'
 import Overlay from '../../src/components/overlay/index.vue'
 import Popover from '../../src/components/popover/index.vue'
 
@@ -217,6 +217,43 @@ describe('popover', () => {
     expect(wrapper.findComponent(Overlay).props('lockScrollOnVisible')).toBe(true)
 
     wrapper.unmount()
+  })
+
+  it('should announce the panel as a modal dialog only for the sheet layout', async () => {
+    const anchored = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click' },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await anchored.find('button').trigger('click')
+    await flush()
+
+    const panel = () => document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+
+    expect(panel().getAttribute('role')).toBe('dialog')
+    expect(panel().hasAttribute('aria-modal')).toBe(false)
+
+    anchored.unmount()
+
+    const sheet = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click', layout: 'sheet' },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await sheet.find('button').trigger('click')
+    await flush()
+
+    expect(panel().getAttribute('aria-modal')).toBe('true')
+
+    sheet.unmount()
   })
 
   it('should keep the content height from shrinking when the height is stable', async () => {
@@ -1138,6 +1175,234 @@ describe('popover', () => {
     )
     expect(wrapper.emitted('escape')).toHaveLength(1)
     expect(wrapper.emitted('update:model-value')).toBeUndefined()
+
+    wrapper.unmount()
+  })
+
+  it('should render the single child as the trigger when as-child is set', () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { asChild: true, trigger: 'click' },
+      slots: {
+        default: '<button aria-label="Open">Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    const trigger = document.body.querySelector<HTMLElement>('.pxd-popover')
+
+    expect(trigger?.tagName).toBe('BUTTON')
+    expect(trigger?.getAttribute('aria-label')).toBe('Open')
+    expect(trigger?.className).toBe('pxd-popover')
+    expect(document.body.querySelector('div.pxd-popover')).toBeNull()
+
+    wrapper.unmount()
+  })
+
+  it('should keep the caller attributes and listeners on the trigger child', async () => {
+    const onFocus = vi.fn()
+    const onClick = vi.fn()
+    const childClick = vi.fn()
+
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: {
+        asChild: true,
+        trigger: 'click',
+        id: 'region-trigger',
+        'aria-label': 'Region',
+        onFocus,
+        onClick,
+      },
+      slots: {
+        default: () => h('button', { onClick: childClick }, 'Trigger'),
+        content: '<span>Content</span>',
+      },
+    })
+
+    const trigger = document.body.querySelector<HTMLButtonElement>('button')!
+
+    expect(trigger.id).toBe('region-trigger')
+    expect(trigger.getAttribute('aria-label')).toBe('Region')
+
+    trigger.dispatchEvent(new FocusEvent('focus'))
+
+    expect(onFocus).toHaveBeenCalledTimes(1)
+
+    trigger.click()
+    await flush()
+
+    expect(childClick).toHaveBeenCalledTimes(1)
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(wrapper.emitted('trigger-click')).toHaveLength(1)
+    expect(document.body.querySelector('.pxd-popover--wrapper')?.getAttribute('data-visible')).toBe(
+      'true',
+    )
+
+    wrapper.unmount()
+  })
+
+  it('should keep the child ref when as-child owns the trigger', () => {
+    const buttonRef = ref<HTMLElement | null>(null)
+
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { asChild: true },
+      slots: {
+        default: () => h('button', { ref: buttonRef }, 'Trigger'),
+      },
+    })
+
+    expect(buttonRef.value).toBe(document.body.querySelector('button'))
+    expect(buttonRef.value?.hasAttribute('data-popover')).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should warn and keep the wrapper when as-child gets more than one child', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { asChild: true },
+      slots: {
+        default: '<button>One</button><button>Two</button>',
+      },
+    })
+
+    expect(warn).toHaveBeenCalled()
+    expect(document.body.querySelector('div.pxd-popover')).not.toBeNull()
+
+    warn.mockRestore()
+    wrapper.unmount()
+  })
+
+  it('should announce the popup state on the aria target instead of the trigger', async () => {
+    const target = document.createElement('span')
+    document.body.append(target)
+
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { asChild: true, trigger: 'click', ariaTarget: target },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    const trigger = document.body.querySelector<HTMLButtonElement>('button')!
+
+    expect(target.getAttribute('aria-expanded')).toBe('false')
+    expect(trigger.hasAttribute('aria-expanded')).toBe(false)
+
+    trigger.click()
+    await flush()
+
+    expect(target.getAttribute('aria-expanded')).toBe('true')
+    expect(trigger.hasAttribute('aria-haspopup')).toBe(false)
+
+    wrapper.unmount()
+
+    expect(target.hasAttribute('aria-expanded')).toBe(false)
+    expect(target.hasAttribute('aria-haspopup')).toBe(false)
+
+    target.remove()
+  })
+
+  it('should take the panel out of the tab order and the accessibility tree while closed', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click' },
+      slots: {
+        default: '<button data-trigger>Trigger</button>',
+        content: '<button data-inside>Inside</button>',
+      },
+    })
+
+    await flush()
+
+    const panel = () => document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+    const trigger = document.body.querySelector<HTMLElement>('[data-trigger]')!
+
+    trigger.click()
+    await flush()
+
+    expect(panel().hasAttribute('aria-hidden')).toBe(false)
+    expect(panel().hasAttribute('inert')).toBe(false)
+
+    trigger.click()
+    await flush()
+
+    expect(panel().getAttribute('data-visible')).toBe('false')
+    expect(panel().getAttribute('aria-hidden')).toBe('true')
+    expect(panel().hasAttribute('inert')).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should warn when the as-child child drops the merged attributes', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const SilentChild = defineComponent({
+      name: 'SilentChild',
+      inheritAttrs: false,
+      setup: () => () => h('button', 'Trigger'),
+    })
+
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { asChild: true },
+      slots: {
+        default: () => h(SilentChild),
+      },
+    })
+
+    expect(warn).toHaveBeenCalled()
+    expect(document.body.querySelector('button')?.hasAttribute('data-popover')).toBe(false)
+
+    warn.mockRestore()
+    wrapper.unmount()
+  })
+
+  it('should keep the wrapper when as-child is combined with trigger-selector', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { asChild: true, triggerSelector: '[data-trigger]' },
+      slots: {
+        default: '<div><button data-trigger>One</button></div>',
+      },
+    })
+
+    expect(warn).toHaveBeenCalled()
+    expect(document.body.querySelector('div.pxd-popover')).not.toBeNull()
+
+    warn.mockRestore()
+    wrapper.unmount()
+  })
+
+  it('should leave a popup role the trigger already declares', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { asChild: true, trigger: 'click' },
+      slots: {
+        default: '<button aria-haspopup="listbox">Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    const trigger = document.body.querySelector<HTMLButtonElement>('button')!
+
+    trigger.click()
+    await flush()
+
+    expect(trigger.getAttribute('aria-haspopup')).toBe('listbox')
+    expect(trigger.getAttribute('aria-expanded')).toBe('true')
+
+    trigger.click()
+    await flush()
+
+    expect(trigger.getAttribute('aria-expanded')).toBe('false')
 
     wrapper.unmount()
   })

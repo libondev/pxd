@@ -448,6 +448,26 @@ const chips = [
 </template>
 ```
 
+## As child
+
+`as-child` renders the default slot's single element as the trigger itself: the popover's attributes, DOM listeners and state markers are merged onto it and no wrapper is added, so `aria-*`, `id` and a listener bound on the popover describe the element people actually use. The child must resolve to exactly one element — text, several siblings and a component with multiple roots fall back to the wrapper with a development warning. It cannot be combined with `trigger-selector`.
+
+```vue demo
+<script setup>
+const content = 'The button is the trigger, without a wrapper element.'
+</script>
+
+<template>
+  <PPopover as-child content-class="p-4 bg-background-100 shadow-sm border rounded-md">
+    <PButton aria-label="Open details"> As child </PButton>
+
+    <template #content>
+      {{ content }}
+    </template>
+  </PPopover>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -456,9 +476,10 @@ const chips = [
 | offset | `number` | - | Gap in `px` between the Popover and its trigger |
 | trigger | `'click' \| 'hover' \| 'contextmenu' \| 'manual' \| ('click' \| 'hover' \| 'contextmenu' \| 'manual')[]` | `() => ['hover']` | Trigger methods; takes one or an array of `hover`, `click`, `contextmenu`, `manual` |
 | trigger-selector | `string` | - | Selector for multiple DOM triggers inside the default slot. |
+| as-child | `boolean` | `false` | Merge the popover's attributes, listeners and state markers onto the default slot's single element instead of wrapping it. |
 | align-point | `boolean` | - | Align the Popover to the pointer position. |
 | disabled | `boolean` | - | Ignore every trigger event so the Popover cannot be shown |
-| layout | `'auto' \| 'anchored' \| 'sheet'` | `'auto'` | Panel layout: `auto` anchors it beside the trigger on wide screens and turns it into a bottom sheet with a dimmed backdrop and slide motion on narrow ones |
+| layout | `'auto' \| 'anchored' \| 'sheet'` | `'auto'` | Panel layout: `auto` anchors it beside the trigger on wide screens and turns it into a bottom sheet with a dimmed backdrop and slide motion on narrow ones. Only the sheet form is announced as a modal dialog |
 | match-width | `boolean` | `false` | Keep the panel at least as wide as its trigger; without it the panel sizes to its content |
 | keep-height | `boolean` | `false` | Keep the largest content height seen while open, so filtering cannot move the anchored edge |
 | max-width | `number \| string` | - | Max width of the panel; a number is treated as `px` |
@@ -474,6 +495,7 @@ const chips = [
 | auto-position | `boolean` | `true` | Reposition on scroll and resize, flip when it would be clipped, and cap the content height to the space available |
 | wrapper-class | `string \| any[] \| object` | - | Class bound to the Popover wrapper |
 | aria-labelledby | `string` | - | ID of the element that labels the Popover dialog |
+| aria-target | `HTMLElement` | - | Element that receives the popup state (`aria-haspopup`, `aria-expanded`) when the trigger is not the control, such as a field's inner input |
 | content-class | `string \| any[] \| object` | - | Class bound to the Popover content |
 | toggle-on-trigger | `boolean` | `true` | Hide the Popover when the trigger is activated again |
 | auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |

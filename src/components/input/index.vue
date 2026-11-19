@@ -8,7 +8,7 @@ import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
-import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { BASIC_HEIGHTS, SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { NOOP, isCompositionKeydown } from '../../utils/event.js'
 import { isTruthyProp } from '../../utils/format.js'
@@ -67,10 +67,10 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-input pxd-input--border group relative flex w-full max-w-full items-center bg-background-100 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:bg-gray-100 motion-safe:transition-appearance',
     variants: {
       size: {
-        xs: `${BASIC_HEIGHTS.xs} text-xs rounded-sm [--input-ip:0.375rem]`,
-        sm: `${BASIC_HEIGHTS.sm} text-sm rounded-md [--input-ip:0.5rem]`,
-        md: `${BASIC_HEIGHTS.md} text-sm rounded-md [--input-ip:0.75rem]`,
-        lg: `${BASIC_HEIGHTS.lg} text-base rounded-lg [--input-ip:0.75rem]`,
+        xs: `${BASIC_HEIGHTS.xs} ${SIZE_TEXT_CLASS.xs} rounded-sm [--input-ip:0.375rem]`,
+        sm: `${BASIC_HEIGHTS.sm} ${SIZE_TEXT_CLASS.sm} rounded-md [--input-ip:0.5rem]`,
+        md: `${BASIC_HEIGHTS.md} ${SIZE_TEXT_CLASS.md} rounded-md [--input-ip:0.75rem]`,
+        lg: `${BASIC_HEIGHTS.lg} ${SIZE_TEXT_CLASS.lg} rounded-lg [--input-ip:0.75rem]`,
       },
       align: {
         left: 'text-left',
@@ -232,6 +232,7 @@ function clear() {
 }
 
 defineExpose({
+  input: inputRef,
   blur,
   clear,
   focus,
@@ -313,7 +314,9 @@ defineExpose({
       <button
         v-if="clearable"
         type="button"
-        class="p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+        data-popover-ignore
+        :aria-label="configProvider.locale.interaction.clear"
+        class="pxd-input--clear p-1 cursor-pointer appearance-none rounded-sm font-inherit self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
         @click.stop.prevent="clear"
       >
         <CrossIcon class="size-3" />

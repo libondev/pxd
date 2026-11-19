@@ -21,7 +21,6 @@ defineOptions({
 const props = withDefaults(defineProps<MenuProps>(), {
   options: () => [],
   position: 'bottom-start',
-  closeOnPressEscape: true,
 })
 
 const emits = defineEmits<MenuEmits>()
@@ -118,7 +117,6 @@ watch(popoverVisible, async (visible) => {
     :position="position"
     match-width
     :content-class="POPOVER_PANEL_CLASS"
-    :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
     @wrapper-keydown="onKeydown"
   >

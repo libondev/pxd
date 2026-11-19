@@ -1,6 +1,6 @@
 import type { ButtonVariant } from '../../types/components/button'
 import type { ChangeDetails } from '../../types/shared/change'
-import type { ComponentClass, ComponentSize, ComponentShape } from '../../types/shared/props'
+import type { ComponentSize, ComponentShape } from '../../types/shared/props'
 import type {
   ListFilterMethodFn,
   ListModelValue,
@@ -26,8 +26,6 @@ export interface SelectProps {
   filterMethod?: ListFilterMethodFn
   remoteFilter?: ListRemoteFilterFn
   labelFormat?: (items: ListOptions) => string
-  closeOnPressEscape?: boolean
-  triggerClass?: ComponentClass
 }
 
 export interface SelectEmits {

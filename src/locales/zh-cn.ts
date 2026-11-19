@@ -41,6 +41,8 @@ const zhCN = {
   },
   interaction: {
     cancel: '取消',
+    clear: '清除',
+    clearSelection: '清除选择',
     close: '关闭',
     confirm: '确认',
     skip: '跳过',

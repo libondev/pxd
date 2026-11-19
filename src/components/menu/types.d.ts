@@ -9,7 +9,6 @@ export interface MenuProps {
   multiple?: boolean
   position?: ComponentPosition
   modelValue?: ListModelValue
-  closeOnPressEscape?: boolean
 }
 
 export interface MenuEmits {

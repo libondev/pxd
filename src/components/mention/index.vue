@@ -96,6 +96,7 @@ const { onKeydown: onListKeydown } = useListKeyboardController({
 })
 useAgentNode({
   name: 'mention',
+  el: () => editorRef.value?.$el,
   state: () => ({ value: modelValue.value ?? '' }),
   actions: {
     setValue: (value) => editorRef.value?.setText(value == null ? '' : String(value)),
@@ -226,9 +227,10 @@ defineExpose({
 <template>
   <PPopover
     data-mention
+    as-child
     v-model="popoverVisible"
     class="w-full"
-    position="bottom-start"
+    position="bottom"
     :trigger="[]"
     keep-height
     match-width

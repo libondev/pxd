@@ -9,6 +9,7 @@ export interface PopoverProps {
   offset?: number
   trigger?: PopoverTrigger | PopoverTrigger[]
   triggerSelector?: string
+  asChild?: boolean
   alignPoint?: boolean
   disabled?: boolean
   layout?: PopoverLayout
@@ -29,6 +30,7 @@ export interface PopoverProps {
   contentClass?: ComponentClass
   contentRole?: string
   ariaLabelledby?: string
+  ariaTarget?: HTMLElement
   toggleOnTrigger?: boolean
   autoFocusElement?: string | boolean
   closeOnInvisible?: boolean

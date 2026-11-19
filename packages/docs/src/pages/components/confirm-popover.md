@@ -4,6 +4,8 @@ A popover that asks for a second confirmation before running an action. The trig
 
 ## Default
 
+The component inherits from popover and supports all the properties of popover. For details, See: [Popover](/components/popover).
+
 ```vue demo
 <script setup>
 function handleConfirm() {

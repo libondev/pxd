@@ -209,4 +209,5 @@ const value = ref('')
 | blur | `() => void` | Remove focus from the input element. |
 | clear | `() => void` | Reset the value to `clear-value` and emit `change` with an empty string. |
 | focus | `() => void` | Move focus to the input element. |
+| input | `HTMLInputElement \| undefined` | The native input element, for callers that must target it directly. |
 | select | `() => void` | Select the whole value of the input element. |

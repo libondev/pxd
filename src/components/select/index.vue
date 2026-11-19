@@ -2,9 +2,12 @@
 import type { ListKeyboardMap } from '../../composables/_internal/use-list-keyboard-controller'
 import type { ListModelValue } from '../list/types'
 import type { SelectEmits, SelectProps } from './types'
+import type { ClassValue } from 'cn'
+import type { ComponentPublicInstance } from 'vue'
 import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 import CrossIcon from '@gdsicon/vue/cross'
-import { computed, nextTick, shallowRef, watch } from 'vue'
+import { cn } from 'cn'
+import { computed, nextTick, shallowRef, useAttrs, watch } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
@@ -14,7 +17,9 @@ import { useListSearch } from '../../composables/_internal/use-list-search.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
 import { useSelectedListItems } from '../../composables/_internal/use-selected-list-item.js'
 import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
+import { SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
+import { getElement } from '../../utils/dom.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'
 import PButton from '../button/index.vue'
@@ -46,8 +51,11 @@ const DEFAULT_KEYMAP: ListKeyboardMap = {
   ...FILTERABLE_KEYMAP,
   ' ': 'activate',
 }
+// While the panel is open and focus still sits on the trigger, only navigation is forwarded.
+const NAVIGATION_KEYS = new Set(['ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'])
 
 const popoverVisible = shallowRef(false)
+const buttonRef = shallowRef<ComponentPublicInstance>()
 const listRef = shallowRef<InstanceType<typeof PList>>()
 const searchInputRef = shallowRef<HTMLInputElement>()
 
@@ -78,6 +86,22 @@ const translatedLabel = computed(() => {
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
+
+const attrs = useAttrs()
+
+const rootClass = computed(() =>
+  cn(
+    'pxd-select relative inline-flex w-full max-w-full',
+    SIZE_TEXT_CLASS[computedSize.value],
+    attrs.class as ClassValue,
+  ),
+)
+
+const popoverAttrs = computed(() => {
+  const { class: _class, style: _style, ...rest } = attrs
+
+  return rest
+})
 
 // Single mode commits on pick and closes; multiple mode stays open and commits `change`
 // once when the popover closes, so a round of toggles is one event.
@@ -112,6 +136,7 @@ useAgentNode({
   name: 'select',
   namedBy: 'button',
   closed: true,
+  el: () => buttonRef.value?.$el,
   owns: () => listRef.value?.$el,
   items: () => optionItems(props.options, selected.value),
   itemElement: (value) => listRef.value?.elementOf(value),
@@ -147,6 +172,30 @@ function onSearchInput(ev: Event) {
 function clear() {
   clearSelection()
   popoverVisible.value = false
+
+  // Clearing removes the control that was just pressed; focus belongs back on the trigger.
+  getElement(buttonRef)?.focus()
+}
+
+function onTriggerKeydown(event: KeyboardEvent) {
+  if (props.disabled) {
+    return
+  }
+
+  // Focus can stay on the trigger while the panel is open; the list still owns navigation.
+  // Enter and Space stay native so the button cannot toggle again after a selection.
+  if (popoverVisible.value) {
+    if (NAVIGATION_KEYS.has(event.key)) {
+      onKeydown(event)
+    }
+
+    return
+  }
+
+  if (event.key === 'ArrowDown') {
+    event.preventDefault()
+    popoverVisible.value = true
+  }
 }
 
 function onRetry() {
@@ -189,127 +238,129 @@ watch(listOptions, async () => {
 </script>
 
 <template>
-  <PPopover
-    data-select
-    v-model="popoverVisible"
-    v-bind="$attrs"
-    class="pxd-select"
-    trigger="click"
-    match-width
-    :keep-height="filterable"
-    :auto-focus-element="filterable"
-    :disabled="disabled"
-    :content-class="POPOVER_PANEL_CLASS"
-    :close-on-press-escape="closeOnPressEscape"
-    @wrapper-keydown="onKeydown"
-  >
-    <PButton
-      class="relative justify-between text-inherit"
-      align="left"
-      full-width
-      :class="[{ 'text-gray-600': !translatedLabel, 'pe-8': showClear }, triggerClass]"
-      :variant="variant"
-      :shape="shape"
-      :size="computedSize"
+  <div :class="rootClass" :style="attrs.style">
+    <PPopover
+      data-select
+      as-child
+      v-model="popoverVisible"
+      aria-haspopup="listbox"
+      v-bind="popoverAttrs"
+      trigger="click"
+      match-width
+      :keep-height="filterable"
+      :auto-focus-element="filterable"
       :disabled="disabled"
-      :aria-haspopup="filterable ? 'combobox' : 'listbox'"
-      :aria-expanded="popoverVisible"
+      :content-class="POPOVER_PANEL_CLASS"
+      @wrapper-keydown="onKeydown"
     >
-      <template v-if="$slots.prefix" #prefix>
-        <slot name="prefix" />
-      </template>
-
-      <template v-if="translatedLabel">
-        <div class="truncate">
-          <slot :label="translatedLabel">{{ translatedLabel }}</slot>
-        </div>
-      </template>
-      <template v-else>
-        {{ placeholder }}
-      </template>
-
-      <template #suffix>
-        <button
-          v-if="showClear"
-          type="button"
-          data-popover-ignore
-          aria-label="Clear selection"
-          class="pxd-select--clear p-1 end-1.5 absolute cursor-pointer appearance-none rounded-sm font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
-          @click.stop.prevent="clear"
-          @pointerdown.prevent
-        >
-          <CrossIcon class="size-3" />
-        </button>
-        <slot v-else name="suffix">
-          <ChevronDownIcon
-            v-if="suffixIcon && !showClear"
-            class="text-sm text-foreground-secondary motion-safe:transition-transform"
-            :class="{ 'rotate-180': popoverVisible }"
-          />
-        </slot>
-      </template>
-    </PButton>
-
-    <template #content>
-      <label
-        v-if="filterable"
-        :for="searchInputId"
-        class="px-3 py-2 gap-2 flex items-center border-b bg-background-100"
+      <PButton
+        ref="buttonRef"
+        class="relative max-w-full justify-between [font-size:inherit]! text-inherit"
+        align="left"
+        full-width
+        :class="{ 'text-gray-600': !translatedLabel, 'pe-8': showClear }"
+        :variant="variant"
+        :shape="shape"
+        :size="computedSize"
+        :disabled="disabled"
+        @keydown="onTriggerKeydown"
       >
-        <input
-          :id="searchInputId"
-          ref="searchInputRef"
-          :value="filterKeyword"
-          type="text"
-          role="combobox"
-          autocomplete="off"
-          autocorrect="off"
-          spellcheck="false"
-          aria-autocomplete="list"
-          inputmode="search"
-          :aria-controls="listId"
-          :aria-expanded="popoverVisible"
-          :aria-disabled="disabled"
-          :aria-activedescendant="listRef?.activeItemId"
-          :placeholder="filterPlaceholder"
-          class="pxd-select--search h-7 min-w-0 text-sm flex-1 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
-          @input="onSearchInput"
-          @keydown="onKeydown"
-        />
-      </label>
-
-      <PList
-        :id="listId"
-        ref="listRef"
-        :model-value="selected"
-        :options="listOptions"
-        :loading="pending"
-        :error="Boolean(error)"
-        :multiple="multiple"
-        :virtual="virtual"
-        :loop="!filterable"
-        :default-active-index="filterable ? 0 : -1"
-        class="max-h-68 min-h-0 flex-1 overflow-auto"
-        @update:model-value="onListUpdate"
-        @retry="onRetry"
-      >
-        <template v-if="$slots.item" #item="itemSlotProps">
-          <slot name="item" v-bind="itemSlotProps" />
+        <template v-if="$slots.prefix" #prefix>
+          <slot name="prefix" />
         </template>
 
-        <template #empty>
-          <slot name="empty">
-            <template v-if="filterKeyword">
-              {{ configProvider.locale.results.searchText }}
-              <span class="whitespace-pre text-foreground">"{{ filterKeyword }}"</span>
-            </template>
+        <template v-if="translatedLabel">
+          <div class="truncate">
+            <slot :label="translatedLabel">{{ translatedLabel }}</slot>
+          </div>
+        </template>
+        <template v-else>
+          {{ placeholder }}
+        </template>
+
+        <template #suffix>
+          <slot name="suffix">
+            <ChevronDownIcon
+              v-if="suffixIcon && !showClear"
+              class="text-foreground-secondary motion-safe:transition-transform"
+              :class="{ 'rotate-180': popoverVisible }"
+            />
           </slot>
         </template>
-      </PList>
+      </PButton>
 
-      <div v-if="$slots.footer" class="pxd-select--footer p-2 border-t">
-        <slot name="footer" />
-      </div>
-    </template>
-  </PPopover>
+      <template #content>
+        <label
+          v-if="filterable"
+          :for="searchInputId"
+          class="px-3 py-2 gap-2 flex items-center border-b bg-background-100"
+        >
+          <input
+            :id="searchInputId"
+            ref="searchInputRef"
+            :value="filterKeyword"
+            type="text"
+            role="combobox"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            aria-autocomplete="list"
+            inputmode="search"
+            :aria-controls="listId"
+            :aria-expanded="popoverVisible"
+            :aria-disabled="disabled"
+            :aria-activedescendant="listRef?.activeItemId"
+            :placeholder="filterPlaceholder"
+            class="pxd-select--search h-7 min-w-0 text-sm flex-1 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
+            @input="onSearchInput"
+            @keydown="onKeydown"
+          />
+        </label>
+
+        <PList
+          :id="listId"
+          ref="listRef"
+          :model-value="selected"
+          :options="listOptions"
+          :loading="pending"
+          :error="Boolean(error)"
+          :multiple="multiple"
+          :virtual="virtual"
+          :loop="!filterable"
+          :default-active-index="filterable ? 0 : -1"
+          class="max-h-68 min-h-0 flex-1 overflow-auto"
+          @update:model-value="onListUpdate"
+          @retry="onRetry"
+        >
+          <template v-if="$slots.item" #item="itemSlotProps">
+            <slot name="item" v-bind="itemSlotProps" />
+          </template>
+
+          <template #empty>
+            <slot name="empty">
+              <template v-if="filterKeyword">
+                {{ configProvider.locale.results.searchText }}
+                <span class="whitespace-pre text-foreground">"{{ filterKeyword }}"</span>
+              </template>
+            </slot>
+          </template>
+        </PList>
+
+        <div v-if="$slots.footer" class="pxd-select--footer p-2 border-t">
+          <slot name="footer" />
+        </div>
+      </template>
+    </PPopover>
+
+    <button
+      v-if="showClear"
+      type="button"
+      :aria-label="configProvider.locale.interaction.clearSelection"
+      class="pxd-select--clear p-1 end-2 absolute top-1/2 z-1 -translate-y-1/2 cursor-pointer appearance-none rounded-sm font-inherit text-foreground-secondary self-focus-ring outline-none hover:bg-background-hover hover:text-foreground active:bg-background-active motion-safe:transition-colors"
+      @click.stop.prevent="clear"
+      @pointerdown.prevent
+    >
+      <CrossIcon class="size-3" />
+    </button>
+  </div>
 </template>

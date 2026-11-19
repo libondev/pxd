@@ -157,4 +157,31 @@ describe('split-button', () => {
 
     wrapper.unmount()
   })
+
+  it('should close the dropdown on Escape', async () => {
+    const wrapper = mount(SplitButton, {
+      attachTo: document.body,
+      props: {
+        options: [
+          { label: 'Option 1', value: '1' },
+          { label: 'Option 2', value: '2' },
+        ],
+      },
+    })
+
+    const visible = () =>
+      document.body.querySelector('.pxd-popover--wrapper')?.getAttribute('data-visible')
+
+    await wrapper.get('[data-split-button-trigger]').trigger('click')
+    await flushPopover()
+
+    expect(visible()).toBe('true')
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await flushPopover()
+
+    expect(visible()).toBe('false')
+
+    wrapper.unmount()
+  })
 })

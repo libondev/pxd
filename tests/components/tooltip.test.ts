@@ -56,6 +56,28 @@ describe('tooltip', () => {
     wrapper.unmount()
   })
 
+  it('should let a single trigger take the popover attributes with as-child', () => {
+    const wrapper = mount(Tooltip, {
+      attachTo: document.body,
+      props: {
+        content: 'Text',
+        asChild: true,
+      },
+      slots: {
+        default: '<button aria-label="Info">Hover</button>',
+      },
+    })
+
+    const button = document.body.querySelector<HTMLButtonElement>('button')!
+
+    expect(button.hasAttribute('data-tooltip')).toBe(true)
+    expect(button.hasAttribute('data-popover')).toBe(true)
+    expect(button.getAttribute('aria-label')).toBe('Info')
+    expect(document.body.querySelector('div.pxd-popover')).toBeNull()
+
+    wrapper.unmount()
+  })
+
   it('should default variant to default', () => {
     const wrapper = mount(Tooltip, {
       props: {

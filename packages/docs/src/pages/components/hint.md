@@ -4,6 +4,8 @@ Display a transient hint above the element that was interacted with, closed auto
 
 ## Default
 
+The component inherits from popover and supports all the properties of popover. For details, See: [Popover](/components/popover).
+
 
 ```vue demo
 <script setup>

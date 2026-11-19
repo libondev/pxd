@@ -4,6 +4,8 @@ Mention people or entities inside rich text with `@` or any other configured tri
 
 ## Default
 
+The component inherits from popover and supports all the properties of popover. For details, See: [Popover](/components/popover).
+
 ```vue demo
 <script setup>
 import { ref } from 'vue'

@@ -4,6 +4,7 @@ import type { TimePickerEmits, TimePickerProps } from './types'
 import ClockIcon from '@gdsicon/vue/clock'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFieldAttrs } from '../../composables/_internal/use-field-attrs.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
@@ -24,7 +25,6 @@ const props = withDefaults(defineProps<TimePickerProps>(), {
   modelValue: '',
   suffixIcon: true,
   showSeconds: true,
-  closeOnPressEscape: true,
   presets: () => [],
   format: 'HH:mm:ss',
   valueFormat: 'HH:mm:ss',
@@ -51,6 +51,7 @@ const timeMinutesRef = shallowRef<HTMLElement>()
 const timeSecondsRef = shallowRef<HTMLElement>()
 
 const popoverVisible = shallowRef(false)
+const fieldRef = shallowRef<InstanceType<typeof PInput>>()
 
 const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
 const committedValue = shallowRef<string | number>('')
@@ -58,6 +59,7 @@ const committedValue = shallowRef<string | number>('')
 const configProvider = useConfigProvider()
 
 const isSheet = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
+const { fieldAttrs, popoverAttrs } = useFieldAttrs()
 const { modelValue, change } = useModelValue(props, emits, {
   get() {
     return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
@@ -66,6 +68,7 @@ const { modelValue, change } = useModelValue(props, emits, {
 useAgentNode({
   name: 'time-picker',
   namedBy: 'field',
+  el: () => fieldRef.value?.$el,
   state: () => ({ value: modelValue.value ?? '' }),
   actions: {
     setValue: (value) => {
@@ -269,19 +272,20 @@ onBeforeUnmount(() => {
 <template>
   <PPopover
     data-time-picker
+    as-child
+    :aria-target="fieldRef?.input"
     v-model="popoverVisible"
     class="pxd-time-picker w-full"
     trigger="click"
     :disabled="disabled"
-    :class="$attrs.class"
-    :style="$attrs.style"
+    v-bind="popoverAttrs"
     :toggle-on-trigger="false"
     :content-class="POPOVER_PANEL_CLASS"
-    :close-on-press-escape="closeOnPressEscape"
     @show="setTimesScrollTop"
     @outside-click="(event: PointerEvent) => updateModelValue({ reason: 'outside-press', event })"
   >
     <PInput
+      ref="fieldRef"
       :size="size"
       :error="error"
       :disabled="disabled"
@@ -290,8 +294,8 @@ onBeforeUnmount(() => {
       :model-value="modelValue"
       :placeholder="placeholder"
       :default-suffix-style="false"
+      :input-attrs="fieldAttrs"
       :data-focusing="popoverVisible"
-      v-bind="$attrs"
       @clear="onInputValueChange"
       @change="onInputValueChange"
       @keydown.enter="togglePopoverVisible(true)"

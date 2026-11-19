@@ -26,6 +26,8 @@ const enUS = {
   },
   interaction: {
     cancel: 'Cancel',
+    clear: 'Clear',
+    clearSelection: 'Clear selection',
     close: 'Close',
     confirm: 'Confirm',
     skip: 'Skip',

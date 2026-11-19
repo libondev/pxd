@@ -93,7 +93,6 @@ const options = [
 | disabled | `boolean` | - | Disable the primary button and the dropdown trigger |
 | model-value | `ListOptionSelected['value']` | - | Value of the selected option, exposed to the default slot as `data` |
 | main-button-props | `ButtonProps` | - | Extra props forwarded to the primary button, e.g. `loading`, `icon`, `full-width` |
-| close-on-press-escape | `boolean` | - | Close the dropdown when pressing `Escape` |
 
 ## Events
 

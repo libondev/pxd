@@ -5,6 +5,7 @@ import type { DatePickerEmits, DatePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFieldAttrs } from '../../composables/_internal/use-field-attrs.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
@@ -20,7 +21,6 @@ defineOptions({
 })
 const props = withDefaults(defineProps<DatePickerProps>(), {
   suffixIcon: true,
-  closeOnPressEscape: true,
   labelFormat: 'YYYY-MM-DD',
   valueFormat: 'YYYY-MM-DD',
 })
@@ -31,11 +31,13 @@ const DATE_FORMAT_TOKEN_RE = /(YYYY|YY|MM|DD|M|D)/
 const YEAR_FORMAT_TOKEN_RE = /YYYY|YY/
 
 const popoverVisible = shallowRef(false)
+const fieldRef = shallowRef<InstanceType<typeof PInput>>()
 const draftInput = shallowRef<string | null>(null)
 const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
 const calendarModelValue = computed(() => dayjsDateTime.value?.valueOf() ?? null)
 
 const isSheet = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
+const { fieldAttrs, popoverAttrs } = useFieldAttrs()
 const { modelValue, change } = useModelValue(props, emits, {
   get() {
     if (draftInput.value !== null) {
@@ -48,6 +50,7 @@ const { modelValue, change } = useModelValue(props, emits, {
 useAgentNode({
   name: 'date-picker',
   namedBy: 'field',
+  el: () => fieldRef.value?.$el,
   state: () => ({ value: modelValue.value ?? null, open: popoverVisible.value }),
   actions: {
     setValue: (value) => {
@@ -256,17 +259,19 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
 <template>
   <PPopover
     data-date-picker
+    as-child
+    :aria-target="fieldRef?.input"
     v-model="popoverVisible"
     class="pxd-date-picker w-full"
     trigger="click"
     :disabled="disabled"
-    v-bind="$attrs"
+    v-bind="popoverAttrs"
     :toggle-on-trigger="false"
     :content-class="POPOVER_PANEL_CLASS"
-    :close-on-press-escape="closeOnPressEscape"
     @outside-click="onOutsideClick"
   >
     <PInput
+      ref="fieldRef"
       :size="size"
       :error="error"
       :disabled="disabled"
@@ -275,8 +280,8 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       :model-value="modelValue"
       :placeholder="placeholder"
       :default-suffix-style="false"
+      :input-attrs="fieldAttrs"
       :data-focusing="popoverVisible"
-      v-bind="$attrs"
       @update:model-value="onDraftInput"
       @clear="onInputValueChange"
       @change="onInputValueChange"

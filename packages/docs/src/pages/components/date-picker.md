@@ -4,6 +4,8 @@ Select a calendar date from an input.
 
 ## Default
 
+The component inherits from popover and supports all the properties of popover. For details, See: [Popover](/components/popover).
+
 ```vue demo
 <script setup>
 import { ref } from 'vue'
@@ -61,7 +63,6 @@ const date2 = ref('2024-08-15')
 | suffix-icon | `boolean` | `true` | Show the calendar icon in the input suffix |
 | placeholder | `string` | - | Placeholder text of the input |
 | is-date-disabled | `(timestamp: number) => boolean` | - | Validator forwarded to the calendar to grey out days |
-| close-on-press-escape | `boolean` | `true` | Close the calendar popover when pressing `Escape` |
 | label-format | `string` | `YYYY-MM-DD` | Input display format |
 | value-format | `string` | `YYYY-MM-DD` | Output format for `v-model`. Use `'timestamp'` or a Day.js format string |
 

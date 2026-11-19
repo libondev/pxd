@@ -135,6 +135,13 @@ a comment beside the fix.
 - **Cause**: Vue can wrap the generated VNodes in a `Fragment`, leaving only one top-level slot child.
 - **Fix**: Recursively flatten `Fragment` children at the owning slot boundary before applying order-dependent behavior.
 
+### A slot child is a vnode, not the element it renders
+
+- **Symptom**: `PPopover as-child` reported "needs exactly one element child" for a slot that held exactly one `PButton`, so it kept rendering the wrapper.
+- **Cause**: `slots.default()` returns nested arrays — the `renderSlot` result sits inside the slot function's own array — and the single child may be a component vnode, which has no element of its own until it mounts. Filtering the top level for `typeof vnode.type === 'string'` finds neither case.
+- **Fix**: Flatten the slot children first, accept one element *or* component vnode as the candidate, then resolve the element through a function ref's `$el` and reject anything that is not an `HTMLElement` (a multi-root child's `$el` is a text anchor).
+- **Related**: a component whose root gains a sibling — the trigger plus a panel — has no single root element any more, so `instance.vnode.el` is a text anchor and `useAgentNode` needs an explicit `el`.
+
 ### Deep selectors require scoped styles
 
 - **Symptom**: A parent state class updates, but descendant component layout rules never take effect.

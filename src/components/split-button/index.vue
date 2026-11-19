@@ -49,7 +49,6 @@ function onModelUpdate(value: SplitButtonProps['modelValue']) {
     triggerSelector="[data-split-button-trigger]"
     :options="options"
     :data-variant="variant"
-    :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
   >
     <PButton

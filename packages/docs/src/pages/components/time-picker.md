@@ -4,6 +4,8 @@ Select specific time only.
 
 ## Default
 
+The component inherits from popover and supports all the properties of popover. For details, See: [Popover](/components/popover).
+
 ```vue demo
 <script setup>
 import { ref } from 'vue'
@@ -145,7 +147,6 @@ const time = ref('18:30:00')
 | suffix-icon | `boolean` | `true` | Show the clock icon in the input suffix |
 | placeholder | `string` | - | Placeholder text of the input |
 | show-seconds | `boolean` | `true` | Show the seconds column in the time panel |
-| close-on-press-escape | `boolean` | `true` | Close the time panel when pressing `Escape` |
 | label-format | `string` | `HH:mm:ss` | Day.js format used to display the time in the input |
 | value-format | `string` | `HH:mm:ss` | Output format for `v-model`. Use `'timestamp'` or a Day.js format string |
 

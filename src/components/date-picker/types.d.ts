@@ -12,7 +12,6 @@ export interface DatePickerProps {
   labelFormat?: string
   valueFormat?: string
   isDateDisabled?: (timestamp: number) => boolean
-  closeOnPressEscape?: boolean
 }
 
 export interface DatePickerEmits {
