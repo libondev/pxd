@@ -126,7 +126,6 @@ defineExpose({
     :disabled="disabled"
     :aria-labelledby="labelId"
     content-class="pxd-reactions--picker p-1 gap-0.5 shadow-lg flex items-center rounded-lg border border-gray-alpha-300 bg-background-100"
-    :fill-trigger-width="false"
     v-bind="$attrs"
   >
     <slot />

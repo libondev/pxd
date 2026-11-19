@@ -323,9 +323,9 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 </template>
 ```
 
-## Fill trigger width
+## Match trigger width
 
-Only sets `min-width`, so content wider than the trigger still grows. To clamp the content exactly to the trigger width, use the exposed `--popover-trigger-width` variable, e.g. `content-class="w-(--popover-trigger-width)"` (the content scrolls internally).
+`match-width` puts the trigger width on the panel's `min-width`, so content wider than the trigger still grows; left off, the panel sizes to its content. Either way the panel stops at `max-width`. To clamp the content exactly to the trigger width, use the exposed `--popover-trigger-width` variable, e.g. `content-class="w-(--popover-trigger-width)"` (the content scrolls internally).
 
 ```vue demo
 <script setup>
@@ -334,7 +334,7 @@ const content = 'Do not go gentle into that good night, rage, rage against the d
 
 <template>
   <PPopover
-    :fill-trigger-width="false"
+    match-width
     content-class="p-4 bg-background-100 shadow-sm border rounded-md"
     :max-width="200"
   >
@@ -458,9 +458,11 @@ const chips = [
 | trigger-selector | `string` | - | Selector for multiple DOM triggers inside the default slot. |
 | align-point | `boolean` | - | Align the Popover to the pointer position. |
 | disabled | `boolean` | - | Ignore every trigger event so the Popover cannot be shown |
-| adaptive | `boolean` | - | Render as a fullscreen overlay with dimmed backdrop, locked scroll and slide motion |
-| max-width | `number \| string` | - | Max width of the content; a number is treated as `px` |
-| fill-trigger-width | `boolean` | `true` | Match the Popover min width to the trigger width. |
+| layout | `'auto' \| 'anchored' \| 'sheet'` | `'auto'` | Panel layout: `auto` anchors it beside the trigger on wide screens and turns it into a bottom sheet with a dimmed backdrop and slide motion on narrow ones |
+| match-width | `boolean` | `false` | Keep the panel at least as wide as its trigger; without it the panel sizes to its content |
+| keep-height | `boolean` | `false` | Keep the largest content height seen while open, so filtering cannot move the anchored edge |
+| max-width | `number \| string` | - | Max width of the panel; a number is treated as `px` |
+| max-height | `number \| string` | `'min(50rem, 80dvh)'` | Max height of the panel; a number is treated as `px` |
 | position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom` | Preferred placement: `top`, `right`, `bottom` or `left`, each with optional `-start` / `-end` |
 | show-delay | `number` | `0` | Delay in `ms` before the Popover is shown |
 | hide-delay | `number` | `0` | Delay in `ms` before the Popover is hidden |
@@ -470,7 +472,6 @@ const chips = [
 | model-value | `boolean` | - | Controlled visibility, normally used with the `manual` trigger |
 | interactive | `boolean` | `true` | Keep the Popover open while the pointer moves over it |
 | auto-position | `boolean` | `true` | Reposition on scroll and resize, flip when it would be clipped, and cap the content height to the space available |
-| stable-height | `boolean` | `false` | Keep the content height from shrinking while open, so filtering cannot move the anchored edge |
 | wrapper-class | `string \| any[] \| object` | - | Class bound to the Popover wrapper |
 | aria-labelledby | `string` | - | ID of the element that labels the Popover dialog |
 | content-class | `string \| any[] \| object` | - | Class bound to the Popover content |
@@ -480,7 +481,6 @@ const chips = [
 | close-on-invisible | `boolean` | `true` | Hide the Popover when the trigger is clipped or scrolled out of view |
 | close-on-outside-click | `boolean` | `true` | Close the Popover when the pointer is pressed outside of it and its trigger |
 | close-on-press-escape | `boolean` | `true` | Close the Popover when pressing `Escape` |
-| lock-scroll-on-visible | `boolean` | - | Currently unused: the overlay is bound to `adaptive` instead, so scroll locks only in adaptive mode |
 | agent | `boolean` | `true` | Register with the agent bridge, so a snapshot lists it and a step can open it. Set `false` on a popover that only explains something, as a tooltip does. |
 
 ## Events

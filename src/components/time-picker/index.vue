@@ -5,7 +5,8 @@ import ClockIcon from '@gdsicon/vue/clock'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
-import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
+import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { dayjs } from '../../utils/date.js'
 import { clampValue } from '../../utils/format.js'
@@ -56,7 +57,7 @@ const committedValue = shallowRef<string | number>('')
 
 const configProvider = useConfigProvider()
 
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
+const isSheet = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 const { modelValue, change } = useModelValue(props, emits, {
   get() {
     return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
@@ -274,12 +275,8 @@ onBeforeUnmount(() => {
     :disabled="disabled"
     :class="$attrs.class"
     :style="$attrs.style"
-    :adaptive="isAdaptive"
     :toggle-on-trigger="false"
-    :fill-trigger-width="false"
-    :wrapper-class="responsiveClasses.wrapper"
-    :content-class="responsiveClasses.content"
-    :lock-scroll-on-visible="isAdaptive"
+    :content-class="POPOVER_PANEL_CLASS"
     :close-on-press-escape="closeOnPressEscape"
     @show="setTimesScrollTop"
     @outside-click="(event: PointerEvent) => updateModelValue({ reason: 'outside-press', event })"
@@ -288,7 +285,7 @@ onBeforeUnmount(() => {
       :size="size"
       :error="error"
       :disabled="disabled"
-      :readonly="isAdaptive"
+      :readonly="isSheet"
       :clearable="clearable"
       :model-value="modelValue"
       :placeholder="placeholder"

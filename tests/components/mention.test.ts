@@ -32,7 +32,7 @@ describe('mention', () => {
       props: { options },
     })
 
-    expect(wrapper.findComponent(Popover).props('stableHeight')).toBe(true)
+    expect(wrapper.findComponent(Popover).props('keepHeight')).toBe(true)
 
     wrapper.unmount()
   })

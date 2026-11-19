@@ -6,7 +6,8 @@ import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
-import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
+import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
 import { dayjs } from '../../utils/date.js'
 import { isNil } from '../../utils/is.js'
 import PCalendar from '../calendar/index.vue'
@@ -34,7 +35,7 @@ const draftInput = shallowRef<string | null>(null)
 const dayjsDateTime = shallowRef<dayjs.Dayjs | null>(null)
 const calendarModelValue = computed(() => dayjsDateTime.value?.valueOf() ?? null)
 
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
+const isSheet = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 const { modelValue, change } = useModelValue(props, emits, {
   get() {
     if (draftInput.value !== null) {
@@ -260,12 +261,8 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     trigger="click"
     :disabled="disabled"
     v-bind="$attrs"
-    :adaptive="isAdaptive"
     :toggle-on-trigger="false"
-    :fill-trigger-width="false"
-    :wrapper-class="responsiveClasses.wrapper"
-    :content-class="responsiveClasses.content"
-    :lock-scroll-on-visible="isAdaptive"
+    :content-class="POPOVER_PANEL_CLASS"
     :close-on-press-escape="closeOnPressEscape"
     @outside-click="onOutsideClick"
   >
@@ -273,7 +270,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       :size="size"
       :error="error"
       :disabled="disabled"
-      :readonly="isAdaptive"
+      :readonly="isSheet"
       :clearable="clearable"
       :model-value="modelValue"
       :placeholder="placeholder"

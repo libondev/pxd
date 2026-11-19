@@ -13,7 +13,6 @@ export type PopupTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual
 
 export interface PopupOptions {
   alignPoint?: MaybeRefOrGetter<boolean | undefined>
-  adaptive?: MaybeRefOrGetter<boolean | undefined>
   arrowColor?: MaybeRefOrGetter<string | undefined>
   autoFocusElement?: MaybeRefOrGetter<string | boolean | undefined>
   autoPosition?: MaybeRefOrGetter<boolean | undefined>
@@ -22,13 +21,15 @@ export interface PopupOptions {
   contentRole?: MaybeRefOrGetter<string | undefined>
   destroyDelay?: MaybeRefOrGetter<number | undefined>
   disabled?: MaybeRefOrGetter<boolean | undefined>
-  fillTriggerWidth?: MaybeRefOrGetter<boolean | undefined>
   hideDelay?: MaybeRefOrGetter<number | undefined>
   interactive?: MaybeRefOrGetter<boolean | undefined>
+  matchReferenceWidth?: MaybeRefOrGetter<boolean | undefined>
+  maxHeight?: MaybeRefOrGetter<number | string | undefined>
   maxWidth?: MaybeRefOrGetter<number | string | undefined>
   modelValue?: MaybeRefOrGetter<boolean | undefined>
   offset?: MaybeRefOrGetter<number | undefined>
   position?: MaybeRefOrGetter<ComponentPosition | undefined>
+  sheet?: MaybeRefOrGetter<boolean | undefined>
   showArrow?: MaybeRefOrGetter<boolean | undefined>
   showDelay?: MaybeRefOrGetter<number | undefined>
   stableHeight?: MaybeRefOrGetter<boolean | undefined>
@@ -54,6 +55,15 @@ export interface PopupEngineOptions extends PopupOptions, PopupEngineCallbacks {
   wrapperRef: Ref<HTMLElement>
   containerRef: Ref<HTMLElement>
   arrowRef: Ref<HTMLElement>
+}
+
+// What holds the panel at the height it was given, readable in devtools: `stable` is the height it
+// keeps while its list filters, `space` the room around it, and `content` neither — no height was
+// applied at all. Panels that never carry a height of their own stay unmarked.
+function markSizeLimit(wrapper: HTMLElement, value: 'space' | 'stable' | 'content') {
+  if (wrapper.dataset.sizeLimit !== value) {
+    wrapper.dataset.sizeLimit = value
+  }
 }
 
 export function usePopupEngine(options: PopupEngineOptions): {
@@ -142,6 +152,8 @@ export function usePopupEngine(options: PopupEngineOptions): {
     '--popover-arrow-color': toValue(options.arrowColor),
     // An unset var resolves `sm:max-w-(--popover-max-width)` to `none`, dropping the viewport cap.
     '--popover-max-width': getCssUnitValue(toValue(options.maxWidth), '100%'),
+    // The design ceiling, folded with the space cap by the wrapper's own `max-height`.
+    '--popover-max-height': getCssUnitValue(toValue(options.maxHeight), 'min(50rem, 80dvh)'),
     left: 0,
     top: 0,
     transform: wrapperTransform.value,
@@ -336,7 +348,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
     const triggerWidth = (activeTriggerRef.value || triggerRef.value).getBoundingClientRect().width
     wrapper.style.setProperty('--popover-trigger-width', `${triggerWidth}px`)
 
-    if (toValue(options.alignPoint) || !toValue(options.fillTriggerWidth)) {
+    if (toValue(options.alignPoint) || !toValue(options.matchReferenceWidth)) {
       wrapper.style.minWidth = ''
       return
     }
@@ -350,7 +362,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
     const wrapper = wrapperRef.value
     const container = containerRef.value
 
-    if (!wrapper || !container || !toValue(options.stableHeight) || toValue(options.adaptive)) {
+    if (!wrapper || !container || !toValue(options.stableHeight) || toValue(options.sheet)) {
       return
     }
 
@@ -362,9 +374,17 @@ export function usePopupEngine(options: PopupEngineOptions): {
       stablePadding = (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0)
     }
 
+    // Held at the height a previous pass picked, the container reports that height instead of the
+    // content, so the lock could never follow the content back up: a panel cut short by the space
+    // it opened into would keep its scrollbar after the space grew. Read unheld — nothing paints
+    // before the height goes back on — and let `max-height` keep the panel inside the viewport.
+    wrapper.style.height = ''
+
     const contentHeight = container.scrollHeight + stablePadding
 
-    if (contentHeight > lockedHeight.value) {
+    // The first pass runs while the panel is still parked and pre-reveal, where a layout that has
+    // not settled yet can read short. Only a revealed panel records a height it then keeps.
+    if (isRevealed.value && contentHeight > lockedHeight.value) {
       lockedHeight.value = contentHeight
     }
 
@@ -375,6 +395,13 @@ export function usePopupEngine(options: PopupEngineOptions): {
     if (wrapper.style.height !== value) {
       wrapper.style.height = value
     }
+
+    if (capped <= 0) {
+      markSizeLimit(wrapper, 'content')
+    } else {
+      // `space` says the room around the panel, not the lock, decided the height it got.
+      markSizeLimit(wrapper, capped < lockedHeight.value ? 'space' : 'stable')
+    }
   }
 
   function resetStableHeight() {
@@ -383,7 +410,6 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
     if (wrapperRef.value) {
       wrapperRef.value.style.height = ''
-      wrapperRef.value.style.maxHeight = ''
     }
   }
 
@@ -393,6 +419,17 @@ export function usePopupEngine(options: PopupEngineOptions): {
     return Math.round(value * dpr) / dpr
   }
 
+  // The cap stays a variable so the wrapper folds it together with the design limit in one
+  // `max-height`. Scroll frames re-run this pass with the same space, and rewriting the same value
+  // would only dirty the style and lay the panel out again.
+  function syncAvailableHeight(wrapper: HTMLElement, availableHeight: number) {
+    const value = `${Math.max(0, Math.round(availableHeight))}px`
+
+    if (wrapper.style.getPropertyValue('--popover-available-height') !== value) {
+      wrapper.style.setProperty('--popover-available-height', value)
+    }
+  }
+
   function getPositionMiddleware() {
     return [
       toValue(options.autoPosition) && flip(),
@@ -400,11 +437,11 @@ export function usePopupEngine(options: PopupEngineOptions): {
       // Cap what is left after flip picked a side: content taller than the space scrolls inside the
       // panel instead of spilling past the viewport edge.
       toValue(options.autoPosition) &&
-        !toValue(options.adaptive) &&
+        !toValue(options.sheet) &&
         size({
           padding: 4,
           apply({ availableHeight, elements }) {
-            elements.floating.style.maxHeight = `${Math.max(0, availableHeight)}px`
+            syncAvailableHeight(elements.floating, availableHeight)
           },
         }),
       toValue(options.showArrow) && arrow({ element: arrowRef.value }),
@@ -448,7 +485,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
     syncStableHeight(middlewareData.size?.availableHeight)
 
-    const transform = toValue(options.adaptive)
+    const transform = toValue(options.sheet)
       ? ''
       : `translate(${roundByDPR(x)}px, ${roundByDPR(y)}px)`
 

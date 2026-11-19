@@ -311,7 +311,6 @@ defineExpose({
         trigger-selector="[data-tour-anchor]"
         :position="currentPosition"
         :interactive="false"
-        :fill-trigger-width="false"
         :close-on-outside-click="false"
         :close-on-invisible="false"
         :close-on-press-escape="false"
@@ -375,6 +374,9 @@ defineExpose({
 }
 
 .pxd-popover--wrapper.pxd-tour--popover-centered {
+  /* Centered by the stylesheet, not by the engine's placement, so the space the engine measured
+     for a side-anchored panel says nothing about this one. */
+  max-height: var(--popover-max-height) !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;

@@ -4,6 +4,7 @@ import { computed, shallowRef } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useFocusTrap } from '../../composables/_internal/use-focus-trap.js'
 import { usePopupEngine } from '../../composables/_internal/use-popup-engine.js'
+import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isTruthyProp } from '../../utils/format.js'
 import PPopoverArrow from '../_internal/popover-arrow.vue'
@@ -17,13 +18,14 @@ defineOptions({
 const props = withDefaults(defineProps<PopoverProps>(), {
   trigger: () => ['hover'],
   position: 'bottom',
+  layout: 'auto',
+  matchWidth: false,
+  keepHeight: false,
   showDelay: 0,
   hideDelay: 0,
   interactive: true,
   autoPosition: true,
   destroyDelay: 3000,
-  fillTriggerWidth: true,
-  stableHeight: false,
   toggleOnTrigger: true,
   closeOnInvisible: true,
   autoFocusElement: false,
@@ -39,7 +41,6 @@ const arrowRef = shallowRef<HTMLElement>(null!)
 const triggerRef = shallowRef<HTMLElement>(null!)
 const wrapperRef = shallowRef<HTMLElement>(null!)
 const containerRef = shallowRef<HTMLElement>(null!)
-
 const overlayZIndex = computed(() => {
   if (props.zIndex === undefined || props.zIndex === '') {
     return undefined
@@ -50,6 +51,15 @@ const overlayZIndex = computed(() => {
   return Number.isFinite(value) ? value : undefined
 })
 
+const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
+
+// `auto` anchors the panel next to its trigger on wide screens and hands it to a bottom sheet on
+// narrow ones, so no caller has to read the breakpoint or carry the sheet classes itself.
+const layoutMode = computed(() =>
+  props.layout === 'auto' ? (isSmallScreen.value ? 'sheet' : 'anchored') : props.layout,
+)
+const isSheet = computed(() => layoutMode.value === 'sheet')
+
 const configProvider = useConfigProvider()
 
 const engine = usePopupEngine({
@@ -58,8 +68,9 @@ const engine = usePopupEngine({
   triggerSelector: () => props.triggerSelector,
   alignPoint: () => props.alignPoint,
   disabled: () => props.disabled,
-  adaptive: () => props.adaptive,
+  sheet: isSheet,
   maxWidth: () => props.maxWidth,
+  maxHeight: () => props.maxHeight,
   position: () => props.position,
   showDelay: () => props.showDelay,
   hideDelay: () => props.hideDelay,
@@ -71,8 +82,8 @@ const engine = usePopupEngine({
   contentRole: () => props.contentRole,
   toggleOnTrigger: () => props.toggleOnTrigger,
   autoFocusElement: () => props.autoFocusElement,
-  fillTriggerWidth: () => props.fillTriggerWidth,
-  stableHeight: () => props.stableHeight,
+  matchReferenceWidth: () => props.matchWidth,
+  stableHeight: () => props.keepHeight,
   closeOnInvisible: () => props.closeOnInvisible,
   closeOnOutsideClick: () => props.closeOnOutsideClick,
   zIndex: () => props.zIndex,
@@ -144,9 +155,9 @@ defineExpose({
       v-if="engine.isRender.value"
       :model-value="engine.isRevealed.value"
       :z-index="overlayZIndex"
-      :variant="adaptive ? 'default' : 'none'"
+      :variant="isSheet ? 'default' : 'none'"
       :close-on-press-escape="closeOnPressEscape"
-      :lock-scroll-on-visible="lockScrollOnVisible"
+      :lock-scroll-on-visible="isSheet"
       @escape="engine.handlePopoverEscape"
     >
       <div
@@ -156,13 +167,13 @@ defineExpose({
         :role="contentRole || 'dialog'"
         :aria-modal="contentRole ? undefined : 'true'"
         :data-visible="engine.isRevealed.value"
-        :data-adaptive="adaptive"
+        :data-layout="layoutMode"
         :data-position="engine.localPosition.value"
         :data-interactive="interactive"
         :class="wrapperClass"
         :style="engine.wrapperStyle.value"
         :aria-labelledby="ariaLabelledby"
-        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) fixed isolate z-(--popover-index) flex max-h-full max-w-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:invisible"
+        class="pxd-popover--wrapper sm:max-w-(--popover-max-width) fixed isolate z-(--popover-index) flex max-w-full will-change-transform outline-none data-[interactive=false]:pointer-events-none data-[visible=false]:pointer-events-none data-[visible=false]:transition-none! motion-reduce:data-[visible=false]:invisible"
         @keydown="engine.onWrapperKeydown"
         @pointerenter="engine.onWrapperPointerEnter"
         @pointerleave="engine.onWrapperPointerLeave"
@@ -170,7 +181,7 @@ defineExpose({
         <div
           ref="containerRef"
           class="pxd-popover--container pointer-events-none relative z-1 min-h-inherit w-full max-w-inherit default-transition-duration default-transition-timing-function"
-          :data-transition-type="adaptive ? 'fade-slide' : 'fade-scale'"
+          :data-transition-type="isSheet ? 'fade-slide' : 'fade-scale'"
           :data-enter-motion="configProvider.enterMotion"
           :data-leave-motion="configProvider.leaveMotion"
         >
@@ -206,6 +217,29 @@ defineExpose({
 .pxd-popover--wrapper {
   --popover-padding: calc(var(--popover-offset, 8) * 0.0625rem);
   --popover-origin: center;
+
+  /* One ceiling for the panel: whatever space the engine leaves it, kept under the design limit. */
+  &[data-layout='anchored'] {
+    max-height: min(var(--popover-available-height, 100dvh), var(--popover-max-height));
+  }
+
+  /* The sheet fills the viewport, sits on its bottom edge and hands its own ceiling to the panel. */
+  &[data-layout='sheet'] {
+    width: 100%;
+    height: 100%;
+    align-items: flex-end;
+    pointer-events: none;
+    max-height: 100dvh;
+
+    .pxd-popover--container {
+      max-height: var(--popover-max-height);
+    }
+
+    .pxd-popover--content {
+      width: 100%;
+      border-radius: 0.75rem 0.75rem 0 0;
+    }
+  }
 
   &[data-position='top'] {
     --popover-origin: center bottom;
@@ -256,7 +290,7 @@ defineExpose({
   }
 
   &[data-position^='top'] {
-    &[data-adaptive='false'] {
+    &[data-layout='anchored'] {
       padding-bottom: var(--popover-padding);
     }
 
@@ -266,7 +300,7 @@ defineExpose({
   }
 
   &[data-position^='bottom'] {
-    &[data-adaptive='false'] {
+    &[data-layout='anchored'] {
       padding-top: var(--popover-padding);
     }
 
@@ -276,7 +310,7 @@ defineExpose({
   }
 
   &[data-position^='left'] {
-    &[data-adaptive='false'] {
+    &[data-layout='anchored'] {
       padding-right: var(--popover-padding);
     }
 
@@ -286,7 +320,7 @@ defineExpose({
   }
 
   &[data-position^='right'] {
-    &[data-adaptive='false'] {
+    &[data-layout='anchored'] {
       padding-left: var(--popover-padding);
     }
 
@@ -307,8 +341,6 @@ defineExpose({
   .pxd-popover--container {
     transition-property: opacity, transform;
     transform-origin: var(--popover-origin);
-    max-height: min(50rem, 80vh);
-    max-height: min(50rem, 80dvh);
   }
 
   &[data-visible='true'] .pxd-popover--container {

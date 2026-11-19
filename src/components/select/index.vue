@@ -12,8 +12,8 @@ import { changeDetailsFor } from '../../composables/_internal/use-change-details
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSearch } from '../../composables/_internal/use-list-search.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
-import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
 import { useSelectedListItems } from '../../composables/_internal/use-selected-list-item.js'
+import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'
@@ -79,7 +79,6 @@ const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
 
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 // Single mode commits on pick and closes; multiple mode stays open and commits `change`
 // once when the popover closes, so a round of toggles is one event.
 const {
@@ -196,13 +195,11 @@ watch(listOptions, async () => {
     v-bind="$attrs"
     class="pxd-select"
     trigger="click"
-    stable-height
+    match-width
+    :keep-height="filterable"
     :auto-focus-element="filterable"
     :disabled="disabled"
-    :adaptive="isAdaptive"
-    :wrapper-class="responsiveClasses.wrapper"
-    :content-class="responsiveClasses.content"
-    :lock-scroll-on-visible="isAdaptive"
+    :content-class="POPOVER_PANEL_CLASS"
     :close-on-press-escape="closeOnPressEscape"
     @wrapper-keydown="onKeydown"
   >

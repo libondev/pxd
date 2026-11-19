@@ -47,7 +47,6 @@ const contentClassComputed = computed(() => {
     :disabled="isDisabled"
     :show-delay="showDelay"
     :hide-delay="hideDelay"
-    :fill-trigger-width="false"
     wrapper-class="max-sm:data-[position^=top]:px-1 max-sm:data-[position^=bottom]:px-1 max-sm:data-[position^=left]:ps-1 max-sm:data-[position^=right]:pe-1"
     :arrow-color="computedVariant.bg"
     :content-class="contentClassComputed"

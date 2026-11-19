@@ -149,15 +149,80 @@ describe('popover', () => {
 
     sizeMiddleware.apply({ availableHeight: 240, elements: { floating } })
 
-    expect(floating.style.maxHeight).toBe('240px')
+    expect(floating.style.getPropertyValue('--popover-available-height')).toBe('240px')
 
     wrapper.unmount()
   })
 
-  it('should keep the content height from shrinking when stable-height is set', async () => {
+  it('should pass the max height to the wrapper', async () => {
     const wrapper = mount(Popover, {
       attachTo: document.body,
-      props: { trigger: 'click', position: 'top', stableHeight: true },
+      props: { trigger: 'click', maxHeight: 240 },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flush()
+
+    const floating = document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+
+    expect(floating.style.getPropertyValue('--popover-max-height')).toBe('240px')
+
+    wrapper.unmount()
+  })
+
+  it('should anchor the panel when the layout is left to auto', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click' },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flush()
+
+    const floating = document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+
+    expect(floating.dataset.layout).toBe('anchored')
+    expect(wrapper.findComponent(Overlay).props('lockScrollOnVisible')).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should lay the panel out as a sheet when the layout asks for one', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click', layout: 'sheet' },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flush()
+
+    const floating = document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+
+    expect(floating.dataset.layout).toBe('sheet')
+    expect(
+      floating.querySelector('.pxd-popover--container')?.getAttribute('data-transition-type'),
+    ).toBe('fade-slide')
+    expect(wrapper.findComponent(Overlay).props('lockScrollOnVisible')).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should keep the content height from shrinking when the height is stable', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click', position: 'top', keepHeight: true },
       slots: {
         default: '<button>Trigger</button>',
         content: '<span>Content</span>',
@@ -176,6 +241,44 @@ describe('popover', () => {
     await flush()
 
     expect(floating.style.height).toBe('240px')
+    expect(floating.dataset.sizeLimit).toBe('stable')
+
+    wrapper.unmount()
+  })
+
+  it('should follow the content back up when the height is stable', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click', position: 'top', keepHeight: true },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flush()
+
+    const floating = document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+    const container = floating.firstElementChild as HTMLElement
+    let contentHeight = 240
+
+    // A box that was cut to a height only ever reports the height it was cut to.
+    Object.defineProperty(container, 'scrollHeight', {
+      configurable: true,
+      get: () => Math.min(contentHeight, Number.parseFloat(floating.style.height) || contentHeight),
+    })
+
+    ;(wrapper.vm as unknown as { update: () => void }).update()
+    await flush()
+
+    expect(floating.style.height).toBe('240px')
+
+    contentHeight = 320
+    ;(wrapper.vm as unknown as { update: () => void }).update()
+    await flush()
+
+    expect(floating.style.height).toBe('320px')
 
     wrapper.unmount()
   })
@@ -736,6 +839,7 @@ describe('popover', () => {
         trigger: 'click',
         triggerSelector: '[data-popover-trigger]',
         maxWidth: 200,
+        matchWidth: true,
       },
       slots: {
         default: `
@@ -772,12 +876,11 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
-  it('should not sync the min width when fill-trigger-width is disabled', async () => {
+  it('should not sync the min width by default', async () => {
     const wrapper = mount(Popover, {
       attachTo: document.body,
       props: {
         trigger: 'click',
-        fillTriggerWidth: false,
       },
       slots: {
         default: '<button>Trigger</button>',

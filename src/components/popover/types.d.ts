@@ -2,6 +2,8 @@ import type { ComponentClass, ComponentPosition } from '../../types/shared/props
 
 export type PopoverTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'
 
+export type PopoverLayout = 'auto' | 'anchored' | 'sheet'
+
 export interface PopoverProps {
   zIndex?: number | string
   offset?: number
@@ -9,8 +11,11 @@ export interface PopoverProps {
   triggerSelector?: string
   alignPoint?: boolean
   disabled?: boolean
-  adaptive?: boolean
+  layout?: PopoverLayout
+  matchWidth?: boolean
+  keepHeight?: boolean
   maxWidth?: number | string
+  maxHeight?: number | string
   position?: ComponentPosition
   showDelay?: number
   hideDelay?: number
@@ -26,12 +31,9 @@ export interface PopoverProps {
   ariaLabelledby?: string
   toggleOnTrigger?: boolean
   autoFocusElement?: string | boolean
-  fillTriggerWidth?: boolean
-  stableHeight?: boolean
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
   closeOnOutsideClick?: boolean
-  lockScrollOnVisible?: boolean
   returnFocusOnDeactivate?: boolean
   agent?: boolean
 }

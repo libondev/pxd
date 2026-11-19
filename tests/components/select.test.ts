@@ -75,7 +75,19 @@ describe('select', () => {
       },
     })
 
-    expect(wrapper.findComponent(Popover).props('stableHeight')).toBe(true)
+    expect(wrapper.findComponent(Popover).props('keepHeight')).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should keep the panel height natural when the list never filters', () => {
+    const wrapper = mount(Select, {
+      props: {
+        options,
+      },
+    })
+
+    expect(wrapper.findComponent(Popover).props('keepHeight')).toBe(false)
 
     wrapper.unmount()
   })

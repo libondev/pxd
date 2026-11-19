@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ConfirmPopoverEmits, ConfirmPopoverProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
-import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
+import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PButton from '../button/index.vue'
@@ -38,8 +38,6 @@ const computedConfirmText = computed(() => {
 const computedCancelText = computed(() => {
   return props.cancelText ?? configProvider.locale.interaction.cancel
 })
-
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 
 function applyVisible(value: boolean) {
   if (localVisible.value === value) {
@@ -135,14 +133,10 @@ watch(
     :model-value="localVisible"
     :position="position"
     :disabled="disabled"
-    :adaptive="isAdaptive"
-    :fill-trigger-width="false"
     :auto-focus-element="true"
     :trigger-selector="triggerSelector"
-    :wrapper-class="responsiveClasses.wrapper"
-    :content-class="responsiveClasses.content"
+    :content-class="POPOVER_PANEL_CLASS"
     :close-on-press-escape="!isPending"
-    :lock-scroll-on-visible="isAdaptive"
     @update:model-value="onVisibleChange"
     @trigger-click="onTriggerClick"
   >

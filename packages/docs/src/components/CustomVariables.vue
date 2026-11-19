@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { ComponentOption } from 'pxd'
 import { useCopyClick, useMessage } from 'pxd'
-import { usePopoverResponsive } from 'pxd/composables/_internal/use-popover-responsive'
 import { isServer } from 'pxd/utils/is'
 import { ref, watch, onBeforeMount, onBeforeUnmount } from 'vue'
 
@@ -119,7 +118,8 @@ const customProperties = [
   },
 ] satisfies CustomProperty[]
 
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
+// The surface the library's list-style panels use; the popover owns the layout around it.
+const PANEL_CLASS = 'bg-background-100 shadow-border-menu rounded-xl'
 
 function updatePrimaryForeground() {
   const rootEl = document.documentElement
@@ -220,10 +220,7 @@ onBeforeUnmount(() => {
     trigger="click"
     class="h-inherit"
     position="bottom-end"
-    :adaptive="isAdaptive"
-    :wrapper-class="responsiveClasses.wrapper"
-    :content-class="responsiveClasses.content"
-    :lock-scroll-on-visible="isAdaptive"
+    :content-class="PANEL_CLASS"
   >
     <slot />
 

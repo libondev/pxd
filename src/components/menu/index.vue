@@ -8,7 +8,7 @@ import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
-import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
+import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
 import { isNil } from '../../utils/is.js'
 import PList from '../list/index.vue'
 import PPopover from '../popover/index.vue'
@@ -47,7 +47,6 @@ const listModelValue = computed(() => {
   return selected.value
 })
 
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 const { onKeydown } = useListKeyboardController({
   enabled: () => popoverVisible.value,
   onCommand: (command) => listRef.value?.dispatch(command) ?? false,
@@ -117,10 +116,8 @@ watch(popoverVisible, async (visible) => {
     trigger="click"
     :disabled="disabled"
     :position="position"
-    :adaptive="isAdaptive"
-    :wrapper-class="responsiveClasses.wrapper"
-    :content-class="responsiveClasses.content"
-    :lock-scroll-on-visible="isAdaptive"
+    match-width
+    :content-class="POPOVER_PANEL_CLASS"
     :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
     @wrapper-keydown="onKeydown"

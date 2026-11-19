@@ -12,8 +12,8 @@ import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useMentionSuggest } from '../../composables/_internal/use-mention-suggest.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
-import { usePopoverResponsive } from '../../composables/_internal/use-popover-responsive.js'
 import { useToggleValue } from '../../composables/use-toggle-value.js'
+import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isCompositionKeydown } from '../../utils/event.js'
 import { getUniqueId } from '../../utils/helper.js'
@@ -57,7 +57,6 @@ const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
 
-const { isAdaptive, responsiveClasses } = usePopoverResponsive()
 const { value: popoverVisible, toggle: togglePopoverVisible } = useToggleValue(false)
 
 const {
@@ -231,17 +230,15 @@ defineExpose({
     class="w-full"
     position="bottom-start"
     :trigger="[]"
-    stable-height
+    keep-height
+    match-width
     auto-focus-element
     :return-focus-on-deactivate="false"
-    fill-trigger-width
     :disabled="disabled"
-    :adaptive="isAdaptive"
     :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
-    :wrapper-class="[responsiveClasses.wrapper, wrapperClass]"
-    :content-class="[responsiveClasses.content, contentClass]"
-    :lock-scroll-on-visible="isAdaptive"
+    :wrapper-class="wrapperClass"
+    :content-class="[POPOVER_PANEL_CLASS, contentClass]"
     @show="onPopoverShow"
     @outside-click="onPopoverOutsideClick"
     @hide="onPopoverHide"
