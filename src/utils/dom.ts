@@ -38,7 +38,8 @@ export function getElement(
     return el as HTMLElement
   }
 
-  return (el as ComponentPublicInstance)?.$el ?? el
+  const node = (el as ComponentPublicInstance)?.$el
+  return node instanceof HTMLElement ? node : null
 }
 
 /** Whether the element scrolls with the viewport instead of scrolling on its own. */
