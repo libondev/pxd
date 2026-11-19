@@ -35,6 +35,7 @@ const codeHighlighter = await createHighlighter({
     import(`@shikijs/themes/${codeThemes.light}`),
   ],
   langs: [
+    import('@shikijs/langs/md'),
     import('@shikijs/langs/vue'),
     import('@shikijs/langs/javascript'),
     import('@shikijs/langs/bash'),
