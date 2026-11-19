@@ -237,6 +237,23 @@ describe('number-input', () => {
     wrapper.unmount()
   })
 
+  it('should ignore Escape while readonly', async () => {
+    const wrapper = mount(NumberInput, {
+      props: {
+        modelValue: 5,
+        readonly: true,
+      },
+    })
+
+    await wrapper.find('input').trigger('keydown', { key: 'Escape' })
+
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
+    expect(wrapper.emitted('change')).toBeUndefined()
+    expect(wrapper.find('input').element.value).toBe('5')
+
+    wrapper.unmount()
+  })
+
   it('should commit precision and range on blur rather than on every keystroke', async () => {
     const wrapper = mount(NumberInput, {
       props: {
