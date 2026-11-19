@@ -100,7 +100,7 @@ Hide scroll edges and scroll bars, leaving only the scrolling function.
 | fader | `boolean` | `true` | Show gradient faders at the scrollable edges |
 | loading | `boolean` | - | Suppress the `bottom` event while loading more content |
 | scrollbar | `boolean` | `true` | Render the custom draggable scrollbar instead of the native one |
-| fader-size | `number` | - | Fader gradient length in `px`, defaulting to `16` |
+| fader-size | `number` | - | Fader gradient length in `px`, defaulting to `24` |
 | fader-color | `string` | - | Fader gradient color, any CSS color value |
 | fader-direction | `'horizontal' \| 'vertical' \| 'both'` | - | Edges to fade: `horizontal`, `vertical` or `both` |
 | wrapper-class | `string \| any[] \| object` | - | Class applied to the outer wrapper element |

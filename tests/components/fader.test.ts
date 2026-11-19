@@ -202,7 +202,7 @@ describe('fader', () => {
     const wrapper = mount(Fader)
 
     expect(wrapper.attributes('style')).toContain('--fader-size')
-    expect(wrapper.attributes('style')).toContain('16px')
+    expect(wrapper.attributes('style')).toContain('24px')
 
     wrapper.unmount()
   })

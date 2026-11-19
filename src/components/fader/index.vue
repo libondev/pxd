@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
 
 <style lang="postcss">
 .pxd-fader {
-  --fader-feather: calc(var(--fader-size) * 0.5);
+  --fader-feather: calc(var(--fader-size, 1.5rem) * 0.5);
 }
 
 .pxd-fader--item::before,
@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
   &::before,
   &::after {
     top: 0;
-    width: var(--fader-size);
+    width: var(--fader-size, 1.5rem);
     height: 100%;
   }
 
@@ -205,7 +205,7 @@ onBeforeUnmount(() => {
   &::after {
     left: 0;
     width: 100%;
-    height: var(--fader-size);
+    height: var(--fader-size, 1.5rem);
   }
 
   &::before {

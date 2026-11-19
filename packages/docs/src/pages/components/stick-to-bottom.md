@@ -154,7 +154,7 @@ function append() {
 | --- | --- | --- | --- |
 | threshold | `number` | `16` | Distance from bottom considered "at bottom" |
 | fader | `boolean` | `false` | Show gradient faders at the scrollable edges, hidden within `threshold` of an edge |
-| fader-size | `number` | - | Fader gradient length in `px`, defaulting to `16` |
+| fader-size | `number` | - | Fader gradient length in `px`, defaulting to `24` |
 | fader-color | `string` | - | Fader gradient color, any CSS color value |
 | fader-direction | `'horizontal' \| 'vertical' \| 'both'` | - | Edges to fade: `horizontal`, `vertical` or `both` |
 | disabled | `boolean` | `false` | Stop auto-scrolling while the container is at the bottom |
