@@ -5,7 +5,7 @@ import type { PageNumberEmits, PageNumberProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, ref, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { BASIC_HEIGHTS, SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isCompositionKeydown } from '../../utils/event.js'
 import PSelect from '../select/index.vue'
@@ -80,7 +80,9 @@ const pagesBtnSize = computed(() => {
     lg: 'md',
   }[inheritSize] as ComponentSize
 })
-const pageItemSizeClass = computed(() => BASIC_HEIGHTS[pagesBtnSize.value])
+const pageItemClass = computed(
+  () => `${BASIC_HEIGHTS[pagesBtnSize.value]} ${SIZE_TEXT_CLASS[pagesBtnSize.value]}`,
+)
 
 useAgentNode({
   name: 'page-number',
@@ -159,7 +161,7 @@ watch(
 <template>
   <nav
     data-page-number
-    class="pxd-page-number gap-1 inline-flex w-full max-w-full items-center"
+    class="pxd-page-number gap-1.5 inline-flex w-full max-w-full items-center"
     :aria-label="configProvider.locale.pagination.label"
     :aria-disabled="disabled"
     v-bind="$attrs"
@@ -167,7 +169,7 @@ watch(
     <button
       type="button"
       class="pxd-page-number--prev inline-flex aspect-square items-center justify-center rounded-md border border-transparent self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
-      :class="pageItemSizeClass"
+      :class="pageItemClass"
       :disabled="disabled || modelValue <= 1"
       :aria-label="configProvider.locale.pagination.prev"
       @click="setPage(modelValue - 1)"
@@ -178,8 +180,8 @@ watch(
     <template v-for="item in pageItems" :key="item">
       <button
         v-if="typeof item === 'string'"
-        class="pxd-page-number--ellipsis text-sm inline-flex aspect-square shrink-0 cursor-default items-center justify-center rounded-md disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
-        :class="pageItemSizeClass"
+        class="pxd-page-number--ellipsis inline-flex aspect-square shrink-0 cursor-default items-center justify-center rounded-md disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        :class="pageItemClass"
         :disabled="disabled"
         aria-hidden="true"
       >
@@ -189,9 +191,9 @@ watch(
       <button
         v-else
         type="button"
-        class="pxd-page-number--item text-sm inline-flex aspect-square shrink-0 items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
+        class="pxd-page-number--item inline-flex aspect-square shrink-0 items-center justify-center rounded-md self-focus-ring outline-none enabled:cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :class="[
-          pageItemSizeClass,
+          pageItemClass,
           item === modelValue
             ? 'font-medium bg-primary text-primary-foreground'
             : 'hover:bg-background-hover hover:text-foreground',
@@ -208,6 +210,7 @@ watch(
     <PSelect
       v-if="showPageSize"
       v-model="internalPageSize"
+      class="w-max tabular-nums"
       :disabled="disabled"
       :size="pagesBtnSize"
       :options="mappedPageSizeOptions"
@@ -218,8 +221,8 @@ watch(
       v-if="showQuickJumper"
       v-model="pageInput"
       type="number"
-      :class="pageItemSizeClass"
-      class="pxd-page-number--jumper w-16 px-3 text-sm appearance-none rounded-md border border-border bg-background-100 text-center text-left text-foreground self-focus-ring outline-none disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700"
+      :class="pageItemClass"
+      class="pxd-page-number--jumper w-16 px-3 appearance-none rounded-md border border-border bg-background-100 text-center text-left text-foreground self-focus-ring outline-none disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700"
       :min="1"
       :max="pageCount"
       step="1"
@@ -233,7 +236,7 @@ watch(
     <button
       type="button"
       class="pxd-page-number--next inline-flex aspect-square items-center justify-center rounded-md border border-transparent self-focus-ring outline-none enabled:cursor-pointer enabled:hover:bg-background-hover enabled:hover:text-foreground enabled:active:bg-background-active disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
-      :class="pageItemSizeClass"
+      :class="pageItemClass"
       :disabled="disabled || modelValue >= pageCount"
       :aria-label="configProvider.locale.pagination.next"
       @click="setPage(modelValue + 1)"

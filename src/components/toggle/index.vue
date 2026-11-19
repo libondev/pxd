@@ -4,8 +4,9 @@ import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
+import { SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { getUniqueId, getFallbackValue } from '../../utils/helper.js'
+import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
   name: 'PToggle',
@@ -31,7 +32,9 @@ const isDisabled = computed(() => props.disabled || props.loading)
 
 const configProvider = useConfigProvider()
 
-const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
+const resolvedSize = computed(() => (props.size ?? configProvider.size) as keyof typeof SIZES)
+const computedSize = computed(() => SIZES[resolvedSize.value] ?? SIZES.md)
+const labelTextClass = computed(() => SIZE_TEXT_CLASS[resolvedSize.value] ?? SIZE_TEXT_CLASS.md)
 
 const { modelValue, change } = useModelValue(props, emits)
 
@@ -107,7 +110,8 @@ async function onCheckboxChange(e: Event) {
 
     <span
       v-if="inactiveLabel"
-      class="pxd-toggle--label text-sm me-1.5 ps-0.5 leading-none opacity-100 peer-checked:opacity-50 motion-safe:transition-opacity"
+      class="pxd-toggle--label me-1.5 ps-0.5 leading-none opacity-100 peer-checked:opacity-50 motion-safe:transition-opacity"
+      :class="labelTextClass"
       >{{ inactiveLabel }}</span
     >
 
@@ -136,7 +140,8 @@ async function onCheckboxChange(e: Event) {
 
     <span
       v-if="activeLabel"
-      class="pxd-toggle--label text-sm ms-1.5 pe-0.5 leading-none opacity-50 peer-checked:opacity-100 motion-safe:transition-opacity"
+      class="pxd-toggle--label ms-1.5 pe-0.5 leading-none opacity-50 peer-checked:opacity-100 motion-safe:transition-opacity"
+      :class="labelTextClass"
       >{{ activeLabel }}</span
     >
   </label>

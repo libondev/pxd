@@ -5,7 +5,7 @@ import type { MentionClickPayload, MentionRemovePayload } from '../mention/types
 import { computed, onMounted, shallowRef } from 'vue'
 import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useMentionEditor } from '../../composables/_internal/use-mention-editor.js'
-import { BASIC_MIN_HEIGHTS } from '../../constants/size.js'
+import { BASIC_MIN_HEIGHTS, SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { DEFAULT_TRIGGER } from '../../utils/mention-html.js'
 
@@ -157,7 +157,8 @@ defineExpose({
   >
     <span
       v-if="isEmpty && !isComposing && placeholder"
-      class="pxd-mention-editor--placeholder text-sm inset-0 pointer-events-none absolute px-(--input-ip) py-(--input-bp) text-gray-600 select-none"
+      :class="SIZE_TEXT_CLASS[computedSize]"
+      class="pxd-mention-editor--placeholder inset-0 pointer-events-none absolute px-(--input-ip) py-(--input-bp) text-gray-600 select-none"
       aria-hidden="true"
     >
       {{ placeholder }}
@@ -165,8 +166,8 @@ defineExpose({
 
     <div
       ref="editorRef"
-      class="pxd-mention-editor pxd-input--border text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent px-(--input-ip) py-(--input-bp) font-inherit break-all text-foreground outline-none motion-safe:transition-appearance"
-      :class="[SIZES[computedSize].height, editorClass]"
+      class="pxd-mention-editor pxd-input--border relative w-full max-w-full appearance-none rounded-inherit bg-transparent px-(--input-ip) py-(--input-bp) font-inherit break-all text-foreground outline-none motion-safe:transition-appearance"
+      :class="[SIZES[computedSize].height, SIZE_TEXT_CLASS[computedSize], editorClass]"
       :style="editorSizeStyle"
       role="textbox"
       spellcheck="false"

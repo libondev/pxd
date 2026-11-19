@@ -3,7 +3,7 @@ import type { ButtonProps } from './types'
 import { computed } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { BASIC_HEIGHTS, SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useButtonGroupContext } from '../../contexts/button.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isTruthyProp } from '../../utils/format.js'
@@ -54,11 +54,11 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none focus-visible:z-1 motion-safe:transition-appearance within-group:not-first:rounded-l-none within-group:not-first:border-l-0 within-group:not-last:rounded-r-none',
     variants: {
       size: {
-        xxs: `${BASIC_HEIGHTS.xxs} px-0.5 rounded-sm text-[0.6875rem]`,
-        xs: `${BASIC_HEIGHTS.xs} px-1 text-xs rounded-sm`,
-        sm: `${BASIC_HEIGHTS.sm} px-2 text-sm rounded-md`,
-        md: `${BASIC_HEIGHTS.md} px-3 text-sm rounded-md`,
-        lg: `${BASIC_HEIGHTS.lg} px-4 text-base rounded-lg`,
+        xxs: `${BASIC_HEIGHTS.xxs} px-0.5 rounded-sm ${SIZE_TEXT_CLASS.xxs}`,
+        xs: `${BASIC_HEIGHTS.xs} px-1 rounded-sm ${SIZE_TEXT_CLASS.xs}`,
+        sm: `${BASIC_HEIGHTS.sm} px-2 rounded-md ${SIZE_TEXT_CLASS.sm}`,
+        md: `${BASIC_HEIGHTS.md} px-3 rounded-md ${SIZE_TEXT_CLASS.md}`,
+        lg: `${BASIC_HEIGHTS.lg} px-4 rounded-lg ${SIZE_TEXT_CLASS.lg}`,
       },
       shape: {
         square: 'rounded-none',

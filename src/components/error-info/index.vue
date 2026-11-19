@@ -4,6 +4,7 @@ import ExternalIcon from '@gdsicon/vue/external'
 import StopIcon from '@gdsicon/vue/stop'
 import { computed } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isExternalLink } from '../../utils/format.js'
 
@@ -34,10 +35,10 @@ const { attrs, classes } = useTailwindVariant(
         card: 'p-3 gap-2 w-full max-w-full flex-col items-center rounded-lg border border-red-400 bg-red-200 empty:hidden',
       },
       size: {
-        xs: 'text-xs [--mt:0.125rem]',
-        sm: 'text-sm [--mt:0.125rem]',
-        md: 'text-sm [--mt:0.125rem]',
-        lg: 'text-base [--mt:0.25rem]',
+        xs: `${SIZE_TEXT_CLASS.xs} [--mt:0.125rem]`,
+        sm: `${SIZE_TEXT_CLASS.sm} [--mt:0.125rem]`,
+        md: `${SIZE_TEXT_CLASS.md} [--mt:0.125rem]`,
+        lg: `${SIZE_TEXT_CLASS.lg} [--mt:0.25rem]`,
       },
     },
   },

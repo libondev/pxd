@@ -5,7 +5,7 @@ import { computed } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { BASIC_HEIGHTS, SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { useToggleButtonGroupContext } from '../../contexts/toggle-button.js'
 import { toArray } from '../../utils/format.js'
@@ -49,11 +49,11 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-toggle-button gap-2 font-normal relative inline-flex shrink-0 appearance-none items-center justify-center border leading-none whitespace-nowrap self-focus-ring outline-none group-data-[gap=0]/toggle-button-group:not-first:rounded-l-none group-data-[gap=0]/toggle-button-group:not-first:border-l-0 group-data-[gap=0]/toggle-button-group:not-last:rounded-r-none focus-visible:z-1 motion-safe:transition-colors',
     variants: {
       size: {
-        xxs: `${BASIC_HEIGHTS.xxs} px-1 rounded-sm text-[0.6875rem]`,
-        xs: `${BASIC_HEIGHTS.xs} px-1.5 text-xs rounded-sm`,
-        sm: `${BASIC_HEIGHTS.sm} px-2 text-sm rounded-md`,
-        md: `${BASIC_HEIGHTS.md} px-2.5 text-sm rounded-md`,
-        lg: `${BASIC_HEIGHTS.lg} px-3 text-base rounded-lg`,
+        xxs: `${BASIC_HEIGHTS.xxs} px-1 rounded-sm ${SIZE_TEXT_CLASS.xxs}`,
+        xs: `${BASIC_HEIGHTS.xs} px-1.5 rounded-sm ${SIZE_TEXT_CLASS.xs}`,
+        sm: `${BASIC_HEIGHTS.sm} px-2 rounded-md ${SIZE_TEXT_CLASS.sm}`,
+        md: `${BASIC_HEIGHTS.md} px-2.5 rounded-md ${SIZE_TEXT_CLASS.md}`,
+        lg: `${BASIC_HEIGHTS.lg} px-3 rounded-lg ${SIZE_TEXT_CLASS.lg}`,
       },
       variant: {
         default: 'border-gray-400 bg-background-100',

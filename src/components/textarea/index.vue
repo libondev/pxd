@@ -5,6 +5,7 @@ import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
+import { SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isTruthyProp } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
@@ -60,10 +61,10 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-textarea pxd-input--border relative flex size-full min-h-inherit max-w-full items-center justify-center rounded-md bg-background-100 motion-safe:transition-appearance',
     variants: {
       size: {
-        xs: 'text-xs [--input-bp:0.375rem] [--input-ip:0.375rem]',
-        sm: 'text-sm [--input-bp:0.5rem] [--input-ip:0.5rem]',
-        md: 'text-sm [--input-bp:0.625rem] [--input-ip:0.75rem]',
-        lg: 'text-base [--input-bp:0.625rem] [--input-ip:0.75rem]',
+        xs: `${SIZE_TEXT_CLASS.xs} [--input-bp:0.375rem] [--input-ip:0.375rem]`,
+        sm: `${SIZE_TEXT_CLASS.sm} [--input-bp:0.5rem] [--input-ip:0.5rem]`,
+        md: `${SIZE_TEXT_CLASS.md} [--input-bp:0.625rem] [--input-ip:0.75rem]`,
+        lg: `${SIZE_TEXT_CLASS.lg} [--input-bp:0.625rem] [--input-ip:0.75rem]`,
       },
       disabled: {
         true: 'is-disabled',

@@ -6,6 +6,14 @@ export const BASIC_HEIGHTS = {
   lg: 'h-10',
 }
 
+export const SIZE_TEXT_CLASS = {
+  xxs: 'text-[0.6875rem]',
+  xs: 'text-xs',
+  sm: 'text-sm',
+  md: 'text-sm',
+  lg: 'text-base',
+}
+
 export const BASIC_MIN_HEIGHTS = {
   xxs: 'min-h-6',
   xs: 'min-h-7',

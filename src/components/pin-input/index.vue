@@ -4,7 +4,7 @@ import { computed, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
-import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { BASIC_HEIGHTS, SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isTruthyProp } from '../../utils/format.js'
 import { isUndefined } from '../../utils/is.js'
@@ -52,10 +52,10 @@ const { classes } = useTailwindVariant(
     base: 'pxd-input--border rounded-md motion-safe:transition-appearance',
     variants: {
       size: {
-        xs: `${BASIC_HEIGHTS.xs} text-xs`,
-        sm: `${BASIC_HEIGHTS.sm} text-sm`,
-        md: `${BASIC_HEIGHTS.md} text-sm`,
-        lg: `${BASIC_HEIGHTS.lg} text-base`,
+        xs: `${BASIC_HEIGHTS.xs} ${SIZE_TEXT_CLASS.xs}`,
+        sm: `${BASIC_HEIGHTS.sm} ${SIZE_TEXT_CLASS.sm}`,
+        md: `${BASIC_HEIGHTS.md} ${SIZE_TEXT_CLASS.md}`,
+        lg: `${BASIC_HEIGHTS.lg} ${SIZE_TEXT_CLASS.lg}`,
       },
       error: {
         true: 'is-error',

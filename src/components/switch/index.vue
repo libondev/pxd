@@ -5,7 +5,7 @@ import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
-import { BASIC_HEIGHTS } from '../../constants/size.js'
+import { BASIC_HEIGHTS, SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { provideSwitchContext } from '../../contexts/switch.js'
 import { getUniqueId, getFallbackValue } from '../../utils/helper.js'
@@ -24,9 +24,9 @@ const props = withDefaults(defineProps<SwitchProps>(), {
 const emits = defineEmits<SwitchEmits>()
 
 const SIZES = {
-  sm: `${BASIC_HEIGHTS.sm} text-sm`,
-  md: `${BASIC_HEIGHTS.md} text-sm`,
-  lg: `${BASIC_HEIGHTS.lg} text-base`,
+  sm: `${BASIC_HEIGHTS.sm} ${SIZE_TEXT_CLASS.sm}`,
+  md: `${BASIC_HEIGHTS.md} ${SIZE_TEXT_CLASS.md}`,
+  lg: `${BASIC_HEIGHTS.lg} ${SIZE_TEXT_CLASS.lg}`,
 }
 
 const notify = useAgentChange(emits)
