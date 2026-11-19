@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<ReasoningProps>(), {
 
 const contentRef = shallowRef<HTMLElement>()
 
-const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollapse(
+const { isOpen, detailsOpen, everOpened, onToggleClick, onDetailsToggle } = useDetailsCollapse(
   contentRef,
   () => props.expand,
 )
@@ -65,6 +65,7 @@ const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollap
       :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
       <div
+        v-if="everOpened"
         class="pxd-reasoning--content whitespace-normal"
         :class="{
           'p-3 text-sm border-t text-foreground-secondary': variant === 'default',

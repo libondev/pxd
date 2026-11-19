@@ -6,6 +6,11 @@ import { getStyle } from '../utils/dom.js'
 export interface UseDetailsCollapseReturn {
   isOpen: ShallowRef<boolean>
   detailsOpen: ShallowRef<boolean>
+  /**
+   * Latched true the first time the fold opens. A component can mount its content behind this so a
+   * fold nobody has opened renders nothing, and the content keeps its state once it has been seen.
+   */
+  everOpened: ShallowRef<boolean>
   onToggleClick: () => void
   onDetailsToggle: (ev: Event) => void
 }
@@ -18,6 +23,9 @@ export function useDetailsCollapse(
 
   // Stays true during leave so the grid row can animate before `open` is removed.
   const detailsOpen = shallowRef(isOpen.value)
+
+  // Set beside `isOpen`, so content mounted behind it lands in the same render as the row flipping
+  const everOpened = shallowRef(isOpen.value)
 
   let pendingEnter = false
   let stopWait: (() => void) | undefined
@@ -74,6 +82,8 @@ export function useDetailsCollapse(
 
       pendingEnter = false
       void toValue(content)?.offsetHeight
+
+      everOpened.value = true
       isOpen.value = true
     })
   }
@@ -102,6 +112,7 @@ export function useDetailsCollapse(
 
     // The browser already laid the open content out, so this path has no first-frame gap to bridge.
     clearWait()
+    everOpened.value = true
     detailsOpen.value = true
     isOpen.value = true
   }
@@ -125,5 +136,5 @@ export function useDetailsCollapse(
 
   onScopeDispose(clearWait)
 
-  return { isOpen, detailsOpen, onToggleClick, onDetailsToggle }
+  return { isOpen, detailsOpen, everOpened, onToggleClick, onDetailsToggle }
 }

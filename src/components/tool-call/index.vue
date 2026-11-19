@@ -40,7 +40,7 @@ const outputPayload = computed(() => formatPayload(props.output))
 
 const configProvider = useConfigProvider()
 
-const { isOpen, detailsOpen, onToggleClick, onDetailsToggle } = useDetailsCollapse(
+const { isOpen, detailsOpen, everOpened, onToggleClick, onDetailsToggle } = useDetailsCollapse(
   contentRef,
   () => props.expand,
 )
@@ -158,6 +158,7 @@ function isImageBlock(value: unknown): value is { type: 'image' } {
       :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
       <div
+        v-if="everOpened"
         class="pxd-tool-call--content gap-4 min-w-0 flex flex-col"
         :class="{
           'p-3 border-t': variant === 'default',
