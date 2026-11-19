@@ -52,6 +52,7 @@ export interface PopupEngineCallbacks {
 export interface PopupEngineOptions extends PopupOptions, PopupEngineCallbacks {
   triggerRef: Ref<HTMLElement>
   wrapperRef: Ref<HTMLElement>
+  containerRef: Ref<HTMLElement>
   arrowRef: Ref<HTMLElement>
 }
 
@@ -83,7 +84,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   onWrapperPointerEnter: () => void
   onWrapperPointerLeave: () => void
 } {
-  const { triggerRef, wrapperRef, arrowRef } = options
+  const { triggerRef, wrapperRef, containerRef, arrowRef } = options
 
   // The layer is fixed, so its box never joins the document's scrollable overflow — no pre-reveal
   // frame can flash a page scrollbar — and it stays at the origin, moving by transform only, which
@@ -94,9 +95,14 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
   let showPopoverTimer: ReturnType<typeof setTimeout> | null = null
   let hidePopoverTimer: ReturnType<typeof setTimeout> | null = null
+  let showPopoverResolve: ((shown: boolean) => void) | null = null
+  let hidePopoverResolve: ((hidden: boolean) => void) | null = null
   let hideFrame = 0
   let triggerElements: HTMLElement[] | null = null
+  let triggerElementsSelector: string | undefined
   let cleanupAutoUpdate: (() => void) | null = null
+  let positionSeq = 0
+  let stablePadding: number | null = null
   const throttledUpdatePosition = throttleByRaf(updatePosition)
 
   const activeTriggerRef = shallowRef<HTMLElement | null>(null)
@@ -191,6 +197,10 @@ export function usePopupEngine(options: PopupEngineOptions): {
       clearTimeout(showPopoverTimer)
       showPopoverTimer = null
     }
+
+    // Wake a cancelled delay instead of leaving its caller parked on a promise forever.
+    showPopoverResolve?.(false)
+    showPopoverResolve = null
   }
 
   function clearHideTimer() {
@@ -201,6 +211,9 @@ export function usePopupEngine(options: PopupEngineOptions): {
       clearTimeout(hidePopoverTimer)
       hidePopoverTimer = null
     }
+
+    hidePopoverResolve?.(false)
+    hidePopoverResolve = null
   }
   // One frame of grace lets a pointer crossing the gap between matched triggers reach the next one.
   function hideOnNextFrame() {
@@ -221,8 +234,9 @@ export function usePopupEngine(options: PopupEngineOptions): {
       return []
     }
 
-    if (!triggerElements) {
+    if (!triggerElements || triggerElementsSelector !== selector) {
       triggerElements = Array.from(triggerRef.value.querySelectorAll<HTMLElement>(selector))
+      triggerElementsSelector = selector
     }
 
     return triggerElements
@@ -247,8 +261,9 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
     return matched
   }
-  // Capture phase makes the nearest popover own the event; an ignored subtree owns none.
-  function isForeignTarget(target: EventTarget | null) {
+  // Capture phase makes the nearest popover own the event; an ignored subtree owns none, and
+  // leaving it must not close the popover that owns it.
+  function closeIfForeign(target: EventTarget | null) {
     if (!(target instanceof Element) || target.closest('[data-popover-ignore]')) {
       return true
     }
@@ -262,6 +277,18 @@ export function usePopupEngine(options: PopupEngineOptions): {
     }
 
     return true
+  }
+
+  function isTriggerMethod(method: PopupTrigger): boolean {
+    return !toValue(options.disabled) && triggerMethods.value.includes(method)
+  }
+
+  function resolveTrigger(ev: Event): HTMLElement | null {
+    if (closeIfForeign(ev.target)) {
+      return null
+    }
+
+    return resolveTriggerElement(ev.target)
   }
 
   function setActiveTrigger(trigger: HTMLElement | null) {
@@ -321,7 +348,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
   function syncStableHeight(availableHeight?: number) {
     const wrapper = wrapperRef.value
-    const container = wrapper?.firstElementChild as HTMLElement | null | undefined
+    const container = containerRef.value
 
     if (!wrapper || !container || !toValue(options.stableHeight) || toValue(options.adaptive)) {
       return
@@ -330,9 +357,12 @@ export function usePopupEngine(options: PopupEngineOptions): {
     // `min-height` would be inherited by the container through `min-h-inherit` and then push the
     // wrapper past it by its own padding, growing a few pixels every frame. A fixed height has no
     // such feedback, and `scrollHeight` still reports the content once it outgrows the box.
-    const style = getComputedStyle(wrapper)
-    const padding = (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0)
-    const contentHeight = container.scrollHeight + padding
+    if (stablePadding === null) {
+      const style = getComputedStyle(wrapper)
+      stablePadding = (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0)
+    }
+
+    const contentHeight = container.scrollHeight + stablePadding
 
     if (contentHeight > lockedHeight.value) {
       lockedHeight.value = contentHeight
@@ -349,9 +379,11 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
   function resetStableHeight() {
     lockedHeight.value = 0
+    stablePadding = null
 
     if (wrapperRef.value) {
       wrapperRef.value.style.height = ''
+      wrapperRef.value.style.maxHeight = ''
     }
   }
 
@@ -386,17 +418,22 @@ export function usePopupEngine(options: PopupEngineOptions): {
       return
     }
 
+    const seq = ++positionSeq
+
     syncWidth()
 
-    const { x, y, placement, middlewareData } = await computePosition(
-      getReferenceElement(),
-      wrapperRef.value,
-      {
-        strategy: 'fixed',
-        placement: toValue(options.position),
-        middleware: getPositionMiddleware(),
-      },
-    )
+    const result = await computePosition(getReferenceElement(), wrapperRef.value, {
+      strategy: 'fixed',
+      placement: toValue(options.position),
+      middleware: getPositionMiddleware(),
+    })
+
+    // A scroll can queue several computes; a stale one must not overwrite a newer result.
+    if (seq !== positionSeq) {
+      return
+    }
+
+    const { x, y, placement, middlewareData } = result
 
     // The open-time compute runs pre-reveal, where a still parked layer reads as escaped; only a
     // revealed popover may close itself.
@@ -487,12 +524,18 @@ export function usePopupEngine(options: PopupEngineOptions): {
       return
     }
 
-    await new Promise<void>((resolve) => {
+    const shown = await new Promise<boolean>((resolve) => {
+      showPopoverResolve = resolve
       showPopoverTimer = setTimeout(() => {
         showPopoverTimer = null
-        resolve()
+        showPopoverResolve = null
+        resolve(true)
       }, toValue(options.showDelay))
     })
+
+    if (!shown) {
+      return
+    }
 
     // Position before the enter transition starts, while data-visible is still false.
     if (!isVisible.value) {
@@ -526,15 +569,21 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
     clearShowTimer()
 
-    await new Promise<void>((resolve) => {
+    const hidden = await new Promise<boolean>((resolve) => {
+      hidePopoverResolve = resolve
       hidePopoverTimer = setTimeout(
         () => {
           hidePopoverTimer = null
-          resolve()
+          hidePopoverResolve = null
+          resolve(true)
         },
         immediate ? 0 : toValue(options.hideDelay),
       )
     })
+
+    if (!hidden) {
+      return
+    }
 
     triggerElements = null
     disposeAutoUpdate()
@@ -564,7 +613,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   function onTriggerClick(ev: Event) {
-    if (toValue(options.disabled) || isForeignTarget(ev.target)) {
+    if (toValue(options.disabled) || closeIfForeign(ev.target)) {
       return
     }
 
@@ -601,15 +650,11 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   function onTriggerPointerOver(ev: PointerEvent) {
-    if (toValue(options.disabled) || !triggerMethods.value.includes('hover')) {
+    if (!isTriggerMethod('hover')) {
       return
     }
 
-    if (isForeignTarget(ev.target)) {
-      return
-    }
-
-    const trigger = resolveTriggerElement(ev.target)
+    const trigger = resolveTrigger(ev)
 
     if (trigger) {
       if (toValue(options.alignPoint)) {
@@ -621,7 +666,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
   // pointerout bubbles, so it also covers what pointerleave used to handle.
   function onTriggerPointerOut(ev: PointerEvent) {
-    if (toValue(options.disabled) || !triggerMethods.value.includes('hover')) {
+    if (!isTriggerMethod('hover')) {
       return
     }
 
@@ -656,11 +701,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   function onTriggerPointerMove(ev: PointerEvent) {
-    if (
-      toValue(options.disabled) ||
-      !triggerMethods.value.includes('hover') ||
-      !toValue(options.alignPoint)
-    ) {
+    if (!isTriggerMethod('hover') || !toValue(options.alignPoint)) {
       return
     }
 
@@ -672,15 +713,11 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   function onTriggerContextmenu(ev: PointerEvent) {
-    if (toValue(options.disabled) || !triggerMethods.value.includes('contextmenu')) {
+    if (!isTriggerMethod('contextmenu')) {
       return
     }
 
-    if (isForeignTarget(ev.target)) {
-      return
-    }
-
-    const trigger = resolveTriggerElement(ev.target)
+    const trigger = resolveTrigger(ev)
 
     if (!trigger) {
       return
@@ -705,15 +742,11 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   function onTriggerFocusIn(ev: FocusEvent) {
-    if (toValue(options.disabled) || !triggerMethods.value.includes('focus')) {
+    if (!isTriggerMethod('focus')) {
       return
     }
 
-    if (isForeignTarget(ev.target)) {
-      return
-    }
-
-    const trigger = resolveTriggerElement(ev.target)
+    const trigger = resolveTrigger(ev)
 
     if (trigger) {
       activateTrigger(trigger, false)
@@ -721,7 +754,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   function onTriggerFocusOut(ev: FocusEvent) {
-    if (toValue(options.disabled) || !triggerMethods.value.includes('focus')) {
+    if (!isTriggerMethod('focus')) {
       return
     }
 

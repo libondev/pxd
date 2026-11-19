@@ -38,6 +38,7 @@ const emits = defineEmits<PopoverEmits>()
 const arrowRef = shallowRef<HTMLElement>(null!)
 const triggerRef = shallowRef<HTMLElement>(null!)
 const wrapperRef = shallowRef<HTMLElement>(null!)
+const containerRef = shallowRef<HTMLElement>(null!)
 
 const overlayZIndex = computed(() => {
   if (props.zIndex === undefined || props.zIndex === '') {
@@ -77,6 +78,7 @@ const engine = usePopupEngine({
   zIndex: () => props.zIndex,
   triggerRef,
   wrapperRef,
+  containerRef,
   arrowRef,
   onVisibleChange: (visible) => emits('visible-change', visible),
   onShow: () => emits('show'),
@@ -166,6 +168,7 @@ defineExpose({
         @pointerleave="engine.onWrapperPointerLeave"
       >
         <div
+          ref="containerRef"
           class="pxd-popover--container pointer-events-none relative z-1 min-h-inherit w-full max-w-inherit default-transition-duration default-transition-timing-function"
           :data-transition-type="adaptive ? 'fade-slide' : 'fade-scale'"
           :data-enter-motion="configProvider.enterMotion"
