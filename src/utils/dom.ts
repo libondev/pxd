@@ -20,9 +20,13 @@ export function getElement(
   el?: MaybeRefOrGetter<ElementType>,
   from?: MaybeRefOrGetter<HTMLElement>,
 ): HTMLElement | null {
+  if (isServer()) {
+    return null
+  }
+
   el = toValue(el)
 
-  if (!el || isServer()) {
+  if (!el) {
     return null
   }
 
