@@ -499,6 +499,10 @@
     "title": "useDelayDestroy",
     "description": "Manages two-phase visibility transitions (render + visible) with configurable delay on unmount."
   },
+  "/composables/use-details-collapse": {
+    "title": "useDetailsCollapse",
+    "description": "Drives a native <details> element whose content expands and collapses through a grid-template-rows transition, keeping the content mounted until the leave tran…"
+  },
   "/composables/use-document-hidden": {
     "title": "useDocumentHidden",
     "description": "Tracks document visibility state and fires callback on visibility changes."

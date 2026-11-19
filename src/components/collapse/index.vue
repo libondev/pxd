@@ -3,7 +3,7 @@ import type { CollapseEmits, CollapseProps } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
-import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
+import { useDetailsCollapse } from '../../composables/use-details-collapse.js'
 import { useCollapseGroupContext } from '../../contexts/collapse.js'
 import { getUniqueId } from '../../utils/helper.js'
 

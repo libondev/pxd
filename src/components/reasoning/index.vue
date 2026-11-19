@@ -3,7 +3,7 @@ import type { ReasoningProps } from './types'
 import BrainIcon from '@gdsicon/vue/brain'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { shallowRef } from 'vue'
-import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
+import { useDetailsCollapse } from '../../composables/use-details-collapse.js'
 import PShimmerText from '../shimmer-text/index.vue'
 
 defineOptions({

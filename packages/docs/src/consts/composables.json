@@ -36,6 +36,10 @@
     "name": "use-delay-destroy"
   },
   {
+    "camelized": "Use Details Collapse",
+    "name": "use-details-collapse"
+  },
+  {
     "camelized": "Use Document Hidden",
     "name": "use-document-hidden"
   },

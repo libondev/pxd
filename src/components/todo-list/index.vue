@@ -18,8 +18,8 @@ import { computed, shallowRef, useSlots, watch } from 'vue'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
-import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { useDetailsCollapse } from '../../composables/use-details-collapse.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 
 defineOptions({

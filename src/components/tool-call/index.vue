@@ -6,7 +6,7 @@ import ClockIcon from '@gdsicon/vue/clock'
 import CrossCircleIcon from '@gdsicon/vue/cross-circle'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed, shallowRef } from 'vue'
-import { useDetailsCollapse } from '../../composables/_internal/use-details-collapse.js'
+import { useDetailsCollapse } from '../../composables/use-details-collapse.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import PCodeBlock from '../code-block/index.vue'
 
