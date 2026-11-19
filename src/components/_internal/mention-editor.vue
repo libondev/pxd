@@ -51,12 +51,22 @@ const emits = defineEmits<{
   'mention-remove': [MentionRemovePayload]
 }>()
 
-// `lh` follows the element's own line-height so the geometry survives font overrides;
-// browsers without the unit ignore it and fall back to the min-height classes.
 const SIZES = {
-  sm: { height: `${BASIC_MIN_HEIGHTS.sm} py-[0.3125rem]`, pad: '0.3125rem' },
-  md: { height: `${BASIC_MIN_HEIGHTS.md} py-[0.46875rem]`, pad: '0.46875rem' },
-  lg: { height: `${BASIC_MIN_HEIGHTS.lg} py-[0.6875rem]`, pad: '0.6875rem' },
+  sm: {
+    blockPadding: '0.3125rem',
+    padding: '[--input-ip:0.5rem] [--input-bp:0.3125rem]',
+    height: BASIC_MIN_HEIGHTS.sm,
+  },
+  md: {
+    blockPadding: '0.46875rem',
+    padding: '[--input-ip:0.75rem] [--input-bp:0.46875rem]',
+    height: BASIC_MIN_HEIGHTS.md,
+  },
+  lg: {
+    blockPadding: '0.6875rem',
+    padding: '[--input-ip:0.75rem] [--input-bp:0.6875rem]',
+    height: BASIC_MIN_HEIGHTS.lg,
+  },
 } as const
 
 const editorRef = shallowRef<HTMLElement>()
@@ -67,7 +77,7 @@ const computedSize = computed(() => props.size || configProvider.size)
 
 const editorSizeStyle = computed(() => {
   const style: Record<string, string> = {}
-  const vertical = `calc(${SIZES[computedSize.value].pad} * 2)`
+  const vertical = `calc(${SIZES[computedSize.value].blockPadding} * 2)`
 
   if (props.rows > 1) {
     style.minHeight = `calc(${props.rows}lh + ${vertical})`
@@ -142,11 +152,12 @@ defineExpose({
   <div
     data-mention-editor
     class="pxd-mention relative w-full max-w-full rounded-md bg-background-100"
+    :class="SIZES[computedSize].padding"
     v-bind="$attrs"
   >
     <span
       v-if="isEmpty && !isComposing && placeholder"
-      class="pxd-mention-editor--placeholder text-sm inset-0 px-3 py-2 pointer-events-none absolute text-gray-600 select-none"
+      class="pxd-mention-editor--placeholder text-sm inset-0 pointer-events-none absolute px-(--input-ip) py-(--input-bp) text-gray-600 select-none"
       aria-hidden="true"
     >
       {{ placeholder }}
@@ -154,7 +165,7 @@ defineExpose({
 
     <div
       ref="editorRef"
-      class="pxd-mention-editor pxd-input--border px-3 text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent font-inherit break-all text-foreground outline-none motion-safe:transition-appearance"
+      class="pxd-mention-editor pxd-input--border text-sm relative w-full max-w-full appearance-none rounded-inherit bg-transparent px-(--input-ip) py-(--input-bp) font-inherit break-all text-foreground outline-none motion-safe:transition-appearance"
       :class="[SIZES[computedSize].height, editorClass]"
       :style="editorSizeStyle"
       role="textbox"
