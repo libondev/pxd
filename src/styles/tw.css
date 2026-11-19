@@ -141,7 +141,6 @@
   --fader-color: var(--color-background-100);
   --hold-button-progress-color: var(--color-gray-alpha-600);
   --popover-arrow-color: var(--color-gray-1000);
-  --popover-offset: 8;
   --popover-scale: 0.95;
   --popover-index: max(var(--pxd-initial-index), 10);
   --overlay-index: calc(var(--popover-index) - 5);

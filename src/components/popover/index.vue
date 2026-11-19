@@ -55,6 +55,7 @@ const overlayZIndex = computed(() => {
   return Number.isFinite(value) ? value : undefined
 })
 const panelRole = computed(() => props.contentRole || 'dialog')
+const panelZIndex = computed(() => (props.zIndex === '' ? undefined : props.zIndex))
 
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
@@ -93,6 +94,7 @@ const engine = usePopupEngine({
   sheet: isSheet,
   maxWidth: () => props.maxWidth,
   maxHeight: () => props.maxHeight,
+  offset: () => props.offset,
   position: () => props.position,
   showDelay: () => props.showDelay,
   hideDelay: () => props.hideDelay,
@@ -109,15 +111,20 @@ const engine = usePopupEngine({
   stableHeight: () => props.keepHeight,
   closeOnInvisible: () => props.closeOnInvisible,
   closeOnOutsideClick: () => props.closeOnOutsideClick,
-  zIndex: () => props.zIndex,
+  zIndex: () => panelZIndex.value,
   triggerRef,
   wrapperRef,
   containerRef,
   arrowRef,
   onVisibleChange: (visible) => emits('visible-change', visible),
-  onShow: () => emits('show'),
-  onHide: () => emits('hide'),
-  onUpdateModelValue: (visible) => emits('update:model-value', visible),
+  onShow: () => {
+    emits('show')
+    emits('update:model-value', true)
+  },
+  onHide: () => {
+    emits('hide')
+    emits('update:model-value', false)
+  },
   onEscape: (ev) => emits('escape', ev),
   onOutsideClick: (ev) => emits('outside-click', ev),
   onTriggerClick: (ev) => emits('trigger-click', ev),
@@ -169,6 +176,10 @@ function setTriggerElement(element: Element | ComponentPublicInstance | null) {
 // The element a component renders can change without the ref firing again (a swapped root),
 // and the engine must measure the node that is on screen now.
 function refreshTriggerElement() {
+  if (!isAsChild.value) {
+    return
+  }
+
   const node = getElement(triggerSource)
 
   if (node && node !== triggerRef.value) {
@@ -284,7 +295,6 @@ defineExpose({
               <PPopoverArrow
                 fill="var(--popover-arrow-color,transparent)"
                 stroke="var(--popover-arrow-border,transparent)"
-                :position="engine.localPosition.value"
               />
             </div>
           </div>
@@ -374,7 +384,7 @@ defineExpose({
     }
 
     .pxd-popover--arrow {
-      bottom: -6px;
+      bottom: calc(2px - var(--popover-padding));
     }
   }
 
@@ -384,7 +394,8 @@ defineExpose({
     }
 
     .pxd-popover--arrow {
-      top: -6px;
+      top: calc(2px - var(--popover-padding));
+      transform: rotate(180deg);
     }
   }
 
@@ -394,7 +405,8 @@ defineExpose({
     }
 
     .pxd-popover--arrow {
-      right: -6px;
+      right: calc(2px - var(--popover-padding));
+      transform: translateX(4px) rotate(-90deg);
     }
   }
 
@@ -404,7 +416,8 @@ defineExpose({
     }
 
     .pxd-popover--arrow {
-      left: -6px;
+      left: calc(2px - var(--popover-padding));
+      transform: translateX(-4px) rotate(90deg);
     }
   }
 

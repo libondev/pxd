@@ -174,6 +174,26 @@ describe('popover', () => {
     wrapper.unmount()
   })
 
+  it('should pass the offset to the wrapper', async () => {
+    const wrapper = mount(Popover, {
+      attachTo: document.body,
+      props: { trigger: 'click', offset: 30 },
+      slots: {
+        default: '<button>Trigger</button>',
+        content: '<span>Content</span>',
+      },
+    })
+
+    await wrapper.find('button').trigger('click')
+    await flush()
+
+    const floating = document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+
+    expect(floating.style.getPropertyValue('--popover-offset')).toBe('30')
+
+    wrapper.unmount()
+  })
+
   it('should anchor the panel when the layout is left to auto', async () => {
     const wrapper = mount(Popover, {
       attachTo: document.body,
@@ -278,7 +298,6 @@ describe('popover', () => {
     await flush()
 
     expect(floating.style.height).toBe('240px')
-    expect(floating.dataset.sizeLimit).toBe('stable')
 
     wrapper.unmount()
   })
@@ -1219,6 +1238,9 @@ describe('popover', () => {
         content: '<span>Content</span>',
       },
     })
+
+    // Vue drops a handler attached in the same millisecond the event is stamped; let the clock advance.
+    await flush()
 
     const trigger = document.body.querySelector<HTMLButtonElement>('button')!
 

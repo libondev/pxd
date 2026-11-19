@@ -1,6 +1,4 @@
-import type { ComponentClass, ComponentPosition } from '../../types/shared/props'
-
-export type PopoverTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'
+import type { ComponentClass, ComponentPosition, PopoverTrigger } from '../../types/shared/props'
 
 export type PopoverLayout = 'auto' | 'anchored' | 'sheet'
 

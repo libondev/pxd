@@ -1,4 +1,4 @@
-import type { ComponentPosition } from '../../types/shared/props'
+import type { ComponentPosition, PopoverTrigger } from '../../types/shared/props'
 import type { VirtualElement } from '@floating-ui/dom'
 import type { CSSProperties, MaybeRefOrGetter, Ref, ShallowRef } from 'vue'
 import { arrow, autoUpdate, computePosition, flip, hide, shift, size } from '@floating-ui/dom'
@@ -8,8 +8,6 @@ import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { useDelayDestroy } from '../use-delay-destroy.js'
 import { useOutsideClick } from '../use-outside-click.js'
-
-export type PopupTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'
 
 export interface PopupOptions {
   alignPoint?: MaybeRefOrGetter<boolean | undefined>
@@ -35,7 +33,7 @@ export interface PopupOptions {
   showDelay?: MaybeRefOrGetter<number | undefined>
   stableHeight?: MaybeRefOrGetter<boolean | undefined>
   toggleOnTrigger?: MaybeRefOrGetter<boolean | undefined>
-  trigger?: MaybeRefOrGetter<PopupTrigger | PopupTrigger[] | undefined>
+  trigger?: MaybeRefOrGetter<PopoverTrigger | PopoverTrigger[] | undefined>
   triggerSelector?: MaybeRefOrGetter<string | undefined>
   zIndex?: MaybeRefOrGetter<number | string | undefined>
 }
@@ -44,7 +42,6 @@ export interface PopupEngineCallbacks {
   onVisibleChange?: (visible: boolean) => void
   onShow?: () => void
   onHide?: () => void
-  onUpdateModelValue?: (visible: boolean) => void
   onEscape?: (ev: KeyboardEvent) => void
   onOutsideClick?: (ev: PointerEvent) => void
   onTriggerClick?: (ev: PointerEvent) => void
@@ -58,12 +55,35 @@ export interface PopupEngineOptions extends PopupOptions, PopupEngineCallbacks {
   arrowRef: Ref<HTMLElement>
 }
 
-// What holds the panel at the height it was given, readable in devtools: `stable` is the height it
-// keeps while its list filters, `space` the room around it, and `content` neither — no height was
-// applied at all. Panels that never carry a height of their own stay unmarked.
-function markSizeLimit(wrapper: HTMLElement, value: 'space' | 'stable' | 'content') {
-  if (wrapper.dataset.sizeLimit !== value) {
-    wrapper.dataset.sizeLimit = value
+// One pending delay at a time: `wait` settles true when it elapses, `cancel` wakes the caller with
+// false so a superseded show/hide never leaves it parked on a promise.
+function createDelay() {
+  let timer: ReturnType<typeof setTimeout> | null = null
+  let settle: ((done: boolean) => void) | null = null
+
+  return {
+    get pending() {
+      return timer !== null
+    },
+    wait(delay: number) {
+      return new Promise<boolean>((resolve) => {
+        settle = resolve
+        timer = setTimeout(() => {
+          timer = null
+          settle = null
+          resolve(true)
+        }, delay)
+      })
+    },
+    cancel() {
+      if (timer) {
+        clearTimeout(timer)
+        timer = null
+      }
+
+      settle?.(false)
+      settle = null
+    },
   }
 }
 
@@ -72,13 +92,10 @@ export function usePopupEngine(options: PopupEngineOptions): {
   isRender: Ref<boolean>
   isVisible: Ref<boolean>
   isRevealed: Ref<boolean>
-  isManual: Ref<boolean>
-  triggerMethods: Ref<PopupTrigger[]>
   focusTrapContainer: Ref<HTMLElement | null>
   activeTriggerRef: ShallowRef<HTMLElement | null>
   activeTriggerIndex: Ref<number>
   localPosition: Ref<ComponentPosition | undefined>
-  wrapperTransform: Ref<string>
   wrapperStyle: Ref<CSSProperties>
   handlePopoverShow: () => Promise<void>
   handlePopoverHide: (immediate?: boolean) => Promise<void>
@@ -104,13 +121,9 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
   const contentId = getUniqueId()
 
-  let showPopoverTimer: ReturnType<typeof setTimeout> | null = null
-  let hidePopoverTimer: ReturnType<typeof setTimeout> | null = null
-  let showPopoverResolve: ((shown: boolean) => void) | null = null
-  let hidePopoverResolve: ((hidden: boolean) => void) | null = null
+  const showTimer = createDelay()
+  const hideTimer = createDelay()
   let hideFrame = 0
-  let triggerElements: HTMLElement[] | null = null
-  let triggerElementsSelector: string | undefined
   let cleanupAutoUpdate: (() => void) | null = null
   let positionSeq = 0
   let stablePadding: number | null = null
@@ -142,7 +155,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   const lockedHeight = shallowRef(0)
   const localPosition = shallowRef(toValue(options.position))
   const wrapperTransform = shallowRef(HIDDEN_TRANSFORM)
-  const triggerMethods = computed<PopupTrigger[]>(() => toArray(toValue(options.trigger)))
+  const triggerMethods = computed<PopoverTrigger[]>(() => toArray(toValue(options.trigger)))
   const isManual = computed(() => triggerMethods.value.includes('manual'))
   // Everything visible or interactive waits for the first position: the reveal, the overlay and the
   // focus trap all hang off this one flag.
@@ -183,10 +196,8 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
       if (v) {
         options.onShow?.()
-        options.onUpdateModelValue?.(true)
       } else {
         options.onHide?.()
-        options.onUpdateModelValue?.(false)
       }
     },
   })
@@ -206,27 +217,13 @@ export function usePopupEngine(options: PopupEngineOptions): {
   })
 
   function clearShowTimer() {
-    if (showPopoverTimer) {
-      clearTimeout(showPopoverTimer)
-      showPopoverTimer = null
-    }
-
-    // Wake a cancelled delay instead of leaving its caller parked on a promise forever.
-    showPopoverResolve?.(false)
-    showPopoverResolve = null
+    showTimer.cancel()
   }
 
   function clearHideTimer() {
     caf(hideFrame)
     hideFrame = 0
-
-    if (hidePopoverTimer) {
-      clearTimeout(hidePopoverTimer)
-      hidePopoverTimer = null
-    }
-
-    hidePopoverResolve?.(false)
-    hidePopoverResolve = null
+    hideTimer.cancel()
   }
   // One frame of grace lets a pointer crossing the gap between matched triggers reach the next one.
   function hideOnNextFrame() {
@@ -243,20 +240,11 @@ export function usePopupEngine(options: PopupEngineOptions): {
   function getTriggerElements(): HTMLElement[] {
     const selector = toValue(options.triggerSelector)
 
-    if (!selector) {
+    if (!selector || !triggerRef.value) {
       return []
     }
 
-    if (!triggerRef.value) {
-      return []
-    }
-
-    if (!triggerElements || triggerElementsSelector !== selector) {
-      triggerElements = Array.from(triggerRef.value.querySelectorAll<HTMLElement>(selector))
-      triggerElementsSelector = selector
-    }
-
-    return triggerElements
+    return Array.from(triggerRef.value.querySelectorAll<HTMLElement>(selector))
   }
 
   function resolveTriggerElement(target: EventTarget | null): HTMLElement | null {
@@ -296,7 +284,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
     return true
   }
 
-  function isTriggerMethod(method: PopupTrigger): boolean {
+  function isTriggerMethod(method: PopoverTrigger): boolean {
     return !toValue(options.disabled) && triggerMethods.value.includes(method)
   }
 
@@ -363,16 +351,26 @@ export function usePopupEngine(options: PopupEngineOptions): {
     }
 
     const triggerWidth = trigger.getBoundingClientRect().width
-    wrapper.style.setProperty('--popover-trigger-width', `${triggerWidth}px`)
+    const widthValue = `${triggerWidth}px`
+
+    if (wrapper.style.getPropertyValue('--popover-trigger-width') !== widthValue) {
+      wrapper.style.setProperty('--popover-trigger-width', widthValue)
+    }
 
     if (toValue(options.alignPoint) || !toValue(options.matchReferenceWidth)) {
-      wrapper.style.minWidth = ''
+      if (wrapper.style.minWidth !== '') {
+        wrapper.style.minWidth = ''
+      }
+
       return
     }
 
     const maxWidth = getCssUnitValue(toValue(options.maxWidth))
+    const minWidth = maxWidth ? `min(${triggerWidth}px, ${maxWidth})` : `${triggerWidth}px`
 
-    wrapper.style.minWidth = maxWidth ? `min(${triggerWidth}px, ${maxWidth})` : `${triggerWidth}px`
+    if (wrapper.style.minWidth !== minWidth) {
+      wrapper.style.minWidth = minWidth
+    }
   }
 
   function syncStableHeight(availableHeight?: number) {
@@ -411,13 +409,6 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
     if (wrapper.style.height !== value) {
       wrapper.style.height = value
-    }
-
-    if (capped <= 0) {
-      markSizeLimit(wrapper, 'content')
-    } else {
-      // `space` says the room around the panel, not the lock, decided the height it got.
-      markSizeLimit(wrapper, capped < lockedHeight.value ? 'space' : 'stable')
     }
   }
 
@@ -568,7 +559,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   async function handlePopoverShow() {
-    if (showPopoverTimer || toValue(options.disabled)) {
+    if (showTimer.pending || toValue(options.disabled)) {
       return
     }
 
@@ -579,14 +570,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
       return
     }
 
-    const shown = await new Promise<boolean>((resolve) => {
-      showPopoverResolve = resolve
-      showPopoverTimer = setTimeout(() => {
-        showPopoverTimer = null
-        showPopoverResolve = null
-        resolve(true)
-      }, toValue(options.showDelay))
-    })
+    const shown = await showTimer.wait(toValue(options.showDelay) ?? 0)
 
     if (!shown) {
       return
@@ -614,7 +598,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   }
 
   async function handlePopoverHide(immediate: boolean = false) {
-    if (hidePopoverTimer) {
+    if (hideTimer.pending) {
       if (!immediate) {
         return
       }
@@ -624,23 +608,12 @@ export function usePopupEngine(options: PopupEngineOptions): {
 
     clearShowTimer()
 
-    const hidden = await new Promise<boolean>((resolve) => {
-      hidePopoverResolve = resolve
-      hidePopoverTimer = setTimeout(
-        () => {
-          hidePopoverTimer = null
-          hidePopoverResolve = null
-          resolve(true)
-        },
-        immediate ? 0 : toValue(options.hideDelay),
-      )
-    })
+    const hidden = await hideTimer.wait(immediate ? 0 : (toValue(options.hideDelay) ?? 0))
 
     if (!hidden) {
       return
     }
 
-    triggerElements = null
     disposeAutoUpdate()
 
     void hidePopover()
@@ -853,6 +826,18 @@ export function usePopupEngine(options: PopupEngineOptions): {
   // a target that moves — a field's input mounting after the anchor — leaves nothing behind.
   const ariaElements = new Map<HTMLElement, boolean>()
 
+  function releaseAria(element: HTMLElement) {
+    const ownsHaspopup = ariaElements.get(element) === true
+    ariaElements.delete(element)
+
+    element.removeAttribute('aria-expanded')
+    element.removeAttribute('aria-describedby')
+
+    if (ownsHaspopup) {
+      element.removeAttribute('aria-haspopup')
+    }
+  }
+
   function syncTriggerAria() {
     const ariaTarget = toValue(options.ariaTarget)
     // A field's control is often not the element its popover anchors to: when a target is given,
@@ -864,19 +849,10 @@ export function usePopupEngine(options: PopupEngineOptions): {
         : [triggerRef.value]
     const isTooltip = toValue(options.contentRole) === 'tooltip'
 
-    for (const [element, ownsHaspopup] of ariaElements) {
-      if (triggers.includes(element)) {
-        continue
+    for (const element of ariaElements.keys()) {
+      if (!triggers.includes(element)) {
+        releaseAria(element)
       }
-
-      element.removeAttribute('aria-expanded')
-      element.removeAttribute('aria-describedby')
-
-      if (ownsHaspopup) {
-        element.removeAttribute('aria-haspopup')
-      }
-
-      ariaElements.delete(element)
     }
 
     for (const trigger of triggers) {
@@ -954,20 +930,12 @@ export function usePopupEngine(options: PopupEngineOptions): {
     clearShowTimer()
     clearHideTimer()
     disposeAutoUpdate()
-    triggerElements = null
 
     // The announce target may outlive this popover (an external element), and a control that
     // stays `aria-expanded=true` after its popup is gone lies to assistive tech.
-    for (const [element, ownsHaspopup] of ariaElements) {
-      element.removeAttribute('aria-expanded')
-      element.removeAttribute('aria-describedby')
-
-      if (ownsHaspopup) {
-        element.removeAttribute('aria-haspopup')
-      }
+    for (const element of ariaElements.keys()) {
+      releaseAria(element)
     }
-
-    ariaElements.clear()
   })
 
   return {
@@ -975,13 +943,10 @@ export function usePopupEngine(options: PopupEngineOptions): {
     isRender,
     isVisible,
     isRevealed,
-    isManual,
-    triggerMethods,
     focusTrapContainer,
     activeTriggerRef,
     activeTriggerIndex,
     localPosition,
-    wrapperTransform,
     wrapperStyle,
     handlePopoverShow,
     handlePopoverHide,

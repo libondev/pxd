@@ -1,18 +1,9 @@
 <script lang="ts" setup>
-import type { ComponentPosition } from '../../types/shared/props'
 import { getUniqueId } from '../../utils/helper.js'
-
-interface Props {
-  position?: ComponentPosition
-}
 
 defineOptions({
   name: 'PPopoverArrow',
   inheritAttrs: false,
-})
-
-withDefaults(defineProps<Props>(), {
-  position: 'bottom',
 })
 
 const clipId = getUniqueId('pxd-popover-arrow-clip')
@@ -26,7 +17,6 @@ const clipId = getUniqueId('pxd-popover-arrow-clip')
     viewBox="0 0 14 7"
     xmlns="http://www.w3.org/2000/svg"
     class="pxd-popover-arrow motion-safe:transition-[fill]"
-    :data-position="position"
     v-bind="$attrs"
   >
     <g :clip-path="`url(#${clipId})`">
@@ -43,15 +33,3 @@ const clipId = getUniqueId('pxd-popover-arrow-clip')
     </defs>
   </svg>
 </template>
-
-<style>
-.pxd-popover-arrow[data-position^='bottom'] {
-  transform: rotate(180deg);
-}
-.pxd-popover-arrow[data-position^='left'] {
-  transform: translateX(4px) rotate(-90deg);
-}
-.pxd-popover-arrow[data-position^='right'] {
-  transform: translateX(-4px) rotate(90deg);
-}
-</style>

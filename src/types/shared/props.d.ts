@@ -22,6 +22,8 @@ export type ComponentStyle = CSSProperties | string
 export type ComponentAlign = 'left' | 'center' | 'right'
 export type ComponentDirection = 'horizontal' | 'vertical'
 
+export type PopoverTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'
+
 export type BasePosition = 'top' | 'bottom' | 'left' | 'right'
 export type ComponentPosition<Position extends string = BasePosition> =
   | Position
