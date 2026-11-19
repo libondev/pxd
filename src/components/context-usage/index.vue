@@ -16,8 +16,8 @@ const props = withDefaults(defineProps<ContextUsageProps>(), {
 
 const SEGMENT_COLORS = [
   'var(--color-gray-600)',
-  'var(--color-red-700)',
-  'var(--color-blue-700)',
+  'var(--color-red-600)',
+  'var(--color-blue-600)',
   'var(--color-teal-700)',
   'var(--color-amber-700)',
   'var(--color-green-700)',
