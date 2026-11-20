@@ -53,9 +53,9 @@ const SIZE_CLASSES: Record<
   }
 > = {
   sm: {
-    header: 'p-2',
+    header: 'px-2.5 py-2',
     item: 'min-h-7',
-    footer: 'p-2',
+    footer: 'px-2.5 py-2',
     answers: 'px-3! py-2!',
     skipped: 'h-10 px-2.5',
   },

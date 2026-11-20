@@ -51,7 +51,7 @@ const SIZE_CLASSES: Record<
   }
 > = {
   sm: {
-    header: 'p-2',
+    header: 'px-2.5 py-2',
     marker: 'p-0.75',
     meta: 'text-xs',
   },
@@ -128,7 +128,7 @@ const { attrs, classes } = useTailwindVariant(
     base: 'pxd-todo-list group/todo w-full max-w-full',
     variants: {
       size: {
-        sm: 'rounded-lg text-[13px]',
+        sm: 'text-[13px]',
         md: 'text-sm',
         lg: 'text-base',
       },
