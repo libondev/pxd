@@ -46,26 +46,22 @@ const SIZE_CLASSES: Record<
   ComponentSize,
   {
     header: string
-    list: string
     marker: string
     meta: string
   }
 > = {
   sm: {
     header: 'p-2',
-    list: 'py-2 ps-2 gap-1',
     marker: 'p-0.75',
     meta: 'text-xs',
   },
   md: {
     header: 'px-2.5 py-2',
-    list: 'py-2 ps-2 gap-1.5',
     marker: 'p-1',
     meta: 'text-sm',
   },
   lg: {
     header: 'px-3 py-2.5',
-    list: 'py-3 ps-3 gap-2',
     marker: 'p-1.5',
     meta: 'text-base',
   },
@@ -307,14 +303,11 @@ defineExpose({
       :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
       <ul
-        class="pxd-todo-list--content m-0 max-h-40 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto"
-        :class="[
-          SIZE_CLASSES[computedSize].list,
-          {
-            'border-t': variant === 'default',
-            'ms-1.5 mbs-1.5 border-l': variant === 'simple',
-          },
-        ]"
+        class="pxd-todo-list--content m-0 ps-3 py-3 gap-1.5 max-h-40 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto"
+        :class="{
+          'border-t': variant === 'default',
+          'ms-1.5 mbs-1.5 border-l': variant === 'simple',
+        }"
       >
         <li
           v-if="currentOptions.length === 0"
