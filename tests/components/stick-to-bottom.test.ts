@@ -623,4 +623,141 @@ describe('PStickToBottom', () => {
       wrapper.unmount()
     }
   })
+
+  it('keeps following when an upward wheel returns to the bottom inside the quiet window', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div class="item">content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 2000,
+      clientHeight: 800,
+      scrollTop: 0,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { isAtBottom: boolean; stickIfNeeded: () => void }
+    const now = vi.spyOn(performance, 'now')
+
+    try {
+      // A wheel up is the start of a scroll, not an interaction with the content
+      now.mockReturnValue(1000)
+      container.dispatchEvent(new WheelEvent('wheel', { deltaY: -120 }))
+      container.scrollTop = 1080
+      container.dispatchEvent(new Event('scroll'))
+      await flushRaf()
+      expect(vm.isAtBottom).toBe(false)
+
+      // Back at the bottom, still inside the window a wheel once opened
+      container.scrollTop = 1200
+      container.dispatchEvent(new Event('scroll'))
+      now.mockReturnValue(1100)
+
+      metrics.scrollHeight = 2400
+      vm.stickIfNeeded()
+
+      expect(container.scrollTop).toBe(1600)
+    } finally {
+      now.mockRestore()
+      wrapper.unmount()
+    }
+  })
+
+  it('lets a later chunk follow once the view comes back to the bottom inside the window', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div class="item">content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 2000,
+      clientHeight: 800,
+      scrollTop: 0,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { isAtBottom: boolean; stickIfNeeded: () => void }
+    const now = vi.spyOn(performance, 'now')
+
+    try {
+      now.mockReturnValue(1000)
+      wrapper.find('.item').element.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+
+      container.scrollTop = 400
+      container.dispatchEvent(new Event('scroll'))
+      await flushRaf()
+      expect(vm.isAtBottom).toBe(false)
+
+      container.scrollTop = 1200
+      container.dispatchEvent(new Event('scroll'))
+      now.mockReturnValue(1100)
+
+      metrics.scrollHeight = 2400
+      vm.stickIfNeeded()
+
+      expect(container.scrollTop).toBe(1600)
+    } finally {
+      now.mockRestore()
+      wrapper.unmount()
+    }
+  })
+
+  it('does not park follow for a press on the container itself', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div class="item">content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 2000,
+      clientHeight: 800,
+      scrollTop: 0,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { stickIfNeeded: () => void }
+    const now = vi.spyOn(performance, 'now')
+
+    try {
+      // The scrollbar is part of the container, so its press targets the container itself
+      now.mockReturnValue(1000)
+      container.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+
+      metrics.scrollHeight = 2400
+      vm.stickIfNeeded()
+
+      expect(container.scrollTop).toBe(1600)
+    } finally {
+      now.mockRestore()
+      wrapper.unmount()
+    }
+  })
+
+  it('keeps following when content grows in the frame a sub-threshold move is judged', async () => {
+    const wrapper = mount(StickToBottom, {
+      slots: { default: '<div class="item">content</div>' },
+    })
+
+    const container = wrapper.find('.pxd-stick-to-bottom--wrapper').element as HTMLElement
+    const { metrics } = patchScrollMetrics(container, {
+      scrollHeight: 2000,
+      clientHeight: 800,
+      scrollTop: 0,
+    })
+    await flushRaf()
+
+    const vm = wrapper.vm as unknown as { isAtBottom: boolean }
+
+    // A trackpad nudge the judge would forgive, and the chunk that lands before it decides
+    container.scrollTop = 1190
+    container.dispatchEvent(new Event('scroll'))
+    metrics.scrollHeight = 2600
+    await flushRaf()
+
+    expect(container.scrollTop).toBe(1800)
+    expect(vm.isAtBottom).toBe(true)
+
+    wrapper.unmount()
+  })
 })

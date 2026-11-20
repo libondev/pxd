@@ -90,6 +90,9 @@ export function useStickToBottom(
   function writeBottom(el: HTMLElement, top: number) {
     cancelJudge()
 
+    // The view is at the bottom, so nothing the interaction started is still moving
+    interactionUntil = 0
+
     // Smooth races the content growth it follows
     el.scrollTo({ top, behavior: 'instant' })
     lastScrollTop = el.scrollTop
@@ -108,7 +111,6 @@ export function useStickToBottom(
 
   function forceStickToBottom() {
     following = true
-    interactionUntil = 0
     scrollToBottom()
   }
 
@@ -208,11 +210,9 @@ export function useStickToBottom(
       return
     }
 
-    interactionUntil = performance.now() + interactionQuietMs
-  }
-
-  function handleWheel(event: Event) {
-    if ((event as WheelEvent).deltaY >= 0) {
+    // A press on the container itself is its scrollbar or its empty gutter, i.e. a scroll gesture:
+    // the offset it produces is judged like any other, and it must not park follow
+    if (target === getContainerEl()) {
       return
     }
 
@@ -250,6 +250,11 @@ export function useStickToBottom(
     }
 
     if (travel <= getThreshold() || measureAtBottom(el)) {
+      // Growth that landed while the judgement was pending is observed by nothing else
+      if (judgeHeight < el.scrollHeight) {
+        stickIfNeeded()
+      }
+
       return
     }
 
@@ -269,6 +274,11 @@ export function useStickToBottom(
     const delta = lastScrollTop - top
 
     lastScrollTop = top
+
+    // Back at the bottom, whatever the interaction laid out has settled: the next chunk must follow
+    if (interactionUntil && measureAtBottom(el)) {
+      interactionUntil = 0
+    }
 
     if (delta > 0 && following) {
       // A move that stops at the bottom is the content shrinking under the offset, not the user
@@ -331,7 +341,6 @@ export function useStickToBottom(
         if (oldEl) {
           cachedOff(oldEl, 'scroll', handleScroll, { passive: true })
           cachedOff(oldEl, 'pointerdown', handlePointerdown)
-          cachedOff(oldEl, 'wheel', handleWheel, { passive: true })
         }
 
         if (!el) {
@@ -340,7 +349,6 @@ export function useStickToBottom(
 
         lastScrollTop = el.scrollTop
         cachedOn(el, 'scroll', handleScroll, { passive: true })
-        cachedOn(el, 'wheel', handleWheel, { passive: true })
         cachedOn(el, 'pointerdown', handlePointerdown)
         update()
         stickIfNeeded()
@@ -364,7 +372,6 @@ export function useStickToBottom(
 
       if (el) {
         cachedOff(el, 'scroll', handleScroll, { passive: true })
-        cachedOff(el, 'wheel', handleWheel, { passive: true })
         cachedOff(el, 'pointerdown', handlePointerdown)
       }
 

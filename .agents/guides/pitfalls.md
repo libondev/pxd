@@ -26,6 +26,12 @@ a comment beside the fix.
 
 <!-- Add new entries below this line -->
 
+### An interaction window that parks auto-follow has to end when the view comes back
+
+- **Symptom**: `PBubbleGroup` in a chat sat with its scrollbar at the bottom while the last lines of the transcript stayed out of view. The jump-to-bottom action revealed them, and scrolling up and back down reproduced it. `scrollTop` was always short of `scrollHeight - clientHeight` by exactly the latest growth, and no later update corrected it.
+- **Cause**: `useStickToBottom` opened its 350 ms quiet window on an upward wheel as well as on a pointerdown, and any growth inside that window with the container off the bottom ended follow. A wheel that had already returned to the bottom left the window open, so the growth it was never about — the growth a view that is at the bottom must follow — parked follow silently. The window also survived the view coming back to the bottom by scroll, so a chunk after a click was lost the same way.
+- **Fix**: A wheel is a scroll, not an interaction: the judge already ends follow for a real upward move, so it no longer opens the window, and neither does a press on the container itself (its scrollbar or empty gutter). The window closes as soon as the view is at the bottom (a scroll landing there, or the composable's own write), and growth that landed while a judgement was pending is re-applied when the judge forgives the move instead of being dropped. A gate that suppresses work on a hot path must not also decide the state it was protecting.
+
 ### A formatted value cannot live in a native `type="number"` input
 
 - **Symptom**: `PNumberInput` with `thousands` rendered empty whenever the value came from outside, and logged `The specified value "1,000,000" cannot be parsed, or is out of range.` on blur.
