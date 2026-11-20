@@ -12,12 +12,14 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
     <PLoadingBar group="website" />
     <PBacktop class="right-6 bottom-6 shadow-lg rounded-full" :visible-threshold="100">
       <PButton size="sm" class="group max-sm:px-px sm:px-2">
-        <ArrowUpIcon
-          class="max-sm:opacity-100 opacity-0 group-hover:opacity-100 motion-safe:transition-opacity"
-        />
-        <PScrollProgress
-          class="text-xs max-sm:hidden absolute opacity-100 group-hover:opacity-0 motion-safe:transition-opacity"
-        />
+        <span class="min-w-9 grid place-items-center">
+          <ArrowUpIcon
+            class="max-sm:opacity-100 col-start-1 row-start-1 opacity-0 group-hover:opacity-100 motion-safe:transition-opacity"
+          />
+          <PScrollProgress
+            class="text-xs max-sm:hidden col-start-1 row-start-1 opacity-100 group-hover:opacity-0 motion-safe:transition-opacity"
+          />
+        </span>
       </PButton>
     </PBacktop>
 
