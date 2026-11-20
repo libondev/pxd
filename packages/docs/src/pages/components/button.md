@@ -45,13 +45,17 @@ One of the most basic components, it will help you complete the interaction.
 ## Disabled/Loading
 
 ```vue demo
+<script setup>
+import HeartIcon from '@gdsicon/vue/heart-fill'
+</script>
+
 <template>
   <PStack>
     <PButton disabled>disabled</PButton>
     <PButton loading>loading</PButton>
-
-    <PButton variant="primary" disabled>disabled</PButton>
-    <PButton variant="ghost" loading>loading</PButton>
+    <PButton loading icon>
+      <HeartIcon />
+    </PButton>
   </PStack>
 </template>
 ```

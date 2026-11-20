@@ -86,7 +86,7 @@ const { attrs, classes } = useTailwindVariant(
         true: 'w-full',
       },
       icon: {
-        true: 'p-0 aspect-square',
+        true: 'px-0 aspect-square',
         false: 'within-group:flex-1',
       },
     },
@@ -135,11 +135,12 @@ useAgentNode({
     :disabled="isDisabled"
     v-bind="attrs"
   >
-    <PSpinner v-if="loading" />
-    <slot v-else name="prefix" />
+    <PSpinner v-if="!icon && loading" />
+    <slot v-else-if="!loading" name="prefix" />
 
     <span class="min-w-0 flex items-center whitespace-nowrap" :class="btnContentClasses">
-      <slot>{{ text }}</slot>
+      <PSpinner v-if="icon && loading" />
+      <slot v-else>{{ text }}</slot>
     </span>
 
     <slot name="suffix" />

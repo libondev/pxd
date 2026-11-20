@@ -76,6 +76,43 @@ describe('button', () => {
     wrapper.unmount()
   })
 
+  it('replaces the icon with a spinner when loading', async () => {
+    const wrapper = mount(Button, {
+      props: {
+        icon: true,
+      },
+      slots: {
+        default: 'Icon',
+      },
+    })
+
+    expect(wrapper.findAll('[data-spinner]')).toHaveLength(0)
+    expect(wrapper.text()).toBe('Icon')
+
+    await wrapper.setProps({ loading: true })
+
+    expect(wrapper.findAll('[data-spinner]')).toHaveLength(1)
+    expect(wrapper.text()).toBe('')
+
+    wrapper.unmount()
+  })
+
+  it('keeps the label and shows a spinner when loading', () => {
+    const wrapper = mount(Button, {
+      props: {
+        loading: true,
+      },
+      slots: {
+        default: 'Save',
+      },
+    })
+
+    expect(wrapper.findAll('[data-spinner]')).toHaveLength(1)
+    expect(wrapper.text()).toBe('Save')
+
+    wrapper.unmount()
+  })
+
   it('should render as a div when set as prop', async () => {
     const wrapper = mount(Button, {
       props: {
