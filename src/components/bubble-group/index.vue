@@ -206,8 +206,8 @@ defineExpose({
     ref="stickRef"
     data-bubble-group
     class="pxd-bubble-group min-h-0 h-full flex-1"
-    wrapper-class="overflow-x-hidden px-1 py-4 scrollbar-gutter-both"
-    content-class="pxd-bubble-group--content relative w-full h-(--bubble-group-height)"
+    wrapper-class="overflow-x-hidden px-2 scrollbar-gutter-both"
+    content-class="pxd-bubble-group--content py-4 relative w-full h-(--bubble-group-height)"
     :style="contentStyle"
     :fader="props.fader"
     fader-direction="vertical"
