@@ -158,7 +158,7 @@ defineExpose({
     <span
       v-if="isEmpty && !isComposing && placeholder"
       :class="SIZE_TEXT_CLASS[computedSize]"
-      class="pxd-mention-editor--placeholder inset-0 pointer-events-none absolute px-(--input-ip) py-(--input-bp) text-gray-600 select-none"
+      class="pxd-mention-editor--placeholder inset-0 pointer-events-none absolute overflow-hidden px-(--input-ip) py-(--input-bp) text-gray-600 select-none"
       aria-hidden="true"
     >
       {{ placeholder }}
