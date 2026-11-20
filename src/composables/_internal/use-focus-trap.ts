@@ -49,6 +49,9 @@ export function useFocusTrap(
       // A11y + robustness
       // If set and is or returns true, a click outside the focus trap will not be prevented
       returnFocusOnDeactivate: true,
+      // The library defers the return by a tick; the closing panel is hidden from AT in the render
+      // that follows, so focus has to be back outside it before that, not after.
+      delayReturnFocus: false,
       preventScroll: true,
       fallbackFocus: () => target,
       initialFocus: (): HTMLElement => {
@@ -73,22 +76,36 @@ export function useFocusTrap(
     trapper.activate()
   }
 
-  const unwatch = watch(
+  // A closing panel is marked `aria-hidden` / `inert` in the same flush, and the browser refuses to
+  // hide a subtree that still holds focus. Releasing before that render returns focus to the trigger
+  // first; deactivating post-render leaves a frame where the focused node is hidden from AT.
+  const unwatchRelease = watch(
     () => toValue(container),
     (target) => {
-      deactivate()
+      if (!target) {
+        deactivate()
+      }
+    },
+    { flush: 'pre' },
+  )
 
+  // Activating still waits for the post flush: a panel that just opened is not in the DOM before it.
+  const unwatchTrap = watch(
+    () => toValue(container),
+    (target) => {
       if (!target) {
         return
       }
 
+      deactivate()
       activate(target)
     },
     { flush: 'post' },
   )
 
   function stop() {
-    unwatch()
+    unwatchRelease()
+    unwatchTrap()
     deactivate()
   }
 

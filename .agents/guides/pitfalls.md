@@ -449,3 +449,9 @@ a comment beside the fix.
 - **Symptom**: `PResizable` listed a panel's info button in its own `buttons`, so an argument-less `press` clicked a control the app had written; the same icon showed up wherever the tooltip that carries it sat.
 - **Cause**: `buttonsOf` walked the component's whole subtree, so app markup in a slot was indistinguishable from buttons the component renders. Content a component *reveals* — a swipe cell's action, a dialog's footer, a popover's trigger — is genuinely its own, so the rule cannot be structural; each component has to say which elements it presses on.
 - **Fix**: `pressRoots` defaults to the component's own element; a component that only arranges app markup declares `pressRoots: () => []` (`resizable`, `list`, `steps`, `virtual-list`, `stick-to-bottom`), and `press` refuses rather than reaching in. An app that wants one icon out of reach puts `data-agent-hidden` on the icon itself, which keeps the rest of its component addressable.
+
+### A closed layer must lose focus before it is hidden from assistive tech
+
+- **Symptom**: Selecting an option in `select` printed `Blocked aria-hidden on an element because its descendant retained focus` in Chrome, naming a list item and the popover wrapper, and only sometimes.
+- **Cause**: The closing panel gets `aria-hidden` / `inert` in the render that follows `isRevealed`, but the focus trap released in a post-flush watcher and focus-trap 8 defers its return with `delayReturnFocus: true`, so focus was still inside for that render. Chrome blocks the hide, which also keeps the closed panel in the accessibility tree.
+- **Fix**: `useFocusTrap` releases on the pre flush and sets `delayReturnFocus: false`, so focus is back on the trigger before the panel is hidden. Every layer that hides itself from AT owes the same order.

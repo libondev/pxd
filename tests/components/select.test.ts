@@ -443,6 +443,35 @@ describe('select', () => {
     wrapper.unmount()
   })
 
+  it('should move focus out of the panel before the closed panel is hidden', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: { options },
+    })
+
+    trigger().focus()
+
+    await wrapper.find('[data-select]').trigger('click')
+    await flushPopover()
+
+    const panel = document.body.querySelector<HTMLElement>('.pxd-popover--wrapper')!
+    const hiddenWhileFocused: boolean[] = []
+
+    document.body.querySelector<HTMLElement>('[data-list-item]')?.focus()
+
+    panel.addEventListener('focusout', () => {
+      hiddenWhileFocused.push(panel.getAttribute('aria-hidden') === 'true')
+    })
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await flushPopover()
+
+    expect(hiddenWhileFocused).toEqual([false])
+    expect(document.activeElement).toBe(trigger())
+
+    wrapper.unmount()
+  })
+
   it('should let a caller turn Escape off through the popover passthrough', async () => {
     const wrapper = mount(Select, {
       attachTo: document.body,
