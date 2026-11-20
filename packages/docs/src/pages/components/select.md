@@ -263,6 +263,7 @@ const options = [
 | filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match on `label` and `description` | Predicate deciding which option shows while the query is being typed |
 | remote-filter | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`, only while `filterable` is on: the options it returns replace `options` until the query is cleared. A rejection shows a retryable error in the list |
 | label-format | `(items: ListOption[]) => string` | - | Build the trigger label from the selected options |
+| match-width | `boolean` | `true` | Match the dropdown width to the trigger width |
 
 ## Events
 

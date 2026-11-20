@@ -34,6 +34,7 @@ defineOptions({
 const props = withDefaults(defineProps<SelectProps>(), {
   suffixIcon: true,
   clearable: false,
+  matchWidth: true,
 })
 const emits = defineEmits<SelectEmits>()
 
@@ -246,7 +247,7 @@ watch(listOptions, async () => {
       aria-haspopup="listbox"
       v-bind="popoverAttrs"
       trigger="click"
-      match-width
+      :match-width="matchWidth"
       :keep-height="filterable"
       :auto-focus-element="filterable"
       :disabled="disabled"

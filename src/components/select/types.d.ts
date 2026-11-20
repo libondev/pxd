@@ -21,6 +21,7 @@ export interface SelectProps {
   suffixIcon?: boolean
   placeholder?: string
   filterable?: boolean
+  matchWidth?: boolean
   clearable?: boolean
   filterPlaceholder?: string
   filterMethod?: ListFilterMethodFn
