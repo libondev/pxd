@@ -303,7 +303,7 @@ defineExpose({
       :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
     >
       <ul
-        class="pxd-todo-list--content m-0 ps-3 py-3 gap-1.5 max-h-40 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto"
+        class="pxd-todo-list--content m-0 ps-2.5 py-2 gap-1 max-h-40 flex scrollbar-gutter-stable list-none flex-col overflow-y-auto"
         :class="{
           'border-t': variant === 'default',
           'ms-1.5 mbs-1.5 border-l': variant === 'simple',
