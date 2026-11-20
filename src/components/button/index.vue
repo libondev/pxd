@@ -44,7 +44,7 @@ const btnContentClasses = computed(() => {
   }[internalAlign || buttonGroupContext?.props.align || 'center']
 
   return {
-    'not-first:ps-1.5 not-last:pe-1.5': !icon,
+    'not-first:ps-1 not-last:pe-1': !icon,
     [alignClasses]: true,
   }
 })
