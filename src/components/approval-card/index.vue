@@ -216,15 +216,13 @@ defineExpose({
       </div>
 
       <div class="min-w-0 flex-1">
-        <div
-          class="pxd-approval-card--title font-medium text-sm leading-tight truncate text-foreground"
-        >
+        <div class="pxd-approval-card--title font-medium text-sm truncate text-foreground">
           {{ computedTitle }}
         </div>
 
         <div
           v-if="description"
-          class="pxd-approval-card--description text-xs truncate leading-none text-foreground-secondary"
+          class="pxd-approval-card--description text-xs truncate text-foreground-secondary"
         >
           {{ description }}
         </div>
