@@ -23,7 +23,7 @@ export interface SelectProps {
   filterable?: boolean
   matchWidth?: boolean
   clearable?: boolean
-  filterPlaceholder?: string
+  searchPlaceholder?: string
   filterMethod?: ListFilterMethodFn
   remoteFilter?: ListRemoteFilterFn
   labelFormat?: (items: ListOptions) => string

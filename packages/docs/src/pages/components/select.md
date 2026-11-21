@@ -110,7 +110,7 @@ const options = [
   <PSelect
     v-model="value"
     filterable
-    filter-placeholder="Search"
+    search-placeholder="Search"
     :options="options"
     placeholder="Please select"
   />
@@ -143,7 +143,7 @@ function filter(option, query) {
   <PSelect
     v-model="value"
     filterable
-    filter-placeholder="Search"
+    search-placeholder="Search"
     placeholder="Please select"
     :options="options"
     :filter-method="filter"
@@ -182,7 +182,7 @@ function search(query) {
   <PSelect
     v-model="value"
     filterable
-    filter-placeholder="Search"
+    search-placeholder="Search"
     placeholder="Please select"
     :options="options"
     :remote-filter="search"
@@ -259,7 +259,7 @@ const options = [
 | placeholder | `string` | - | Text shown in the trigger while nothing is selected |
 | filterable | `boolean` | `false` | Show a search input at the top of the popover that filters the options |
 | clearable | `boolean` | `false` | Show a clear control in the trigger when a value is selected; clearing emits `null` (or `[]` in `multiple` mode) and a `change` with reason `cleared` |
-| filter-placeholder | `string` | - | Placeholder of the search input shown when `filterable` is on |
+| search-placeholder | `string` | - | Placeholder of the search input shown when `filterable` is on |
 | filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match on `label` and `description` | Predicate deciding which option shows while the query is being typed |
 | remote-filter | `(query: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`, only while `filterable` is on: the options it returns replace `options` until the query is cleared. A rejection shows a retryable error in the list |
 | label-format | `(items: ListOption[]) => string` | - | Build the trigger label from the selected options |
