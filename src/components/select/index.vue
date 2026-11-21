@@ -35,6 +35,7 @@ const props = withDefaults(defineProps<SelectProps>(), {
   suffixIcon: true,
   clearable: false,
   matchWidth: true,
+  searchPlaceholder: 'Search...',
 })
 const emits = defineEmits<SelectEmits>()
 

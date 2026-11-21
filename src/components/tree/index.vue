@@ -68,7 +68,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
   loading: false,
   filterable: false,
   highlightMatch: false,
-  searchPlaceholder: '',
+  searchPlaceholder: 'Search...',
   defaultSearchValue: '',
   errorText: 'Request failed. Click to reload',
 })

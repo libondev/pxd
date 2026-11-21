@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<MentionProps>(), {
   options: () => [],
   triggers: () => [DEFAULT_TRIGGER],
   placeholder: '',
-  searchPlaceholder: '',
+  searchPlaceholder: 'Search...',
   filterDebounce: true,
   disabled: false,
   closeOnPressEscape: true,
