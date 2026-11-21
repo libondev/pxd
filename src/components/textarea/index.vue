@@ -52,7 +52,7 @@ const nativeTextareaClasses = computed(() => ({
 
 const wordLimitClasses = computed(() => ({
   'top-full right-0 mbs-1': isWordLimitOutside.value,
-  'bottom-1.5 right-3': !isWordLimitOutside.value,
+  'bottom-1.5 right-(--input-ip)': !isWordLimitOutside.value,
   'text-red-900': isWordLimitExceeded.value,
 }))
 
