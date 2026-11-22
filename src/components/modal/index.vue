@@ -43,7 +43,7 @@ const computedStyle = computed(() => {
 const defaultStyles = computed(() => ({
   headerClass: props.defaultHeaderStyle
     ? 'border-b bg-background-200 dark:bg-background-100'
-    : '-mbe-5',
+    : '-mbe-4',
   footerClass: props.defaultFooterStyle
     ? 'border-t bg-background-200 dark:bg-background-100'
     : '-mbs-3',
