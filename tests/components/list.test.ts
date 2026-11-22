@@ -661,6 +661,70 @@ describe('list', () => {
     }
   })
 
+  it('should keep the scroll position when new options describe the same rows', async () => {
+    const rect = (top: number, bottom: number): DOMRect =>
+      ({
+        top,
+        bottom,
+        left: 0,
+        right: 0,
+        width: 0,
+        height: bottom - top,
+        x: 0,
+        y: top,
+        toJSON: () => ({}),
+      }) as DOMRect
+    const originalRect = Object.getOwnPropertyDescriptor(
+      HTMLElement.prototype,
+      'getBoundingClientRect',
+    )
+
+    Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
+      configurable: true,
+      value(this: HTMLElement) {
+        if (this.hasAttribute('data-list')) {
+          return rect(100, 300)
+        }
+
+        if (this.hasAttribute('data-list-item')) {
+          return rect(20, 56)
+        }
+
+        return rect(0, 0)
+      },
+    })
+
+    try {
+      const options = Array.from({ length: 20 }, (_, index) => ({
+        label: `Item ${index + 1}`,
+        value: `item-${index + 1}`,
+      }))
+      const wrapper = mount(List, {
+        attachTo: document.body,
+        props: {
+          modelValue: 'item-1',
+          options,
+        },
+      })
+
+      const container = wrapper.find('[data-list]').element as HTMLElement
+      container.scrollTop = 120
+
+      await wrapper.setProps({ options: options.map((option) => ({ ...option })) })
+      await flushPromises()
+
+      expect(container.scrollTop).toBe(120)
+
+      wrapper.unmount()
+    } finally {
+      if (originalRect) {
+        Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', originalRect)
+      } else {
+        Reflect.deleteProperty(HTMLElement.prototype, 'getBoundingClientRect')
+      }
+    }
+  })
+
   it('should not re-render item slots on pointerover', async () => {
     let slotCalls = 0
     const wrapper = mount(List, {

@@ -55,6 +55,7 @@ const containerRef = shallowRef<HTMLElement>()
 const flattened = computed(() => flattenListOptions(props.options))
 const rows = computed(() => flattened.value.rows)
 const itemRows = computed(() => flattened.value.itemRows)
+const itemKeys = computed(() => itemRows.value.map((row) => row.key).join('\u0000'))
 
 const notify = useAgentChange(emits)
 const { activeIndex, dispatch, setActiveIndex, onPointerOver, setFirstAsActive } =
@@ -305,7 +306,7 @@ function restoreScroll(): void {
 watch(() => activeIndex.value, syncActiveItem, { flush: 'post' })
 watch(() => renderEntries.value, refreshActiveItem, { flush: 'post' })
 watch(
-  () => rows.value,
+  () => itemKeys.value,
   async () => {
     await nextTick()
     restoreScroll()

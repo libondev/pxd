@@ -461,3 +461,9 @@ a comment beside the fix.
 - **Symptom**: Selecting an option in `select` printed `Blocked aria-hidden on an element because its descendant retained focus` in Chrome, naming a list item and the popover wrapper, and only sometimes.
 - **Cause**: The closing panel gets `aria-hidden` / `inert` in the render that follows `isRevealed`, but the focus trap released in a post-flush watcher and focus-trap 8 defers its return with `delayReturnFocus: true`, so focus was still inside for that render. Chrome blocks the hide, which also keeps the closed panel in the accessibility tree.
 - **Fix**: `useFocusTrap` releases on the pre flush and sets `delayReturnFocus: false`, so focus is back on the trigger before the panel is hidden. Every layer that hides itself from AT owes the same order.
+
+### A rebuilt options array is not new content
+
+- **Symptom**: A `PSelect` in `multiple` mode jumped back to the first selected option on every pick, throwing away the position the user had scrolled to, although the option list itself never changed.
+- **Cause**: `PList` restored its scroll from a watcher on the `rows` array identity. A caller that re-creates its options array on re-render — `:options="options.map(...)"`, or a computed derived from the selection — made that watcher fire on every pick even though the rows were byte-for-byte the same. The watcher could not tell "the content changed" from "a new array holds the same content".
+- **Fix**: Watch a signature of the item rows (`itemKeys` in `src/components/list/index.vue`) so the restore runs when options arrive or really change, not when the container is merely re-created. Any watcher whose condition means "the content changed" has to compare the content, not the identity of the array that carries it.
