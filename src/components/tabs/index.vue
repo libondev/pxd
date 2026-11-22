@@ -2,7 +2,7 @@
 import type { ComponentValue } from '../../types/shared/props'
 import type { TabsEmits, TabsProps, TabsOptions } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useSlots, watch } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
@@ -49,6 +49,8 @@ const canScrollRight = shallowRef(false)
  */
 const activatedValues = shallowRef<ComponentValue[]>([])
 const rootRef = shallowRef<HTMLElement>()
+
+const optionValues = computed(() => props.options.map((option) => option.value))
 
 /** Uncontrolled fallback: a bound `modelValue` always wins. */
 const { modelValue: activeValue, commit } = useModelCommit(props, emits, {
@@ -264,8 +266,9 @@ watch(
 )
 
 watch(
-  () => props.options.map((option) => option.value),
-  (values) => {
+  () => optionValues.value.join('\u0000'),
+  () => {
+    const values = optionValues.value
     const kept = activatedValues.value.filter((value) => values.includes(value))
 
     if (kept.length !== activatedValues.value.length) {
@@ -293,7 +296,7 @@ watch(
 )
 
 watch(
-  () => [activeValue.value, props.options.length],
+  [activeValue, () => props.options.length],
   () => {
     const index = props.options.findIndex((option) => isActiveOption(option))
 

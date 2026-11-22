@@ -57,6 +57,7 @@ let dragStartX = 0
 let dragStartY = 0
 let dragOriginX = 0
 let dragOriginY = 0
+let previousSources: ImagePreviewItem['src'][] = []
 
 const dialogRef = shallowRef<HTMLElement>()
 const isVisible = shallowRef(false)
@@ -352,8 +353,14 @@ function onKeydown(ev: KeyboardEvent) {
 
 watch(
   () => images.value.map((image) => image.src),
-  () => {
-    if (isServer() || props.variant === 'viewer') {
+  (sources) => {
+    const unchanged =
+      sources.length === previousSources.length &&
+      sources.every((source, index) => source === previousSources[index])
+
+    previousSources = sources
+
+    if (unchanged || isServer() || props.variant === 'viewer') {
       return
     }
 
