@@ -159,8 +159,8 @@ useHead({
 
 <style lang="postcss">
 .sidebar .pxd-link-button.router-link-exact-active {
-  background-color: var(--color-background-200);
-  border-color: var(--color-gray-300);
+  background-color: var(--color-gray-200);
+  border-color: var(--color-gray-alpha-200);
   pointer-events: none;
 }
 

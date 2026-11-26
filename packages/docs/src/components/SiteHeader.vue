@@ -65,7 +65,7 @@ onBeforeUnmount(() => {
     <h2 class="sm:w-56 md:border-r h-full">
       <RouterLink
         to="/"
-        class="px-2.5 gap-2 flex h-full cursor-pointer items-center self-focus-ring outline-none"
+        class="px-3 gap-2 flex h-full cursor-pointer items-center self-focus-ring outline-none"
       >
         <span class="sm:font-bold font-medium">PXD</span>
 
@@ -84,14 +84,12 @@ onBeforeUnmount(() => {
 
     <nav class="flex h-full items-center">
       <div class="h-full border-l">
-        <PButton variant="ghost" shape="square" class="px-2.5 h-full" @click="openCommandMenu">
+        <PButton variant="ghost" shape="square" class="max-sm:px-4 h-full" @click="openCommandMenu">
           <MagnifyingGlassIcon />
 
           <span class="sm:block ms-1.5 hidden">Search</span>
 
-          <template #suffix>
-            <PKbd ctrl label="K" size="sm" class="sm:inline-flex! hidden!" />
-          </template>
+          <PKbd ctrl label="K" size="sm" class="sm:inline-flex! hidden!" />
         </PButton>
 
         <PCommandMenu
@@ -126,7 +124,7 @@ onBeforeUnmount(() => {
         <PLinkButton
           variant="ghost"
           shape="square"
-          class="px-2.5 h-full"
+          class="max-sm:px-4 h-full"
           target="_blank"
           :href="githubLink"
         >
@@ -138,7 +136,7 @@ onBeforeUnmount(() => {
 
       <div class="h-full border-l">
         <CustomVariables width="200" position="bottom-end">
-          <PButton variant="ghost" shape="square" class="px-2.5 h-full">
+          <PButton variant="ghost" shape="square" class="max-sm:px-4 h-full">
             <SparklesIcon />
 
             <span class="sm:block ms-1.5 hidden">Customize</span>

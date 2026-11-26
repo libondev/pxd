@@ -60,5 +60,5 @@ export const createApp = ViteSSG(
       handleHotUpdate(router)
     }
   },
-  { hydration: true },
+  { hydration: !import.meta.env.DEV },
 )
