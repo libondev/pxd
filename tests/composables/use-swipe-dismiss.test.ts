@@ -232,6 +232,35 @@ describe('useSwipeDismiss', () => {
     wrapper.unmount()
   })
 
+  it('should not dismiss when an outward drag ends with an inward flick', async () => {
+    vi.useFakeTimers()
+
+    const { wrapper, onDismiss } = mountDismiss()
+
+    await nextTick()
+    await nextTick()
+    setElementSize(wrapper.element, 200)
+
+    const handle = getHandle(wrapper)
+
+    vi.setSystemTime(0)
+    handle.dispatchEvent(pointerEvent('pointerdown'))
+
+    vi.setSystemTime(100)
+    window.dispatchEvent(pointerEvent('pointermove', { y: -120 }))
+
+    vi.setSystemTime(110)
+    window.dispatchEvent(pointerEvent('pointermove', { y: -114 }))
+
+    vi.setSystemTime(120)
+    window.dispatchEvent(pointerEvent('pointerup', { y: -114 }))
+    await nextTick()
+
+    expect(onDismiss).not.toHaveBeenCalled()
+
+    wrapper.unmount()
+  })
+
   it('should not dismiss on a rejected cross-axis release', async () => {
     vi.useFakeTimers()
 

@@ -283,7 +283,7 @@ watch(
 .pxd-transition--drawer-bottom-leave-active {
   transition-property: transform;
   transition-duration: var(--duration);
-  transition-timing-function: var(--ease-drawer, cubic-bezier(0.32, 0.72, 0, 1));
+  transition-timing-function: var(--default-transition-timing-function);
 }
 
 .pxd-transition--drawer-right-leave-to,

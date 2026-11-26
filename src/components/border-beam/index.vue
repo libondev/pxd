@@ -158,7 +158,7 @@ const computedStyle = computed(() => {
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   mask-composite: intersect, exclude;
-  animation: pxd-animation-border-beam-hue 12s ease-in-out infinite;
+  animation: pxd-animation-border-beam-hue 12s var(--default-transition-timing-function) infinite;
 }
 
 .pxd-border-beam::before {
@@ -215,7 +215,7 @@ const computedStyle = computed(() => {
     linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
     linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
   mask-composite: intersect, add;
-  animation: pxd-animation-border-beam-hue 12s ease-in-out infinite;
+  animation: pxd-animation-border-beam-hue 12s var(--default-transition-timing-function) infinite;
 }
 
 .pxd-border-beam--bloom {

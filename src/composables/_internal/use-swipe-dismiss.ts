@@ -209,11 +209,14 @@ export function useSwipeDismiss(
       }
 
       const releaseVelocity = Date.now() - lastFollowTime <= RELEASE_VELOCITY_WINDOW ? velocity : 0
+      const closingDisplacement = sign.value * displacement
       const dismissByDistance =
-        sign.value * displacement > 0 &&
+        closingDisplacement > 0 &&
         dragSize > 0 &&
         currentOffset / dragSize >= DISMISS_DISTANCE_THRESHOLD
-      const dismissByVelocity = sign.value * releaseVelocity >= DISMISS_VELOCITY_THRESHOLD
+
+      const dismissByVelocity =
+        closingDisplacement > 0 && sign.value * releaseVelocity >= DISMISS_VELOCITY_THRESHOLD
 
       if (axisLocked && (dismissByDistance || dismissByVelocity)) {
         const accepted = options.onDismiss(event)
