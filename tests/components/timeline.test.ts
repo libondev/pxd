@@ -87,7 +87,7 @@ describe('timeline', () => {
 })
 
 describe('timeline-item', () => {
-  it('renders timestamp at the configured placement', async () => {
+  it('renders timestamp at the configured position', async () => {
     const wrapper = mount(TimelineItem, {
       props: { timestamp: '2026-08-03' },
       slots: { default: 'Released' },
@@ -95,7 +95,7 @@ describe('timeline-item', () => {
 
     expect(wrapper.find('.pxd-timeline-item--content + .is-bottom').text()).toBe('2026-08-03')
 
-    await wrapper.setProps({ placement: 'top' })
+    await wrapper.setProps({ position: 'top' })
 
     expect(wrapper.find('.is-top + .pxd-timeline-item--content').exists()).toBe(true)
     expect(wrapper.find('.is-top').text()).toBe('2026-08-03')
@@ -122,7 +122,7 @@ describe('timeline-item', () => {
         color: 'rgb(1, 2, 3)',
         hollow: true,
         size: 'lg',
-        type: 'success',
+        variant: 'success',
       },
     })
     const node = wrapper.find('.pxd-timeline-item--node')

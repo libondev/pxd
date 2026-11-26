@@ -11,8 +11,8 @@ defineOptions({
 
 const props = withDefaults(defineProps<TimelineItemProps>(), {
   timestamp: '',
-  placement: 'bottom',
-  type: '',
+  position: 'bottom',
+  variant: '',
   color: '',
 })
 
@@ -41,15 +41,15 @@ const iconSizeClasses = computed(() =>
 const nodeClasses = computed(() => [
   `is-${computedSize.value} p-px left-[0.28125rem] -translate-x-1/2 leading-none`,
   nodeSizeClasses.value,
-  props.type && `is-${props.type}`,
+  props.variant && `is-${props.variant}`,
   { 'is-hollow': props.hollow },
   {
-    'bg-primary border-primary': props.type === 'primary',
-    'bg-blue-700 border-blue-700': props.type === 'success',
-    'bg-amber-700 border-amber-700': props.type === 'warning',
-    'bg-red-700 border-red-700': props.type === 'danger',
-    'bg-gray-600 border-gray-600': props.type === 'info',
-    'bg-gray-400 border-gray-400': !props.type,
+    'bg-primary border-primary': props.variant === 'primary',
+    'bg-blue-700 border-blue-700': props.variant === 'success',
+    'bg-amber-700 border-amber-700': props.variant === 'warning',
+    'bg-red-700 border-red-700': props.variant === 'danger',
+    'bg-gray-600 border-gray-600': props.variant === 'info',
+    'bg-gray-400 border-gray-400': !props.variant,
     'border-2 border-solid bg-background-100': props.hollow,
   },
 ])
@@ -85,7 +85,7 @@ const nodeClasses = computed(() => [
 
     <div class="pxd-timeline-item--wrapper px-5 -top-1.5 relative">
       <div
-        v-if="!hideTimestamp && placement === 'top'"
+        v-if="!hideTimestamp && position === 'top'"
         class="pxd-timeline-item--timestamp is-top mbe-1 pbs-1 text-xs leading-none text-foreground-secondary"
       >
         {{ timestamp }}
@@ -96,7 +96,7 @@ const nodeClasses = computed(() => [
       </div>
 
       <div
-        v-if="!hideTimestamp && placement === 'bottom'"
+        v-if="!hideTimestamp && position === 'bottom'"
         class="pxd-timeline-item--timestamp is-bottom mbs-0.5 text-xs leading-none text-foreground-secondary"
       >
         {{ timestamp }}

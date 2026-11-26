@@ -61,7 +61,7 @@ Horizontal timelines retain readable item widths and can be scrolled when space 
 
 ## Custom Node
 
-Node color, size, type, icon, and appearance can be customized.
+Node color, size, variant, icon, and appearance can be customized.
 
 ```vue demo
 <script setup>
@@ -70,11 +70,11 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
 
 <template>
   <PTimeline>
-    <PTimelineItem :icon="CheckCircleIcon" size="lg" type="primary">
+    <PTimelineItem :icon="CheckCircleIcon" size="lg" variant="primary">
       Custom icon
     </PTimelineItem>
     <PTimelineItem color="#7928ca">Custom color</PTimelineItem>
-    <PTimelineItem type="success" hollow>Hollow node</PTimelineItem>
+    <PTimelineItem variant="success" hollow>Hollow node</PTimelineItem>
     <PTimelineItem>
       <template #dot>
         <PStatusDot state="READY" />
@@ -85,12 +85,12 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
 </template>
 ```
 
-## Timestamp Placement
+## Timestamp Position
 
 ```vue demo
 <template>
   <PTimeline>
-    <PTimelineItem timestamp="2026-08-03" placement="top">
+    <PTimelineItem timestamp="2026-08-03" position="top">
       Timestamp above the content
     </PTimelineItem>
     <PTimelineItem timestamp="2026-07-28">Timestamp below the content</PTimelineItem>
@@ -112,8 +112,8 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
 | --- | --- | --- | --- |
 | timestamp | `string` | `''` | Timestamp content |
 | hide-timestamp | `boolean` | `false` | Hide the timestamp |
-| placement | `'top' \| 'bottom'` | `bottom` | Timestamp position |
-| type | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info' \| ''` | `''` | Node type |
+| position | `'top' \| 'bottom'` | `bottom` | Timestamp position |
+| variant | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info' \| ''` | `''` | Node variant |
 | color | `string` | `''` | Custom node color |
 | size | `'sm' \| 'md' \| 'lg'` | - | Node size, falls back to the config provider size |
 | icon | `string \| Component` | - | Node icon component |
