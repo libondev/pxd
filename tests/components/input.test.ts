@@ -162,6 +162,7 @@ describe('input', () => {
     const wrapper = mount(Input, {
       props: {
         modelValue: 'test',
+        clearOnPressEscape: true,
       },
     })
 
@@ -171,6 +172,23 @@ describe('input', () => {
 
     expect(event.defaultPrevented).toBe(true)
     expect(wrapper.emitted('update:model-value')![0]).toEqual([''])
+
+    wrapper.unmount()
+  })
+
+  it('should leave Escape alone by default when the field has a value', async () => {
+    const wrapper = mount(Input, {
+      props: {
+        modelValue: 'test',
+      },
+    })
+
+    const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
+
+    wrapper.find('input').element.dispatchEvent(event)
+
+    expect(event.defaultPrevented).toBe(false)
+    expect(wrapper.emitted('update:model-value')).toBeUndefined()
 
     wrapper.unmount()
   })

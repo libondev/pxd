@@ -53,7 +53,7 @@ const { attrs, classes } = useTailwindVariant(
 )
 const { classes: innerClasses } = useTailwindVariant(
   {
-    base: 'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! motion-safe:transition-appearance motion-safe:will-change-transform',
+    base: 'pxd-loading-bar--inner h-0.5 data-[hidden=true]:h-0 origin-left data-[transition=false]:transition-none! data-[transition=true]:will-change-transform motion-safe:transition-appearance',
     variants: {
       status: {
         running: 'bg-gray-500',

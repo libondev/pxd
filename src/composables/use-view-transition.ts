@@ -1,4 +1,5 @@
 import { nextTick } from 'vue'
+import { withResolvers } from '../utils/_internal/promise.js'
 import { NOOP } from '../utils/event.js'
 import { isServer } from '../utils/is.js'
 
@@ -111,18 +112,11 @@ export function useViewTransition(router: Router, options: Options = {}): () => 
       }
     }
 
-    let unblock!: () => void
-    let finish!: () => void
-
     // Block the navigation so startViewTransition captures the old state first
-    const blocked = new Promise<void>((resolve) => {
-      unblock = resolve
-    })
+    const { promise: blocked, resolve: unblock } = withResolvers<void>()
 
     // Keep the transition alive until Vue finishes the DOM update
-    const rendered = new Promise<void>((resolve) => {
-      finish = resolve
-    })
+    const { promise: rendered, resolve: finish } = withResolvers<void>()
 
     settle = () => {
       settle = undefined

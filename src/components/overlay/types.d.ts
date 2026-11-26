@@ -5,6 +5,7 @@ export interface OverlayProps {
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
   lockScrollOnVisible?: boolean
+  to?: string | HTMLElement
 }
 
 export interface OverlayEmits {

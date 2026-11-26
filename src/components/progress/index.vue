@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ProgressProps } from './types'
-import { computed } from 'vue'
+import { computed, shallowRef, useAttrs } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { VARIANT_COLORS } from '../../constants/variant-colors.js'
@@ -54,15 +54,22 @@ const computedColors = computed(() => {
 
 const computedProgressBarStyles = computed(() => {
   return {
-    width: `${percentage.value}%`,
-    backgroundColor: computedColors.value || VARIANT_COLORS.primary,
+    '--progress-fill': computedColors.value || VARIANT_COLORS.primary,
   }
 })
 
 const configProvider = useConfigProvider()
+const attrs = useAttrs()
+const progressRef = shallowRef<HTMLProgressElement>()
+const progressAttrs = computed(() =>
+  Object.fromEntries(Object.entries(attrs).filter(([key]) => key.startsWith('aria-'))),
+)
+const wrapperAttrs = computed(() =>
+  Object.fromEntries(Object.entries(attrs).filter(([key]) => !key.startsWith('aria-'))),
+)
 const { classes } = useTailwindVariant(
   {
-    base: 'pxd-progress-bar flex-1 shrink-0 overflow-hidden rounded-full bg-gray-200',
+    base: 'pxd-progress-bar flex-1 shrink-0 appearance-none overflow-clip rounded-full bg-gray-200',
     variants: {
       size: {
         sm: 'h-2',
@@ -79,6 +86,7 @@ const { classes } = useTailwindVariant(
 
 useAgentNode({
   name: 'progress',
+  el: () => progressRef.value,
   state: () => ({
     value: progress.value,
     min: props.min,
@@ -92,20 +100,18 @@ useAgentNode({
 <template>
   <div
     data-progress
-    role="progressbar"
     class="pxd-progress flex w-full items-center"
-    :aria-valuenow="progress!"
-    :aria-valuemin="min"
-    :aria-valuemax="max"
     :data-variant="variant"
-    v-bind="$attrs"
+    v-bind="wrapperAttrs"
   >
-    <div :class="classes">
-      <div
-        class="h-full rounded-inherit motion-safe:transition-appearance"
-        :style="computedProgressBarStyles"
-      />
-    </div>
+    <progress
+      ref="progressRef"
+      v-bind="progressAttrs"
+      :class="classes"
+      max="100"
+      :value="percentage"
+      :style="computedProgressBarStyles"
+    />
 
     <span
       v-if="computedLabel || $slots.default"
@@ -117,3 +123,21 @@ useAgentNode({
     </span>
   </div>
 </template>
+
+<style lang="postcss">
+.pxd-progress-bar {
+  &::-webkit-progress-bar {
+    background-color: transparent;
+  }
+
+  &::-webkit-progress-value {
+    background-color: var(--progress-fill);
+    border-radius: 9999px;
+  }
+
+  &::-moz-progress-bar {
+    background-color: var(--progress-fill);
+    border-radius: 9999px;
+  }
+}
+</style>

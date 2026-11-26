@@ -58,9 +58,7 @@ export async function stageChanges(
   let reverted = false
 
   return {
-    /** The changes that went on, each with the value it replaced. */
     applied,
-    /** Puts back what each control had, and resolves with the ones it could not. Runs once. */
     async revert() {
       if (reverted) {
         return []
@@ -70,7 +68,7 @@ export async function stageChanges(
 
       const failed: typeof applied = []
 
-      for (const change of [...applied].reverse()) {
+      for (const change of applied.toReversed()) {
         // A secret field's value before is hidden: "[redacted]" must not land in it.
         const result =
           change.before === REDACTED

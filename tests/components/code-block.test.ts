@@ -2,7 +2,10 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { highlightAll } from 'microlighter'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import CodeBlock from '../../src/components/code-block/index.vue'
-import { MAX_HIGHLIGHT_LENGTH } from '../../src/composables/_internal/use-code-highlight.js'
+import {
+  HIGHLIGHT_DELAY,
+  MAX_HIGHLIGHT_LENGTH,
+} from '../../src/composables/_internal/use-code-highlight.js'
 
 vi.mock('microlighter', () => ({ highlightAll: vi.fn(() => Promise.resolve()) }))
 
@@ -181,13 +184,14 @@ describe('code-block', () => {
   })
 
   it('highlights every mounted block in a single run', async () => {
+    vi.mocked(highlightAll).mockClear()
     vi.stubGlobal('CSS', { highlights: new Map() })
     vi.stubGlobal('Highlight', class {})
 
     const first = mount(CodeBlock, { props: { content: 'const a = 1', language: 'ts' } })
     const second = mount(CodeBlock, { props: { content: 'const b = 2', language: 'ts' } })
 
-    await new Promise((resolve) => setTimeout(resolve, 10))
+    await new Promise((resolve) => setTimeout(resolve, HIGHLIGHT_DELAY + 10))
 
     expect(highlightAll).toHaveBeenCalledTimes(1)
     expect(highlightAll).toHaveBeenCalledWith({
@@ -196,6 +200,41 @@ describe('code-block', () => {
 
     first.unmount()
     second.unmount()
+    vi.unstubAllGlobals()
+  })
+
+  it('coalesces rapid content changes into one run', async () => {
+    vi.mocked(highlightAll).mockClear()
+    vi.stubGlobal('CSS', { highlights: new Map() })
+    vi.stubGlobal('Highlight', class {})
+
+    const wrapper = mount(CodeBlock, { props: { content: 'const a = 0', language: 'ts' } })
+
+    for (let index = 1; index <= 5; index++) {
+      await wrapper.setProps({ content: `const a = ${index}` })
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, HIGHLIGHT_DELAY + 10))
+
+    expect(highlightAll).toHaveBeenCalledTimes(1)
+
+    wrapper.unmount()
+    vi.unstubAllGlobals()
+  })
+
+  it('does not scan when the block has no language', async () => {
+    vi.mocked(highlightAll).mockClear()
+    vi.stubGlobal('CSS', { highlights: new Map() })
+    vi.stubGlobal('Highlight', class {})
+
+    const wrapper = mount(CodeBlock, { props: { content: 'plain' } })
+    await wrapper.setProps({ content: 'plain text' })
+
+    await new Promise((resolve) => setTimeout(resolve, HIGHLIGHT_DELAY + 10))
+
+    expect(highlightAll).not.toHaveBeenCalled()
+
+    wrapper.unmount()
     vi.unstubAllGlobals()
   })
 })

@@ -1,5 +1,4 @@
 export * from './use-backoff-retry.js'
-export * from './use-carousel.js'
 export * from './use-client-online.js'
 export * from './use-color-scheme.js'
 export * from './use-copy-click.js'

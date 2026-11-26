@@ -27,7 +27,7 @@ function normalize(options?: IntersectionObserverInit) {
 
   // Order carries no meaning, so sort before comparing.
   const threshold = Array.isArray(options.threshold)
-    ? [...options.threshold].sort((a, b) => a - b).join(',')
+    ? options.threshold.toSorted((a, b) => a - b).join(',')
     : String(options.threshold ?? 0)
 
   return `${getRootId(options.root)}|${options.rootMargin ?? '0px'}|${threshold}`

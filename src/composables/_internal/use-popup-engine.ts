@@ -3,6 +3,7 @@ import type { VirtualElement } from '@floating-ui/dom'
 import type { CSSProperties, MaybeRefOrGetter, Ref, ShallowRef } from 'vue'
 import { arrow, autoUpdate, computePosition, flip, hide, shift, size } from '@floating-ui/dom'
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, toValue, watch } from 'vue'
+import { withResolvers } from '../../utils/_internal/promise.js'
 import { caf, raf, throttleByRaf } from '../../utils/event.js'
 import { getCssUnitValue, isTruthyProp, toArray } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
@@ -66,14 +67,15 @@ function createDelay() {
       return timer !== null
     },
     wait(delay: number) {
-      return new Promise<boolean>((resolve) => {
-        settle = resolve
-        timer = setTimeout(() => {
-          timer = null
-          settle = null
-          resolve(true)
-        }, delay)
-      })
+      const { promise, resolve } = withResolvers<boolean>()
+      settle = resolve
+      timer = setTimeout(() => {
+        timer = null
+        settle = null
+        resolve(true)
+      }, delay)
+
+      return promise
     },
     cancel() {
       if (timer) {
@@ -167,7 +169,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
     // An unset var resolves `sm:max-w-(--popover-max-width)` to `none`, dropping the viewport cap.
     '--popover-max-width': getCssUnitValue(toValue(options.maxWidth), '100%'),
     // The design ceiling, folded with the space cap by the wrapper's own `max-height`.
-    '--popover-max-height': getCssUnitValue(toValue(options.maxHeight), 'min(50rem, 80dvh)'),
+    '--popover-max-height': getCssUnitValue(toValue(options.maxHeight), 'min(50rem, 80svh)'),
     left: 0,
     top: 0,
     transform: wrapperTransform.value,

@@ -68,7 +68,7 @@ describe('effort-slider', () => {
 
     expect(wrapper.emitted('update:model-value')).toEqual([['high']])
     expect(changePayloads(wrapper)).toEqual(['high'])
-    expect(thumb.attributes('style')).toContain('66.66')
+    expect(wrapper.find('.pxd-effort-slider--thumb-anchor').attributes('style')).toContain('66.66')
     expect(wrapper.find('.pxd-effort-slider--label').text()).toBe('High')
 
     wrapper.unmount()
@@ -77,13 +77,13 @@ describe('effort-slider', () => {
   it('should follow the pointer in an uncontrolled drag', async () => {
     const wrapper = mount(EffortSlider, { props: { options: OPTIONS, defaultValue: 'low' } })
     const track = stubTrack(wrapper)
-    const thumb = wrapper.find('.pxd-effort-slider--thumb')
+    const thumb = wrapper.find('.pxd-effort-slider--thumb-anchor')
 
     await track.trigger('pointerdown', { clientX: 70 })
     await nextTick()
 
     expect(wrapper.emitted('update:model-value')).toEqual([['high']])
-    expect(thumb.attributes('style')).toContain('left: 70%')
+    expect(thumb.attributes('style')).toContain('translate: 70cqw 0')
 
     dispatch('pointerup', 70)
     await nextTick()
@@ -232,13 +232,15 @@ describe('effort-slider', () => {
     dispatch('pointermove', 45)
     await vi.advanceTimersByTimeAsync(32)
 
-    expect(wrapper.find('.pxd-effort-slider--thumb').attributes('style')).toContain('left: 45%')
+    expect(wrapper.find('.pxd-effort-slider--thumb-anchor').attributes('style')).toContain(
+      'translate: 45cqw 0',
+    )
     expect(wrapper.emitted('update:model-value')).toEqual([['medium']])
 
     dispatch('pointerup', 45)
     await nextTick()
 
-    expect(wrapper.find('.pxd-effort-slider--thumb').attributes('style')).toContain('33.33')
+    expect(wrapper.find('.pxd-effort-slider--thumb-anchor').attributes('style')).toContain('33.33')
     expect(wrapper.find('.pxd-effort-slider--thumb').attributes('data-dragging')).toBe('false')
     expect(changePayloads(wrapper)).toEqual(['medium'])
 
@@ -255,7 +257,7 @@ describe('effort-slider', () => {
     dispatch('pointercancel', 60)
     await nextTick()
 
-    expect(wrapper.find('.pxd-effort-slider--thumb').attributes('style')).toContain('66.66')
+    expect(wrapper.find('.pxd-effort-slider--thumb-anchor').attributes('style')).toContain('66.66')
     expect(wrapper.find('.pxd-effort-slider--thumb').attributes('data-dragging')).toBe('false')
     expect(wrapper.emitted('update:model-value')).toEqual([['high']])
     expect(wrapper.emitted('change')).toBeUndefined()
@@ -542,7 +544,9 @@ describe('effort-slider', () => {
       props: { options: [{ label: 'Only', value: 'only' }], modelValue: 'only' },
     })
 
-    expect(wrapper.find('.pxd-effort-slider--thumb').attributes('style')).toContain('left: 100%')
+    expect(wrapper.find('.pxd-effort-slider--thumb-anchor').attributes('style')).toContain(
+      'translate: 100cqw 0',
+    )
     expect(wrapper.findAll('.pxd-effort-slider--tick')).toHaveLength(0)
 
     wrapper.unmount()

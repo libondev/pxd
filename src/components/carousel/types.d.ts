@@ -29,6 +29,14 @@ export interface CarouselProps {
   options?: CarouselOption[]
 }
 
+export interface CarouselMove {
+  from: number
+  to: number
+  direction: 1 | -1
+  /** Whether the move crossed the boundary of a looping carousel. */
+  wrapped: boolean
+}
+
 export interface CarouselEmits {
   change: [index: number, details: ChangeDetails]
 }

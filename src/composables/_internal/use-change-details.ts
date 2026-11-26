@@ -15,6 +15,7 @@ const INTERACTION_REASONS: ReadonlySet<ChangeReason> = new Set<ChangeReason>([
   'escape-key',
   'outside-press',
   'close-press',
+  'swipe',
   'step',
   'settle',
 ])

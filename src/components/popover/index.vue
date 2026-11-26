@@ -57,6 +57,10 @@ const overlayZIndex = computed(() => {
 const panelRole = computed(() => props.contentRole || 'dialog')
 const panelZIndex = computed(() => (props.zIndex === '' ? undefined : props.zIndex))
 
+const teleportTarget = computed(
+  () => triggerRef.value?.closest<HTMLElement>('dialog[open]') ?? 'body',
+)
+
 const isSmallScreen = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 
 // `auto` anchors the panel next to its trigger on wide screens and hands it to a bottom sheet on
@@ -244,6 +248,7 @@ defineExpose({
         v-if="engine.isRender.value"
         :model-value="engine.isRevealed.value"
         :z-index="overlayZIndex"
+        :to="teleportTarget"
         :variant="isSheet ? 'default' : 'none'"
         :close-on-press-escape="closeOnPressEscape"
         :lock-scroll-on-visible="isSheet"
@@ -310,7 +315,7 @@ defineExpose({
   --popover-origin: center;
 
   &[data-layout='anchored'] {
-    max-height: min(var(--popover-available-height, 100dvh), var(--popover-max-height));
+    max-height: min(var(--popover-available-height, 100svh), var(--popover-max-height));
   }
 
   &[data-layout='sheet'] {
@@ -318,7 +323,7 @@ defineExpose({
     height: 100%;
     align-items: flex-end;
     pointer-events: none;
-    max-height: 100dvh;
+    max-height: 100svh;
 
     .pxd-popover--container {
       max-height: var(--popover-max-height);

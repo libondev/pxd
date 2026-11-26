@@ -52,6 +52,7 @@ function onClickToClose() {
 | close-on-press-escape | `boolean` | `true` | Close the overlay when `Esc` is pressed |
 | close-on-click-overlay | `boolean` | `false` | Close the overlay when the backdrop is clicked |
 | lock-scroll-on-visible | `boolean` | `true` | Prevent the page behind the overlay from scrolling |
+| to | `string \| HTMLElement` | `'body'` | Element the backdrop and slotted content are teleported into; a top-layer `<dialog>` opened from inside needs its overlays teleported into itself |
 
 ## Events
 

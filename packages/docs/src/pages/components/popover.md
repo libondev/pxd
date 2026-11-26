@@ -483,7 +483,7 @@ const content = 'The button is the trigger, without a wrapper element.'
 | match-width | `boolean` | `false` | Keep the panel at least as wide as its trigger; without it the panel sizes to its content |
 | keep-height | `boolean` | `false` | Keep the largest content height seen while open, so filtering cannot move the anchored edge |
 | max-width | `number \| string` | - | Max width of the panel; a number is treated as `px` |
-| max-height | `number \| string` | `'min(50rem, 80dvh)'` | Max height of the panel; a number is treated as `px` |
+| max-height | `number \| string` | `'min(50rem, 80svh)'` | Max height of the panel; a number is treated as `px` |
 | position | `'top' \| 'right' \| 'bottom' \| 'left' \| ...` | `bottom` | Preferred placement: `top`, `right`, `bottom` or `left`, each with optional `-start` / `-end` |
 | show-delay | `number` | `0` | Delay in `ms` before the Popover is shown |
 | hide-delay | `number` | `0` | Delay in `ms` before the Popover is hidden |

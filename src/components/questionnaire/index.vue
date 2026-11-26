@@ -488,8 +488,8 @@ watch(
 
         <div
           ref="contentRef"
-          class="grid-template-cols-1fr grid overflow-hidden rounded-b-xl motion-safe:transition-[grid-template-rows]"
-          :class="isOpen ? 'grid-template-rows-1fr' : 'grid-template-rows-0fr'"
+          class="grid grid-cols-[minmax(0,1fr)] overflow-hidden rounded-b-xl motion-safe:transition-[grid-template-rows]"
+          :class="isOpen ? 'grid-rows-[minmax(0,1fr)]' : 'grid-rows-[minmax(0,0fr)]'"
         >
           <div class="pxd-questionnaire--content border-t">
             <PList

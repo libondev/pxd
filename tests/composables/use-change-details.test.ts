@@ -44,4 +44,8 @@ describe('withChangeDetails', () => {
       expect(changeDetailsFor({ reason: 'api' }).source).toBe('agent')
     })
   })
+
+  it("should read a swipe as a person's change", () => {
+    expect(changeDetailsFor({ reason: 'swipe' }).source).toBe('user')
+  })
 })

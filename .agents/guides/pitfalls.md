@@ -311,7 +311,7 @@ a comment beside the fix.
 
 - **Symptom**: An overlay panel built on `POverlay` renders correctly but ignores every click; only Escape still closes it.
 - **Cause**: `useOverlayManager` puts `pointer-events: none` on `<html>` while an overlay is open, and `pointer-events` is inherited. `POverlay` re-enables it only on its own mask, not on the slotted panel. Its `z-index` prop likewise styles the mask, not the slot.
-- **Fix**: Give the teleported panel `pointer-events-auto` and its own stacking value — `calc(var(--modal-index) + 5)` by default, overridable through a local variable when a `zIndex` prop is set (`PImagePreview`).
+- **Fix**: Give the teleported panel `pointer-events-auto`. If it is not a top-layer dialog, give it its own stacking value; `PImagePreview` now renders its own `<dialog>`, so the top layer owns the order and no local `z-index` is needed.
 
 ### `whitespace-pre` content leaks its intrinsic width into the ancestor layout
 
@@ -461,6 +461,19 @@ a comment beside the fix.
 - **Symptom**: Selecting an option in `select` printed `Blocked aria-hidden on an element because its descendant retained focus` in Chrome, naming a list item and the popover wrapper, and only sometimes.
 - **Cause**: The closing panel gets `aria-hidden` / `inert` in the render that follows `isRevealed`, but the focus trap released in a post-flush watcher and focus-trap 8 defers its return with `delayReturnFocus: true`, so focus was still inside for that render. Chrome blocks the hide, which also keeps the closed panel in the accessibility tree.
 - **Fix**: `useFocusTrap` releases on the pre flush and sets `delayReturnFocus: false`, so focus is back on the trigger before the panel is hidden. Every layer that hides itself from AT owes the same order.
+
+### A JS-driven spring must opt out of the panel's idle transitions
+
+- **Symptom**: A swipe snap-back painted behind the spring's inline `translate`, lagged after release, and could not be caught at the position the user saw. A reduced-motion reset could also animate despite requesting no release motion.
+- **Cause**: `transition-appearance` includes `translate`, so every spring-frame write was CSS-interpolated instead of taking effect on that frame.
+- **Fix**: Keep `translate` out of the panel's idle `transition-property` list — the drag writes `--swipe-offset`, which the panel adds to its own `translate` — and let the spring own that offset until it finishes; reduced motion can then clear the inline offset without a transitional frame. No state-attribute guard is needed: the enter/leave transition owns `transform` while the drag owns `translate`, so the two never compete.
+- **Related**: A `v-if` leave never patches the leaving element, so attributes from the last drag render are still on it when the leave class runs. A `transition: none` guard keyed on `data-dragging` / `data-swipe-settling` therefore outranks the leave class, Vue measures no transition, and `after-leave` closes the native dialog on the same tick — cutting off the backdrop fade. That is why the panel keeps `translate` out of its idle transitions instead of guarding the state attributes.
+
+### Tailwind's translate variables are unitless zeroes, so `calc()` rejects them
+
+- **Symptom**: A panel whose CSS composed its drag offset with `calc(round(nearest, var(--tw-translate-y, 0px), 1px) + 80px)` ignored the offset on narrow screens and only moved because `translate-z-0` supplied a fallback value.
+- **Cause**: Tailwind registers `--tw-translate-x/y/z` with `syntax: "*"` and an initial value of `0`, a `<number>`. `calc(0 + 1px)` and `round(nearest, 0, 1px)` are invalid, so the whole declaration is invalid at computed-value time and `translate` falls back to its initial value. On wide screens the same variables hold `-50%`, which is valid, so the failure only appeared at one breakpoint.
+- **Fix**: Never do length math on Tailwind's translate variables. Give the drag a dedicated registered `<length>` variable (`@property --swipe-offset { syntax: '<length>'; inherits: false; initial-value: 0px }`) and let each responsive branch own its own `translate` rule; the registration also stops a per-frame write from invalidating the whole subtree.
 
 ### A rebuilt options array is not new content
 

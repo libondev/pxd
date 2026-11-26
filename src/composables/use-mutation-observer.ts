@@ -9,7 +9,7 @@ function normalize(options?: MutationObserverInit) {
   }
 
   // Order carries no meaning, so sort before comparing.
-  const filter = options.attributeFilter ? [...options.attributeFilter].sort().join(',') : ''
+  const filter = options.attributeFilter ? options.attributeFilter.toSorted().join(',') : ''
 
   return [
     options.attributes ?? false,

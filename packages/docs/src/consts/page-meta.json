@@ -467,10 +467,6 @@
     "title": "useBackoffRetry",
     "description": "Runs an async task with exponential backoff and full jitter. Cancels in-flight work and pending waits when the effect scope is disposed, or when you call abort…"
   },
-  "/composables/use-carousel": {
-    "title": "useCarousel",
-    "description": "Drives a carousel's index, looping and autoplay state without rendering anything."
-  },
   "/composables/use-client-online": {
     "title": "useClientOnline",
     "description": "Tracks browser network connectivity status (online/offline)."

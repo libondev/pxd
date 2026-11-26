@@ -137,6 +137,7 @@ export default defineConfig({
     fileParallelism: true,
     environment: 'happy-dom',
     include: ['tests/**/*.test.ts'],
+    setupFiles: ['./tests/setup.ts'],
     exclude: [...configDefaults.exclude, 'e2e/**'],
     root: fileURLToPath(new URL('./', import.meta.url)),
     server: {

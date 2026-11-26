@@ -18,6 +18,7 @@ export interface MentionProps {
   filterMethod?: ListFilterMethodFn
   remoteFilter?: MentionRemoteFilterFn
   filterDebounce?: boolean
+  inlineQuery?: boolean
   placeholder?: string
   searchPlaceholder?: string
   disabled?: boolean

@@ -229,6 +229,7 @@ function clearAll() {
 | --- | --- | --- | --- |
 | max | `number` | - | Visible item limit, items beyond it are hidden |
 | index | `number` | - | Position in the stack, driving the scale offset and `z-index` |
+| offset | `number` | `0` | Distance in px from the stack anchor when expanded, summed from the heights of the messages before it |
 | item-data | `MessageItemConfig` | - | Message configuration created by `useMessage` |
 
 ## MessageItem Events

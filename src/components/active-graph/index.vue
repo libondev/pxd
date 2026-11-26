@@ -561,7 +561,7 @@ onBeforeUnmount(() => {
       </tbody>
     </table>
 
-    <Transition v-if="tooltip" name="pxd-transition--fade" mode="out-in" appear>
+    <Transition v-if="tooltip" name="pxd-transition--graph-tooltip" appear>
       <div
         v-if="showTooltip"
         class="pxd-active-graph--tooltip left-0 top-0 px-2 py-1 shadow-lg text-xs pointer-events-none absolute z-1 w-max rounded-sm bg-gray-1000 text-gray-100"
@@ -574,3 +574,18 @@ onBeforeUnmount(() => {
     </Transition>
   </div>
 </template>
+
+<style>
+.pxd-transition--graph-tooltip-enter-active,
+.pxd-transition--graph-tooltip-leave-active {
+  transition-property: opacity, translate;
+  transition-duration: calc(var(--default-transition-duration) * 0.75);
+  transition-timing-function: var(--default-transition-timing-function);
+}
+
+.pxd-transition--graph-tooltip-enter-from,
+.pxd-transition--graph-tooltip-leave-to {
+  opacity: 0;
+  translate: 0 4px;
+}
+</style>

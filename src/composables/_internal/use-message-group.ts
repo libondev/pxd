@@ -1,6 +1,7 @@
 import type { MessageItemConfig } from '../use-message.js'
 import type { MaybeRefOrGetter } from 'vue'
 import { shallowRef, watchEffect, toValue } from 'vue'
+import { withResolvers } from '../../utils/_internal/promise.js'
 import { isNil } from '../../utils/is.js'
 
 const TRANSITION_LOCK_MS = 250
@@ -149,10 +150,7 @@ export function useMessageGroup({ messages, expand, onTimeout }: UseMessageGroup
 
     // Each message owns its own cancellation promise. A single shared promise would accumulate
     // one reaction per loading message for the whole lifetime of the group.
-    let resolveDispose!: () => void
-    const disposed = new Promise<void>((resolve) => {
-      resolveDispose = resolve
-    })
+    const { promise: disposed, resolve: resolveDispose } = withResolvers<void>()
 
     pendingDisposers.add(resolveDispose)
 

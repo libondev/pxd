@@ -94,6 +94,7 @@ export function createMentionElement(
 
   el.setAttribute('contenteditable', 'false')
   el.className = 'pxd-mention--chip'
+  el.setAttribute('title', label)
   el.textContent = `${trigger}${label}`
   return el
 }

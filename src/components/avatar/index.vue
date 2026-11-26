@@ -49,11 +49,19 @@ defineExpose({
 <template>
   <div
     data-avatar
-    class="pxd-avatar text-xs relative inline-flex size-(--avatar-size) items-center justify-center rounded-full bg-background-100 select-none before:default-animation-timing-function! after:border after:border-gray-alpha-300 motion-reduce:before:animate-none!"
+    class="pxd-avatar text-xs after:inset-0 relative inline-flex size-(--avatar-size) items-center justify-center rounded-full bg-background-100 select-none after:absolute after:rounded-inherit after:border after:border-gray-alpha-300"
     :style="{ '--avatar-size': computedSize }"
     :data-placeholder="placeholder"
     v-bind="$attrs"
   >
+    <span
+      v-if="placeholder"
+      aria-hidden="true"
+      class="pxd-avatar--placeholder inset-0 pointer-events-none absolute overflow-hidden rounded-inherit"
+    >
+      <span class="pxd-avatar--placeholder-fill absolute motion-reduce:animate-none!" />
+    </span>
+
     <slot>
       <span
         v-if="isHideAvatar"
@@ -93,26 +101,17 @@ defineExpose({
 </template>
 
 <style lang="postcss">
-.pxd-avatar {
-  &::after,
-  &[data-placeholder='true']::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-  }
-
-  &[data-placeholder='true']::before {
-    background-image: linear-gradient(
-      270deg,
-      var(--color-gray-alpha-100),
-      var(--color-gray-alpha-300),
-      var(--color-gray-alpha-300),
-      var(--color-gray-alpha-100)
-    );
-    background-size: 400% 100%;
-    animation: pxd-animation-placeholder 8s infinite;
-  }
+.pxd-avatar--placeholder-fill {
+  inset: 0 0 0 -700%;
+  background-image: linear-gradient(
+    270deg,
+    var(--color-gray-alpha-100),
+    var(--color-gray-alpha-300),
+    var(--color-gray-alpha-300),
+    var(--color-gray-alpha-100)
+  );
+  background-size: 50% 100%;
+  animation: pxd-animation-placeholder 2.67s linear infinite;
 }
 
 .pxd-avatar--loading::after {
@@ -126,12 +125,12 @@ defineExpose({
 }
 
 @keyframes pxd-animation-placeholder {
-  0% {
-    background-position: 200% 0;
+  from {
+    transform: translate3d(0, 0, 0);
   }
 
-  100% {
-    background-position: -200% 0;
+  to {
+    transform: translate3d(50%, 0, 0);
   }
 }
 </style>

@@ -1,6 +1,5 @@
 import type { ChangeDetails } from '../../types/shared/change'
-import type { ComponentPosition } from '../../types/shared/props'
-import type { PopoverTrigger } from '../popover/types'
+import type { ComponentPosition, PopoverTrigger } from '../../types/shared/props'
 
 export interface Reaction {
   emoji: string

@@ -114,16 +114,20 @@ export function getScrollListener(target?: Window | Document | HTMLElement | nul
   return target as HTMLElement
 }
 
+function finite(value: number | undefined): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0
+}
+
 export function getScrollPosition(el: HTMLElement | Window | Document) {
   const target = el instanceof HTMLElement ? el : document.documentElement
 
   return {
-    scrollTop: target.scrollTop,
-    scrollLeft: target.scrollLeft,
-    scrollWidth: target.scrollWidth,
-    scrollHeight: target.scrollHeight,
-    clientWidth: target.clientWidth,
-    clientHeight: target.clientHeight,
+    scrollTop: finite(target.scrollTop),
+    scrollLeft: finite(target.scrollLeft),
+    scrollWidth: finite(target.scrollWidth),
+    scrollHeight: finite(target.scrollHeight),
+    clientWidth: finite(target.clientWidth),
+    clientHeight: finite(target.clientHeight),
   }
 }
 
@@ -150,9 +154,45 @@ export function isOverflowScrollable(ele: Element): boolean {
   return isOverflowScrollable(parent)
 }
 
+/** Extra time granted past the longest animation before the wait gives up on it. */
+const ANIMATION_WAIT_GRACE = 1000
+
 export async function awaitAnimationEnd(element?: Element) {
-  const animations = element?.getAnimations?.() ?? []
-  await Promise.allSettled(animations.map((a) => a.finished))
+  // Only finite animations can end: an infinite one never resolves `finished`, and a pending one
+  // (a hidden tab, a skipped subtree) may never even start.
+  const running = (element?.getAnimations?.() ?? []).flatMap((animation) => {
+    const endTime = animation.effect?.getComputedTiming().endTime
+
+    if (typeof endTime !== 'number' || !Number.isFinite(endTime)) {
+      return []
+    }
+
+    const currentTime = typeof animation.currentTime === 'number' ? animation.currentTime : 0
+
+    return [{ animation, remaining: Math.max(0, endTime - currentTime) }]
+  })
+
+  if (running.length === 0) {
+    return
+  }
+
+  // Waiting on `finished` alone wedges the caller's queue for good when the animation never
+  // starts, so the wait is capped by the longest animation that is actually running.
+  const limit = Math.max(...running.map((entry) => entry.remaining)) + ANIMATION_WAIT_GRACE
+  let timer: ReturnType<typeof setTimeout> | undefined
+
+  try {
+    await Promise.race([
+      Promise.allSettled(running.map((entry) => entry.animation.finished)),
+      new Promise((resolve) => {
+        timer = setTimeout(resolve, limit)
+      }),
+    ])
+  } finally {
+    if (timer != null) {
+      clearTimeout(timer)
+    }
+  }
 }
 
 export function resolveScrollBehavior(

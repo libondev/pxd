@@ -11,7 +11,7 @@ Start with <RouterLink to="/guide/installation">Installation</RouterLink>, or ju
 - **An agent bridge for your UI.** `pxd/agent` exposes your components through `snapshot` / `act` / `query`, with WebMCP registration, a per-step `allow` policy gate, secret redaction and observability. Components opt in, so it costs nothing until you import it.
 - **Themes as plain CSS variables.** Light and dark live behind a single class, with no runtime style injection.
 - **Motion you can switch off.** Disable every animation with `--duration: 0`, follow `prefers-reduced-motion`, and read the resolved preference from JavaScript.
-- **Responsive beyond breakpoints.** Popovers become bottom sheets on small screens, backed by a built-in swipe gesture engine.
+- **Responsive beyond breakpoints.** Popovers become bottom sheets on small screens, and drawers and modals can opt into a drag-to-dismiss handle backed by the built-in swipe gesture engine.
 - **Primitives for AI interfaces.** Bubble, Reasoning, Tool Call, Mention, Command Menu, Stick To Bottom and more for chat UIs.
 - **Lean and typed.** ESM-only with full tree-shaking, complete type definitions, a resolver for auto imports and Volar global component types.
 - **Accessible.** Focus trapping with nested-dialog coordination, keyboard navigation and ARIA semantics.

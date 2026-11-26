@@ -48,14 +48,12 @@ async function onCopyClick(ev: PointerEvent) {
       </span>
     </template>
 
-    <Transition
-      name="pxd-transition--fade-scale"
-      mode="out-in"
-      class="pxd-copy-button--icon shrink-0"
-    >
-      <CheckIcon v-if="isCopied" />
-      <CopyIcon v-else />
-    </Transition>
+    <span class="pxd-copy-button--icon grid shrink-0">
+      <Transition name="pxd-transition--fade-scale">
+        <CheckIcon v-if="isCopied" class="col-start-1 row-start-1" />
+        <CopyIcon v-else class="col-start-1 row-start-1" />
+      </Transition>
+    </span>
 
     <template v-if="$slots.suffix" #suffix>
       <span class="shrink-0">

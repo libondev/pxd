@@ -3,8 +3,10 @@ import type { MessageItemConfig, MessageUpdateParams } from '../../composables/u
 import type { MessageEmits, MessageProps } from './types'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useMessageGroup } from '../../composables/_internal/use-message-group.js'
+import { useTopLayerTarget } from '../../composables/_internal/use-top-layer.js'
 import { useDocumentHidden } from '../../composables/use-document-hidden.js'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../composables/use-message.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 import { cachedOff, cachedOn } from '../../utils/event.js'
 import { getCssUnitValue } from '../../utils/format.js'
 import PMessageItem from '../message-item/index.vue'
@@ -22,6 +24,8 @@ const props = withDefaults(defineProps<MessageProps>(), {
 
 const emits = defineEmits<MessageEmits>()
 
+const MESSAGE_GAP = 8
+
 const groupMessages = ref<MessageItemConfig[]>([])
 const messageGroupStyle = computed(() => {
   const frontHeight = groupMessages.value[0]?.height || 0
@@ -29,8 +33,22 @@ const messageGroupStyle = computed(() => {
   return {
     '--message-width': getCssUnitValue(props.width),
     '--message-front-height': getCssUnitValue(frontHeight),
+    '--message-deck-offset': `${MESSAGE_GAP}px`,
   }
 })
+const itemOffsets = computed(() => {
+  let height = 0
+
+  return groupMessages.value.map((message, index) => {
+    const offset = height + index * MESSAGE_GAP
+    height += message.height ?? 0
+
+    return offset
+  })
+})
+
+const topLayerTarget = useTopLayerTarget()
+const configProvider = useConfigProvider()
 
 const {
   groupExpand,
@@ -59,6 +77,13 @@ useDocumentHidden((isHidden) => {
     resumeAll()
   }
 })
+
+function onBeforeLeave(el: Element) {
+  const item = el as HTMLElement
+
+  // The stack shares one front height, so pin the card before that value moves on.
+  item.style.height = getComputedStyle(item).height
+}
 
 function getMessageById(id: MessageItemConfig['id']) {
   const index = groupMessages.value.findIndex((m) => m.id === id)
@@ -196,13 +221,13 @@ defineExpose({
 </script>
 
 <template>
-  <Teleport to="body">
+  <Teleport :to="topLayerTarget">
     <section
       data-message
-      class="pxd-message h-0 fixed z-20 flex w-(--message-width)"
+      class="pxd-message h-0 fixed z-50 w-(--message-width)"
       aria-live="polite"
-      aria-label="Notifications"
-      :data-expand="groupExpand"
+      :aria-label="configProvider.locale.message.notifications"
+      :data-expand="Boolean(groupExpand)"
       :data-position="position"
       :style="messageGroupStyle"
       v-bind="$attrs"
@@ -211,8 +236,8 @@ defineExpose({
         appear
         tag="ol"
         name="pxd-transition-message"
-        class="pxd-message--group min-w-16 p-0 m-0 flex h-auto w-full max-w-full"
-        :class="{ 'gap-2': groupExpand }"
+        class="pxd-message--group p-0 m-0"
+        @before-leave="onBeforeLeave"
         @pointerenter="onPointerEnter"
         @pointerleave="onPointerLeave"
         @pointercancel="onPointerLeave"
@@ -222,6 +247,7 @@ defineExpose({
           :key="item.id"
           :max="max"
           :index="index"
+          :offset="itemOffsets[index] ?? 0"
           :item-data="item"
           @close="closeMessageById"
         />
@@ -233,58 +259,55 @@ defineExpose({
 <style lang="postcss">
 .pxd-message {
   --message-width: 22.25rem;
-
-  .pxd-message--group {
-    align-items: center;
-    flex-direction: column;
-  }
+  --message-deck-offset: 0.5rem;
 
   &[data-position^='top'] {
-    --item-offset: 0.625rem;
-    --starting-offset: -100%;
+    --message-lift: 1;
+    --message-enter-offset: -100%;
     top: 1rem;
   }
 
   &[data-position^='bottom'] {
-    --item-offset: -0.625rem;
-    --starting-offset: 100%;
+    --message-lift: -1;
+    --message-enter-offset: 100%;
     bottom: 1rem;
-
-    .pxd-message--group {
-      flex-direction: column-reverse;
-    }
   }
 
   &[data-position='top'],
   &[data-position='bottom'] {
     left: 50%;
-    justify-content: center;
     transform: translateX(-50%);
   }
 
   &[data-position='top-start'],
   &[data-position='bottom-start'] {
     left: 1rem;
-    justify-content: flex-start;
-
-    .pxd-message--group {
-      align-items: flex-start;
-    }
   }
 
   &[data-position='top-end'],
   &[data-position='bottom-end'] {
     right: 1rem;
-    justify-content: flex-end;
+  }
 
-    .pxd-message--group {
-      align-items: flex-end;
-    }
+  &[data-position^='top'] .pxd-message-item {
+    top: 0;
+  }
+
+  &[data-position^='bottom'] .pxd-message-item {
+    bottom: 0;
   }
 
   .pxd-message-item {
     --message-item-scale: calc(1 - var(--message-item-index) * 0.05);
     --message-item-transition: transform, opacity, height;
+
+    position: absolute;
+    inset-inline: 0;
+
+    & > * {
+      transition: opacity calc(var(--default-transition-duration) * 0.9)
+        var(--default-transition-timing-function);
+    }
 
     &::after {
       content: '';
@@ -299,53 +322,35 @@ defineExpose({
 
   &[data-expand='true'] {
     .pxd-message-item {
-      --message-item-transform: none;
-      position: relative;
-      will-change: transform, opacity, height;
-    }
-
-    .pxd-transition-message-move {
-      transition-property: transform, opacity;
+      --message-item-transform: translateY(calc(var(--message-lift) * var(--message-item-offset)));
+      height: var(--message-item-height);
     }
   }
 
   &[data-expand='false'] {
     .pxd-message-item {
-      --message-item-transform: translateZ(0)
-        translateY(calc(var(--item-offset) * var(--message-item-index)))
+      --message-item-transform: translateY(
+          calc(var(--message-lift) * var(--message-deck-offset) * var(--message-item-index))
+        )
         scale(var(--message-item-scale));
-      position: absolute;
+      height: var(--message-front-height);
 
-      &[data-front='false'] {
-        height: var(--message-front-height);
-
-        & > * {
-          transition: opacity 0.1s ease-out;
-          opacity: 0;
-        }
+      &[data-front='false'] > * {
+        opacity: 0;
       }
-    }
-
-    .pxd-transition-message-move {
-      transition-duration: 0s;
     }
   }
 
   &[data-expand] {
     .pxd-transition-message-enter-active,
     .pxd-transition-message-leave-active {
-      transition-property: transform, opacity;
-    }
-
-    .pxd-transition-message-leave-active {
-      position: absolute;
+      transition-property: transform, opacity, height;
     }
 
     .pxd-transition-message-enter-from,
     .pxd-transition-message-leave-to {
       opacity: 0;
-      --message-item-transform: translateZ(0) translateY(var(--starting-offset))
-        scaleX(var(--popover-scale));
+      --message-item-transform: translateY(var(--message-enter-offset));
     }
   }
 }

@@ -518,14 +518,40 @@ function handleClose() {
 </template>
 ```
 
+## Swipe to close
+
+Set `swipe-to-close` to show a drag handle. Dragging the handle off the open edge dismisses the drawer — down for a `bottom` drawer, up for a `top` one. Only vertical positions get the handle.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isVisible = ref(false)
+</script>
+
+<template>
+  <PButton variant="primary" @click="isVisible = true">Open Drawer</PButton>
+
+  <PDrawer
+    v-model="isVisible"
+    title="Swipe to close"
+    subtitle="Drag the handle down"
+    position="bottom"
+    size="60svh"
+    swipe-to-close
+  >
+    <PText>Drag the handle at the top of the drawer down to close it.</PText>
+  </PDrawer>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| z-index | `number` | - | Sets the `z-index` of the drawer panel |
 | title | `string \| number \| null` | - | Heading text rendered in the built-in header |
 | subtitle | `string \| number \| null` | - | Secondary text rendered under the `title` |
-| size | `number \| string` | - | Width for `left`/`right` and height for `top`/`bottom`, any CSS length, defaults to `30vw`/`30vh` |
+| size | `number \| string` | - | Width for `left`/`right` and height for `top`/`bottom`, any CSS length, defaults to `30svw`/`30svh` |
 | loading | `boolean` | - | Show a loading mask and block closing the drawer |
 | position | `BasePosition` | `right` | Edge the drawer slides in from: `top`, `right`, `bottom` or `left` |
 | model-value | `boolean` | `false` | Whether the drawer is open, use with `v-model` |
@@ -538,6 +564,7 @@ function handleClose() {
 | close-on-press-escape | `boolean` | `true` | Close the drawer when the `Esc` key is pressed |
 | close-on-click-overlay | `boolean` | `true` | Close the drawer when the overlay is clicked |
 | closeable | `boolean` | `false` | Show a close button on the right of the header |
+| swipe-to-close | `boolean` | `false` | Show a drag handle and let a drag off the open edge dismiss the drawer; vertical positions only |
 
 ## Events
 
@@ -545,7 +572,7 @@ function handleClose() {
 | --- | --- | --- |
 | show | `() => void` | Emitted when the drawer becomes visible. |
 | hide | `() => void` | Emitted when the drawer stops being visible. |
-| close | `(reason: 'escape-key' \| 'outside-press' \| 'close-press') => void` | Emitted before the drawer closes itself, saying which of the three ways it happened. |
+| close | `(reason: 'escape-key' \| 'outside-press' \| 'close-press' \| 'swipe') => void` | Emitted before the drawer closes itself, saying which of the four ways it happened. |
 | change | `(visible: boolean, details: ChangeDetails) => void` | Emitted together with `update:model-value` when the open state of the drawer changes; a close carries its reason in `details.reason`. |
 | outside-click | `(ev: PointerEvent) => void` | Emitted when the overlay behind the drawer is clicked. |
 | visible-change | `(visible: boolean) => void` | Emitted after every change of the drawer's open state. |

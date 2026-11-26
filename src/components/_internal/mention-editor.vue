@@ -27,6 +27,8 @@ const props = withDefaults(
     maxRows?: number
     editorClass?: ComponentClass
     editorAttrs?: Record<string, unknown>
+    inlineQuery?: boolean
+    suggestOpen?: boolean
   }>(),
   {
     modelValue: '',
@@ -39,6 +41,8 @@ const props = withDefaults(
     maxRows: undefined,
     editorClass: undefined,
     editorAttrs: undefined,
+    inlineQuery: false,
+    suggestOpen: false,
   },
 )
 
@@ -46,6 +50,8 @@ const emits = defineEmits<{
   trigger: [string]
   change: [string, details: ChangeDetails]
   submit: [string]
+  query: [string]
+  'query-end': []
   'update:model-value': [string]
   'mention-click': [MentionClickPayload]
   'mention-remove': [MentionRemovePayload]
@@ -122,11 +128,15 @@ const {
   getTriggers: () => props.triggers,
   isDisabled: () => props.disabled,
   isSubmitOnEnter: () => props.submitOnEnter,
+  isInlineQuery: () => props.inlineQuery,
+  isSuggestOpen: () => props.suggestOpen,
   onUpdate: (html) => {
     emits('update:model-value', html)
     emits('change', html, changeDetailsFor({ reason: 'typed' }))
   },
   onTrigger: (trigger) => emits('trigger', trigger),
+  onQuery: (query) => emits('query', query),
+  onQueryEnd: () => emits('query-end'),
   onSubmit: (html) => emits('submit', html),
   onMentionClick: (payload) => emits('mention-click', payload),
   onMentionRemove: (payload) => emits('mention-remove', payload),

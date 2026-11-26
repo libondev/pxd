@@ -69,7 +69,9 @@ const resolvedSize = computed(() => props.size || configProvider.size)
 const lineRowClass = computed(() => (resolvedSize.value === 'lg' ? 'h-6' : 'h-5'))
 const lineCodeClass = computed(() => (resolvedSize.value === 'lg' ? 'leading-6' : 'leading-5'))
 
-const { scheduleHighlight } = useCodeHighlight()
+// A block without a language contributes no ranges, and a streaming block's text changes on every
+// token: each of those changes would rescan every other block for nothing.
+const { scheduleHighlight } = useCodeHighlight(() => Boolean(languageClass.value))
 const slots = useSlots()
 
 const hasHeader = computed(() => !!(props.title || props.switcher || slots.header || slots.actions))

@@ -14,6 +14,7 @@ export type ChangeReason =
   | 'escape-key'
   | 'outside-press'
   | 'close-press'
+  | 'swipe'
   | 'step'
   | 'settle'
   | 'api'

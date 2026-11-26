@@ -30,6 +30,8 @@ interface Harness {
   api: ReturnType<typeof useMentionEditor>
   model: ReturnType<typeof ref<string>>
   updates: string[]
+  queries: string[]
+  queryEnds: number
   triggers: { n: number; keywords: string[] }
   clicks: { key: string; label: string; trigger: string }[]
   removes: MentionRemovePayload[]
@@ -39,6 +41,7 @@ interface Harness {
 
 interface HarnessOptions {
   isSubmitOnEnter?: () => boolean
+  inlineQuery?: boolean
 }
 
 const open: Harness[] = []
@@ -59,7 +62,10 @@ function createHarness(
   const clicks: { key: string; label: string; trigger: string }[] = []
   const removes: MentionRemovePayload[] = []
   const submits: string[] = []
+  const queries: string[] = []
   const triggers = { n: 0, keywords: [] as string[] }
+  let queryEnds = 0
+  let suggestOpen = false
 
   const wrapper = useSetupWrapper(() => {
     const editorRef = shallowRef<HTMLElement | undefined>(editor)
@@ -70,6 +76,8 @@ function createHarness(
       getTriggers: () => keywords,
       isDisabled: () => false,
       isSubmitOnEnter: options.isSubmitOnEnter ?? (() => true),
+      isInlineQuery: () => options.inlineQuery ?? false,
+      isSuggestOpen: () => suggestOpen,
       onUpdate: (html) => {
         model.value = html
         updates.push(html)
@@ -77,6 +85,14 @@ function createHarness(
       onTrigger: (trigger) => {
         triggers.n += 1
         triggers.keywords.push(trigger)
+        suggestOpen = true
+      },
+      onQuery: (query) => {
+        queries.push(query)
+      },
+      onQueryEnd: () => {
+        queryEnds += 1
+        suggestOpen = false
       },
       onSubmit: (html) => {
         submits.push(html)
@@ -95,6 +111,10 @@ function createHarness(
     api: wrapper,
     model,
     updates,
+    queries,
+    get queryEnds() {
+      return queryEnds
+    },
     triggers,
     clicks,
     removes,
@@ -864,5 +884,66 @@ describe('useMentionEditor', () => {
 
     expect(h.api.replaceQuery('')).toBe(true)
     expect(h.model.value).toBe('Hi ')
+  })
+
+  it('reports the inline query and consumes it with the chip', () => {
+    const h = createHarness('Hi ', [DEFAULT_TRIGGER], { inlineQuery: true })
+
+    caretIn(lastText(h.editor), 3)
+    typeMentionTrigger(h)
+    expect(h.queries).toEqual([])
+
+    typeAtCaret('a')
+    h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
+    typeAtCaret('l')
+    h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
+    typeAtCaret('i')
+    h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
+
+    expect(h.queries).toEqual(['a', 'al', 'ali'])
+
+    expect(h.api.insertMention('u1', 'Alice')).toBe(true)
+    expect(h.model.value).toBe('Hi <mention key="u1">Alice</mention> ')
+    expectAnchorInvariant(h.editor)
+  })
+
+  it('ends the inline query on whitespace', () => {
+    const h = createHarness('Hi ', [DEFAULT_TRIGGER], { inlineQuery: true })
+
+    caretIn(lastText(h.editor), 3)
+    typeMentionTrigger(h)
+
+    typeAtCaret('a')
+    h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
+    typeAtCaret(' ')
+    h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
+
+    expect(h.queries).toEqual(['a'])
+    expect(h.queryEnds).toBe(1)
+    // The typed trigger and query stay as plain text once the suggest closes.
+    expect(h.model.value).toBe('Hi @a ')
+  })
+
+  it('does not treat a mid-word trigger as an inline query', () => {
+    const h = createHarness('mail', [DEFAULT_TRIGGER], { inlineQuery: true })
+
+    caretIn(lastText(h.editor), 4)
+    typeAtCaret('@')
+    h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
+
+    expect(h.triggers.n).toBe(0)
+    expect(h.queries).toEqual([])
+  })
+
+  it('uses the longest inline trigger when one starts with the other', () => {
+    const h = createHarness('Hi ', ['a', 'ab'], { inlineQuery: true })
+
+    caretIn(lastText(h.editor), 3)
+    typeTrigger(h, 'ab')
+    typeAtCaret('c')
+    h.editor.dispatchEvent(new InputEvent('input', { bubbles: true }))
+
+    expect(h.triggers.keywords).toEqual(['ab'])
+    expect(h.queries).toEqual(['c'])
   })
 })

@@ -24,6 +24,37 @@ const options = [
 </template>
 ```
 
+## Inline query
+
+Set `inline-query` to filter from the text typed after the trigger instead of sending the query to the
+popover search input. The caret stays in the editor, the popover only shows the results, and a space,
+a line break or `Escape` ends the query while leaving the typed text behind.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const value = ref('')
+
+const commands = [
+  { label: 'review', value: 'review' },
+  { label: 'test', value: 'test' },
+  { label: 'lint', value: 'lint' },
+]
+</script>
+
+<template>
+  <PMention
+    v-model="value"
+    class="max-w-md"
+    inline-query
+    :triggers="['/']"
+    :options="commands"
+    placeholder="Type / for a command"
+  />
+</template>
+```
+
 ## Remote search
 
 `remote-filter` turns the search remote: a non-empty query goes to it 200ms after the last
@@ -213,6 +244,7 @@ const options = [
 | filter-method | `(option: ListOption, query: string) => boolean` | fuzzy match on `label` and `description` | Predicate deciding which option shows while the query is being typed |
 | remote-filter | `(query: string, trigger: string) => ListOptions \| Promise<ListOptions>` | - | Search through it instead of the local `filter-method`; `trigger` is the keyword that opened the popover |
 | filter-debounce | `boolean` | `true` | Debounce the `remote-filter` search by 200ms while typing; `false` searches on every keystroke |
+| inline-query | `boolean` | `false` | Filter from the text typed after the trigger and keep focus in the editor; a space, a line break or `Escape` ends the query |
 | submit-on-enter | `boolean` | `true` | Submit on `Enter` instead of inserting a line break |
 | rows | `number` | `1` | Visible lines; `1` keeps the size-based minimum height |
 | auto-grow | `boolean` | `true` | Grow the editor with its content; `false` fixes the height at `rows` with internal scrolling |
@@ -221,7 +253,7 @@ const options = [
 | editor-attrs | `Record<string, unknown>` | - | Attributes bound to the editable area (`data-*`, `aria-*`, …) |
 | before-insert | `(payload: MentionSelectPayload) => boolean \| void` | - | Return `false` to skip the default chip insertion and write the value yourself |
 | placeholder | `string` | `''` | Editor placeholder |
-| search-placeholder | `string` | `''` | Suggestion search input placeholder |
+| search-placeholder | `string` | `'Search...'` | Suggestion search input placeholder in popover mode |
 | disabled | `boolean` | `false` | Make the editor read-only and stop the suggestion popover from opening |
 | close-on-press-escape | `boolean` | `true` | Close the suggestion popover when pressing `Escape` |
 
@@ -286,9 +318,10 @@ interface MentionRemovePayload {
 ## Notes
 
 - Type a configured trigger in the editor to open suggestions. It stays until you pick an item (so typing a literal `@` remains possible if you dismiss the popover).
+- With `inline-query`, the caret stays in the editor and ↑/↓/Enter/Tab drive the list; picking an item replaces the whole `@query` span, not just the trigger.
 - A trigger only fires at content start, after whitespace, or right after a chip — never mid-word, so `@` inside an email or URL stays plain text.
-- `Escape` closes the popover through the search input and the overlay; a press outside closes it and leaves focus wherever the user moved it.
-- Chips carry the trigger that created them in a `trigger` attribute, omitted for the default `@`: `<mention key="review" trigger="/">review</mention>`.
+- `Escape` closes the popover from the search input, from the editor in inline mode, and from the overlay; a press outside closes it and leaves focus wherever the user moved it.
+- Chips carry the trigger that created them in a `trigger` attribute, omitted for the default `@`: `<mention key="review" trigger="/">review</mention>`. The rendered chip uses its label as the native `title`.
 - Mentions are read-only chips (`contenteditable="false"`). Both `Backspace` and `Delete` remove a whole chip and leave the caret on the text beside it.
 - Picking a chip leaves a trailing space after it, so two chips picked back to back never run together in the value. That space belongs to the chip: the `Backspace` that deletes a chip takes it along.
 - Paste keeps only legal `<mention key>` nodes; everything else becomes plain text.

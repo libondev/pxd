@@ -127,8 +127,8 @@ No public composable takes `props` or `emits`, and no composable imports a compo
 
 Measurement is allowed when the behaviour is the product, not decoration: `useStickToBottom` reads
 scroll geometry, `useDetailsCollapse` reads `transition-duration` and waits for `transitionend`.
-The roadmap's injected-`transition` rule (`useCarousel`) targets components whose animation the
-consumer decides; applying it here would push the two-pass enter — commit `open`, then flip the
-row — onto every caller, so `useDetailsCollapse` keeps the measurement.
+The roadmap's injected-`transition` rule targets components whose animation the consumer decides;
+applying it here would push the two-pass enter — commit `open`, then flip the row — onto every
+caller, so `useDetailsCollapse` keeps the measurement.
 
 The remaining priority queue and the component triage live in `.agents/plans/composables-roadmap.md`.

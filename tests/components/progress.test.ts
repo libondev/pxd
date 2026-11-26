@@ -12,9 +12,10 @@ describe('progress', () => {
       },
     })
 
-    expect(wrapper.attributes('aria-valuemin')).toBe('20')
-    expect(wrapper.attributes('aria-valuemax')).toBe('80')
-    expect(wrapper.attributes('aria-valuenow')).toBe('30')
+    const bar = wrapper.find('progress')
+
+    expect(bar.attributes('max')).toBe('100')
+    expect(Number(bar.attributes('value'))).toBeCloseTo(100 / 6)
 
     wrapper.unmount()
   })
@@ -22,14 +23,15 @@ describe('progress', () => {
   it('should default to a 0-100 range', () => {
     const wrapper = mount(Progress)
 
-    expect(wrapper.attributes('aria-valuemin')).toBe('0')
-    expect(wrapper.attributes('aria-valuemax')).toBe('100')
-    expect(wrapper.attributes('aria-valuenow')).toBe('0')
+    const bar = wrapper.find('progress')
+
+    expect(bar.attributes('max')).toBe('100')
+    expect(bar.attributes('value')).toBe('0')
 
     wrapper.unmount()
   })
 
-  it('should compute the bar width from min and max', () => {
+  it('should project min and max onto the native value', () => {
     const wrapper = mount(Progress, {
       props: {
         modelValue: 30,
@@ -39,9 +41,7 @@ describe('progress', () => {
     })
 
     // (30 - 20) / (80 - 20) = 1/6
-    expect(wrapper.find('.pxd-progress-bar div').attributes('style')).toContain(
-      'width: 16.666666666666664%',
-    )
+    expect(Number(wrapper.find('progress').attributes('value'))).toBeCloseTo(100 / 6)
 
     wrapper.unmount()
   })
@@ -55,7 +55,7 @@ describe('progress', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-progress-bar div').attributes('style')).toContain('width: 0%')
+    expect(wrapper.find('progress').attributes('value')).toBe('0')
 
     wrapper.unmount()
   })
@@ -69,7 +69,7 @@ describe('progress', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-progress-bar div').attributes('style')).toContain('width: 100%')
+    expect(wrapper.find('progress').attributes('value')).toBe('100')
 
     wrapper.unmount()
   })
@@ -78,14 +78,14 @@ describe('progress', () => {
     const colors = { 0: 'rgb(1, 1, 1)', 50: 'rgb(2, 2, 2)', 100: 'rgb(3, 3, 3)' }
 
     const at50 = mount(Progress, { props: { modelValue: 50, colors } })
-    expect(at50.find('.pxd-progress-bar div').attributes('style')).toContain(
-      'background-color: rgb(2, 2, 2)',
+    expect(at50.find('.pxd-progress-bar').attributes('style')).toContain(
+      '--progress-fill: rgb(2, 2, 2)',
     )
     at50.unmount()
 
     const at100 = mount(Progress, { props: { modelValue: 100, colors } })
-    expect(at100.find('.pxd-progress-bar div').attributes('style')).toContain(
-      'background-color: rgb(3, 3, 3)',
+    expect(at100.find('.pxd-progress-bar').attributes('style')).toContain(
+      '--progress-fill: rgb(3, 3, 3)',
     )
     at100.unmount()
   })
@@ -94,25 +94,25 @@ describe('progress', () => {
     const colors = { 0: 'rgb(1, 1, 1)', 50: 'rgb(2, 2, 2)', 100: 'rgb(3, 3, 3)' }
 
     const atMin = mount(Progress, { props: { modelValue: 20, min: 20, max: 100, colors } })
-    expect(atMin.find('.pxd-progress-bar div').attributes('style')).toContain(
-      'background-color: rgb(1, 1, 1)',
+    expect(atMin.find('.pxd-progress-bar').attributes('style')).toContain(
+      '--progress-fill: rgb(1, 1, 1)',
     )
     atMin.unmount()
 
     const atMid = mount(Progress, { props: { modelValue: 60, min: 20, max: 100, colors } })
-    expect(atMid.find('.pxd-progress-bar div').attributes('style')).toContain(
-      'background-color: rgb(2, 2, 2)',
+    expect(atMid.find('.pxd-progress-bar').attributes('style')).toContain(
+      '--progress-fill: rgb(2, 2, 2)',
     )
     atMid.unmount()
 
     const atMax = mount(Progress, { props: { modelValue: 100, min: 20, max: 100, colors } })
-    expect(atMax.find('.pxd-progress-bar div').attributes('style')).toContain(
-      'background-color: rgb(3, 3, 3)',
+    expect(atMax.find('.pxd-progress-bar').attributes('style')).toContain(
+      '--progress-fill: rgb(3, 3, 3)',
     )
     atMax.unmount()
   })
 
-  it('should update aria-valuenow when modelValue changes', async () => {
+  it('should update the native value when modelValue changes', async () => {
     const wrapper = mount(Progress, {
       props: {
         modelValue: 10,
@@ -121,7 +121,7 @@ describe('progress', () => {
 
     await wrapper.setProps({ modelValue: 70 })
 
-    expect(wrapper.attributes('aria-valuenow')).toBe('70')
+    expect(wrapper.find('progress').attributes('value')).toBe('70')
 
     wrapper.unmount()
   })
@@ -163,9 +163,7 @@ describe('progress', () => {
       },
     })
 
-    expect(wrapper.find('.pxd-progress-bar div').attributes('style')).toContain(
-      'background-color: red',
-    )
+    expect(wrapper.find('.pxd-progress-bar').attributes('style')).toContain('--progress-fill: red')
 
     wrapper.unmount()
   })
@@ -178,6 +176,29 @@ describe('progress', () => {
     })
 
     expect(wrapper.attributes('data-variant')).toBe('error')
+
+    wrapper.unmount()
+  })
+
+  it('should forward aria attributes to the native progress and keep the rest on the wrapper', () => {
+    const wrapper = mount(Progress, {
+      props: {
+        modelValue: 40,
+      },
+      attrs: {
+        'aria-label': 'Upload',
+        'aria-valuetext': '40 percent',
+        'data-testid': 'bar',
+      },
+    })
+
+    const progress = wrapper.find('progress')
+
+    expect(progress.attributes('aria-label')).toBe('Upload')
+    expect(progress.attributes('aria-valuetext')).toBe('40 percent')
+    expect(progress.attributes('data-testid')).toBeUndefined()
+    expect(wrapper.attributes('data-testid')).toBe('bar')
+    expect(wrapper.attributes('aria-label')).toBeUndefined()
 
     wrapper.unmount()
   })

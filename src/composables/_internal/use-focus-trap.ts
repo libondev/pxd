@@ -3,18 +3,10 @@ import type { FocusTrap, Options as FocusTrapOptions } from 'focus-trap'
 import type { MaybeRefOrGetter } from 'vue'
 import { createFocusTrap } from 'focus-trap'
 import { onScopeDispose, watch, toValue } from 'vue'
+import { FOCUSABLE_SELECTOR } from '../../constants/focus.js'
 import { isTruthyProp } from '../../utils/format.js'
 
 const focusTrapStack: FocusTrap[] = []
-
-// e.g.: filter input element in popover/modal/drawer components
-const AUTO_FOCUS_FIRST_SELECTOR = [
-  'input:not([type="hidden"]):not(:disabled)',
-  'button:not(:disabled)',
-  'select:not(:disabled)',
-  'textarea:not(:disabled)',
-  '[tabindex]:not([tabindex="-1"])',
-].join(',')
 
 export interface UseFocusTrapOptions extends FocusTrapOptions {
   autoFocusElement?: string | boolean
@@ -60,7 +52,7 @@ export function useFocusTrap(
           const elSelector =
             typeof autoFocusElement === 'string' && autoFocusElement
               ? autoFocusElement
-              : AUTO_FOCUS_FIRST_SELECTOR
+              : FOCUSABLE_SELECTOR
 
           return target.querySelector<HTMLElement>(elSelector) ?? target
         }

@@ -35,6 +35,7 @@ const props = withDefaults(defineProps<MentionProps>(), {
   placeholder: '',
   searchPlaceholder: 'Search...',
   filterDebounce: true,
+  inlineQuery: false,
   disabled: false,
   closeOnPressEscape: true,
   submitOnEnter: true,
@@ -125,7 +126,10 @@ async function focusSearchInput() {
 
 function onPopoverShow() {
   isHideFromOutsideClick = false
-  focusSearchInput()
+
+  if (!props.inlineQuery) {
+    focusSearchInput()
+  }
 }
 
 function onPopoverOutsideClick() {
@@ -155,6 +159,15 @@ function onSearchKeydownWithEscape(ev: KeyboardEvent) {
   }
 
   onListKeydown(ev)
+}
+
+// In inline mode the caret stays in the editor, so the list has to read keys from there.
+function onEditorKeydown(ev: KeyboardEvent) {
+  if (!props.inlineQuery || !popoverVisible.value) {
+    return
+  }
+
+  onSearchKeydownWithEscape(ev)
 }
 
 function onEditorSubmit(html: string) {
@@ -235,7 +248,7 @@ defineExpose({
     :trigger="[]"
     keep-height
     match-width
-    auto-focus-element
+    :auto-focus-element="!inlineQuery"
     :return-focus-on-deactivate="false"
     :disabled="disabled"
     :close-on-press-escape="closeOnPressEscape"
@@ -262,7 +275,12 @@ defineExpose({
       :max-rows="maxRows"
       :editor-class="editorClass"
       :editor-attrs="editorAttrs"
+      :inline-query="inlineQuery"
+      :suggest-open="popoverVisible"
       @trigger="openSuggest"
+      @query="setKeyword"
+      @query-end="closeSuggest"
+      @keydown="onEditorKeydown"
       @mention-click="onMentionClick"
       @mention-remove="onMentionRemove"
       @submit="onEditorSubmit"
@@ -270,6 +288,7 @@ defineExpose({
 
     <template #content>
       <label
+        v-if="!inlineQuery"
         :for="searchInputId"
         class="px-2.5 py-1.5 gap-2 flex items-center border-b bg-background-100"
       >

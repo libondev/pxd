@@ -1,9 +1,8 @@
-import type { OverlayCloseReason } from '../../composables/_internal/use-overlay-dialog'
+import type { OverlayCloseReason } from '../../composables/_internal/use-dialog-layer'
 import type { ChangeDetails } from '../../types/shared/change'
 import type { BasePosition, ComponentClass, ComponentText } from '../../types/shared/props'
 
 export interface DrawerProps {
-  zIndex?: number
   title?: ComponentText
   subtitle?: ComponentText
   size?: number | string
@@ -19,6 +18,7 @@ export interface DrawerProps {
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
   closeable?: boolean
+  swipeToClose?: boolean
 }
 
 export interface DrawerEmits {

@@ -30,8 +30,12 @@ export interface UseMentionEditorOptions {
   getTriggers: () => string[]
   isDisabled: () => boolean
   isSubmitOnEnter: () => boolean
+  isInlineQuery?: () => boolean
+  isSuggestOpen?: () => boolean
   onUpdate: (html: string) => void
   onTrigger: (trigger: string) => void
+  onQuery?: (query: string) => void
+  onQueryEnd?: () => void
   onSubmit: (html: string) => void
   onMentionClick: (payload: MentionChipRef & { event: MouseEvent }) => void
   onMentionRemove: (payload: MentionChipRef & { html: string }) => void
@@ -66,8 +70,12 @@ export function useMentionEditor({
   getTriggers,
   isDisabled,
   isSubmitOnEnter,
+  isInlineQuery,
+  isSuggestOpen,
   onUpdate,
   onTrigger,
+  onQuery,
+  onQueryEnd,
   onSubmit,
   onMentionClick,
   onMentionRemove,
@@ -82,6 +90,8 @@ export function useMentionEditor({
   let lastEmittedHtml = ''
   // Only open suggest when `@` was inserted — not when delete/undo leaves `@` before the caret.
   let pendingAtInsert = false
+  let inlineQueryActive = false
+  let lastInlineQuery = ''
 
   function setCaret(range: Range) {
     window.getSelection()?.removeAllRanges()
@@ -92,6 +102,8 @@ export function useMentionEditor({
     triggerRange = null
     triggerKeyword = DEFAULT_TRIGGER
     restoreRange = null
+    inlineQueryActive = false
+    lastInlineQuery = ''
   }
 
   function cancelScheduledRestore() {
@@ -175,7 +187,7 @@ export function useMentionEditor({
 
   function findTriggerBeforeCaret(caret: Range): { keyword: string; range: Range } | null {
     // Longest first, so `[[` wins over `[`.
-    for (const keyword of [...getTriggers()].sort((a, b) => b.length - a.length)) {
+    for (const keyword of getTriggers().toSorted((a, b) => b.length - a.length)) {
       const start = caret.startOffset - keyword.length
 
       if (start < 0) {
@@ -262,6 +274,95 @@ export function useMentionEditor({
     return container.nodeName === 'BR' ? '\n' : 'start'
   }
 
+  // Inline query: the keyword and everything typed after it, up to the caret. It lives in
+  // one text node and ends at whitespace, so typing a space settles the query instead of
+  // extending it.
+  function findInlineQuery(caret: Range): { keyword: string; query: string; range: Range } | null {
+    if (caret.startContainer.nodeType !== Node.TEXT_NODE) {
+      return null
+    }
+
+    const text = caret.startContainer as Text
+    const end = caret.startOffset
+    const content = text.data.slice(0, end)
+    let found: { index: number; keyword: string } | null = null
+
+    for (const keyword of getTriggers().toSorted((a, b) => b.length - a.length)) {
+      let index = content.lastIndexOf(keyword, content.length - keyword.length)
+
+      while (index >= 0) {
+        const after = content.slice(index + keyword.length)
+
+        if (!/\s/.test(after)) {
+          const range = document.createRange()
+          range.setStart(text, index)
+          range.setEnd(text, index + keyword.length)
+
+          if (isTriggerBoundary(range) && (!found || index > found.index)) {
+            found = { index, keyword }
+            break
+          }
+        }
+
+        index = content.lastIndexOf(keyword, index - 1)
+      }
+    }
+
+    if (!found) {
+      return null
+    }
+
+    const range = document.createRange()
+    range.setStart(text, found.index)
+    range.setEnd(text, end)
+
+    return {
+      keyword: found.keyword,
+      query: content.slice(found.index + found.keyword.length),
+      range,
+    }
+  }
+
+  function endInlineQuery() {
+    if (!inlineQueryActive) {
+      return
+    }
+
+    clearTriggerRange()
+    onQueryEnd?.()
+  }
+
+  function syncInlineQuery() {
+    if (!isInlineQuery?.() || !isSuggestOpen?.()) {
+      return
+    }
+
+    const selection = window.getSelection()
+
+    if (!selection || selection.rangeCount === 0 || !selection.isCollapsed) {
+      endInlineQuery()
+      return
+    }
+
+    const caret = selection.getRangeAt(0)
+    const span = findInlineQuery(caret)
+
+    if (!span) {
+      endInlineQuery()
+      return
+    }
+
+    inlineQueryActive = true
+    triggerRange = span.range
+    triggerKeyword = span.keyword
+    restoreRange = caret.cloneRange()
+
+    if (span.query !== lastInlineQuery) {
+      lastInlineQuery = span.query
+      onQuery?.(span.query)
+    }
+  }
+
   // A chip needs a separator unless what follows already separates it: whitespace, or a
   // line ending that no one reads as the chip running into the next token.
   function needsSeparator(node: Node | null): boolean {
@@ -284,6 +385,7 @@ export function useMentionEditor({
     pendingAtInsert = false
 
     if (saveTriggerRangeFromSelection()) {
+      lastInlineQuery = ''
       onTrigger(triggerKeyword)
     }
   }
@@ -374,7 +476,7 @@ export function useMentionEditor({
     caret.setStart(anchor, anchorText.length)
     caret.collapse(true)
 
-    triggerRange = null
+    clearTriggerRange()
     restoreRange = caret
     emitHTML()
     return true
@@ -710,6 +812,7 @@ export function useMentionEditor({
 
     ensureCaretAnchors()
     emitHTML()
+    syncInlineQuery()
   }
 
   function onBeforeInput(ev: InputEvent) {
@@ -773,6 +876,7 @@ export function useMentionEditor({
     ensureCaretAnchors()
     emitHTML()
     detectTriggerAfterInput()
+    syncInlineQuery()
   }
 
   function onCompositionStart() {
@@ -784,6 +888,7 @@ export function useMentionEditor({
     ensureCaretAnchors()
     emitHTML()
     detectTriggerAfterInput()
+    syncInlineQuery()
   }
 
   // Copy the public contract, not the DOM — the DOM carries the invisible caret anchor.
@@ -818,6 +923,7 @@ export function useMentionEditor({
       selection.getRangeAt(0).deleteContents()
       ensureCaretAnchors()
       emitHTML()
+      syncInlineQuery()
     }
   }
 

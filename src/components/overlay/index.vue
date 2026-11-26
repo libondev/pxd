@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import type { OverlayEmits, OverlayProps } from './types'
-import { computed, watch } from 'vue'
-import { useLockScroll } from '../../composables/_internal/use-lock-scroll.js'
+import { computed } from 'vue'
 import { useOverlayManager } from '../../composables/_internal/use-overlay-manager.js'
+import { getNestedLevel } from '../../composables/_internal/use-top-layer.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { NOOP } from '../../utils/event.js'
-import { isServer } from '../../utils/is.js'
 
 defineOptions({
   name: 'POverlay',
@@ -13,6 +12,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<OverlayProps>(), {
+  to: 'body',
   modelValue: false,
   closeOnPressEscape: true,
   lockScrollOnVisible: true,
@@ -26,13 +26,12 @@ const computedStyle = computed(() => ({
 }))
 
 const configProvider = useConfigProvider()
-const { lockScroll, unlockScroll } = useLockScroll(() => document.body, { walkAncestors: true })
 
-const { registerOverlay, unregisterOverlay } = useOverlayManager({
-  lockScrollOnVisible: () => props.lockScrollOnVisible,
-  lockScroll,
-  unlockScroll,
+useOverlayManager({
+  visible: () => props.modelValue,
+  level: () => getNestedLevel(props.to),
   zIndex: () => props.zIndex,
+  lockScrollOnVisible: () => props.lockScrollOnVisible,
   onPressEscape: (ev: KeyboardEvent) => {
     if (!props.closeOnPressEscape) {
       return false
@@ -48,20 +47,6 @@ const { registerOverlay, unregisterOverlay } = useOverlayManager({
   },
 })
 
-function onOverlayVisibleChange(visible: boolean) {
-  if (isServer()) {
-    return
-  }
-
-  if (visible) {
-    registerOverlay()
-
-    return
-  }
-
-  unregisterOverlay()
-}
-
 function onOverlayClick(ev: PointerEvent) {
   emits('click', ev)
 
@@ -71,12 +56,10 @@ function onOverlayClick(ev: PointerEvent) {
 
   emits('update:model-value', false)
 }
-
-watch(() => props.modelValue, onOverlayVisibleChange, { immediate: true })
 </script>
 
 <template>
-  <Teleport to="body">
+  <Teleport :to="to">
     <Transition name="pxd-transition--fade" mode="out-in" appear>
       <div
         data-overlay
@@ -86,7 +69,7 @@ watch(() => props.modelValue, onOverlayVisibleChange, { immediate: true })
         :data-variant="variant"
         :data-enter-motion="configProvider.enterMotion"
         :data-leave-motion="configProvider.leaveMotion"
-        class="pxd-overlay inset-0 bg-black/60 sm:bg-background-100/80 data-[variant='blurred']:backdrop-blur-sm pointer-events-auto fixed z-(--overlay-index) select-none motion-safe:transition-colors"
+        class="pxd-overlay inset-0 data-[variant='blurred']:backdrop-blur-sm pointer-events-auto fixed z-(--overlay-index) bg-background-100/80 select-none motion-safe:transition-colors"
         :style="computedStyle"
         v-bind="$attrs"
         @click="onOverlayClick"

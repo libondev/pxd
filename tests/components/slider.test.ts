@@ -48,7 +48,9 @@ describe('slider', () => {
     const wrapper = mount(Slider, { props: { min: 20 } })
 
     expect(wrapper.emitted('update:model-value')).toBeUndefined()
-    expect(wrapper.find('.pxd-slider--thumb').attributes('style')).toContain('left: 0%')
+    expect(wrapper.find('.pxd-slider--thumb-anchor').attributes('style')).toContain(
+      'translate: 0cqw 0',
+    )
 
     wrapper.unmount()
   })
@@ -62,7 +64,9 @@ describe('slider', () => {
     await slider.trigger('pointerdown', { clientX: 60 })
 
     expect(wrapper.emitted('update:model-value')).toEqual([[60]])
-    expect(wrapper.find('.pxd-slider--thumb').attributes('style')).toContain('left: 60%')
+    expect(wrapper.find('.pxd-slider--thumb-anchor').attributes('style')).toContain(
+      'translate: 60cqw 0',
+    )
 
     document.dispatchEvent(new PointerEvent('pointerup', { clientX: 60 }))
 
@@ -87,7 +91,9 @@ describe('slider', () => {
     const wrapper = mount(Slider, { props: { defaultValue: 20, modelValue: 70 } })
 
     expect(wrapper.emitted('update:model-value')).toBeUndefined()
-    expect(wrapper.find('.pxd-slider--thumb').attributes('style')).toContain('left: 70%')
+    expect(wrapper.find('.pxd-slider--thumb-anchor').attributes('style')).toContain(
+      'translate: 70cqw 0',
+    )
 
     wrapper.unmount()
   })

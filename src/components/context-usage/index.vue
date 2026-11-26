@@ -45,8 +45,8 @@ const usedPercentage = computed(() => {
 const freeTokens = computed(() => Math.max(props.total - usedTokens.value, 0))
 
 const items = computed(() =>
-  [...props.data]
-    .sort((a, b) => b.tokens - a.tokens)
+  props.data
+    .toSorted((a, b) => b.tokens - a.tokens)
     .map((segment) => ({
       ...segment,
       percentage: props.total > 0 ? (segment.tokens / props.total) * 100 : 0,

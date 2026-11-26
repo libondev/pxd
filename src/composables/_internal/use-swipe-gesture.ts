@@ -77,6 +77,7 @@ export interface SwipeGestureOptions {
    * and a release inside that window waits for the verdict.
    */
   beforeStart?: (state: SwipePressState) => boolean | Promise<boolean>
+  onPointerDown?: (event: PointerEvent) => void
   onPress?: (state: SwipePressState) => void
   onFollow?: (state: SwipeFollowState) => void
   /**
@@ -123,6 +124,7 @@ export function useSwipeGesture(
     velocityThreshold = 0.3,
     swipeThreshold = 10,
     beforeStart,
+    onPointerDown,
     onPress,
     onFollow,
     onRelease,
@@ -264,6 +266,7 @@ export function useSwipeGesture(
     recognizer = new PointerSwipeRecognizer(handle, {
       threshold: swipeThreshold,
       touchAction: getTouchAction(),
+      onPointerDown,
       onStart: (event) => {
         axisLockState = 'pending'
         released = false
@@ -391,6 +394,7 @@ export function useSwipeGesture(
 interface PointerSwipeRecognizerOptions {
   threshold?: number
   touchAction?: string
+  onPointerDown?: (event: PointerEvent) => void
   onStart?: (event: PointerPanEvent) => void
   onMove?: (event: PointerPanEvent) => void
   onEnd?: (event: PointerPanEvent) => void
@@ -438,7 +442,6 @@ class PointerSwipeRecognizer {
     private el: HTMLElement | SVGElement,
     private options: PointerSwipeRecognizerOptions = {},
   ) {
-    ;(el.style as any).webkitTapHighlightColor = 'rgba(0,0,0,0)'
     this.originalTouchAction = el.style.touchAction
     el.style.touchAction = options.touchAction ?? 'none'
     this.cleanup = this.bindEvents(el)
@@ -464,6 +467,7 @@ class PointerSwipeRecognizer {
       this.lastVelocity = { x: 0, y: 0 }
       this.hasRecognizedPan = (this.options.threshold ?? 10) <= 0
       el.setPointerCapture?.(event.pointerId)
+      this.options.onPointerDown?.(event)
 
       if (this.hasRecognizedPan) {
         this.emitPan(this.options.onStart, event, this.startPoint, 0, 0)

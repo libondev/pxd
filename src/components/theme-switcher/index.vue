@@ -43,8 +43,10 @@ watch(
     v-bind="$attrs"
     @click="toggleDarkMode()"
   >
-    <Transition name="pxd-transition--fade-scale" mode="out-in">
-      <Component :is="renderIcon" class="size-em" />
-    </Transition>
+    <span class="grid shrink-0">
+      <Transition name="pxd-transition--fade-scale">
+        <Component :is="renderIcon" class="col-start-1 row-start-1 size-em" />
+      </Transition>
+    </span>
   </PButton>
 </template>

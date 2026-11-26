@@ -170,7 +170,7 @@ const value = ref('')
 | trim-overflow | `boolean` | `false` | Trim overflow value after composition ends when `max-length` is set. |
 | clearable | `boolean` | - | Show a clear button once the field holds a value |
 | clear-value | `string \| number \| null` | - | Value written back when clearing, an empty string by default |
-| clear-on-press-escape | `boolean` | `true` | Clear the field when the `Escape` key is pressed |
+| clear-on-press-escape | `boolean` | `false` | Clear the field when the `Escape` key is pressed |
 | model-value | `string \| number \| null` | - | Current input value, use `v-model` for two-way binding |
 | placeholder | `string` | - | Placeholder text shown while the value is empty |
 | prefix-class | `string \| any[] \| object` | - | Additional classes merged onto the prefix container |

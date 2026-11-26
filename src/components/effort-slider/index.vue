@@ -24,7 +24,7 @@ const props = defineProps<EffortSliderProps>()
 const emits = defineEmits<EffortSliderEmits>()
 
 const thumbClasses = createTailwindVariant({
-  base: 'pxd-effort-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none bg-none self-focus-ring outline-none motion-safe:before:transition-appearance',
+  base: 'pxd-effort-slider--thumb group rounded-xs absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 touch-none bg-none self-focus-ring outline-none motion-safe:before:transition-appearance',
   variants: {
     size: {
       sm: 'w-1.5 h-3.5',
@@ -33,9 +33,6 @@ const thumbClasses = createTailwindVariant({
     },
     disabled: {
       true: 'pointer-events-none',
-    },
-    dragging: {
-      false: 'motion-safe:transition-[left]',
     },
   },
 })
@@ -54,9 +51,12 @@ const HASH_X = 127.1
 const HASH_Y = 311.7
 const HASH_SCALE = 43758.5453
 const scheduleUpdate = throttleByRaf(() => {
-  if (lastClientX !== null) {
-    updateFromPosition(lastClientX)
+  if (lastClientX === null) {
+    return
   }
+
+  dragPosition.value = relativePosition(lastClientX)
+  updateFromPosition(lastClientX)
 })
 
 const trackRef = shallowRef<HTMLElement>()
@@ -64,7 +64,8 @@ const labelRef = shallowRef<HTMLElement>()
 const dragging = shallowRef(false)
 const focused = shallowRef(false)
 const dragPosition = shallowRef<number | null>(null)
-const labelShift = shallowRef(0)
+const labelWidth = shallowRef(0)
+const trackWidth = shallowRef(0)
 
 const innerValue = shallowRef<EffortSliderProps['modelValue']>(props.defaultValue)
 const activeValue = computed(() => props.modelValue ?? innerValue.value)
@@ -100,6 +101,9 @@ const percentage = computed(() => {
 })
 
 const labelVisible = computed(() => dragging.value || focused.value)
+const labelShift = computed(() =>
+  getLabelShift(percentage.value, labelWidth.value, trackWidth.value),
+)
 const tickList = computed(() => {
   const count = levelCount.value
 
@@ -147,7 +151,7 @@ const { modelValue, commit } = useModelCommit(props, emits)
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-effort-slider--track group relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
+    base: 'pxd-effort-slider--track group @container relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
     variants: {
       size: {
         sm: 'h-2',
@@ -199,17 +203,15 @@ function particleSeed(index: number, salt: number) {
   return value - Math.floor(value)
 }
 
-function updateLabelShift() {
+function measureLabel() {
   const label = labelRef.value
   const track = trackRef.value
 
-  if (!label || !track) {
-    return
-  }
-
-  // Layout pixels: `getBoundingClientRect()` reports the box already scaled by an ancestor
-  // zoom or transform, while the shift below is applied in unscaled pixels.
-  labelShift.value = getLabelShift(percentage.value, label.offsetWidth, track.clientWidth)
+  // Layout pixels: `getBoundingClientRect()` reports the box already
+  // scaled by an ancestor zoom or transform, while the shift is applied in
+  // unscaled pixels.
+  labelWidth.value = label?.offsetWidth ?? 0
+  trackWidth.value = track?.clientWidth ?? 0
 }
 function setValue(index: number) {
   const option = optionList.value[index]
@@ -271,6 +273,7 @@ function onTrackPointerdown(ev: PointerEvent) {
   lastUpdatedValue = null
   lastClientX = ev.clientX
   dragging.value = true
+  measureLabel()
   dragPosition.value = relativePosition(ev.clientX)
 
   updateFromPosition(ev.clientX)
@@ -324,7 +327,6 @@ function handleMove(ev: PointerEvent) {
 
   ev.preventDefault()
   lastClientX = ev.clientX
-  dragPosition.value = relativePosition(ev.clientX)
   scheduleUpdate()
 }
 
@@ -370,15 +372,11 @@ function initModelValue() {
   }
 }
 
-watch(() => [percentage.value, currentOptionLabel.value, labelVisible.value], updateLabelShift, {
-  flush: 'post',
-})
+watch([currentOptionLabel, labelVisible], measureLabel, { flush: 'post' })
 
 initModelValue()
 
-onMounted(() => {
-  updateLabelShift()
-})
+onMounted(measureLabel)
 
 onBeforeUnmount(() => {
   stopDragging()
@@ -392,7 +390,7 @@ onBeforeUnmount(() => {
       :class="classes"
       :aria-disabled="disabled"
       @pointerdown.prevent="onTrackPointerdown"
-      @pointerenter="updateLabelShift"
+      @pointerenter="measureLabel"
     >
       <div
         class="pxd-effort-slider--fill inset-0 pointer-events-none absolute overflow-hidden rounded-full motion-safe:transition-[clip-path,background-color]"
@@ -416,28 +414,33 @@ onBeforeUnmount(() => {
       />
 
       <div
-        role="slider"
-        :tabindex="disabled ? -1 : 0"
-        :aria-valuemin="0"
-        :aria-valuemax="levelCount - 1"
-        :aria-valuenow="currentIndex"
-        :aria-valuetext="currentOptionLabel"
-        :data-dragging="dragging"
-        :class="thumbClasses({ size: size || configProvider.size, disabled, dragging })"
-        :style="{ left: `${percentage}%` }"
-        @keydown="onThumbKeydown"
-        @focus="focused = true"
-        @blur="focused = false"
-        @contextmenu.prevent
+        class="pxd-effort-slider--thumb-anchor left-0 h-0 w-0 absolute top-1/2"
+        :class="{ 'motion-safe:transition-[translate]': !dragging }"
+        :style="{ translate: `${percentage}cqw 0` }"
       >
-        <span
-          ref="labelRef"
-          class="pxd-effort-slider--label py-1 px-1 text-xs -top-7 shadow-xl pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-sm border border-gray-alpha-300 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
-          :class="{ 'opacity-100': dragging || focused }"
-          :style="{ translate: `calc(-50% + ${labelShift}px)` }"
+        <div
+          role="slider"
+          :tabindex="disabled ? -1 : 0"
+          :aria-valuemin="0"
+          :aria-valuemax="levelCount - 1"
+          :aria-valuenow="currentIndex"
+          :aria-valuetext="currentOptionLabel"
+          :data-dragging="dragging"
+          :class="thumbClasses({ size: size || configProvider.size, disabled })"
+          @keydown="onThumbKeydown"
+          @focus="focused = true"
+          @blur="focused = false"
+          @contextmenu.prevent
         >
-          {{ currentOptionLabel }}
-        </span>
+          <span
+            ref="labelRef"
+            class="pxd-effort-slider--label py-1 px-1 text-xs -top-7 shadow-xl pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-sm border border-gray-alpha-300 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+            :class="{ 'opacity-100': dragging || focused }"
+            :style="{ translate: `calc(-50% + ${labelShift}px)` }"
+          >
+            {{ currentOptionLabel }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -469,10 +472,8 @@ onBeforeUnmount(() => {
     height: 150%;
   }
 
-  &:active,
   &[data-dragging='true'] {
     --slider-thumb-scale: 1.3;
-    z-index: 1;
 
     &::after {
       width: 100%;

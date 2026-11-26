@@ -15,7 +15,6 @@ export interface ImagePreviewProps {
   data?: readonly ImagePreviewSource[]
   variant?: ImagePreviewVariant
   index?: number
-  zIndex?: number
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
 }

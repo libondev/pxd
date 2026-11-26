@@ -15,6 +15,36 @@ function editor() {
   return document.body.querySelector<HTMLElement>('[data-mention-editor] [role="textbox"]')!
 }
 
+/** happy-dom has no editing engine: replay what a keystroke leaves behind. */
+function typeText(el: HTMLElement, text: string, isTrigger = false) {
+  el.textContent = (el.textContent ?? '') + text
+
+  const node = el.firstChild as Text
+  const range = document.createRange()
+  range.setStart(node, node.data.length)
+  range.collapse(true)
+  const selection = getSelection()!
+  selection.removeAllRanges()
+  selection.addRange(range)
+
+  if (isTrigger) {
+    el.dispatchEvent(
+      new InputEvent('beforeinput', {
+        inputType: 'insertText',
+        data: text,
+        bubbles: true,
+        cancelable: true,
+      }),
+    )
+  }
+
+  el.dispatchEvent(new InputEvent('input', { bubbles: true }))
+}
+
+function listLabels(): string[] {
+  return [...document.body.querySelectorAll('[data-list-item]')].map((el) => el.textContent ?? '')
+}
+
 describe('mention', () => {
   it('renders the model chips', () => {
     const wrapper = mount(Mention, {
@@ -23,6 +53,7 @@ describe('mention', () => {
     })
 
     expect(document.body.querySelector('mention')?.textContent).toBe('@Alice')
+    expect(document.body.querySelector('mention')?.getAttribute('title')).toBe('Alice')
 
     wrapper.unmount()
   })
@@ -266,6 +297,98 @@ describe('mention', () => {
     const el = editor()!
     expect(el.classList.contains('editor-cls')).toBe(true)
     expect(el.getAttribute('data-editor')).toBe('1')
+
+    wrapper.unmount()
+  })
+
+  it('filters from the inline query typed after the trigger', async () => {
+    const wrapper = mount(Mention, {
+      attachTo: document.body,
+      props: { options, inlineQuery: true },
+    })
+    const el = editor()!
+
+    typeText(el, 'Hello ')
+    typeText(el, '@', true)
+    await flushPopover()
+
+    expect(document.body.querySelector('.pxd-mention--search')).toBeNull()
+
+    typeText(el, 'bo')
+    await flushPopover()
+
+    expect(listLabels()).toEqual(['Bob'])
+
+    wrapper.unmount()
+  })
+
+  it('replaces the whole inline query with the chip on select', async () => {
+    const wrapper = mount(Mention, {
+      attachTo: document.body,
+      props: { options, inlineQuery: true },
+    })
+    const el = editor()!
+
+    typeText(el, 'Hello ')
+    typeText(el, '@', true)
+    await flushPopover()
+    typeText(el, 'ali')
+    await flushPopover()
+
+    document.body.querySelectorAll<HTMLElement>('[data-list-item]')[0]!.click()
+    await nextTick()
+
+    expect(wrapper.emitted('update:model-value')?.at(-1)?.[0]).toBe(
+      'Hello <mention key="1">Alice</mention> ',
+    )
+
+    wrapper.unmount()
+  })
+
+  it('navigates and activates the list from the editor in inline mode', async () => {
+    const wrapper = mount(Mention, {
+      attachTo: document.body,
+      props: { options, inlineQuery: true },
+    })
+    const el = editor()!
+
+    typeText(el, 'Hello ')
+    typeText(el, '@', true)
+    await flushPopover()
+
+    el.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }),
+    )
+    el.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }),
+    )
+    await nextTick()
+
+    expect(wrapper.emitted('update:model-value')?.at(-1)?.[0]).toBe(
+      'Hello <mention key="2">Bob</mention> ',
+    )
+
+    wrapper.unmount()
+  })
+
+  it('ends the inline query on a space and keeps the typed text', async () => {
+    const wrapper = mount(Mention, {
+      attachTo: document.body,
+      props: { options, inlineQuery: true },
+    })
+    const el = editor()!
+
+    typeText(el, 'Hello ')
+    typeText(el, '@', true)
+    await flushPopover()
+    typeText(el, 'ali')
+    await flushPopover()
+
+    typeText(el, ' ')
+    await flushPopover()
+
+    expect(wrapper.findComponent(Popover).props('modelValue')).toBe(false)
+    expect(el.textContent).toBe('Hello @ali ')
 
     wrapper.unmount()
   })

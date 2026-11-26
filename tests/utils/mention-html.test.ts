@@ -234,6 +234,7 @@ describe('chip element and clipboard sanitizing', () => {
     expect(chip.tagName).toBe('MENTION')
     expect(chip.getAttribute('key')).toBe('u1')
     expect(chip.getAttribute('contenteditable')).toBe('false')
+    expect(chip.getAttribute('title')).toBe('Alice')
     expect(getMentionLabel(chip)).toBe('Alice')
   })
 
@@ -261,6 +262,7 @@ describe('chip element and clipboard sanitizing', () => {
     )
 
     expect(host.querySelector('mention')!.getAttribute('trigger')).toBe('/')
+    expect(host.querySelector('mention')!.getAttribute('title')).toBe('review')
     expect(host.querySelector('mention')!.textContent).toBe('/review')
   })
 

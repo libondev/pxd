@@ -39,7 +39,7 @@ useAgentNode({
 
 const { classes } = useTailwindVariant(
   {
-    base: 'pxd-color-selector--item size-5 cursor-pointer appearance-none rounded-full border-2 border-transparent bg-current self-focus-ring checked:border-current checked:shadow-[inset_0_0_0_2px_var(--color-background-100)] active:scale-85 motion-safe:transition-appearance',
+    base: 'pxd-color-selector--item size-5 cursor-pointer appearance-none rounded-full border-2 border-transparent bg-current self-focus-ring checked:border-current checked:shadow-[inset_0_0_0_2px_var(--color-background-100)] active:scale-97 motion-safe:transition-appearance',
     variants: {
       size: {
         sm: 'size-4',

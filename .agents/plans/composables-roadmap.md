@@ -52,8 +52,10 @@ No composables. These are the components the convention explicitly excludes: ext
 
 ## Priority queue
 
-Done: `useCarousel`, `useHold`, `useLoadingBarProgress`, `useListSelection`, `useOverlayDialog`,
+Done: `useHold`, `useLoadingBarProgress`, `useListSelection`, `useOverlayDialog`,
 the popup engine, the `ButtonVariant` move to `src/types/components` and the slider geometry utils.
+The carousel engine was extracted and then folded back into its SFC: one consumer, and nobody
+re-implements a carousel view, so it never earned a public composable.
 
 No deferred extractions remain. `resizable` and the C-tier components stay component-local for the
 reasons above.
@@ -72,9 +74,8 @@ reasons above.
 
 - A composable takes domain values (`MaybeRefOrGetter`) and reports through `onXxx`; it never takes
   a component's `props` object or `emits`.
-- Animation is an injected `transition` callback (`useCarousel` is the reference): the composable
-  owns the state machine, the component owns the DOM. This targets decoration the consumer may
-  replace; a composable whose behaviour *is* the transition keeps the measurement
-  (`useDetailsCollapse`).
+- Animation is an injected `transition` callback: the composable owns the state machine, the
+  component owns the DOM. This targets decoration the consumer may replace; a composable whose
+  behaviour *is* the transition keeps the measurement (`useDetailsCollapse`).
 - Shared geometry lives in `src/utils/_internal/*`; shared state lives in composables.
 - No re-exports. Import a shared type from its defining module.

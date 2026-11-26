@@ -77,7 +77,7 @@ function buildDefaultBandGradient(color: string) {
 }
 
 function buildBandGradient(stops: ShimmerGradientStop[]) {
-  const sorted = [...stops].sort((a, b) => a.position - b.position)
+  const sorted = stops.toSorted((a, b) => a.position - b.position)
   const first = sorted[0]?.color ?? 'currentColor'
   const last = sorted[sorted.length - 1]?.color ?? 'currentColor'
   const core = sorted

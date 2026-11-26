@@ -71,6 +71,10 @@ const zhCN = {
     scrollPrev: '向左滚动标签',
     scrollNext: '向右滚动标签',
   },
+  carousel: {
+    prev: '上一张',
+    next: '下一张',
+  },
   pagination: {
     perPage: '条/页',
     prev: '上一页',
@@ -106,6 +110,9 @@ const zhCN = {
   codeBlock: {
     expand: '展开全部',
     collapse: '收起',
+  },
+  message: {
+    notifications: '通知',
   },
 } satisfies Locale
 

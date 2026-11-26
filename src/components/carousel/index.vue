@@ -1,17 +1,18 @@
 <script lang="ts" setup>
-import type { CarouselMove } from '../../composables/use-carousel.js'
-import type { CarouselEmits, CarouselProps } from './types'
+import type { ChangeReason } from '../../types/shared/change'
+import type { CarouselEmits, CarouselMove, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
-import { computed, nextTick, shallowRef, useSlots } from 'vue'
+import { computed, nextTick, onBeforeUnmount, shallowRef, useSlots, watch } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useSwipeGesture } from '../../composables/_internal/use-swipe-gesture.js'
-import { useCarousel } from '../../composables/use-carousel.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 import { awaitAnimationEnd } from '../../utils/dom.js'
-import { getCssUnitValue } from '../../utils/format.js'
+import { clampValue, getCssUnitValue } from '../../utils/format.js'
+import { isServer } from '../../utils/is.js'
 
 defineOptions({
   name: 'PCarousel',
@@ -35,14 +36,32 @@ const props = withDefaults(defineProps<CarouselProps>(), {
 const emits = defineEmits<CarouselEmits>()
 
 let maxDrag = 0
+let timer: ReturnType<typeof setTimeout> | null = null
+let deadline = 0
+let remaining = 0
+let queue: Promise<unknown> = Promise.resolve()
+let stopped = false
+let pendingCycle = false
 
+const rootRef = shallowRef<HTMLElement>()
 const sliderRef = shallowRef<HTMLElement>()
-const virtualIndex = shallowRef(props.index)
+const virtualIndex = shallowRef(0)
 const gestureMoveOffset = shallowRef(0)
+const isPointerInside = shallowRef(false)
+const isFocusInside = shallowRef(false)
+const currentIndex = shallowRef(0)
+const isAutoPlayPaused = shallowRef(false)
+const progressKey = shallowRef(0)
+const progressElapsed = shallowRef(0)
 
 const slideCount = computed(() => props.options.length)
 const isHorizontal = computed(() => props.direction === 'horizontal')
-const computedStyle = computed(() => {
+const isVerticalIndicator = computed(
+  () => props.indicatorPosition === 'left' || props.indicatorPosition === 'right',
+)
+const isAtFirst = computed(() => currentIndex.value === 0)
+const isAtLast = computed(() => currentIndex.value === slideCount.value - 1)
+const sliderStyle = computed(() => {
   const translateValue = `calc(${virtualIndex.value * -100}% + ${gestureMoveOffset.value}px)`
 
   return {
@@ -55,14 +74,14 @@ const rootStyle = computed<CSSProperties>(() => {
     height: getCssUnitValue(props.height),
     '--carousel-item-count': slideCount.value,
     '--carousel-progress-duration': `${props.interval}ms`,
+    '--carousel-progress-elapsed': `${-progressElapsed.value}ms`,
   }
 })
 
 const loopPlacement = computed(() => {
-  const length = slideCount.value
-  const lastIndex = length - 1
+  const count = slideCount.value
 
-  if (!props.loop || length <= 1) {
+  if (!props.loop || count <= 1) {
     return 'none'
   }
 
@@ -70,54 +89,30 @@ const loopPlacement = computed(() => {
     return 'start'
   }
 
-  if (virtualIndex.value >= lastIndex) {
-    return 'end'
-  }
-
-  return 'none'
+  return virtualIndex.value >= count - 1 ? 'end' : 'none'
 })
 
-const notify = useAgentChange(emits)
-const {
-  index: currentIndex,
-  isAtFirst,
-  isAtLast,
-  isAutoPlayPaused,
-  progressKey,
-  next,
-  prev,
-  goTo,
-  pause,
-  resume,
-} = useCarousel({
-  count: () => slideCount.value,
-  defaultIndex: props.index,
-  loop: () => props.loop,
-  autoplay: () => props.autoplay,
-  interval: () => props.interval,
-  transition: animateMove,
-  onChange: (index, reason) => notify(index, changeDetailsFor({ reason })),
-})
 const slots = useSlots()
+const configProvider = useConfigProvider()
+const notify = useAgentChange(emits)
 
 useSwipeGesture(sliderRef, {
   axis: () => props.direction,
+  // Hover and focus own the paused state: a drag that ends must not restart autoplay while the
+  // pointer is still over the carousel.
   onPress: ({ size }) => {
     maxDrag = size
-
     gestureMoveOffset.value = 0
-    onPointerEnter()
   },
   onFollow: (ev) => {
-    if (!props.loop && ((isAtFirst.value && ev.delta > 0) || (isAtLast.value && ev.delta < 0))) {
+    if (!canStep(ev.delta > 0 ? -1 : 1)) {
       return
     }
 
-    gestureMoveOffset.value = Math.max(-maxDrag, Math.min(maxDrag, ev.displacement))
+    gestureMoveOffset.value = clampValue(ev.displacement, -maxDrag, maxDrag)
   },
   onRelease: ({ swiped, direction }) => {
     gestureMoveOffset.value = 0
-    onPointerLeave()
 
     if (!swiped || !direction) {
       return
@@ -151,51 +146,196 @@ useAgentNode({
   },
 })
 
-async function animateMove(move: CarouselMove) {
+function setIndex(value: number, reason: ChangeReason): void {
+  currentIndex.value = value
+  notify(value, changeDetailsFor({ reason }))
+  startCycle()
+}
+
+function normalizeIndex(value: number): number {
+  const count = slideCount.value
+
+  if (count === 0) {
+    return 0
+  }
+
+  const target = Math.floor(value)
+
+  return props.loop ? ((target % count) + count) % count : clampValue(target, 0, count - 1)
+}
+
+// Whether a step in `direction` stays inside the slides without wrapping.
+function canStep(direction: 1 | -1): boolean {
+  return props.loop || !(direction > 0 ? isAtLast.value : isAtFirst.value)
+}
+
+function enqueue(task: () => Promise<number | null>): Promise<number | null> {
+  const result = queue.then(task)
+
+  queue = result.catch(() => null)
+
+  return result
+}
+
+async function step(direction: 1 | -1, reason: ChangeReason): Promise<number | null> {
+  const count = slideCount.value
+
+  if (count <= 1 || !canStep(direction)) {
+    return null
+  }
+
+  const from = currentIndex.value
+  const raw = from + direction
+  const wrapped = raw < 0 || raw >= count
+  const to = wrapped ? (raw + count) % count : raw
+
+  await animateMove({ from, to, direction, wrapped })
+  setIndex(to, reason)
+
+  return to
+}
+
+function next(reason: ChangeReason = 'item-press'): Promise<number | null> {
+  return enqueue(() => step(1, reason))
+}
+
+function prev(reason: ChangeReason = 'item-press'): Promise<number | null> {
+  return enqueue(() => step(-1, reason))
+}
+
+function goTo(target: number, reason: ChangeReason = 'item-press'): Promise<number | null> {
+  return enqueue(async () => {
+    const from = currentIndex.value
+    const to = normalizeIndex(target)
+
+    if (to === from) {
+      return from
+    }
+
+    await animateMove({ from, to, direction: to > from ? 1 : -1, wrapped: false })
+    setIndex(to, reason)
+
+    return to
+  })
+}
+
+function clearTimer(): void {
+  if (timer != null) {
+    clearTimeout(timer)
+    timer = null
+  }
+}
+
+function canAutoPlay(): boolean {
+  return !stopped && !isServer() && !isAutoPlayPaused.value && props.autoplay
+}
+
+function schedule(ms: number): void {
+  deadline = Date.now() + ms
+  timer = setTimeout(() => {
+    timer = null
+
+    void next('sync').finally(() => {
+      if (timer === null && canAutoPlay()) {
+        startCycle()
+      }
+    })
+  }, ms)
+}
+
+// One cycle is the wait between two automatic advances; the indicator bar covers exactly it.
+function startCycle(): void {
+  clearTimer()
+  remaining = Math.max(0, props.interval)
+
+  if (!canAutoPlay()) {
+    // Nothing runs while paused, so the bar keeps what it had and the cycle starts on resume.
+    pendingCycle = true
+
+    return
+  }
+
+  pendingCycle = false
+  progressElapsed.value = 0
+  progressKey.value++
+  schedule(remaining)
+}
+
+function pause(): void {
+  if (isAutoPlayPaused.value) {
+    return
+  }
+
+  isAutoPlayPaused.value = true
+  clearTimer()
+
+  // Read the clock, not the timer: a cycle whose timer has just fired is still in flight, and the
+  // bar has to freeze at the progress it reached instead of restarting empty.
+  remaining = Math.max(0, deadline - Date.now())
+  // Re-render the bar at the frozen progress instead of shifting a running animation.
+  progressElapsed.value = Math.max(0, props.interval) - remaining
+  progressKey.value++
+}
+
+function resume(): void {
+  if (!isAutoPlayPaused.value) {
+    return
+  }
+
+  isAutoPlayPaused.value = false
+
+  if (!canAutoPlay()) {
+    return
+  }
+
+  if (pendingCycle) {
+    pendingCycle = false
+    progressElapsed.value = 0
+  }
+
+  progressKey.value++
+  schedule(remaining)
+}
+
+function stop(): void {
+  stopped = true
+  clearTimer()
+}
+
+async function animateMove({ from, to, direction, wrapped }: CarouselMove) {
   const el = sliderRef.value
 
   if (!el) {
     return
   }
 
-  if (!move.wrapped) {
-    virtualIndex.value = move.to
-
-    await nextTick()
-    await awaitAnimationEnd(el)
-
-    return
-  }
-
-  virtualIndex.value = move.from + move.direction
+  // A wrap steps one slide further in the same direction, then jumps back without a transition.
+  virtualIndex.value = wrapped ? from + direction : to
 
   await nextTick()
   await awaitAnimationEnd(el)
 
+  if (!wrapped) {
+    return
+  }
+
   el.style.transition = 'none'
-  virtualIndex.value = move.to
+  virtualIndex.value = to
 
   await nextTick()
   void el.offsetHeight
   el.style.transition = ''
 }
+
 function onWheelToggle(ev: WheelEvent) {
   if (!props.toggleOnWheel) {
     return
   }
 
-  if (slideCount.value <= 1) {
-    return
-  }
-
   const delta = ev.deltaY > 0 ? 1 : -1
 
-  if (!props.loop) {
-    const isAtFirstAndGoPrev = isAtFirst.value && delta < 0
-    const isAtLastAndGoNext = isAtLast.value && delta > 0
-    if (isAtFirstAndGoPrev || isAtLastAndGoNext) {
-      return
-    }
+  if (slideCount.value <= 1 || !canStep(delta)) {
+    return
   }
 
   if (ev.cancelable) {
@@ -205,34 +345,79 @@ function onWheelToggle(ev: WheelEvent) {
   void (delta > 0 ? next() : prev())
 }
 
-function onPointerEnter() {
-  if (props.pauseOnHover) {
+function syncAutoPlay() {
+  if (isFocusInside.value || (isPointerInside.value && props.pauseOnHover)) {
     pause()
-  }
-}
 
-function onPointerLeave() {
-  resume()
-}
-
-function onIndicatorClick(ev: MouseEvent) {
-  const targetEl = (ev.target as HTMLElement).closest('[data-index]') as HTMLButtonElement | null
-  const targetIndex = Number(targetEl?.dataset.index)
-
-  if (Number.isNaN(targetIndex)) {
     return
   }
 
-  if (targetIndex !== currentIndex.value) {
-    void goTo(targetIndex)
+  resume()
+}
+
+function onPointerEnter() {
+  isPointerInside.value = true
+  syncAutoPlay()
+}
+
+function onPointerLeave() {
+  isPointerInside.value = false
+  syncAutoPlay()
+}
+
+// A focused slide must be the one on screen: the slides are moved by transform, so the browser
+// cannot scroll it into view the way it does inside a scroll container.
+function onFocusIn(ev: FocusEvent) {
+  isFocusInside.value = true
+  syncAutoPlay()
+
+  const slide = (ev.target as HTMLElement | null)?.closest<HTMLElement>('.pxd-carousel-item')
+
+  if (!slide || !sliderRef.value || slide.parentElement !== sliderRef.value) {
+    return
+  }
+
+  const index = Array.from(sliderRef.value.children).indexOf(slide)
+
+  if (index !== -1 && index !== currentIndex.value) {
+    void goTo(index)
   }
 }
+
+function onFocusOut(ev: FocusEvent) {
+  const related = ev.relatedTarget
+
+  if (related instanceof Node && rootRef.value?.contains(related)) {
+    return
+  }
+
+  isFocusInside.value = false
+  syncAutoPlay()
+}
+
+watch(slideCount, (count) => {
+  const last = Math.max(0, count - 1)
+
+  currentIndex.value = count === 0 ? 0 : clampValue(currentIndex.value, 0, last)
+  virtualIndex.value = clampValue(virtualIndex.value, 0, last)
+})
+
+watch([() => props.autoplay, () => props.interval], startCycle)
+
+currentIndex.value = normalizeIndex(props.index)
+virtualIndex.value = currentIndex.value
+startCycle()
+
+onBeforeUnmount(stop)
 </script>
 
 <template>
   <div
+    ref="rootRef"
     data-carousel
     v-bind="$attrs"
+    role="group"
+    aria-roledescription="carousel"
     :data-orientation="direction"
     :data-autoplay="autoplay"
     :data-autoplay-paused="isAutoPlayPaused || undefined"
@@ -241,17 +426,23 @@ function onIndicatorClick(ev: MouseEvent) {
     class="pxd-carousel group relative w-full touch-none overflow-hidden"
     :style="rootStyle"
     @pointerenter="onPointerEnter"
+    @pointerdown="onPointerEnter"
     @pointerleave="onPointerLeave"
+    @focusin="onFocusIn"
+    @focusout="onFocusOut"
     @wheel="onWheelToggle"
   >
     <div class="pxd-carousel--container size-full overflow-clip">
       <div
         ref="sliderRef"
         class="pxd-carousel--slider translate-z-0 size-full active:transition-none motion-safe:transition-transform"
-        :style="computedStyle"
+        :style="sliderStyle"
       >
         <template v-for="(option, index) in options" :key="option.value || index">
           <div
+            role="group"
+            aria-roledescription="slide"
+            :aria-label="`${index + 1} / ${slideCount}`"
             class="pxd-carousel-item size-full shrink-0 content-visibility-auto intrinsic-size-auto"
           >
             <slot v-if="slots.item" name="item" :item="option" :index="index" />
@@ -264,20 +455,23 @@ function onIndicatorClick(ev: MouseEvent) {
     <div
       v-if="indicator"
       class="pxd-carousel--indicator gap-2 absolute z-1 flex w-max items-center"
-      @click="onIndicatorClick"
     >
       <slot name="indicator" :current="currentIndex" :total="slideCount">
         <button
           v-for="(_, i) in slideCount"
           :key="i"
+          type="button"
           :data-index="i"
-          class="pxd-carousel--indicator-item h-2 relative cursor-pointer appearance-none rounded-full bg-gray-alpha-200 font-inherit self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-[width,background-color]"
-          :class="i === currentIndex ? 'w-8' : 'w-2'"
+          :aria-label="`${i + 1} / ${slideCount}`"
+          :aria-current="i === currentIndex ? 'true' : undefined"
+          class="pxd-carousel--indicator-item relative cursor-pointer appearance-none rounded-full bg-gray-alpha-200 font-inherit self-focus-ring outline-none hover:bg-gray-alpha-400 motion-safe:transition-colors"
+          :class="i === currentIndex ? (isVerticalIndicator ? 'h-8 w-2' : 'h-2 w-8') : 'h-2 w-2'"
+          @click="goTo(i)"
         >
           <span
             v-if="i === currentIndex"
             :key="progressKey"
-            class="pxd-carousel--indicator-progress block h-full rounded-full bg-primary"
+            class="pxd-carousel--indicator-progress block size-full rounded-full bg-primary"
           />
         </button>
       </slot>
@@ -286,7 +480,7 @@ function onIndicatorClick(ev: MouseEvent) {
     <div v-if="arrow" class="pxd-carousel--toggler gap-2 pointer-events-none absolute z-1 flex">
       <button
         type="button"
-        aria-label="Carousel arrow left"
+        :aria-label="configProvider.locale.carousel.prev"
         :disabled="!loop && isAtFirst"
         class="pxd-carousel--prev-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-50 motion-safe:transition-colors"
         @click="prev()"
@@ -296,7 +490,7 @@ function onIndicatorClick(ev: MouseEvent) {
 
       <button
         type="button"
-        aria-label="Carousel arrow right"
+        :aria-label="configProvider.locale.carousel.next"
         :disabled="!loop && isAtLast"
         class="pxd-carousel--next-btn p-1.5 pointer-events-auto cursor-pointer appearance-none rounded-md bg-gray-alpha-100 font-inherit text-foreground-secondary self-focus-ring outline-none enabled:hover:bg-background-hover enabled:active:bg-background-active disabled:cursor-not-allowed disabled:opacity-50 motion-safe:transition-colors"
         @click="next()"
@@ -311,62 +505,52 @@ function onIndicatorClick(ev: MouseEvent) {
 .pxd-carousel {
   &[data-indicator-position='top'] {
     .pxd-carousel--indicator {
-      left: 0.75rem;
-      top: 0.5rem;
+      inset: 0.5rem auto auto 0.75rem;
     }
 
     .pxd-carousel--toggler {
-      right: 0.5rem;
-      top: 0.5rem;
+      inset: 0.5rem 0.5rem auto auto;
     }
   }
 
   &[data-indicator-position='bottom'] {
     .pxd-carousel--indicator {
-      left: 0.75rem;
-      bottom: 0.5rem;
+      inset: auto auto 0.5rem 0.75rem;
     }
 
     .pxd-carousel--toggler {
-      right: 0.5rem;
-      bottom: 0.5rem;
+      inset: auto 0.5rem 0.5rem auto;
     }
   }
 
   &[data-indicator-position='left'] {
     .pxd-carousel--indicator {
-      left: 0.5rem;
-      top: 0.75rem;
+      inset: 0.75rem auto auto 0.5rem;
     }
 
     .pxd-carousel--toggler {
-      left: 0.5rem;
-      bottom: 0.5rem;
+      inset: auto auto 0.5rem 0.5rem;
     }
   }
 
   &[data-indicator-position='right'] {
     .pxd-carousel--indicator {
-      right: 0.5rem;
-      top: 0.75rem;
+      inset: 0.75rem 0.5rem auto auto;
     }
 
     .pxd-carousel--toggler {
-      right: 0.5rem;
-      bottom: 0.5rem;
+      inset: auto 0.5rem 0.5rem auto;
     }
   }
 
   &[data-indicator-position='center'] {
     .pxd-carousel--indicator {
-      left: 50%;
-      bottom: 0.5rem;
+      inset: auto auto 0.5rem 50%;
       transform: translateX(-50%);
     }
 
     .pxd-carousel--toggler {
-      left: 0;
-      top: 50%;
+      inset: 50% 0 auto;
       width: 100%;
       padding-inline: 1rem;
       justify-content: space-between;
@@ -379,6 +563,11 @@ function onIndicatorClick(ev: MouseEvent) {
     .pxd-carousel--indicator,
     .pxd-carousel--toggler {
       flex-direction: column;
+    }
+
+    .pxd-carousel--indicator-progress {
+      clip-path: inset(0 0 100% 0);
+      animation-name: pxd-carousel-indicator-progress-block;
     }
   }
 
@@ -410,11 +599,10 @@ function onIndicatorClick(ev: MouseEvent) {
   }
 
   &[data-autoplay='false'] .pxd-carousel--indicator-progress {
-    width: 100%;
+    clip-path: none;
     animation: none;
   }
 
-  &[data-autoplay='false'] .pxd-carousel--indicator-progress,
   &[data-autoplay-paused] .pxd-carousel--indicator-progress {
     animation-play-state: paused;
   }
@@ -427,17 +615,28 @@ function onIndicatorClick(ev: MouseEvent) {
 }
 
 .pxd-carousel--indicator-progress {
-  width: 0;
+  clip-path: inset(0 100% 0 0);
   animation: pxd-carousel-indicator-progress var(--carousel-progress-duration) linear forwards;
+  animation-delay: var(--carousel-progress-elapsed, 0ms);
 }
 
 @keyframes pxd-carousel-indicator-progress {
   from {
-    width: 0;
+    clip-path: inset(0 100% 0 0);
   }
 
   to {
-    width: 100%;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes pxd-carousel-indicator-progress-block {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
   }
 }
 </style>

@@ -38,6 +38,7 @@ describe('button', () => {
 - 断言从 `vite-plus/test` 导入，不是 `vitest`
 - 相对路径导入组件，没有 `~` 别名
 - 用例结束调 `wrapper.unmount()`
+- `tests/setup.ts` 全局注册了 `enableAutoUnmount`：断言失败时也会卸载，避免一条用例把模块级状态（如 `useMediaQuery` 的缓存 entry）泄漏给后面的用例。显式 `unmount()` 仍然保留，它只是失败路径的兜底。
 
 ## Composables
 

@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<SliderProps>(), {
 const emits = defineEmits<SliderEmits>()
 
 const sliderThumbClasses = createTailwindVariant({
-  base: 'pxd-slider--thumb group rounded-xs absolute -translate-x-1/2 transform-gpu touch-none bg-none self-focus-ring outline-none motion-safe:before:transition-appearance',
+  base: 'pxd-slider--thumb group rounded-xs absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 touch-none bg-none self-focus-ring outline-none motion-safe:before:transition-appearance',
   variants: {
     size: {
       sm: 'w-1.5 h-3.5',
@@ -81,7 +81,8 @@ const scheduleUpdate = throttleByRaf(() => {
 
 const sliderRef = shallowRef<HTMLElement>()
 const activeThumb = shallowRef<ThumbIndex | null>(null)
-const labelShiftList = shallowRef<number[]>([0, 0])
+const sliderWidth = shallowRef(0)
+const labelWidthList = shallowRef<[number, number]>([0, 0])
 const stepValues = computed<number[]>(() => {
   const { step, min, max } = props
 
@@ -89,7 +90,7 @@ const stepValues = computed<number[]>(() => {
     return []
   }
 
-  return [...step].sort((a, b) => a - b).filter((value) => value >= min && value <= max)
+  return step.toSorted((a, b) => a - b).filter((value) => value >= min && value <= max)
 })
 const stopList = computed(() => {
   const { stops, min, max, step } = props
@@ -161,6 +162,10 @@ const valueRange = computed<[number, number]>(() => {
 })
 const startPercentage = computed(() => getPercentage(valueRange.value[0], props.min, props.max))
 const endPercentage = computed(() => getPercentage(valueRange.value[1], props.min, props.max))
+const labelShiftList = computed(() => [
+  getLabelShift(startPercentage.value, labelWidthList.value[0], sliderWidth.value),
+  getLabelShift(endPercentage.value, labelWidthList.value[1], sliderWidth.value),
+])
 const trackStyle = computed(() => ({
   left: `${startPercentage.value}%`,
   width: `${endPercentage.value - startPercentage.value}%`,
@@ -203,7 +208,7 @@ const thumbList = computed(() => {
 
 const { attrs, classes } = useTailwindVariant(
   {
-    base: 'pxd-slider--wrapper group/slider relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
+    base: 'pxd-slider--wrapper group/slider @container relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
     variants: {
       size: {
         sm: 'h-2',
@@ -308,7 +313,7 @@ function toKeyboardValue(current: number, isNegative: boolean) {
   }
 
   // The current value is off-grid: jump to the closest allowed value in the pressed direction.
-  const candidates = isNegative ? values.slice().reverse() : values
+  const candidates = isNegative ? values.toReversed() : values
 
   return candidates.find((value) => (isNegative ? value < current : value > current)) ?? current
 }
@@ -316,22 +321,13 @@ function setLabelRef(index: ThumbIndex, el: unknown) {
   labelRefList[index].value = el instanceof HTMLElement ? el : undefined
 }
 
-function updateLabelShifts() {
-  const slider = sliderRef.value
-
-  if (!slider) {
-    return
-  }
-
+function measureLabels() {
   // Layout pixels: `getBoundingClientRect()` reports the box already scaled by an ancestor
   // zoom or transform, while the shift below is applied in unscaled pixels.
-  const sliderWidth = slider.clientWidth
-  const startLabel = labelRefList[0].value
-  const endLabel = labelRefList[1].value
-
-  labelShiftList.value = [
-    startLabel ? getLabelShift(startPercentage.value, startLabel.offsetWidth, sliderWidth) : 0,
-    endLabel ? getLabelShift(endPercentage.value, endLabel.offsetWidth, sliderWidth) : 0,
+  sliderWidth.value = sliderRef.value?.clientWidth ?? 0
+  labelWidthList.value = [
+    labelRefList[0].value?.offsetWidth ?? 0,
+    labelRefList[1].value?.offsetWidth ?? 0,
   ]
 }
 
@@ -496,13 +492,21 @@ function selectMark(value: number) {
   commit(setValue(next), { reason: 'item-press' })
 }
 
-watch(() => [startPercentage.value, endPercentage.value], updateLabelShifts, { flush: 'post' })
+watch(
+  [() => String(thumbList.value[0]?.value ?? ''), () => String(thumbList.value[1]?.value ?? '')],
+  (values, previous) => {
+    if (values[0].length === previous?.[0]?.length && values[1].length === previous?.[1]?.length) {
+      return
+    }
+
+    measureLabels()
+  },
+  { flush: 'post' },
+)
 
 initModelValue()
 
-onMounted(() => {
-  updateLabelShifts()
-})
+onMounted(measureLabels)
 
 onBeforeUnmount(stopDragging)
 </script>
@@ -532,28 +536,33 @@ onBeforeUnmount(stopDragging)
       <div
         v-for="thumb in thumbList"
         :key="thumb.index"
-        role="slider"
-        tabindex="0"
-        :aria-valuemin="thumb.index === 0 ? min : valueRange[0]"
-        :aria-valuemax="thumb.index === 0 ? valueRange[1] : max"
-        :aria-valuenow="thumb.value"
-        aria-orientation="horizontal"
-        :aria-disabled="disabled"
-        :data-dragging="activeThumb === thumb.index"
-        :class="thumb.classes"
-        :style="{ left: `${thumb.percentage}%` }"
-        @keydown="onThumbKeydown($event, thumb.index)"
-        @contextmenu.prevent
-        @pointerdown.prevent.stop="startDragging($event, thumb.index)"
-        @pointerenter="updateLabelShifts"
+        class="pxd-slider--thumb-anchor left-0 h-0 w-0 absolute top-1/2"
+        :class="{ 'z-1': activeThumb === thumb.index }"
+        :style="{ translate: `${thumb.percentage}cqw 0` }"
       >
-        <span
-          :ref="(el: unknown) => setLabelRef(thumb.index, el)"
-          class="pxd-slider--label py-1 px-1 text-xs -top-7 shadow-xl pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-sm border border-gray-alpha-300 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
-          :style="{ translate: `calc(-50% + ${labelShiftList[thumb.index]}px)` }"
+        <div
+          role="slider"
+          tabindex="0"
+          :aria-valuemin="thumb.index === 0 ? min : valueRange[0]"
+          :aria-valuemax="thumb.index === 0 ? valueRange[1] : max"
+          :aria-valuenow="thumb.value"
+          aria-orientation="horizontal"
+          :aria-disabled="disabled"
+          :data-dragging="activeThumb === thumb.index"
+          :class="thumb.classes"
+          @keydown="onThumbKeydown($event, thumb.index)"
+          @contextmenu.prevent
+          @pointerdown.prevent.stop="startDragging($event, thumb.index)"
+          @pointerenter="measureLabels"
         >
-          {{ thumb.value }}
-        </span>
+          <span
+            :ref="(el: unknown) => setLabelRef(thumb.index, el)"
+            class="pxd-slider--label py-1 px-1 text-xs -top-7 shadow-xl pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-sm border border-gray-alpha-300 bg-gray-1000 leading-none whitespace-nowrap text-gray-100 tabular-nums opacity-0 select-none group-hover:opacity-100 group-data-[dragging=true]:opacity-100 motion-safe:transition-opacity"
+            :style="{ translate: `calc(-50% + ${labelShiftList[thumb.index]}px)` }"
+          >
+            {{ thumb.value }}
+          </span>
+        </div>
       </div>
     </div>
 
@@ -603,10 +612,8 @@ onBeforeUnmount(stopDragging)
     height: 150%;
   }
 
-  &:active,
   &[data-dragging='true'] {
     --slider-thumb-scale: 1.3;
-    z-index: 1;
 
     &::after {
       width: 100%;

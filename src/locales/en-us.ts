@@ -56,6 +56,10 @@ const enUS = {
     scrollPrev: 'Scroll tabs left',
     scrollNext: 'Scroll tabs right',
   },
+  carousel: {
+    prev: 'Previous slide',
+    next: 'Next slide',
+  },
   pagination: {
     perPage: '/page',
     prev: 'Previous page',
@@ -91,6 +95,9 @@ const enUS = {
   codeBlock: {
     expand: 'Show more',
     collapse: 'Show less',
+  },
+  message: {
+    notifications: 'Notifications',
   },
 }
 

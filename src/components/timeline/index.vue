@@ -47,7 +47,7 @@ function flattenItems(children: VNode[]): VNode[] {
 
 function TimelineItems() {
   const children = flattenItems(slots.default?.() ?? [])
-  return props.reverse ? [...children].reverse() : children
+  return props.reverse ? children.toReversed() : children
 }
 </script>
 

@@ -41,9 +41,21 @@ pxd/
 - `pnpm lint:fix` — Lint and auto-fix
 - `pnpm fmt` — Format all files
 
+## Browser Support
+
+**Baseline: Chrome/Edge 120 · Firefox 128 · Safari/iOS 16.4.** This is the floor for the published library, not just the docs site.
+
+- The floor is set by the **Tailwind v4 output**, not by Vue's release year: `@property` needs Firefox 128 / Safari 16.4 / Chrome 85, and `color-mix()` needs Chrome 111 / Safari 16.2 / Firefox 113. Lowering it means auditing the generated CSS, not just the source.
+- A platform feature may be used directly only when **all three** engines support it at that version.
+- Anything newer goes behind a feature-detected helper in `src/utils/_internal/` that calls the native API when present and falls back otherwise — see `promise.ts` (`Promise.withResolvers`). Never patch globals, never add a hard dependency, never gate on `userAgent`.
+- Native features that degrade silently (unknown CSS properties, unsupported HTML attributes) may be used as progressive enhancement; features that throw must be routed through a helper.
+- Raising this floor is a decision, not a side effect of a refactor.
+- **Still out of reach** (Safari is almost always the blocker): `popover` (17), `transition-behavior: allow-discrete` (17.4), `@starting-style` (17.5), `<details name>` (17.2), `scrollbar-width/color` (18.2), `scrollend` (26.2), `Promise.withResolvers` (17.4), `field-sizing` (26.2), `:user-invalid` (16.5), `closedby` (no Safari at all). Re-check before assuming any of them can be adopted.
+
 ## Hard Rules (MUST follow)
 
 - **Always** target Vue 3.3+ only, no runtime version checks
+- **Always** respect the browser baseline above when adopting a web platform API
 - **Never** edit `dist/` or generated files by hand
 - **Use** Composition API with `<script setup>` only (no Options API)
 - **Order** `<script setup>` top-level code exactly: imports → defineOptions/props/emits → plain consts → refs/computed → custom composables → functions → watch/provide → lifecycles → defineExpose. Do not interleave these groups, except where a later declaration is a dependency of an earlier one — dependency wins, and `pnpm lint:fix` keeps that order.

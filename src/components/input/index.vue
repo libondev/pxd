@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<InputProps>(), {
   align: 'left',
   trimOverflow: false,
   wordLimitPosition: 'inside',
-  clearOnPressEscape: true,
+  clearOnPressEscape: false,
   defaultPrefixStyle: true,
   defaultSuffixStyle: true,
 })

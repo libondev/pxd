@@ -3,6 +3,12 @@ import { onMounted } from 'vue'
 /** Past this length the regex scan and one Range per token cost more than the colors are worth. */
 export const MAX_HIGHLIGHT_LENGTH = 20000
 
+/**
+ * A streaming block rewrites its text several times a frame; a scan per change costs more than the
+ * colors it adds. One run per window keeps a page full of blocks to a few paints a second.
+ */
+export const HIGHLIGHT_DELAY = 150
+
 type HighlightModule = typeof import('microlighter')
 
 const IMPORT_RETRY_DELAY = 30_000
@@ -11,6 +17,7 @@ const MAX_IMPORT_ATTEMPTS = 3
 let modulePromise: Promise<HighlightModule | null> | null = null
 let pending = false
 let flushing = false
+let timer: ReturnType<typeof setTimeout> | undefined
 let retryAfter = 0
 let importAttempts = 0
 
@@ -43,22 +50,17 @@ function loadModule(): Promise<HighlightModule | null> {
 }
 
 async function flush() {
-  if (flushing) {
+  if (flushing || !pending) {
     return
   }
 
   flushing = true
+  pending = false
 
   try {
-    while (pending) {
-      pending = false
+    const module = await loadModule()
 
-      const module = await loadModule()
-
-      if (!module) {
-        return
-      }
-
+    if (module) {
       // `.pxd-code-block--line-code` are the per-line code nodes of PCodeBlock's line mode;
       // they sit inside a row wrapper instead of being a direct `pre > code` child.
       await module.highlightAll({
@@ -68,19 +70,30 @@ async function flush() {
   } catch {
     // A failed run has already cleared its registered ranges. Keep later edits able to retry
     // instead of disabling highlighting for every block in the session.
-    return
   } finally {
     flushing = false
+
+    if (pending) {
+      scheduleHighlight()
+    }
   }
 }
 
 function scheduleHighlight() {
-  if (pending || !isHighlightSupported()) {
+  if (!isHighlightSupported()) {
     return
   }
 
   pending = true
-  queueMicrotask(flush)
+
+  if (timer !== undefined || flushing) {
+    return
+  }
+
+  timer = setTimeout(() => {
+    timer = undefined
+    void flush()
+  }, HIGHLIGHT_DELAY)
 }
 
 /**
@@ -88,8 +101,14 @@ function scheduleHighlight() {
  * module state, so one run per instance would wipe every other block. All blocks share one batched,
  * serialized run over `document`.
  */
-export function useCodeHighlight() {
-  onMounted(scheduleHighlight)
+export function useCodeHighlight(canHighlight: () => boolean = () => true) {
+  const request = () => {
+    if (canHighlight()) {
+      scheduleHighlight()
+    }
+  }
 
-  return { scheduleHighlight }
+  onMounted(request)
+
+  return { scheduleHighlight: request }
 }

@@ -7,6 +7,8 @@ import InformationFillIcon from '@gdsicon/vue/information-fill'
 import LoadingIcon from '@gdsicon/vue/loader-circle'
 import WarningFillIcon from '@gdsicon/vue/warning-fill'
 import { computed, onMounted, shallowRef, watch } from 'vue'
+import { useResizeObserver } from '../../composables/use-resize-observer.js'
+import { useConfigProvider } from '../../contexts/config-provider.js'
 import PButton from '../button/index.vue'
 
 defineOptions({
@@ -14,7 +16,9 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<MessageItemProps>()
+const props = withDefaults(defineProps<MessageItemProps>(), {
+  offset: 0,
+})
 const emits = defineEmits<MessageItemEmits>()
 
 const TYPE_ICONS = {
@@ -26,20 +30,24 @@ const TYPE_ICONS = {
 }
 
 const itemRef = shallowRef<HTMLElement>()
+const contentRef = shallowRef<HTMLElement>()
 
 const computedStyle = computed(() => {
   const { index, max } = props
-  const isVisible = index < max
 
   return {
     '--message-item-index': index,
+    '--message-item-offset': `${props.offset}px`,
+    '--message-item-height': `${props.itemData.height ?? 0}px`,
     'z-index': max - index,
-    opacity: isVisible ? 1 : 0,
-    // hidden items must stay out of flow, otherwise they stretch the expanded list
-    position: isVisible ? undefined : 'absolute',
-    'pointer-events': isVisible ? 'auto' : 'none',
   } as const
 })
+
+const configProvider = useConfigProvider()
+
+// The card sets its rendered height from the stored one, so growing content cannot resize it;
+// observe the content instead or an async message would keep the height it had at mount.
+useResizeObserver(contentRef, setItemHeightInfo)
 
 function onItemCloseClick() {
   if (props.itemData.action?.onClick) {
@@ -50,13 +58,24 @@ function onItemCloseClick() {
 }
 
 function setItemHeightInfo() {
-  if (!itemRef.value) {
+  const el = itemRef.value
+
+  if (!el) {
     return
   }
 
   // It is necessary to ensure the reference to the original object;
   // otherwise, the type of the promise data cannot be updated.
-  props.itemData.height = itemRef.value.offsetHeight
+  const height = el.style.height
+
+  // The stack sets the rendered height per state; measure the natural one instead.
+  el.style.height = 'auto'
+  const measured = el.offsetHeight
+  el.style.height = height
+
+  if (props.itemData.height !== measured) {
+    props.itemData.height = measured
+  }
 }
 
 watch(() => props.itemData.message, setItemHeightInfo, { flush: 'post' })
@@ -69,30 +88,35 @@ onMounted(() => {
 <template>
   <li
     ref="itemRef"
-    tabindex="0"
+    :tabindex="index < max ? 0 : undefined"
+    :inert="index >= max"
     data-message-item
     :data-index="index"
     :data-front="index === 0"
+    :data-visible="index < max"
     :style="computedStyle"
-    class="pxd-message-item px-3 py-2 text-sm flex w-full max-w-full shrink-0 transform-(--message-item-transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none motion-safe:transition-(--message-item-transition)"
+    class="pxd-message-item px-3 py-2 text-sm flex w-full max-w-full shrink-0 transform-(--message-item-transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none data-[visible=false]:opacity-0 motion-safe:transition-(--message-item-transition)"
     :class="[itemData.class, { 'pe-9': itemData.closeable }]"
     v-bind="$attrs"
   >
-    <Component
-      :is="TYPE_ICONS[itemData.type]"
-      v-if="itemData.type"
-      class="pxd-message--icon me-2 size-em h-lh shrink-0"
-      :class="itemData.type"
-    />
+    <div ref="contentRef" class="min-w-0 flex flex-1 self-start">
+      <Component
+        :is="TYPE_ICONS[itemData.type]"
+        v-if="itemData.type"
+        class="pxd-message--icon me-2 size-em h-lh shrink-0"
+        :class="itemData.type"
+      />
 
-    <span v-if="typeof itemData.message === 'string'" v-html="itemData.message" />
-    <Component :is="itemData.message" v-else :key="itemData.id" />
+      <span v-if="typeof itemData.message === 'string'" v-html="itemData.message" />
+      <Component :is="itemData.message" v-else :key="itemData.id" />
+    </div>
 
     <PButton
       v-if="itemData.closeable || itemData.action"
       size="xs"
       :icon="!itemData.action?.variant"
       :variant="itemData.action?.variant ?? 'ghost'"
+      :aria-label="itemData.action?.label ? undefined : configProvider.locale.interaction.close"
       class="top-1.5 right-1.5 px-0! text-xs absolute z-1 touch-none text-foreground-secondary"
       @click="onItemCloseClick"
     >

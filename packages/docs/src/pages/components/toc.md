@@ -150,8 +150,8 @@ const viewport = shallowRef(null)
           @click="select"
         >
           <span
-            class="h-1 rounded-full motion-safe:transition-all motion-safe:duration-150"
-            :class="active ? 'w-5 bg-primary' : 'w-2.5 bg-gray-400 group-hover:w-5 group-hover:bg-gray-700'"
+            class="h-1 w-5 origin-left rounded-full motion-safe:transition-[scale,background-color] motion-safe:duration-150"
+            :class="active ? 'scale-x-100 bg-primary' : 'scale-x-50 bg-gray-400 group-hover:scale-x-100 group-hover:bg-gray-700'"
           />
 
           <span

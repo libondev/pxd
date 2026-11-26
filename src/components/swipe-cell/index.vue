@@ -88,7 +88,14 @@ useSwipeGesture(rootRef, {
   onPress: () => {
     openToken += 1
     measureWidths()
-    gestureStartOffset = trackOffset
+
+    // A settle can still be running from the previous release; start the new drag from what is on
+    // screen, not from the offset it is heading to.
+    const content = contentRef.value
+    const running = content ? getComputedStyle(content).transform : 'none'
+
+    gestureStartOffset =
+      running && running !== 'none' ? new DOMMatrixReadOnly(running).m41 : trackOffset
   },
   onFollow: ({ displacement }) => {
     if (!dragging.value) {
@@ -99,7 +106,7 @@ useSwipeGesture(rootRef, {
     applyOffset(clampOffset(trackOffset))
     syncSlots()
   },
-  onRelease: ({ displacement, axisLocked, event }) => {
+  onRelease: ({ displacement, velocity, axisLocked, event }) => {
     if (event.type === 'pointercancel') {
       openToken += 1
       syncOpenOffset()
@@ -111,7 +118,7 @@ useSwipeGesture(rootRef, {
     }
 
     trackOffset = gestureStartOffset + displacement
-    void releaseSwipe()
+    void releaseSwipe(velocity)
   },
   onTap: ({ startEvent, vetoed }) => {
     if (vetoed || !startEvent) {
@@ -329,7 +336,7 @@ function onWrapperClick(ev: MouseEvent) {
   closeByTarget(ev.target as Node)
 }
 
-async function releaseSwipe() {
+async function releaseSwipe(velocity = 0) {
   // Drop `transition-none` before settling, otherwise transform snaps with no transition.
   dragging.value = false
   await nextTick()
@@ -353,7 +360,10 @@ async function releaseSwipe() {
   }
 
   const reveal = Math.min(Math.abs(offset), width)
-  const next = side && width > 0 && reveal >= width * props.threshold ? side : false
+  // Velocity is signed along the horizontal axis; only motion toward this side counts.
+  const velocityTowardSide = side === 'prefix' ? velocity : -velocity
+  const flung = velocityTowardSide >= 0.3
+  const next = side && width > 0 && (reveal >= width * props.threshold || flung) ? side : false
 
   if (!next && openedSide.value) {
     await setOpen(false, openedSide.value)

@@ -35,7 +35,7 @@ export function useColorScheme(options: Options = {}) {
     removeStyleTimer: ReturnType<typeof setTimeout> | null
     disableTransitionStyleEl: HTMLStyleElement | null
   } = { removeStyleTimer: null, disableTransitionStyleEl: null }
-  const DISABLE_TRANSITION_CSS = `*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}`
+  const DISABLE_TRANSITION_CSS = `*,*::before,*::after{transition:none!important}`
 
   const isDark = computed(() => {
     if (colorScheme.value === 'dark') {

@@ -6,6 +6,12 @@
 @source '../components';
 @source '../composables';
 
+@property --swipe-offset {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 :root {
   --background-100-value: 0, 0%, 100%;
   --background-200-value: 0, 0%, 98%;
@@ -115,8 +121,13 @@
   --primary-active: hsla(var(--primary), 90%);
 
   --radius: 0.5rem;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
   --duration: 0.2s;
-  --timing-function: ease-out;
+  --timing-function: var(--ease-out);
   --ring: var(--primary);
 
   --shadow-background-border: 0 0 0 1px hsl(var(--background-200-value));
@@ -144,7 +155,6 @@
   --popover-scale: 0.95;
   --popover-index: max(var(--pxd-initial-index), 10);
   --overlay-index: calc(var(--popover-index) - 5);
-  --modal-index: calc(var(--overlay-index) + 5);
   --modal-width: 33.75rem;
   --placeholder-gap: 0.75rem;
   --toggle-active-color: var(--color-primary);
@@ -280,7 +290,6 @@
   color-scheme: dark;
 }
 
-/* Prefer relative colors */
 @supports (color: hsl(from #fff h s l)) {
   :root {
     --primary-hover: hsl(from var(--color-primary) h s calc(l + 10));
@@ -411,6 +420,9 @@
   --default-transition-duration: var(--duration);
   --default-transition-timing-function: var(--timing-function);
 
+  --animate-dialog-backdrop: pxd-dialog-backdrop-in var(--default-transition-duration)
+    var(--default-transition-timing-function);
+
   --z-1: 1;
   --spacing-em: 1em;
   --spacing-inherit: inherit;
@@ -464,24 +476,10 @@
 
 @utility underline {
   text-underline-position: from-font;
-  text-decoration-skip-ink: auto;
-}
-
-@utility truncate-* {
-  display: -webkit-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-clamp: --value(integer);
-  -webkit-line-clamp: --value(integer);
-  -webkit-box-orient: vertical;
 }
 
 @utility scrollbar-none {
-  & {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    -webkit-overflow-scrolling: touch;
-  }
+  scrollbar-width: none;
 
   &::-webkit-scrollbar {
     display: none;
@@ -489,18 +487,15 @@
 }
 
 @utility self-focus-ring {
-  & {
-    outline-offset: 2px;
-  }
+  outline-offset: 2px;
+
   &:focus-visible {
     outline: 2px solid hsl(var(--ring));
   }
 }
 
 @utility peer-focus-ring {
-  & {
-    outline-offset: 2px;
-  }
+  outline-offset: 2px;
 
   .peer:focus-visible ~ & {
     outline: 2px solid hsl(var(--ring));
@@ -527,10 +522,9 @@
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border-width: 0;
-  opacity: 0;
 }
 
 @utility content-visibility-auto {
@@ -556,23 +550,31 @@
 }
 
 @keyframes pxd-countdown-shrink {
-  from {
-    transform: scaleX(1);
-  }
-
   to {
     transform: scaleX(0);
   }
 }
 
+@keyframes pxd-dialog-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 @layer base {
   *,
-  &::before,
-  &::after {
+  *::before,
+  *::after {
     border-color: var(--color-gray-300);
   }
 
-  .dark :is(*, *::before, *::after) {
+  .dark *,
+  .dark *::before,
+  .dark *::after {
     border-color: var(--color-gray-400);
   }
 }
@@ -617,7 +619,6 @@
   transition-property: opacity;
   transition-duration: var(--default-transition-duration);
   transition-timing-function: var(--default-transition-timing-function);
-  will-change: opacity;
 }
 
 .pxd-transition--fade-enter-from,
@@ -629,7 +630,7 @@
 .pxd-transition--fade-scale-enter-active,
 .pxd-transition--fade-scale-leave-active {
   transition-property: opacity, transform, filter;
-  transition-duration: var(--default-transition-duration);
+  transition-duration: calc(var(--default-transition-duration) * 0.8);
   transition-timing-function: var(--default-transition-timing-function);
   will-change: opacity, transform, filter;
 }
@@ -637,8 +638,8 @@
 .pxd-transition--fade-scale-enter-from,
 .pxd-transition--fade-scale-leave-to {
   opacity: 0;
-  filter: blur(4px);
-  transform: scale(0.68);
+  filter: blur(3px);
+  transform: scale(0.95);
 }
 
 [class*='pxd-'] svg {
@@ -660,18 +661,6 @@
 .scrollbar-disabled,
 .scrollbar-disabled-y {
   overflow-y: hidden !important;
-}
-
-.grid-template-rows-1fr {
-  grid-template-rows: minmax(0, 1fr);
-}
-
-.grid-template-rows-0fr {
-  grid-template-rows: minmax(0, 0fr);
-}
-
-.grid-template-cols-1fr {
-  grid-template-columns: minmax(0, 1fr);
 }
 
 @media (prefers-reduced-motion: reduce) {

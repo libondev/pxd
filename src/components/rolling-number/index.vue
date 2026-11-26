@@ -149,6 +149,7 @@ function scheduleScrollFinish() {
 
   finishTimer = setTimeout(() => {
     finishTimer = null
+    scrollTransition.value = false
     emits('finish')
   }, props.duration)
 }
@@ -251,9 +252,9 @@ defineExpose({
             class="pxd-rolling-number--digit relative inline-block h-em overflow-hidden align-bottom leading-none"
           >
             <span
-              class="pxd-rolling-number--digit-strip inline-flex flex-col will-change-transform"
+              class="pxd-rolling-number--digit-strip inline-flex flex-col"
               :class="{
-                'motion-safe:transition-transform motion-safe:duration-(--pxd-rolling-duration)':
+                'motion-safe:transition-transform motion-safe:duration-(--pxd-rolling-duration) motion-safe:will-change-transform':
                   scrollTransition,
               }"
               :style="{ transform: `translate3d(0, -${item.digit}em, 0)` }"

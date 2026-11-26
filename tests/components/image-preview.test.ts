@@ -201,13 +201,32 @@ describe('image-preview', () => {
 
     await openPreview(wrapper)
 
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }))
+    document
+      .querySelector('[data-image-preview-dialog]')!
+      .dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))
     await nextTick()
     expect(getCounter()).toBe('2 / 3')
 
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }))
+    document
+      .querySelector('[data-image-preview-dialog]')!
+      .dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }))
     await nextTick()
     expect(getCounter()).toBe('1 / 3')
+
+    wrapper.unmount()
+  })
+
+  it('follows a native close it did not start', async () => {
+    const wrapper = mountImagePreview()
+
+    await openPreview(wrapper)
+
+    const dialog = document.body.querySelector('dialog')!
+
+    dialog.close()
+    await nextTick()
+
+    expect(getDialog()).toBeNull()
 
     wrapper.unmount()
   })

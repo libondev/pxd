@@ -1,7 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import { h } from 'vue'
+import { defineComponent, h, nextTick, ref } from 'vue'
 import Message from '../../src/components/message/index.vue'
+import Modal from '../../src/components/modal/index.vue'
 import { UPDATE_MESSAGE_EVENT_NAME } from '../../src/composables/use-message'
 
 function dispatchCreate(data: any) {
@@ -55,7 +56,6 @@ describe('message', () => {
         group: 'g1',
         max: 5,
         position: 'top',
-        zIndex: 999,
       },
       attachTo: document.body,
     })
@@ -288,7 +288,7 @@ describe('message', () => {
     wrapper.unmount()
   })
 
-  it('should keep messages past max out of flow', async () => {
+  it('should hide messages past max', async () => {
     const wrapper = mount(Message, {
       props: { group: 'g1', max: 2, expand: true },
       attachTo: document.body,
@@ -303,7 +303,35 @@ describe('message', () => {
     const items = [...document.body.querySelectorAll('[data-message-item]')] as HTMLElement[]
 
     expect(items.map((el) => el.getAttribute('data-index'))).toEqual(['0', '1', '2'])
-    expect(items.map((el) => el.style.position)).toEqual(['', '', 'absolute'])
+    expect(items.map((el) => el.getAttribute('data-visible'))).toEqual(['true', 'true', 'false'])
+    expect(items.map((el) => el.getAttribute('tabindex'))).toEqual(['0', '0', null])
+    expect(items.map((el) => el.hasAttribute('inert'))).toEqual([false, false, true])
+    expect(items.some((el) => el.hasAttribute('aria-hidden'))).toBe(false)
+
+    wrapper.unmount()
+  })
+
+  it('should offset expanded items by the shared gap', async () => {
+    const wrapper = mount(Message, {
+      props: { group: 'g1', expand: true },
+      attachTo: document.body,
+    })
+
+    dispatchCreate({ id: 'oa', group: 'g1', type: 'info', message: 'a', duration: 0 })
+    dispatchCreate({ id: 'ob', group: 'g1', type: 'info', message: 'b', duration: 0 })
+    dispatchCreate({ id: 'oc', group: 'g1', type: 'info', message: 'c', duration: 0 })
+    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick()
+
+    const section = document.body.querySelector('[data-message]') as HTMLElement
+    const items = [...document.body.querySelectorAll('[data-message-item]')] as HTMLElement[]
+
+    expect(section.style.getPropertyValue('--message-deck-offset')).toBe('8px')
+    expect(items.map((el) => el.style.getPropertyValue('--message-item-offset'))).toEqual([
+      '0px',
+      '8px',
+      '16px',
+    ])
 
     wrapper.unmount()
   })
@@ -339,6 +367,33 @@ describe('message', () => {
     await wrapper.vm.$nextTick()
 
     expect(messageSection().getAttribute('data-expand')).toBe('true')
+
+    wrapper.unmount()
+  })
+})
+
+describe('message over a dialog', () => {
+  it('should live inside the open dialog and fall back to body once it closes', async () => {
+    const Host = defineComponent({
+      components: { Message, Modal },
+      setup: () => ({ visible: ref(true) }),
+      template: '<div><Message /><Modal v-model="visible" /></div>',
+    })
+    const wrapper = mount(Host, {
+      attachTo: document.body,
+      global: { stubs: { transition: false } },
+    })
+
+    await nextTick()
+
+    const section = messageSection()
+
+    expect(section.closest('dialog')).not.toBeNull()
+
+    ;(wrapper.vm as unknown as { visible: boolean }).visible = false
+
+    await vi.waitFor(() => expect(section.closest('dialog')).toBeNull())
+    expect(section.parentElement).toBe(document.body)
 
     wrapper.unmount()
   })

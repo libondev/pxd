@@ -184,7 +184,6 @@ function open(index) {
 | data | `(string \| ImagePreviewItem)[]` | - | Images rendered as thumbnails; an item's `src` is a URL or a function returning a promise of one |
 | variant | `'default' \| 'viewer'` | `'default'` | Render the thumbnails together with the dialog, or the dialog alone |
 | index | `number` | `0` | Image the preview opens at |
-| z-index | `number` | - | Stacking order of the preview, applied through the `--image-preview-index` variable |
 | close-on-press-escape | `boolean` | `true` | Close the preview when `Esc` is pressed |
 | close-on-click-overlay | `boolean` | `true` | Close the preview when the area around the image is clicked |
 

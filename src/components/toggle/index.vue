@@ -128,8 +128,10 @@ async function onCheckboxChange(e: Event) {
         :data-disabled="isDisabled"
         class="pxd-toggle--handle-icon shadow-sm dark:bg-white relative flex aspect-square h-full translate-x-(--tx) transform-gpu items-center justify-center overflow-hidden rounded-full bg-background-100 text-[0.625rem] text-foreground-secondary motion-safe:transition-appearance dark:data-[checked=true]:bg-background-100 dark:data-[disabled=true]:bg-gray-900 dark:data-[disabled=true]:text-gray-500"
       >
-        <div class="inset-0 absolute flex items-center justify-center">
-          <Transition name="pxd-transition--fade" mode="out-in">
+        <div
+          class="pxd-toggle--icon-stack inset-0 absolute grid place-items-center *:col-start-1 *:row-start-1"
+        >
+          <Transition name="pxd-transition--fade">
             <LoaderCircleIcon v-if="loading" class="motion-safe:animate-spin" />
             <slot v-else-if="isChecked" name="checked" />
             <slot v-else name="unchecked" />

@@ -309,7 +309,7 @@ function onChange(value: string, details: ChangeDetails) {
 | Field | Type | Meaning |
 | --- | --- | --- |
 | source | `'user' \| 'agent' \| 'programmatic' \| undefined` | Who changed it: a person, a step, or code. |
-| reason | `string \| undefined` | Why it changed, from a closed list: a person's `'typed'`, `'cleared'`, `'item-press'`, `'trigger-press'`, `'escape-key'`, `'outside-press'`, `'close-press'`, `'step'`, `'settle'`; or `'api'` and `'sync'` when nobody pressed anything. |
+| reason | `string \| undefined` | Why it changed, from a closed list: a person's `'typed'`, `'cleared'`, `'item-press'`, `'trigger-press'`, `'escape-key'`, `'outside-press'`, `'close-press'`, `'swipe'`, `'step'`, `'settle'`; or `'api'` and `'sync'` when nobody pressed anything. |
 | cancel | `() => void` | Refuses the write, where the component owns it: the value stays, and `update:model-value` is not emitted. |
 | canceled | `boolean` | Whether `cancel()` was called. |
 
@@ -323,7 +323,7 @@ Every component that reports a value now writes through that entry, so a person'
 | `cleared` | A person emptied a field. |
 | `item-press` | A value was picked from a set of options, a tab or a step. |
 | `trigger-press` | A control that flips or expands itself was pressed. |
-| `escape-key`, `outside-press`, `close-press` | A dialog was dismissed: Escape, a click outside, or its close button. A command menu repeats the reason on its own `close` event. |
+| `escape-key`, `outside-press`, `close-press`, `swipe` | A dialog was dismissed: Escape, a click outside, its close button, or a drag on its sheet handle. A command menu repeats the reason on its own `close` event. |
 | `step` | A value moved one notch, usually by arrow keys. |
 | `settle` | A drag or slide ended and its value was committed. |
 | `api` | The bridge or a caller set the value. |

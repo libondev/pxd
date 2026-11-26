@@ -189,7 +189,9 @@ describe('scrollable', () => {
 
     const thumb = wrapper.find('.pxd-scrollable--scrollbar-y .pxd-scrollable--thumb').element
 
-    thumb.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, clientY: 0 }))
+    thumb.dispatchEvent(
+      new MouseEvent('mousedown', { bubbles: true, cancelable: true, clientY: 0 }),
+    )
     document.dispatchEvent(new MouseEvent('mousemove', { clientY: 35 }))
 
     expect(content.scrollTop).toBe(200)

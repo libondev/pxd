@@ -272,11 +272,35 @@ function handleClose() {
 </template>
 ```
 
+## Swipe to close
+
+On screens narrower than `40rem` the modal is a bottom sheet, so `swipe-to-close` adds a drag handle and lets a downward drag dismiss it. Wider screens keep the centered panel and ignore the prop.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const isVisible = ref(false)
+</script>
+
+<template>
+  <PButton variant="primary" @click="isVisible = true">Open Modal</PButton>
+
+  <PModal
+    v-model="isVisible"
+    title="Swipe to close"
+    subtitle="Resize below 40rem and drag the handle down"
+    swipe-to-close
+  >
+    <PText>On a narrow screen, drag the handle at the top of the sheet down to close it.</PText>
+  </PModal>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| z-index | `number` | - | Stacking order of the modal, applied through the `--modal-index` variable |
 | title | `string \| number \| null` | - | Header title text, overridable by the `title` slot |
 | subtitle | `string \| number \| null` | - | Secondary text below the title, overridable by the `subtitle` slot |
 | width | `string \| number` | - | Panel width, numbers become `px`, defaulting to `33.75rem` from `sm` up |
@@ -291,6 +315,7 @@ function handleClose() {
 | close-on-press-escape | `boolean` | `true` | Close the modal when `Esc` is pressed |
 | close-on-click-overlay | `boolean` | `true` | Close the modal when the overlay mask is clicked |
 | closeable | `boolean` | `false` | Show a close button on the right of the header |
+| swipe-to-close | `boolean` | `false` | Show a drag handle below `40rem` and let a downward drag dismiss the modal |
 
 ## Events
 
@@ -298,7 +323,7 @@ function handleClose() {
 | --- | --- | --- |
 | show | `() => void` | Emitted right after the modal becomes visible. |
 | hide | `() => void` | Emitted right after the modal becomes hidden. |
-| close | `(reason: 'escape-key' \| 'outside-press' \| 'close-press') => void` | Emitted before the modal closes itself, saying which of the three ways it happened. |
+| close | `(reason: 'escape-key' \| 'outside-press' \| 'close-press' \| 'swipe') => void` | Emitted before the modal closes itself, saying which of the four ways it happened. |
 | change | `(value: boolean, details: ChangeDetails) => void` | Emitted when the modal closes itself, with the same reason in `details.reason`. |
 | outside-click | `(event: PointerEvent) => void` | Emitted when the overlay mask is clicked. |
 | visible-change | `(visible: boolean) => void` | Emitted on every change of the visible state, whether it comes from the parent or from the modal itself. |

@@ -1,9 +1,8 @@
-import type { OverlayCloseReason } from '../../composables/_internal/use-overlay-dialog'
+import type { OverlayCloseReason } from '../../composables/_internal/use-dialog-layer'
 import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentClass, ComponentText } from '../../types/shared/props'
 
 export interface ModalProps {
-  zIndex?: number
   title?: ComponentText
   subtitle?: ComponentText
   width?: string | number
@@ -18,6 +17,7 @@ export interface ModalProps {
   closeOnPressEscape?: boolean
   closeOnClickOverlay?: boolean
   closeable?: boolean
+  swipeToClose?: boolean
 }
 
 export interface ModalEmits {
