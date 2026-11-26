@@ -4,7 +4,9 @@ import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { provideCheckboxGroupContext } from '../../contexts/checkbox.js'
+import { getUniqueId } from '../../utils/helper.js'
 import PCheckbox from '../checkbox/index.vue'
 import PStack from '../stack/index.vue'
 
@@ -20,6 +22,18 @@ const props = withDefaults(defineProps<CheckboxGroupProps>(), {
 
 const emits = defineEmits<CheckboxGroupEmits>()
 const notify = useAgentChange(emits)
+
+const {
+  id: controlId,
+  invalid: isInvalid,
+  required: isRequired,
+  describedBy,
+  labelId,
+} = useFormControl({
+  id: () => props.id,
+  fallbackId: getUniqueId('p-checkbox-group'),
+  invalid: () => props.invalid,
+})
 
 useAgentNode({
   name: 'checkbox-group',
@@ -49,6 +63,11 @@ provideCheckboxGroupContext({ props, emits })
     role="group"
     aria-label="Checkbox Group"
     aria-multiselectable="true"
+    :id="controlId"
+    :aria-invalid="isInvalid || undefined"
+    :aria-required="isRequired || undefined"
+    :aria-describedby="describedBy || undefined"
+    :aria-labelledby="labelId || undefined"
     v-bind="$attrs"
   >
     <slot>

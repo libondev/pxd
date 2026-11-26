@@ -489,3 +489,15 @@ a comment beside the fix.
 - **Cause**: `vite-ssg` injects only the main render buffer, never `ctx.teleports`, so the pre-rendered `<body>` had no teleport anchors. Vue's `hydrateTeleport` starts every `to="body"` teleport at `body.firstChild`'s next sibling — `#app`'s next sibling — so each teleport matched whatever the previous one had just mounted; `handleMismatch` removed that node and mounted itself. The last teleport with content survived, and any component whose ref pointed at an earlier node kept patching detached DOM. The same trap exists in Nuxt (only `#teleports` is SSR-supported) and in any custom `renderToString` + hydrate setup.
 - **Fix**: Never render a `<Teleport to="body">` in the first paint. The internal `PClientTeleport` (`src/components/_internal/client-teleport.vue`) renders nothing until mounted, so SSR emits nothing to match and the client appends it after hydration; its `disabled` path keeps an in-place teleport (`PBacktop` with `append-to-body=false`) in the SSR output. `useDialogLayer` also watches `dialogRef`, because a layer that starts visible has no dialog when `onMounted` runs. A component that teleports on its first render must use `PClientTeleport`; hosts that author their own SSR teleports still have to inject `ctx.teleports` or use `<ClientOnly>`.
 
+### A component's own `<button>` submits the enclosing form unless it says otherwise
+
+- **Symptom**: A `PNumberInput` inside a `<form>` submitted when its stepper was pressed, a `PSelect` submitted as soon as its trigger was clicked, and a closeable `PBadge` or a `PTabs` tab did the same.
+- **Cause**: `<button>` defaults to `type="submit"`. `PButton` is polymorphic (`<Component :is="as">`) and never set a type, so the select trigger, split button and every other `PButton` submitted; the components that render their own `<button>` copied the tag without one.
+- **Fix**: `PButton` and `PBadge` render `:type="as === 'button' ? 'button' : undefined"` before `v-bind="attrs"`, so an explicit `type="submit"` still wins when a form needs one; every raw `<button>` in a component carries `type="button"`. Auditing `src/components` for `<button>` and `<Component :is>` tags without a type is the regression check.
+
+### A boolean state prop is not a message
+
+- **Symptom**: `PInput`, `PTextarea` and `PPinInput` accepted `error?: boolean | string`, but the string never rendered — callers passed a message and saw only a red border.
+- **Cause**: The prop conflated "this control is invalid" (a state the control can style) with "show this message" (chrome the control does not own).
+- **Fix**: Controls expose `invalid?: boolean` and set `aria-invalid`; the message belongs to the form item. `select` / `list` keep `error` for load failures, so validation cannot reuse that name.
+

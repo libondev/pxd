@@ -3,6 +3,8 @@ import type { ComponentOption, ComponentValue } from '../../types/shared/props'
 
 export interface RadioGroupProps {
   disabled?: boolean
+  id?: string
+  invalid?: boolean
   modelValue?: ComponentValue
   options?: ComponentOption[]
 }

@@ -7,6 +7,7 @@ export * from './components/index.js'
 export * from './composables/index.js'
 
 export type * from './types/shared/change'
+export type * from './types/shared/form'
 export type * from './types/shared/props'
 export type * from './types/shared/utils'
 

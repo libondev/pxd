@@ -283,6 +283,12 @@ export function agentRow(entry: AgentEntry): string | undefined {
 // never reaches an agent, though a step may still write it.
 export function agentSecret(entry: AgentEntry): boolean {
   try {
+    const declared = entry.node.secret?.()
+
+    if (declared !== undefined) {
+      return declared
+    }
+
     return (
       isSecret(agentElement(entry)) || !!agentMarkElement(entry)?.closest('[data-agent-secret]')
     )

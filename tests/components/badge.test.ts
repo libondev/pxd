@@ -40,4 +40,29 @@ describe('badge', () => {
 
     wrapper.unmount()
   })
+
+  it('renders a close button that cannot submit a form', () => {
+    const wrapper = mount(Badge, {
+      props: {
+        closeable: true,
+      },
+    })
+
+    expect(wrapper.find('button').attributes('type')).toBe('button')
+
+    wrapper.unmount()
+  })
+
+  it('defaults to a non-submitting button when rendered as a button', () => {
+    const wrapper = mount(Badge, {
+      props: {
+        as: 'button',
+      },
+    })
+
+    expect(wrapper.element.tagName).toBe('BUTTON')
+    expect(wrapper.attributes('type')).toBe('button')
+
+    wrapper.unmount()
+  })
 })

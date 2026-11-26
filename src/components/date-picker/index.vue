@@ -273,8 +273,9 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
   >
     <PInput
       ref="fieldRef"
+      :id="id"
       :size="size"
-      :error="error"
+      :invalid="invalid"
       :disabled="disabled"
       :readonly="isSheet"
       :clearable="clearable"

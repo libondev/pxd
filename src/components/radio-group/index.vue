@@ -4,6 +4,7 @@ import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { provideRadioGroupContext } from '../../contexts/radio.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PRadio from '../radio/index.vue'
@@ -16,7 +17,21 @@ defineOptions({
 
 const props = defineProps<RadioGroupProps>()
 const emits = defineEmits<RadioGroupEmits>()
+
+const groupId = getUniqueId('p-radio-group')
+
 const notify = useAgentChange(emits)
+const {
+  id: controlId,
+  invalid: isInvalid,
+  required: isRequired,
+  describedBy,
+  labelId,
+} = useFormControl({
+  id: () => props.id,
+  fallbackId: groupId,
+  invalid: () => props.invalid,
+})
 
 useAgentNode({
   name: 'radio-group',
@@ -36,11 +51,21 @@ useAgentNode({
   },
 })
 
-provideRadioGroupContext({ props, emits, name: getUniqueId() })
+provideRadioGroupContext({ props, emits, name: groupId })
 </script>
 
 <template>
-  <PStack data-radio-group class="pxd-radio-group" role="radiogroup" v-bind="$attrs">
+  <PStack
+    data-radio-group
+    class="pxd-radio-group"
+    role="radiogroup"
+    :id="controlId"
+    :aria-invalid="isInvalid || undefined"
+    :aria-required="isRequired || undefined"
+    :aria-describedby="describedBy || undefined"
+    :aria-labelledby="labelId || undefined"
+    v-bind="$attrs"
+  >
     <slot>
       <PRadio v-for="option in options" :key="option.value" v-bind="option" />
     </slot>

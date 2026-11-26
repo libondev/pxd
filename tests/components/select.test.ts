@@ -556,4 +556,18 @@ describe('select', () => {
     vi.useRealTimers()
     wrapper.unmount()
   })
+
+  it('should mark the trigger invalid', () => {
+    const wrapper = mount(Select, {
+      props: {
+        invalid: true,
+        options: [{ label: 'One', value: 1 }],
+      },
+    })
+
+    expect(wrapper.find('.pxd-select').classes()).toContain('is-error')
+    expect(wrapper.find('.pxd-select .pxd-button').attributes('aria-invalid')).toBe('true')
+
+    wrapper.unmount()
+  })
 })

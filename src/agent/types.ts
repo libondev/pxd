@@ -32,6 +32,9 @@ export interface AgentNode {
   /** What names it on its row, when that text is the component's own rather than its neighbours'. */
   row?: () => string | undefined
   state?: () => Record<string, unknown>
+  /** Overrides element-based secret detection. A container whose state is not a value, like a
+   *  form, returns false so a password field inside it does not redact the container's state. */
+  secret?: () => boolean | undefined
   /** The choices it offers, read from its own data rather than from the DOM, so a
    *  virtualised list reports what it would show, not only the rows on screen. */
   items?: () => AgentItem[] | undefined

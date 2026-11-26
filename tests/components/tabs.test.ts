@@ -63,6 +63,20 @@ describe('tabs', () => {
     wrapper.unmount()
   })
 
+  it('renders tab triggers as type="button"', () => {
+    const wrapper = mount(Tabs, {
+      props: {
+        options: OPTIONS,
+      },
+    })
+    const tabs = wrapper.findAll('[role="tab"]')
+
+    expect(tabs.length).toBeGreaterThan(0)
+    expect(tabs.every((tab) => tab.attributes('type') === 'button')).toBe(true)
+
+    wrapper.unmount()
+  })
+
   it('should default variant to default', () => {
     const wrapper = mount(Tabs, {
       props: {

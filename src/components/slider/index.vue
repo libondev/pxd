@@ -2,6 +2,7 @@
 import type { SliderEmits, SliderProps } from './types'
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import {
   createTailwindVariant,
@@ -12,7 +13,7 @@ import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getLabelShift, getPercentage, getRelativePosition } from '../../utils/_internal/slider.js'
 import { cachedOn, once, throttleByRaf } from '../../utils/event.js'
 import { clampValue } from '../../utils/format.js'
-import { getFallbackValue } from '../../utils/helper.js'
+import { getFallbackValue, getUniqueId } from '../../utils/helper.js'
 
 type ThumbIndex = 0 | 1
 
@@ -206,6 +207,17 @@ const thumbList = computed(() => {
   }))
 })
 
+const {
+  id: controlId,
+  invalid: isInvalid,
+  required: isRequired,
+  describedBy,
+  labelId,
+} = useFormControl({
+  id: () => props.id,
+  fallbackId: getUniqueId('p-slider'),
+  invalid: () => props.invalid,
+})
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'pxd-slider--wrapper group/slider @container relative flex w-full max-w-full shrink-0 touch-none items-center rounded-full bg-gray-200 select-none',
@@ -515,6 +527,7 @@ onBeforeUnmount(stopDragging)
   <div
     data-slider
     v-bind="attrs"
+    :id="controlId"
     :data-variant="variant"
     class="pxd-slider w-full max-w-full shrink-0"
   >
@@ -548,6 +561,10 @@ onBeforeUnmount(stopDragging)
           :aria-valuenow="thumb.value"
           aria-orientation="horizontal"
           :aria-disabled="disabled"
+          :aria-invalid="isInvalid || undefined"
+          :aria-required="isRequired || undefined"
+          :aria-describedby="describedBy || undefined"
+          :aria-labelledby="labelId || undefined"
           :data-dragging="activeThumb === thumb.index"
           :class="thumb.classes"
           @keydown="onThumbKeydown($event, thumb.index)"

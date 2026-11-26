@@ -15,11 +15,11 @@ describe('useOverlayManager', () => {
     return {
       visible,
       unmount,
-      async show() {
+      show: async () => {
         visible.value = true
         await nextTick()
       },
-      async hide() {
+      hide: async () => {
         visible.value = false
         await nextTick()
       },

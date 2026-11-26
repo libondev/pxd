@@ -82,6 +82,7 @@ const options = [
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | disabled | `boolean` | - | Disable every radio in the group |
+| invalid | `boolean` | - | Set `aria-invalid` on the group |
 | model-value | `string \| number \| boolean` | - | Value of the selected radio |
 | options | `{ label, value, disabled? }[]` | - | Options rendered as radios when the default slot is empty |
 

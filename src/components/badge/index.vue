@@ -130,7 +130,14 @@ function onClose(ev: Event) {
 </script>
 
 <template>
-  <Component data-badge :is="as" :class="classes" :data-variant="variant" v-bind="attrs">
+  <Component
+    data-badge
+    :is="as"
+    :type="as === 'button' ? 'button' : undefined"
+    :class="classes"
+    :data-variant="variant"
+    v-bind="attrs"
+  >
     <span v-if="$slots.prefix" class="pxd-badge--prefix" :class="prefixClasses">
       <slot name="prefix" />
     </span>
@@ -139,6 +146,7 @@ function onClose(ev: Event) {
 
     <button
       v-if="closeable"
+      type="button"
       class="pxd-badge--close relative cursor-pointer appearance-none rounded-sm text-foreground-secondary self-focus-ring hover:bg-gray-alpha-200 hover:text-foreground active:bg-gray-alpha-300 motion-safe:transition-colors"
       :class="suffixClasses"
       @click.stop="onClose"

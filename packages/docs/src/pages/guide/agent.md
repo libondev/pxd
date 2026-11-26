@@ -416,6 +416,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `date-picker` | `setValue`, `setOpen` |
 | `drawer` | `setOpen` |
 | `effort-slider` | `setValue` |
+| `form` | `validate`, `submit` |
 | `gauge` | — |
 | `hold-button` | `hold` |
 | `image-preview` | `setOpen`, `setValue`, `zoomIn`, `zoomOut`, `rotate`, `reset` |

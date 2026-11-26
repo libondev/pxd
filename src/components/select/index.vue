@@ -12,6 +12,7 @@ import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { changeDetailsFor } from '../../composables/_internal/use-change-details.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useListSearch } from '../../composables/_internal/use-list-search.js'
 import { useListSelection } from '../../composables/_internal/use-list-selection.js'
@@ -41,6 +42,8 @@ const emits = defineEmits<SelectEmits>()
 
 const listId = getUniqueId('select-list')
 const searchInputId = getUniqueId('select-search')
+const triggerId = getUniqueId('select-trigger')
+const valueId = getUniqueId('select-value')
 const FILTERABLE_KEYMAP: ListKeyboardMap = {
   ArrowDown: 'next',
   ArrowUp: 'previous',
@@ -89,12 +92,25 @@ const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
 
+const {
+  id: controlId,
+  invalid: isInvalid,
+  required: isRequired,
+  describedBy,
+  labelId,
+} = useFormControl({
+  id: () => props.id,
+  fallbackId: triggerId,
+  invalid: () => props.invalid,
+})
+
 const attrs = useAttrs()
 
 const rootClass = computed(() =>
   cn(
     'pxd-select relative inline-flex w-full max-w-full',
     SIZE_TEXT_CLASS[computedSize.value],
+    isInvalid.value && 'is-error',
     attrs.class as ClassValue,
   ),
 )
@@ -260,6 +276,11 @@ watch(listOptions, async () => {
         class="relative max-w-full justify-between [font-size:inherit]! text-inherit"
         align="left"
         full-width
+        :id="controlId"
+        :aria-invalid="isInvalid || undefined"
+        :aria-required="isRequired || undefined"
+        :aria-describedby="describedBy || undefined"
+        :aria-labelledby="labelId ? `${labelId} ${valueId}` : undefined"
         :class="{ 'text-gray-600': !translatedLabel, 'pe-8': showClear }"
         :variant="variant"
         :shape="shape"
@@ -271,14 +292,14 @@ watch(listOptions, async () => {
           <slot name="prefix" />
         </template>
 
-        <template v-if="translatedLabel">
-          <div class="truncate">
+        <div :id="valueId" class="truncate">
+          <template v-if="translatedLabel">
             <slot :label="translatedLabel">{{ translatedLabel }}</slot>
-          </div>
-        </template>
-        <template v-else>
-          {{ placeholder }}
-        </template>
+          </template>
+          <template v-else>
+            {{ placeholder }}
+          </template>
+        </div>
 
         <template #suffix>
           <slot name="suffix">
@@ -366,3 +387,15 @@ watch(listOptions, async () => {
     </button>
   </div>
 </template>
+
+<style lang="postcss">
+.pxd-select.is-error {
+  .pxd-button:not(.is-disabled) {
+    border-color: hsl(var(--color-red-900-value));
+  }
+
+  .pxd-button:not(.is-disabled):focus-visible {
+    outline-color: hsl(var(--color-red-900-value));
+  }
+}
+</style>

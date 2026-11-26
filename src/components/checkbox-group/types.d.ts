@@ -5,6 +5,8 @@ type CheckboxGroupModelValue = ComponentValue | boolean
 
 export interface CheckboxGroupProps {
   disabled?: boolean
+  id?: string
+  invalid?: boolean
   options?: ComponentOption[]
   modelValue?: CheckboxGroupModelValue[]
 }

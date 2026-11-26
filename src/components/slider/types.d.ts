@@ -9,6 +9,8 @@ export interface SliderProps {
   stops?: boolean
   marks?: Record<number, string>
   disabled?: boolean
+  id?: string
+  invalid?: boolean
   size?: ComponentSize
   variant?: ComponentVariant | 'secondary'
   modelValue?: number | number[] | null

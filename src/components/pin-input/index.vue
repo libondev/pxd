@@ -2,11 +2,12 @@
 import type { PinInputEmits, PinInputProps } from './types'
 import { computed, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { BASIC_HEIGHTS, SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { isTruthyProp } from '../../utils/format.js'
+import { getUniqueId } from '../../utils/helper.js'
 import { isUndefined } from '../../utils/is.js'
 
 defineOptions({
@@ -26,6 +27,7 @@ const emits = defineEmits<PinInputEmits>()
 const NUMERIC_REGEX = /^\d+$/
 const ALPHABETIC_REGEX = /^[a-z]+$/i
 const ALPHANUMERIC_REGEX = /^[0-9a-z]+$/i
+const fallbackId = getUniqueId('p-pin-input')
 
 const inputsRef = shallowRef<HTMLInputElement[]>([])
 const computedInputType = computed(() => {
@@ -40,6 +42,24 @@ const computedInputType = computed(() => {
 
 const computedInputMode = computed(() => {
   return props.type.startsWith('numeric') ? 'numeric' : 'text'
+})
+
+const {
+  id: controlId,
+  invalid: isInvalid,
+  disabled: isDisabled,
+  readonly: isReadonly,
+  required: isRequired,
+  size: controlSize,
+  describedBy,
+} = useFormControl({
+  id: () => props.id,
+  fallbackId,
+  invalid: () => props.invalid,
+  disabled: () => props.disabled,
+  readonly: () => props.readonly,
+  required: () => props.required,
+  size: () => props.size,
 })
 
 const configProvider = useConfigProvider()
@@ -57,7 +77,7 @@ const { classes } = useTailwindVariant(
         md: `${BASIC_HEIGHTS.md} ${SIZE_TEXT_CLASS.md}`,
         lg: `${BASIC_HEIGHTS.lg} ${SIZE_TEXT_CLASS.lg}`,
       },
-      error: {
+      invalid: {
         true: 'is-error',
       },
       disabled: {
@@ -68,9 +88,9 @@ const { classes } = useTailwindVariant(
   {
     mergeAttrsClass: false,
     selection: () => ({
-      size: props.size || configProvider.size,
-      error: isTruthyProp(props.error),
-      disabled: isTruthyProp(props.disabled),
+      size: controlSize.value || configProvider.size,
+      invalid: isInvalid.value,
+      disabled: isDisabled.value,
     }),
   },
 )
@@ -273,7 +293,7 @@ defineExpose({
   <label
     data-pin-input
     v-bind="$attrs"
-    class="pxd-pin-input gap-2 flex size-max items-center"
+    class="pxd-pin-input gap-1.5 flex size-max items-center"
     @keydown="onContainerKeydown"
     @compositionend="onCompositionEnd"
     @focusin="onInputElFocus"
@@ -282,6 +302,7 @@ defineExpose({
     <div v-for="(n, i) of length" :key="n" :class="classes">
       <input
         ref="inputsRef"
+        :id="i === 0 ? controlId : controlId + '-' + (i + 1)"
         :value="modelValue[i]"
         :aria-label="`pin code ${n} of ${length}`"
         :type="computedInputType"
@@ -297,8 +318,12 @@ defineExpose({
         data-lpignore="true"
         data-bwignore
         data-protonpass-ignore
-        :readonly="readonly"
-        :disabled="disabled"
+        :readonly="isReadonly"
+        :disabled="isDisabled"
+        :aria-disabled="isDisabled"
+        :aria-invalid="isInvalid || undefined"
+        :aria-required="isRequired || undefined"
+        :aria-describedby="describedBy || undefined"
         :placeholder="placeholder"
         :inputmode="computedInputMode"
         @paste="onInputPastedValue"

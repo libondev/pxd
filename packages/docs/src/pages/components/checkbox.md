@@ -108,6 +108,7 @@ const checked = ref(false)
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | disabled | `boolean` | - | Disable every checkbox inside the group |
+| invalid | `boolean` | - | Set `aria-invalid` on the group |
 | options | `{ label, value, disabled? }[]` | `() => []` | Renders one `PCheckbox` per item when the default slot is empty |
 | model-value | `string \| number \| boolean[]` | `() => []` | Values of the checked boxes, toggled on change |
 

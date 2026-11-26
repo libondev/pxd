@@ -153,4 +153,20 @@ describe('page-number', () => {
 
     wrapper.unmount()
   })
+
+  it('renders the collapsed range as a non-submitting button', () => {
+    const wrapper = mount(PageNumber, {
+      props: {
+        modelValue: 10,
+        total: 200,
+        pageSize: 10,
+      },
+    })
+    const ellipsis = wrapper.findAll('.pxd-page-number--ellipsis')
+
+    expect(ellipsis.length).toBeGreaterThan(0)
+    expect(ellipsis.every((button) => button.attributes('type') === 'button')).toBe(true)
+
+    wrapper.unmount()
+  })
 })

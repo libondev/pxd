@@ -66,6 +66,7 @@ pxd/
 - Events: kebab-case. Curly braces: always required.
 - **Docs**: a component page must document `## Events` (every `XxxEmits` entry) and `## Methods` (every `defineExpose()` entry). Omit a section only when it is genuinely empty. Follow `.agents/guides/docs.md` exactly — headings, column names, and section order are fixed there.
 - **No path aliases** in library source or tests — relative imports only.
+- **CSS placement**: `src/styles/tw.css` holds only theme tokens, `@source` directives and styles shared by multiple components. A rule only one component needs stays in that component's `<style lang="postcss">`.
 - **Minimal changes only** — implement exactly what is asked, nothing more
 - **Do NOT** add features, error handling, or abstractions not explicitly requested
 - **Do NOT** add defensive validations for empty/null/undefined fields unless asked — this is a greenfield project

@@ -68,4 +68,21 @@ describe('pin-input', () => {
 
     wrapper.unmount()
   })
+
+  it('should display invalid state', () => {
+    const wrapper = mount(PinInput, {
+      props: {
+        invalid: true,
+      },
+    })
+    const boxes = wrapper.findAll('.pxd-input--border')
+
+    expect(boxes.length).toBeGreaterThan(0)
+    expect(boxes.every((box) => box.classes().includes('is-error'))).toBe(true)
+    expect(
+      wrapper.findAll('input').every((input) => input.attributes('aria-invalid') === 'true'),
+    ).toBe(true)
+
+    wrapper.unmount()
+  })
 })

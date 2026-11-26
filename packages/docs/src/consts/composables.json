@@ -40,6 +40,14 @@
     "name": "use-document-hidden"
   },
   {
+    "camelized": "Use Form Item",
+    "name": "use-form-item"
+  },
+  {
+    "camelized": "Use Form",
+    "name": "use-form"
+  },
+  {
     "camelized": "Use Hold",
     "name": "use-hold"
   },

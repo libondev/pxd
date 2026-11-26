@@ -136,14 +136,14 @@ const value = ref('')
 </template>
 ```
 
-## Error
+## Invalid
 
 ```vue demo
 <template>
   <PStack class="max-w-sm" gap="8" direction="vertical">
-    <PInput error="An error message." size="sm" />
-    <PInput error="An error message." />
-    <PInput error="An error message." size="lg" />
+    <PInput invalid size="sm" />
+    <PInput invalid />
+    <PInput invalid size="lg" />
   </PStack>
 </template>
 ```
@@ -153,7 +153,7 @@ const value = ref('')
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Height, padding and font size, falling back to the config provider size |
-| error | `boolean \| string` | - | Show the error style, also applied when the word limit is exceeded |
+| invalid | `boolean` | - | Show the invalid border and focus ring, also applied when the word limit is exceeded |
 | min | `number \| string` | - | Native `min` attribute of the underlying `input` |
 | max | `number \| string` | - | Native `max` attribute of the underlying `input` |
 | align | `'left' \| 'center' \| 'right'` | `left` | Horizontal text alignment inside the field |

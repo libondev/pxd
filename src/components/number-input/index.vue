@@ -319,6 +319,7 @@ watch(
     :input-attrs="inputAttrs"
     :disabled="disabled"
     :readonly="readonly"
+    :invalid="invalid"
     :clear-on-press-escape="false"
     :model-value="inputValue"
     :default-prefix-style="false"
@@ -333,6 +334,7 @@ watch(
     <template #prefix>
       <button
         v-if="controls && controlsPosition !== 'right'"
+        type="button"
         tabindex="-1"
         class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center rounded-l-inherit border-r font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="decreaseDisabled"
@@ -358,6 +360,7 @@ watch(
       >
         <button
           tabindex="-1"
+          type="button"
           class="flex h-1/2 w-full cursor-pointer touch-manipulation appearance-none items-center justify-center rounded-tr-inherit border-b font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
           :disabled="increaseDisabled"
           @pointerdown="startIncrease"
@@ -372,6 +375,7 @@ watch(
 
         <button
           tabindex="-1"
+          type="button"
           class="flex h-1/2 w-full cursor-pointer touch-manipulation appearance-none items-center justify-center rounded-br-inherit font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
           :disabled="decreaseDisabled"
           @pointerdown="startDecrease"
@@ -387,6 +391,7 @@ watch(
 
       <button
         v-else-if="controls"
+        type="button"
         tabindex="-1"
         class="flex aspect-square h-full cursor-pointer touch-manipulation appearance-none items-center justify-center rounded-r-inherit border-l font-inherit text-foreground outline-none enabled:hover:bg-background-hover enabled:hover:text-gray-1000 enabled:active:bg-background-active disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :disabled="increaseDisabled"

@@ -159,8 +159,8 @@ useHead({
 
 <style lang="postcss">
 .sidebar .pxd-link-button.router-link-exact-active {
-  background-color: var(--color-gray-200);
-  border-color: var(--color-gray-alpha-200);
+  background-color: var(--color-background-200);
+  border-color: var(--color-gray-300);
   pointer-events: none;
 }
 
@@ -398,6 +398,17 @@ useHead({
         padding-inline: 0.35em;
       }
     }
+  }
+
+  :not(pre) > code {
+    font-size: 0.875rem;
+    margin-right: 0.15em;
+    padding: 0 0.5em;
+    border-radius: 0.25em;
+    background-color: var(--color-gray-100);
+    border: 1px solid var(--color-gray-300);
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 }
 

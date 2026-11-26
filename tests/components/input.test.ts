@@ -68,15 +68,16 @@ describe('input', () => {
     wrapper.unmount()
   })
 
-  it('should display error state', async () => {
+  it('should display invalid state', async () => {
     const wrapper = mount(Input, {
       props: {
-        error: true,
+        invalid: true,
       },
     })
 
     const classes = wrapper.classes()
     expect(classes.includes('is-error')).toBe(true)
+    expect(wrapper.find('input').attributes('aria-invalid')).toBe('true')
 
     wrapper.unmount()
   })

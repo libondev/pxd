@@ -3,7 +3,8 @@ import type { ComponentDateTimeValue, ComponentSize } from '../../types/shared/p
 
 export interface DatePickerProps {
   size?: ComponentSize
-  error?: boolean | string
+  id?: string
+  invalid?: boolean
   disabled?: boolean
   clearable?: boolean
   modelValue?: ComponentDateTimeValue

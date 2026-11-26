@@ -5,6 +5,7 @@ import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { BASIC_HEIGHTS, SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { provideSwitchContext } from '../../contexts/switch.js'
@@ -34,6 +35,17 @@ const configProvider = useConfigProvider()
 
 const computedSize = computed(() => getFallbackValue(props.size, SIZES, configProvider.size))
 
+const {
+  id: controlId,
+  invalid: isInvalid,
+  required: isRequired,
+  describedBy,
+  labelId,
+} = useFormControl({
+  id: () => props.id,
+  fallbackId: getUniqueId('p-switch'),
+  invalid: () => props.invalid,
+})
 useAgentNode({
   name: 'switch',
   items: () => optionItems(props.options, props.modelValue),
@@ -58,8 +70,13 @@ provideSwitchContext({ props, emits, name: getUniqueId() })
   <div
     data-switch
     role="radiogroup"
+    :id="controlId"
     class="pxd-switch p-1 flex touch-manipulation rounded-lg border"
     :class="[fullWidth ? 'w-full' : 'w-max', computedSize]"
+    :aria-invalid="isInvalid || undefined"
+    :aria-required="isRequired || undefined"
+    :aria-describedby="describedBy || undefined"
+    :aria-labelledby="labelId || undefined"
     v-bind="$attrs"
   >
     <slot>

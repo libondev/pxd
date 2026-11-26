@@ -46,4 +46,16 @@ describe('radio-group', () => {
 
     wrapper.unmount()
   })
+
+  it('should mark the group invalid', () => {
+    const wrapper = mount(RadioGroup, {
+      props: {
+        invalid: true,
+      },
+    })
+
+    expect(wrapper.find('[data-radio-group]').attributes('aria-invalid')).toBe('true')
+
+    wrapper.unmount()
+  })
 })

@@ -3,10 +3,12 @@ import type { ComponentSizeWithXs } from '../../types/shared/props'
 
 export interface PinInputProps {
   size?: ComponentSizeWithXs
-  error?: boolean | string
+  id?: string
+  invalid?: boolean
   length?: number
   readonly?: boolean
   disabled?: boolean
+  required?: boolean
   modelValue?: string
   placeholder?: string
   type?:

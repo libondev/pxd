@@ -276,6 +276,30 @@ describe('number-input', () => {
     wrapper.unmount()
   })
 
+  it('should render control buttons as type="button"', () => {
+    const wrapper = mount(NumberInput)
+    const buttons = wrapper.findAll('button')
+
+    expect(buttons.length).toBeGreaterThan(0)
+    expect(buttons.every((button) => button.attributes('type') === 'button')).toBe(true)
+
+    wrapper.unmount()
+  })
+
+  it('should render stacked control buttons as type="button"', () => {
+    const wrapper = mount(NumberInput, {
+      props: {
+        controlsPosition: 'right',
+      },
+    })
+    const buttons = wrapper.findAll('button')
+
+    expect(buttons.length).toBeGreaterThan(0)
+    expect(buttons.every((button) => button.attributes('type') === 'button')).toBe(true)
+
+    wrapper.unmount()
+  })
+
   it.each([
     ['1,048,576', ',', 1048576],
     ['-1,048,576', ',', -1048576],
@@ -304,4 +328,17 @@ describe('number-input', () => {
       wrapper.unmount()
     },
   )
+
+  it('should display invalid state', () => {
+    const wrapper = mount(NumberInput, {
+      props: {
+        invalid: true,
+      },
+    })
+
+    expect(wrapper.find('.pxd-input').classes()).toContain('is-error')
+    expect(wrapper.find('input').attributes('aria-invalid')).toBe('true')
+
+    wrapper.unmount()
+  })
 })

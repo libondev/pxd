@@ -3,6 +3,8 @@ import type { ComponentOption, ComponentSize } from '../../types/shared/props'
 
 export interface SwitchProps {
   disabled?: boolean
+  id?: string
+  invalid?: boolean
   fullWidth?: boolean
   size?: ComponentSize
   options?: ComponentOption[]

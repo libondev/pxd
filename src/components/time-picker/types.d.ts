@@ -8,7 +8,8 @@ export interface DateTimePreset<T = Date> {
 
 export interface TimePickerProps {
   size?: ComponentSize
-  error?: boolean | string
+  id?: string
+  invalid?: boolean
   presets?: DateTimePreset[]
   disabled?: boolean
   clearable?: boolean

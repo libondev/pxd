@@ -180,6 +180,7 @@ watch(
     <template v-for="item in pageItems" :key="item">
       <button
         v-if="typeof item === 'string'"
+        type="button"
         class="pxd-page-number--ellipsis inline-flex aspect-square shrink-0 cursor-default items-center justify-center rounded-md disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 motion-safe:transition-colors"
         :class="pageItemClass"
         :disabled="disabled"

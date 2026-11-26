@@ -107,6 +107,9 @@ const zhCN = {
     thumbDown: '点踩',
     close: '关闭',
   },
+  form: {
+    optional: '选填',
+  },
   codeBlock: {
     expand: '展开全部',
     collapse: '收起',

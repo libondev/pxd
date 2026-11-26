@@ -47,6 +47,8 @@ declare module 'vue' {
     PErrorInfo: (typeof import('pxd/components/error-info'))['default']
     PFader: (typeof import('pxd/components/fader'))['default']
     PFeedbackBar: (typeof import('pxd/components/feedback-bar'))['default']
+    PForm: (typeof import('pxd/components/form'))['default']
+    PFormItem: (typeof import('pxd/components/form-item'))['default']
     PGauge: (typeof import('pxd/components/gauge'))['default']
     PGrid: (typeof import('pxd/components/grid'))['default']
     PGridItem: (typeof import('pxd/components/grid-item'))['default']

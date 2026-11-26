@@ -655,4 +655,18 @@ describe('slider', () => {
 
     wrapper.unmount()
   })
+
+  it('should mark its thumbs invalid', () => {
+    const wrapper = mount(Slider, {
+      props: {
+        invalid: true,
+      },
+    })
+    const thumbs = wrapper.findAll('[role="slider"]')
+
+    expect(thumbs.length).toBeGreaterThan(0)
+    expect(thumbs.every((thumb) => thumb.attributes('aria-invalid') === 'true')).toBe(true)
+
+    wrapper.unmount()
+  })
 })

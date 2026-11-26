@@ -190,6 +190,7 @@ const value = ref(0)
 | step | `number` | `1` | Amount added or removed per step, also drives `ArrowUp` and `ArrowDown` |
 | readonly | `boolean` | - | Accept focus but block editing and the step controls |
 | disabled | `boolean` | - | Block all interaction and grey out the control |
+| invalid | `boolean` | - | Show the invalid border and focus ring |
 | controls | `boolean` | `true` | Show the plus and minus buttons |
 | controls-position | `'sides' \| 'right'` | `'sides'` | Place the buttons on both sides, or stacked in the suffix |
 | precision | `number` | - | Fixed number of decimal places, inferred from `step` when omitted |

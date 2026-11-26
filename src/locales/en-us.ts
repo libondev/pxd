@@ -92,6 +92,9 @@ const enUS = {
     thumbDown: 'Thumb down',
     close: 'Dismiss',
   },
+  form: {
+    optional: 'Optional',
+  },
   codeBlock: {
     expand: 'Show more',
     collapse: 'Show less',

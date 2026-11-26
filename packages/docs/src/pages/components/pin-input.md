@@ -63,11 +63,11 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
 </template>
 ```
 
-## Error
+## Invalid
 
 ```vue demo
 <template>
-  <PPinInput error="Invalid pin code" />
+  <PPinInput invalid />
 </template>
 ```
 
@@ -76,7 +76,8 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Component size |
-| error | `boolean \| string` | - | Any truthy value turns on the error border and focus ring |
+| invalid | `boolean` | - | Turn on the invalid border and focus ring |
+| required | `boolean` | - | Mark the field required |
 | length | `number` | `4` | Number of single-character boxes to render |
 | readonly | `boolean` | - | Allow focus and selection but block typing |
 | disabled | `boolean` | - | Disable all boxes and ignore typed or pasted input |

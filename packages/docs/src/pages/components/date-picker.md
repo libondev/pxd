@@ -56,7 +56,7 @@ const date2 = ref('2024-08-15')
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | size | `'sm' \| 'md' \| 'lg'` | - | Size of the text input |
-| error | `boolean \| string` | - | Render the input in its error state |
+| invalid | `boolean` | - | Render the input in its invalid state |
 | disabled | `boolean` | - | Disable the input and block the calendar popover |
 | clearable | `boolean` | - | Show a clear button that empties the value |
 | model-value | `Date \| string \| number \| null` | - | Selected date, parsed with `value-format` then `label-format` |

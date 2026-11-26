@@ -5,13 +5,13 @@ import EyeIcon from '@gdsicon/vue/eye'
 import EyeOffIcon from '@gdsicon/vue/eye-off'
 import { computed, shallowRef } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
 import { BASIC_HEIGHTS, SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { NOOP, isCompositionKeydown } from '../../utils/event.js'
-import { isTruthyProp } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNil } from '../../utils/is.js'
 
@@ -43,6 +43,24 @@ const inputType = computed(() => {
   }
 
   return isPasswordVisible.value ? 'text' : 'password'
+})
+
+const {
+  id: controlId,
+  invalid: isInvalid,
+  disabled: isDisabled,
+  readonly: isReadonly,
+  required: isRequired,
+  size: controlSize,
+  describedBy,
+} = useFormControl({
+  id: () => props.id,
+  fallbackId: uniqueId,
+  invalid: () => props.invalid,
+  disabled: () => props.disabled,
+  readonly: () => props.readonly,
+  required: () => props.required,
+  size: () => props.size,
 })
 
 const configProvider = useConfigProvider()
@@ -83,18 +101,18 @@ const { attrs, classes } = useTailwindVariant(
       readonly: {
         true: 'is-readonly',
       },
-      error: {
+      invalid: {
         true: 'is-error',
       },
     },
   },
   {
     selection: () => ({
-      size: props.size || configProvider.size,
+      size: controlSize.value || configProvider.size,
       align: props.align,
-      error: isTruthyProp(props.error) || isWordLimitExceeded.value,
-      disabled: isTruthyProp(props.disabled),
-      readonly: isTruthyProp(props.readonly),
+      invalid: isInvalid.value || isWordLimitExceeded.value,
+      disabled: isDisabled.value ?? false,
+      readonly: isReadonly.value ?? false,
     }),
   },
 )
@@ -104,9 +122,9 @@ useAgentNode({
   el: () => rootRef.value,
   state: () => ({
     value: modelValue.value ?? '',
-    disabled: props.disabled ?? false,
-    readonly: props.readonly ?? false,
-    ...(props.required && { required: true }),
+    disabled: isDisabled.value ?? false,
+    readonly: isReadonly.value ?? false,
+    ...(isRequired.value && { required: true }),
     placeholder: props.placeholder,
   }),
   actions: {
@@ -167,7 +185,7 @@ function onInput(event: Event) {
 }
 
 function onKeydown(event: KeyboardEvent) {
-  if (props.readonly || props.disabled) {
+  if (isReadonly.value || isDisabled.value) {
     return
   }
 
@@ -244,8 +262,8 @@ defineExpose({
   <label
     ref="rootRef"
     data-input
-    :for="uniqueId"
-    :data-disabled="disabled"
+    :for="controlId"
+    :data-disabled="isDisabled"
     :class="classes"
     v-bind="attrs"
     @click="onClick"
@@ -264,7 +282,7 @@ defineExpose({
     </div>
 
     <input
-      :id="uniqueId"
+      :id="controlId"
       ref="inputRef"
       class="py-0 file:font-medium size-full appearance-none truncate rounded-none border-none bg-transparent px-(--input-ip) [text-align:inherit] font-inherit outline-none select-auto file:border-0 file:bg-transparent placeholder:text-gray-600 placeholder:select-none read-only:cursor-default disabled:cursor-not-allowed disabled:text-gray-700 disabled:placeholder:text-gray-500"
       spellcheck="false"
@@ -275,14 +293,16 @@ defineExpose({
       :max="max"
       :type="inputType"
       :value="modelValue"
-      :readonly="readonly"
-      :disabled="disabled"
-      :required="required"
+      :readonly="isReadonly"
+      :disabled="isDisabled"
+      :required="isRequired"
       :inputmode="inputMode"
       :minlength="minLength"
       :maxlength="nativeMaxLength"
       :autofocus="autofocus"
-      :aria-disabled="disabled"
+      :aria-disabled="isDisabled"
+      :aria-invalid="isInvalid || undefined"
+      :aria-describedby="describedBy || undefined"
       :placeholder="placeholder"
       v-bind="inputAttrs"
       @blur="onBlur"
@@ -358,7 +378,7 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   --autofill-delay: calc(infinity * 1s);
   transition:
-    background-color var(--autofill-delay) ease-in-out 0s,
-    color var(--autofill-delay) ease-in-out 0s;
+    background-color var(--autofill-delay) var(--default-transition-duration) 0s,
+    color var(--autofill-delay) var(--default-transition-duration) 0s;
 }
 </style>

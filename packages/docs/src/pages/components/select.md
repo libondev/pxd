@@ -253,6 +253,7 @@ const options = [
 | shape | `'default' \| 'square' \| 'rounded'` | - | Trigger button shape: `default`, `square` or `rounded` |
 | options | `ListOptions` | - | Options to display, entries with `type: 'group'` render as groups |
 | disabled | `boolean` | - | Disable the trigger and stop the menu from opening |
+| invalid | `boolean` | - | Show the invalid border and focus ring on the trigger |
 | multiple | `boolean` | - | Allow several options to be selected, value becomes an array |
 | virtual | `boolean` | `false` | Enable virtualized rendering for large option sets |
 | suffix-icon | `boolean` | `true` | Show the chevron icon in the trigger suffix |

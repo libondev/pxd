@@ -2,12 +2,12 @@
 import type { TextareaEmits, TextareaProps } from './types'
 import { computed, shallowRef } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useWordLimit } from '../../composables/_internal/use-word-limit.js'
 import { SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { isTruthyProp } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
 
 defineOptions({
@@ -27,6 +27,24 @@ const uniqueId = getUniqueId()
 
 const isComposing = shallowRef(false)
 const textareaRef = shallowRef<HTMLTextAreaElement>()
+
+const {
+  id: controlId,
+  invalid: isInvalid,
+  disabled: isDisabled,
+  readonly: isReadonly,
+  required: isRequired,
+  size: controlSize,
+  describedBy,
+} = useFormControl({
+  id: () => props.id,
+  fallbackId: uniqueId,
+  invalid: () => props.invalid,
+  disabled: () => props.disabled,
+  readonly: () => props.readonly,
+  required: () => props.required,
+  size: () => props.size,
+})
 
 const { modelValue, commit } = useModelCommit(props, emits)
 
@@ -72,17 +90,17 @@ const { attrs, classes } = useTailwindVariant(
       readonly: {
         true: 'is-readonly',
       },
-      error: {
+      invalid: {
         true: 'is-error',
       },
     },
   },
   {
     selection: () => ({
-      size: props.size || configProvider.size,
-      error: isTruthyProp(props.error) || isWordLimitExceeded.value,
-      disabled: isTruthyProp(props.disabled),
-      readonly: isTruthyProp(props.readonly),
+      size: controlSize.value || configProvider.size,
+      invalid: isInvalid.value || isWordLimitExceeded.value,
+      disabled: isDisabled.value ?? false,
+      readonly: isReadonly.value ?? false,
     }),
   },
 )
@@ -90,9 +108,9 @@ useAgentNode({
   name: 'textarea',
   state: () => ({
     value: modelValue.value ?? '',
-    disabled: props.disabled ?? false,
-    readonly: props.readonly ?? false,
-    ...(props.required && { required: true }),
+    disabled: isDisabled.value ?? false,
+    readonly: isReadonly.value ?? false,
+    ...(isRequired.value && { required: true }),
   }),
   actions: {
     setValue: (value) => {
@@ -147,10 +165,10 @@ function onCompositionEnd(event: CompositionEvent) {
 </script>
 
 <template>
-  <label data-textarea :for="uniqueId" :class="classes" v-bind="attrs">
+  <label data-textarea :for="controlId" :class="classes" v-bind="attrs">
     <textarea
       ref="textareaRef"
-      :id="uniqueId"
+      :id="controlId"
       v-model="modelValue"
       class="size-full min-h-inherit resize-none appearance-none rounded-inherit border-none bg-transparent px-(--input-ip) py-(--input-bp) font-inherit outline-none placeholder:text-gray-600 placeholder:select-none disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400"
       :class="nativeTextareaClasses"
@@ -160,10 +178,12 @@ function onCompositionEnd(event: CompositionEvent) {
       autocapitalize="off"
       :rows="rows"
       :cols="cols"
-      :readonly="readonly"
-      :disabled="disabled"
-      :required="required"
+      :readonly="isReadonly"
+      :disabled="isDisabled"
+      :required="isRequired"
       :autofocus="autofocus"
+      :aria-invalid="isInvalid || undefined"
+      :aria-describedby="describedBy || undefined"
       :minlength="minLength"
       :maxlength="nativeMaxLength"
       :placeholder="placeholder"

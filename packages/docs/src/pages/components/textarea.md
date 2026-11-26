@@ -25,7 +25,7 @@ Retrieve multi-line user input.
 </template>
 ```
 
-## Error
+## Invalid
 
 ```vue demo
 <script setup>
@@ -38,10 +38,10 @@ const value = ref(
 
 <template>
   <PStack gap="12" direction="vertical">
-    <PTextarea v-model="value" size="xs" error="There has been an error." />
-    <PTextarea v-model="value" size="sm" error="There has been an error." />
-    <PTextarea v-model="value" size="md" error="There has been an error." />
-    <PTextarea v-model="value" size="lg" error="There has been an error." />
+    <PTextarea v-model="value" size="xs" invalid />
+    <PTextarea v-model="value" size="sm" invalid />
+    <PTextarea v-model="value" size="md" invalid />
+    <PTextarea v-model="value" size="lg" invalid />
   </PStack>
 </template>
 ```
@@ -84,7 +84,7 @@ const outsideValue = ref('Hello')
 | rows | `string \| number` | - | Visible height in text rows |
 | cols | `string \| number` | - | Visible width in characters |
 | size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Font size, falls back to the `ConfigProvider` size |
-| error | `boolean \| string` | - | Show the error style, also applied when the word limit is exceeded |
+| invalid | `boolean` | - | Show the invalid border and focus ring, also applied when the word limit is exceeded |
 | readonly | `boolean` | - | Native `readonly` attribute, the value stays selectable |
 | disabled | `boolean` | - | Native `disabled` attribute, blocks editing and focus |
 | required | `boolean` | - | Native `required` attribute, the browser asks for a value before the form submits |

@@ -122,6 +122,7 @@ const modelValue = ref('1')
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | disabled | `boolean` | - | Disable every item in the group |
+| invalid | `boolean` | - | Set `aria-invalid` on the group |
 | full-width | `boolean` | - | Stretch the group to the full width of its container |
 | size | `'sm' \| 'md' \| 'lg'` | - | Height of the group, falls back to the config provider size |
 | options | `{ label, value, disabled? }[]` | `() => []` | Rendered as `SwitchItem` when the default slot is empty |

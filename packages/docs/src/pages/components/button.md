@@ -115,6 +115,30 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 </template>
 ```
 
+## Native type
+
+A button rendered inside a `<form>` defaults to `type="button"`, so it never submits by accident.
+Pass the native `type` through when you need one; undeclared attributes land on the rendered
+element.
+
+```vue demo
+<script setup>
+import { ref } from 'vue'
+
+const submitted = ref(false)
+</script>
+
+<template>
+  <form class="gap-3 flex flex-col" @submit.prevent="submitted = true">
+    <PStack>
+      <PButton type="submit">Submit</PButton>
+      <PButton type="reset" @click="submitted = false">Reset</PButton>
+    </PStack>
+    <span v-if="submitted" class="text-sm text-foreground-secondary">Submitted</span>
+  </form>
+</template>
+```
+
 ## Props
 
 | Name | Type | Default | Description |

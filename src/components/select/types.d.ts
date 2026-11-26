@@ -11,8 +11,10 @@ import type {
 
 export interface SelectProps {
   size?: ComponentSizeWithXs
+  id?: string
   shape?: ComponentShape
   variant?: ButtonVariant
+  invalid?: boolean
   options?: ListOptions
   virtual?: boolean
   disabled?: boolean

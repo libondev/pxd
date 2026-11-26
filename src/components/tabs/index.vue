@@ -347,6 +347,7 @@ onBeforeUnmount(() => {
           <button
             v-for="(option, index) in options"
             :key="option.value"
+            type="button"
             role="tab"
             :ref="getTabCallbacks(option).setRef"
             :id="tabId(index)"

@@ -6,6 +6,7 @@ export interface NumberInputProps {
   step?: number
   readonly?: boolean
   disabled?: boolean
+  invalid?: boolean
   controls?: boolean
   precision?: number
   thousands?: boolean

@@ -66,4 +66,16 @@ describe('switch', () => {
 
     wrapper.unmount()
   })
+
+  it('should mark the group invalid', () => {
+    const wrapper = mount(Switch, {
+      props: {
+        invalid: true,
+      },
+    })
+
+    expect(wrapper.find('[data-switch]').attributes('aria-invalid')).toBe('true')
+
+    wrapper.unmount()
+  })
 })

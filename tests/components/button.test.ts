@@ -124,4 +124,42 @@ describe('button', () => {
 
     wrapper.unmount()
   })
+
+  it('defaults to a non-submitting button', () => {
+    const wrapper = mount(Button, {
+      slots: {
+        default: 'Save',
+      },
+    })
+
+    expect(wrapper.element.tagName).toBe('BUTTON')
+    expect(wrapper.attributes('type')).toBe('button')
+
+    wrapper.unmount()
+  })
+
+  it('keeps an explicit type passed through attrs', () => {
+    const wrapper = mount(Button, {
+      attrs: {
+        type: 'submit',
+      },
+    })
+
+    expect(wrapper.attributes('type')).toBe('submit')
+
+    wrapper.unmount()
+  })
+
+  it('omits type when rendered as a non-button element', () => {
+    const wrapper = mount(Button, {
+      props: {
+        as: 'a',
+      },
+    })
+
+    expect(wrapper.element.tagName).toBe('A')
+    expect(wrapper.attributes('type')).toBeUndefined()
+
+    wrapper.unmount()
+  })
 })

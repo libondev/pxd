@@ -116,7 +116,7 @@ const time = ref('18:30:00')
 </template>
 ```
 
-## Error
+## Invalid
 
 ```vue demo
 <script setup>
@@ -127,9 +127,9 @@ const time = ref('18:30:00')
 
 <template>
   <PStack class="max-w-sm" gap="8" direction="vertical">
-    <PTimePicker v-model="time" error size="sm" placeholder="sm" />
-    <PTimePicker v-model="time" error placeholder="md" />
-    <PTimePicker v-model="time" error size="lg" placeholder="lg" />
+    <PTimePicker v-model="time" invalid size="sm" placeholder="sm" />
+    <PTimePicker v-model="time" invalid placeholder="md" />
+    <PTimePicker v-model="time" invalid size="lg" placeholder="lg" />
   </PStack>
 </template>
 ```
@@ -139,7 +139,7 @@ const time = ref('18:30:00')
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | size | `'sm' \| 'md' \| 'lg'` | - | Size of the text input |
-| error | `boolean \| string` | - | Render the input in its error state |
+| invalid | `boolean` | - | Render the input in its invalid state |
 | presets | `DateTimePreset[]` | `() => []` | Quick picks beside the lists, each with a `label` and a `getDate` callback |
 | disabled | `boolean` | - | Disable the input and block the time panel from opening |
 | clearable | `boolean` | - | Show a clear button that empties the value |

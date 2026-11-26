@@ -58,9 +58,9 @@ const computedProgressBarStyles = computed(() => {
   }
 })
 
+const progressRef = shallowRef<HTMLProgressElement>()
 const configProvider = useConfigProvider()
 const attrs = useAttrs()
-const progressRef = shallowRef<HTMLProgressElement>()
 const progressAttrs = computed(() =>
   Object.fromEntries(Object.entries(attrs).filter(([key]) => key.startsWith('aria-'))),
 )

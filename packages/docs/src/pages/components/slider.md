@@ -218,6 +218,7 @@ const steps = Object.keys(marks).map(i => Number(i))
 | stops | `boolean` | - | Render a stop at every interior step position, `min` and `max` get none |
 | marks | `Record<number, string>` | - | Marks below the slider, the key must be between `min` and `max`, click a mark to jump to its value |
 | disabled | `boolean` | - | Disable dragging, pointer and keyboard interaction |
+| invalid | `boolean` | - | Set `aria-invalid` on its thumbs |
 | size | `'sm' \| 'md' \| 'lg'` | - | Track and thumb size, falls back to the config provider |
 | variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | Track colour, e.g. `primary`, `success`, `secondary` |
 | default-value | `number \| number[] \| null` | `min` | Value an uncontrolled slider starts from, `[min, min]` when `range` is enabled |

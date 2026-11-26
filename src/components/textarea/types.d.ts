@@ -2,10 +2,11 @@ import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentText, ComponentSizeWithXs } from '../../types/shared/props'
 
 export interface TextareaProps {
+  id?: string
   rows?: string | number
   cols?: string | number
   size?: ComponentSizeWithXs
-  error?: boolean | string
+  invalid?: boolean
   readonly?: boolean
   disabled?: boolean
   required?: boolean

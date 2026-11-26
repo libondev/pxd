@@ -185,6 +185,11 @@
     "category": "AI"
   },
   {
+    "camelized": "Form",
+    "name": "form",
+    "category": "Form"
+  },
+  {
     "camelized": "Gauge",
     "name": "gauge",
     "category": "Data Display"

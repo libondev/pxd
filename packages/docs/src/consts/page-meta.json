@@ -147,6 +147,10 @@
     "title": "Feedback Bar",
     "description": "Quick feedback bar."
   },
+  "/components/form": {
+    "title": "Form",
+    "description": "Groups fields with PFormItem, validates the model, and emits submit only when the form is valid."
+  },
   "/components/gauge": {
     "title": "Gauge",
     "description": "A circular visual for conveying a percentage."
@@ -502,6 +506,14 @@
   "/composables/use-document-hidden": {
     "title": "useDocumentHidden",
     "description": "Tracks document visibility state and fires callback on visibility changes."
+  },
+  "/composables/use-form-item": {
+    "title": "useFormItem",
+    "description": "Reads the enclosing PFormItem context inside a custom control, so the control can pick up its id, invalid state and ARIA wiring without props from the caller."
+  },
+  "/composables/use-form": {
+    "title": "useForm",
+    "description": "Headless form controller behind PForm. Use it when the component tree does not fit, or when the form owns no markup."
   },
   "/composables/use-hold": {
     "title": "useHold",

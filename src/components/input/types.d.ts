@@ -3,7 +3,8 @@ import type { ComponentSizeWithXs, ComponentClass } from '../../types/shared/pro
 
 export interface InputProps {
   size?: ComponentSizeWithXs
-  error?: boolean | string
+  id?: string
+  invalid?: boolean
   min?: number | string
   max?: number | string
   align?: 'left' | 'center' | 'right'

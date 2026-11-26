@@ -157,4 +157,17 @@ describe('time-picker', () => {
 
     wrapper.unmount()
   })
+
+  it('should display invalid state', () => {
+    const wrapper = mount(TimePicker, {
+      props: {
+        invalid: true,
+      },
+    })
+
+    expect(wrapper.find('.pxd-input').classes()).toContain('is-error')
+    expect(wrapper.find('input').attributes('aria-invalid')).toBe('true')
+
+    wrapper.unmount()
+  })
 })

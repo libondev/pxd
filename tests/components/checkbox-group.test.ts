@@ -120,4 +120,17 @@ describe('checkbox-group', () => {
 
     wrapper.unmount()
   })
+
+  it('should mark the group invalid', () => {
+    const wrapper = mount(CheckboxGroup, {
+      props: {
+        invalid: true,
+        options,
+      },
+    })
+
+    expect(wrapper.find('[data-checkbox-group]').attributes('aria-invalid')).toBe('true')
+
+    wrapper.unmount()
+  })
 })

@@ -10,6 +10,7 @@
 
 - 一律用 Tailwind 工具类，不手写等价 CSS（`m-2` 而不是 `margin: 0.5rem`）
 - 不重复同类；组件内需要真实 CSS 时写全局 `<style lang="postcss">`（`:deep()` 只在 scoped 下生效，而仓库不用 scoped）
+- **样式归属**：`tw.css` 只放主题变量、`@source` 和**多个组件复用**的样式；只在某个组件生效的规则留在该组件的 `<style lang="postcss">`，不要写进 `tw.css`
 - 类名顺序由 `vite.config.ts` → `fmt.sortTailwindcss` 决定（`stylesheet: ./src/styles/tw.css`，`functions: ['cn', 'useTailwindVariant']`），跑 `vp fmt` 即可，不要在编辑器里手排
 - Tailwind 相关 lint 规则在 `vite.config.ts` → `lint.rules`（`eslint-plugin-better-tailwindcss`：废弃类、简写、多余空白、变量语法、`!` 位置）
 

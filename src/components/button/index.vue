@@ -44,7 +44,7 @@ const btnContentClasses = computed(() => {
   }[internalAlign || buttonGroupContext?.props.align || 'center']
 
   return {
-    'not-first:ps-1 not-last:pe-1': !icon,
+    'not-first:ps-1.5 not-last:pe-1.5': !icon,
     [alignClasses]: true,
   }
 })
@@ -126,6 +126,7 @@ useAgentNode({
   <Component
     data-button
     :is="as"
+    :type="as === 'button' ? 'button' : undefined"
     tabindex="0"
     :aria-busy="loading"
     :aria-disabled="isDisabled"
