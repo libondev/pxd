@@ -13,6 +13,7 @@ import {
   resolveScrollBehavior,
 } from '../../utils/dom.js'
 import { cachedOff, cachedOn, throttleByRaf } from '../../utils/event.js'
+import PClientTeleport from '../_internal/client-teleport.vue'
 import PButton from '../button/index.vue'
 
 defineOptions({
@@ -184,7 +185,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Teleport to="body" :disabled="!appendToBody">
+  <PClientTeleport to="body" :disabled="!appendToBody">
     <Transition name="pxd-transition--fade-scale" mode="out-in" appear>
       <div
         data-backtop
@@ -201,5 +202,5 @@ onBeforeUnmount(() => {
         </slot>
       </div>
     </Transition>
-  </Teleport>
+  </PClientTeleport>
 </template>

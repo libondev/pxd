@@ -9,6 +9,7 @@ import { UPDATE_MESSAGE_EVENT_NAME } from '../../composables/use-message.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { cachedOff, cachedOn } from '../../utils/event.js'
 import { getCssUnitValue } from '../../utils/format.js'
+import PClientTeleport from '../_internal/client-teleport.vue'
 import PMessageItem from '../message-item/index.vue'
 
 defineOptions({
@@ -221,7 +222,7 @@ defineExpose({
 </script>
 
 <template>
-  <Teleport :to="topLayerTarget">
+  <PClientTeleport :to="topLayerTarget">
     <section
       data-message
       class="pxd-message h-0 fixed z-50 w-(--message-width)"
@@ -253,7 +254,7 @@ defineExpose({
         />
       </TransitionGroup>
     </section>
-  </Teleport>
+  </PClientTeleport>
 </template>
 
 <style lang="postcss">

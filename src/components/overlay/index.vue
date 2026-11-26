@@ -5,6 +5,7 @@ import { useOverlayManager } from '../../composables/_internal/use-overlay-manag
 import { getNestedLevel } from '../../composables/_internal/use-top-layer.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { NOOP } from '../../utils/event.js'
+import PClientTeleport from '../_internal/client-teleport.vue'
 
 defineOptions({
   name: 'POverlay',
@@ -59,7 +60,7 @@ function onOverlayClick(ev: PointerEvent) {
 </script>
 
 <template>
-  <Teleport :to="to">
+  <PClientTeleport :to="to">
     <Transition name="pxd-transition--fade" mode="out-in" appear>
       <div
         data-overlay
@@ -78,5 +79,5 @@ function onOverlayClick(ev: PointerEvent) {
     </Transition>
 
     <slot />
-  </Teleport>
+  </PClientTeleport>
 </template>

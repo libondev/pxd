@@ -34,6 +34,7 @@ import {
 import { useVirtualList } from '../../composables/use-virtual-list.js'
 import { getUniqueId } from '../../utils/helper.js'
 import { isNumber } from '../../utils/is.js'
+import PClientTeleport from '../_internal/client-teleport.vue'
 import PTreeNode from '../_internal/tree-node.vue'
 import PLoadingMask from '../loading-mask/index.vue'
 import PSearchInput from '../search-input/index.vue'
@@ -902,7 +903,7 @@ defineExpose({
       </div>
     </div>
 
-    <Teleport to="body">
+    <PClientTeleport to="body">
       <div
         v-if="dragValue !== undefined"
         aria-hidden="true"
@@ -913,7 +914,7 @@ defineExpose({
           {{ dragNode?.[fields.label] }}
         </slot>
       </div>
-    </Teleport>
+    </PClientTeleport>
   </div>
 </template>
 

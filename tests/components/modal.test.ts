@@ -387,6 +387,8 @@ describe('modal', () => {
         modelValue: true,
       },
     })
+    await nextTick()
+
     const dialog = document.body.querySelector('dialog')!
     const sentinels = () => dialog.querySelectorAll('[data-dialog-sentinel]')
 

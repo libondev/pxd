@@ -3,7 +3,7 @@ import type { ListOption } from '../../src/components/list/types'
 import type { Component } from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, nextTick, ref } from 'vue'
 import { createAgent } from '../../src/agent'
 import { inspectAgent } from '../../src/agent/testing'
 import ActiveGraph from '../../src/components/active-graph/index.vue'
@@ -643,7 +643,7 @@ describe('agent components', () => {
     hidden.unmount()
   })
 
-  it('should read the description a dialog points at', () => {
+  it('should read the description a dialog points at', async () => {
     track(
       mount(Modal, {
         props: {
@@ -654,6 +654,8 @@ describe('agent components', () => {
         },
       }),
     )
+
+    await nextTick()
 
     expect(find(createAgent().snapshot(), 'modal')).toMatchObject({
       label: 'Settings',

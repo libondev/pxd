@@ -235,6 +235,12 @@ export function useDialogLayer(options: DialogLayerOptions) {
     closeDialog()
   }
 
+  watch(dialogRef, (dialog) => {
+    if (dialog && toValue(options.visible)) {
+      showDialog()
+    }
+  })
+
   watch(
     () => toValue(options.visible),
     (visible) => {

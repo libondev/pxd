@@ -10,6 +10,7 @@ import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { getCssUnitValue } from '../../utils/format.js'
 import { getUniqueId } from '../../utils/helper.js'
+import PClientTeleport from '../_internal/client-teleport.vue'
 import PButton from '../button/index.vue'
 import PLoadingMask from '../loading-mask/index.vue'
 
@@ -114,7 +115,7 @@ watch(
 </script>
 
 <template>
-  <Teleport to="body">
+  <PClientTeleport to="body">
     <dialog
       :ref="setDialogRef"
       class="pxd-dialog inset-0 m-0 p-0 pointer-events-auto fixed size-full max-h-full max-w-full overflow-visible border-0 bg-transparent text-inherit backdrop:animate-dialog-backdrop backdrop:bg-background-100/80 backdrop:transition-opacity data-closing:backdrop:opacity-0"
@@ -208,7 +209,7 @@ watch(
         </div>
       </Transition>
     </dialog>
-  </Teleport>
+  </PClientTeleport>
 </template>
 
 <style>

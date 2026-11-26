@@ -172,6 +172,7 @@ describe('change source', () => {
     )
     // The dialog renders through a teleport, so its buttons live in the document rather than
     // under the wrapper's element.
+    await nextTick()
     const close = [...document.querySelectorAll('button')].find((button) =>
       /close/i.test(button.getAttribute('aria-label') ?? ''),
     )
@@ -245,7 +246,7 @@ describe('change source', () => {
       }),
     )
 
-    await wrapper.find('[aria-label="Carousel arrow right"]').trigger('click')
+    await wrapper.find('.pxd-carousel--next-btn').trigger('click')
     await new Promise((resolve) => setTimeout(resolve, 0))
 
     expect(detailsOf(wrapper)).toMatchObject({ source: 'user', reason: 'item-press' })

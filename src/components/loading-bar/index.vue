@@ -6,6 +6,7 @@ import { useLoadingBarProgress } from '../../composables/_internal/use-loading-b
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { UPDATE_LOADING_BAR_EVENT_NAME } from '../../composables/use-loading-bar.js'
 import { cachedOff, cachedOn } from '../../utils/event.js'
+import PClientTeleport from '../_internal/client-teleport.vue'
 
 defineOptions({
   name: 'PLoadingBar',
@@ -99,7 +100,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Teleport :to="to">
+  <PClientTeleport :to="to">
     <div data-loading-bar aria-hidden="true" :class="classes" v-bind="attrs">
       <div
         :data-hidden="hiddenBar"
@@ -108,5 +109,5 @@ onBeforeUnmount(() => {
         :style="{ transform: `scaleX(${progressValue})` }"
       />
     </div>
-  </Teleport>
+  </PClientTeleport>
 </template>

@@ -19,6 +19,7 @@ import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useDialogLayer } from '../../composables/_internal/use-dialog-layer.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
 import { isServer } from '../../utils/is.js'
+import PClientTeleport from '../_internal/client-teleport.vue'
 import PSpinner from '../spinner/index.vue'
 
 interface SourceState {
@@ -429,7 +430,7 @@ defineExpose({
       </button>
     </div>
 
-    <Teleport to="body">
+    <PClientTeleport to="body">
       <dialog
         :ref="setDialogRef"
         class="pxd-dialog inset-0 m-0 p-0 pointer-events-auto fixed size-full max-h-full max-w-full overflow-visible border-0 bg-transparent text-inherit outline-none backdrop:hidden"
@@ -558,6 +559,6 @@ defineExpose({
           </div>
         </Transition>
       </dialog>
-    </Teleport>
+    </PClientTeleport>
   </div>
 </template>
