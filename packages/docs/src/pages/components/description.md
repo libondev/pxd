@@ -7,7 +7,7 @@ Displays a brief heading and subheading to communicate any additional informatio
 ```vue demo
 <template>
   <PDescription
-    title="Section Title"
+    heading="Section Title"
     tooltip="Additional context about what this section refers to."
     description="Data about this section."
   />
@@ -18,8 +18,8 @@ Displays a brief heading and subheading to communicate any additional informatio
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| title | `string` | - | Heading text, overridable by the `title` slot |
-| tooltip | `string` | - | Content of the info tooltip next to the title |
+| heading | `string` | - | Heading text, overridable by the `heading` slot |
+| tooltip | `string` | - | Content of the info tooltip next to the heading |
 | description | `string` | - | Body text, overridable by the `description` slot |
 
 ## Slots
@@ -27,4 +27,4 @@ Displays a brief heading and subheading to communicate any additional informatio
 | Name | Description |
 | --- | --- |
 | description | Description slot |
-| title | Title slot |
+| heading | Heading slot |

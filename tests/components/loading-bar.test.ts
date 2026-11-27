@@ -36,6 +36,7 @@ describe('loading-bar', () => {
     const wrapper = mount(LoadingBar)
 
     expect(wrapper.props('trickle')).toBe(true)
+    expect(wrapper.props('trickleInterval')).toBe(300)
 
     wrapper.unmount()
   })

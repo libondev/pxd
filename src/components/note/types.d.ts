@@ -15,5 +15,6 @@ export interface NoteProps {
   size?: ComponentSize
   fill?: boolean
   text?: ComponentText
-  label?: boolean | ComponentText
+  label?: ComponentText
+  showLabel?: boolean
 }

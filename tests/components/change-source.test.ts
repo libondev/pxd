@@ -161,7 +161,7 @@ describe('change source', () => {
           setup: () => () =>
             h(Modal, {
               modelValue: open.value,
-              title: 'Settings',
+              heading: 'Settings',
               closeable: true,
               'onUpdate:model-value': (next: unknown) => {
                 open.value = Boolean(next)
@@ -195,7 +195,7 @@ describe('change source', () => {
           setup: () => () =>
             h(Modal, {
               modelValue: open.value,
-              title: 'Settings',
+              heading: 'Settings',
               'onUpdate:model-value': (next: unknown) => {
                 open.value = Boolean(next)
               },

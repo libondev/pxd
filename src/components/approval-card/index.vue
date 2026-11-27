@@ -82,7 +82,7 @@ const iconClass = computed(() =>
 
 const configProvider = useConfigProvider()
 
-const computedTitle = computed(() => props.title || configProvider.locale.approval.title)
+const computedHeading = computed(() => props.heading || configProvider.locale.approval.title)
 const computedStatusLabel = computed(() => configProvider.locale.approval[status.value])
 const computedRememberLabel = computed(
   () => props.rememberLabel || configProvider.locale.approval.remember,
@@ -217,7 +217,7 @@ defineExpose({
 
       <div class="min-w-0 flex-1">
         <div class="pxd-approval-card--title font-medium text-sm truncate text-foreground">
-          {{ computedTitle }}
+          {{ computedHeading }}
         </div>
 
         <div

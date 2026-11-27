@@ -13,7 +13,7 @@ export interface InputProps {
   required?: boolean
   password?: boolean
   autofocus?: boolean
-  inputType?: string
+  type?: string
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
   inputAttrs?: Record<string, string | number | boolean | undefined>
   minLength?: number | string

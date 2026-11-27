@@ -99,7 +99,7 @@ Display text that requires attention or provides additional information.
     </PNote>
 
     <b class="text-sm font-medium">No Label</b>
-    <PNote :label="false"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
+    <PNote :show-label="false"> Lorem ipsum dolor sit amet consectetur adipisicing elit. </PNote>
   </PStack>
 </template>
 ```
@@ -112,10 +112,13 @@ Display text that requires attention or provides additional information.
 | size | `'sm' \| 'md' \| 'lg'` | - | Padding and text size, falls back to the `ConfigProvider` size |
 | text | `string` | - | Content |
 | fill | `boolean` | - | Fill the background instead of only drawing a border |
-| label | `boolean \| string \| number \| null` | `true` | `true` renders the variant icon, a string renders text, `false` hides it |
+| label | `string \| number \| null` | - | Custom label text; the variant icon renders when omitted |
+| show-label | `boolean` | `true` | Show the label area; `false` hides both the icon and text |
 
 ## Slots
 
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+| label | Replaces the label area, including the default variant icon |
+| action | Action content rendered at the trailing edge |

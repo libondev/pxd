@@ -137,3 +137,4 @@ function onClose() {
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+| prefix | Content rendered before the badge label |

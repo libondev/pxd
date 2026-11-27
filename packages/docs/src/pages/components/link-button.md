@@ -47,3 +47,5 @@ Set `variant="link"` to convert it into a link in normal text form.
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+| prefix | Content rendered before the label |
+| suffix | Content rendered after the label, alongside the external-link icon |

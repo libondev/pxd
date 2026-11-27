@@ -19,13 +19,13 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<DrawerProps>(), {
-  position: 'right',
+  side: 'right',
   modelValue: false,
-  autoFocusElement: false,
+  initialFocus: false,
   defaultFooterStyle: true,
   defaultHeaderStyle: false,
   closeOnPressEscape: true,
-  closeOnClickOverlay: true,
+  closeOnOutsideClick: true,
   closeable: false,
   swipeToClose: false,
 })
@@ -37,7 +37,7 @@ const subtitleId = getUniqueId()
 
 const drawerRef = shallowRef<HTMLElement>()
 
-const isVertical = computed(() => props.position === 'bottom' || props.position === 'top')
+const isVertical = computed(() => props.side === 'bottom' || props.side === 'top')
 const swipeAvailable = computed(() => props.swipeToClose && isVertical.value)
 
 const defaultStyles = computed(() => ({
@@ -49,10 +49,10 @@ const defaultStyles = computed(() => ({
     : '-mbs-3',
 }))
 
-const transitionName = computed(() => `pxd-transition--drawer-${props.position}`)
+const transitionName = computed(() => `pxd-transition--drawer-${props.side}`)
 
 const computedStyle = computed(() => ({
-  '--drawer-size': getCssUnitValue(props.size),
+  '--drawer-dimension': getCssUnitValue(props.dimension),
 }))
 
 const { modelValue: isVisible, change } = useModelValue(props, emits)
@@ -70,9 +70,9 @@ const {
 } = useDialogLayer({
   visible: () => isVisible.value,
   loading: () => props.loading,
-  autoFocusElement: () => props.autoFocusElement,
+  initialFocus: () => props.initialFocus,
   closeOnPressEscape: () => props.closeOnPressEscape,
-  closeOnClickOverlay: () => props.closeOnClickOverlay,
+  closeOnOutsideClick: () => props.closeOnOutsideClick,
   onClose: (reason, event) => {
     emits('close', reason)
     return change(false, { reason, event })
@@ -84,7 +84,7 @@ const { dragging: swipeDragging, settling: swipeSettling } = useSwipeDismiss(dra
   visible: () => isVisible.value,
   enabled: () => swipeAvailable.value && !props.loading,
   motionReduced: () => !configProvider.enterMotion,
-  position: () => props.position,
+  position: () => props.side,
   onDismiss: (event) => closeIfAllowed('swipe', event),
 })
 
@@ -118,10 +118,10 @@ watch(
   <PClientTeleport to="body">
     <dialog
       :ref="setDialogRef"
-      class="pxd-dialog inset-0 m-0 p-0 pointer-events-auto fixed size-full max-h-full max-w-full overflow-visible border-0 bg-transparent text-inherit backdrop:animate-dialog-backdrop backdrop:bg-background-100/80 backdrop:transition-opacity data-closing:backdrop:opacity-0"
+      class="pxd-dialog inset-0 m-0 p-0 pointer-events-auto fixed size-full max-h-full max-w-full overflow-visible border-0 bg-transparent text-inherit outline-none backdrop:animate-dialog-backdrop backdrop:bg-background-100/80 backdrop:transition-opacity data-closing:backdrop:opacity-0"
       :data-closing="isClosing || undefined"
       :style="computedStyle"
-      :aria-labelledby="title || $slots.title ? titleId : undefined"
+      :aria-labelledby="heading || $slots.heading ? titleId : undefined"
       :aria-describedby="subtitle || $slots.subtitle ? subtitleId : undefined"
       @cancel="onCancel"
       @close="onNativeClose"
@@ -133,11 +133,11 @@ watch(
           data-drawer
           v-if="isVisible"
           ref="drawerRef"
-          :aria-labelledby="title || $slots.title ? titleId : undefined"
+          :aria-labelledby="heading || $slots.heading ? titleId : undefined"
           :aria-describedby="subtitle || $slots.subtitle ? subtitleId : undefined"
-          class="pxd-drawer group/drawer translate-z-0 data-swipe:data-[position=top]:pb-6 pointer-events-auto fixed isolate flex max-h-full max-w-full flex-col overflow-clip bg-background-100 shadow-border-modal outline-none data-[dragging]:overflow-visible data-[swipe-settling]:overflow-visible"
+          class="pxd-drawer group/drawer translate-z-0 data-swipe:data-[side=top]:pb-6 pointer-events-auto fixed isolate flex max-h-full max-w-full flex-col overflow-clip bg-background-100 shadow-border-modal outline-none data-[dragging]:overflow-visible data-[swipe-settling]:overflow-visible"
           :class="wrapperClass"
-          :data-position="position"
+          :data-side="side"
           :data-enter-motion="configProvider.enterMotion"
           :data-leave-motion="configProvider.leaveMotion"
           :data-swipe-settling="swipeSettling || undefined"
@@ -150,7 +150,7 @@ watch(
             data-swipe-handle
             aria-hidden="true"
             class="pxd-drawer--handle w-18 min-h-10 py-2.5 after:h-1 after:w-9 absolute left-1/2 z-10 flex -translate-x-1/2 cursor-grab items-center justify-center group-data-dragging/drawer:cursor-grabbing after:block after:rounded-full after:bg-gray-300"
-            :class="position === 'top' ? 'bottom-0' : 'top-0'"
+            :class="side === 'top' ? 'bottom-0' : 'top-0'"
           />
 
           <header
@@ -159,12 +159,12 @@ watch(
           >
             <slot name="header">
               <h3
-                v-if="title || $slots.title"
+                v-if="heading || $slots.heading"
                 :id="titleId"
                 class="text-lg font-semibold tracking-tight m-0"
               >
-                <slot name="title">
-                  {{ title }}
+                <slot name="heading">
+                  {{ heading }}
                 </slot>
               </h3>
 
@@ -181,10 +181,10 @@ watch(
 
             <PButton
               v-if="closeable"
-              icon
+              icon-only
               size="xs"
               variant="ghost"
-              class="top-5 right-4 absolute"
+              class="top-5 right-5 absolute"
               :aria-label="configProvider.locale.interaction.close"
               :title="configProvider.locale.interaction.close"
               @click="closeIfAllowed('close-press', $event)"
@@ -219,43 +219,43 @@ watch(
 .pxd-drawer {
   translate: 0px calc(var(--swipe-offset, 0px)) 0px;
 
-  &[data-position='left'] {
+  &[data-side='left'] {
     left: 0;
     top: 0;
     bottom: 0;
   }
 
-  &[data-position='top'] {
+  &[data-side='top'] {
     left: 0;
     top: 0;
     right: 0;
   }
 
-  &[data-position='right'] {
+  &[data-side='right'] {
     right: 0;
     top: 0;
     bottom: 0;
   }
 
-  &[data-position='bottom'] {
+  &[data-side='bottom'] {
     left: 0;
     bottom: 0;
     right: 0;
   }
 }
 
-.pxd-drawer[data-position='left'],
-.pxd-drawer[data-position='right'] {
-  width: var(--drawer-size, 30svw);
+.pxd-drawer[data-side='left'],
+.pxd-drawer[data-side='right'] {
+  width: var(--drawer-dimension, 30svw);
 }
 
-.pxd-drawer[data-position='top'],
-.pxd-drawer[data-position='bottom'] {
-  height: var(--drawer-size, 30svh);
+.pxd-drawer[data-side='top'],
+.pxd-drawer[data-side='bottom'] {
+  height: var(--drawer-dimension, 30svh);
 }
 
-.pxd-drawer[data-position='top']::after,
-.pxd-drawer[data-position='bottom']::after {
+.pxd-drawer[data-side='top']::after,
+.pxd-drawer[data-side='bottom']::after {
   content: '';
   position: absolute;
   right: 0;
@@ -265,11 +265,11 @@ watch(
   pointer-events: none;
 }
 
-.pxd-drawer[data-position='bottom']::after {
+.pxd-drawer[data-side='bottom']::after {
   top: 100%;
 }
 
-.pxd-drawer[data-position='top']::after {
+.pxd-drawer[data-side='top']::after {
   bottom: 100%;
 }
 

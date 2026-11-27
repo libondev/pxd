@@ -1,7 +1,7 @@
 import type { ComponentText } from '../../types/shared/props'
 
 export interface CollapseProps {
-  title?: ComponentText
+  heading?: ComponentText
   expand?: boolean
 }
 

@@ -18,7 +18,7 @@ defineOptions({
 const props = withDefaults(defineProps<EllipsisTextProps>(), {
   rows: 1,
   dots: '...',
-  position: 'end',
+  ellipsisPosition: 'end',
   moreText: 'Expand',
   lessText: 'Collapse',
 })
@@ -116,7 +116,7 @@ const updateEllipsis = scheduleByRaf(async () => {
     return best || dots
   }
 
-  if (props.position === 'end') {
+  if (props.ellipsisPosition === 'end') {
     const prepared = prepareWithSegments(sourceText, textFont)
     const { lines } = layoutWithLines(prepared, availableWidth, lineHeight)
     const baseText = lines
@@ -133,7 +133,7 @@ const updateEllipsis = scheduleByRaf(async () => {
   }
 
   const chars = [...sourceText]
-  const position = props.position
+  const position = props.ellipsisPosition
 
   ellipsisText.value = bisect((keep) => buildCandidate(chars, keep, dots, position), chars.length)
 })
@@ -243,7 +243,7 @@ watch(
     props.text,
     props.rows,
     props.dots,
-    props.position,
+    props.ellipsisPosition,
     props.action,
     props.moreText,
     props.moreActionClass,

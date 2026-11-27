@@ -77,7 +77,7 @@ useAgentNode({
   items: () =>
     optionItems(
       props.options.map((option, index) => ({
-        label: option.title,
+        label: option.heading,
         value: index,
         disabled: option.disabled,
       })),

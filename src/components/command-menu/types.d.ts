@@ -14,7 +14,7 @@ export interface CommandMenuProps {
   placeholder?: string
   closeOnSelectItem?: boolean
   closeOnPressEscape?: boolean
-  closeOnClickOverlay?: boolean
+  closeOnOutsideClick?: boolean
   filterMethod?: ListFilterMethodFn
   remoteFilter?: ListRemoteFilterFn
 }

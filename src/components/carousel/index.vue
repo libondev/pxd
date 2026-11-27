@@ -22,11 +22,11 @@ defineOptions({
 const props = withDefaults(defineProps<CarouselProps>(), {
   index: 0,
   loop: true,
-  arrow: true,
+  showArrow: true,
   height: 180,
   autoplay: true,
   interval: 3000,
-  indicator: true,
+  showIndicator: true,
   direction: 'horizontal',
   pauseOnHover: true,
   indicatorPosition: 'center',
@@ -453,7 +453,7 @@ onBeforeUnmount(stop)
     </div>
 
     <div
-      v-if="indicator"
+      v-if="showIndicator"
       class="pxd-carousel--indicator gap-2 absolute z-1 flex w-max items-center"
     >
       <slot name="indicator" :current="currentIndex" :total="slideCount">
@@ -477,7 +477,7 @@ onBeforeUnmount(stop)
       </slot>
     </div>
 
-    <div v-if="arrow" class="pxd-carousel--toggler gap-2 pointer-events-none absolute z-1 flex">
+    <div v-if="showArrow" class="pxd-carousel--toggler gap-2 pointer-events-none absolute z-1 flex">
       <button
         type="button"
         :aria-label="configProvider.locale.carousel.prev"

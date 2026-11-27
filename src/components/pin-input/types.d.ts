@@ -1,6 +1,14 @@
 import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentSizeWithXs } from '../../types/shared/props'
 
+export type PinInputMode =
+  | 'numeric'
+  | 'alphabetic'
+  | 'alphanumeric'
+  | 'numeric-password'
+  | 'alphabetic-password'
+  | 'alphanumeric-password'
+
 export interface PinInputProps {
   size?: ComponentSizeWithXs
   id?: string
@@ -11,13 +19,7 @@ export interface PinInputProps {
   required?: boolean
   modelValue?: string
   placeholder?: string
-  type?:
-    | 'numeric'
-    | 'alphabetic'
-    | 'alphanumeric'
-    | 'numeric-password'
-    | 'alphabetic-password'
-    | 'alphanumeric-password'
+  mode?: PinInputMode
 }
 
 export type PinInputChangeValue = string

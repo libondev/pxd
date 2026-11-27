@@ -17,10 +17,10 @@ describe('radial-burst', () => {
     wrapper.unmount()
   })
 
-  it('should apply a custom size and primary color', () => {
+  it('should apply a custom dimension and primary color', () => {
     const wrapper = mount(RadialBurst, {
       props: {
-        size: 200,
+        dimension: 200,
         primaryColor: '#ff0000',
       },
     })

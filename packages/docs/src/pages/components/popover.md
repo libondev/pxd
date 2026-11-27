@@ -498,7 +498,7 @@ const content = 'The button is the trigger, without a wrapper element.'
 | aria-target | `HTMLElement` | - | Element that receives the popup state (`aria-haspopup`, `aria-expanded`) when the trigger is not the control, such as a field's inner input |
 | content-class | `string \| any[] \| object` | - | Class bound to the Popover content |
 | toggle-on-trigger | `boolean` | `true` | Hide the Popover when the trigger is activated again |
-| auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |
+| initial-focus | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |
 | return-focus-on-deactivate | `boolean` | `true` | Return focus to the trigger when the Popover closes |
 | close-on-invisible | `boolean` | `true` | Hide the Popover when the trigger is clipped or scrolled out of view |
 | close-on-outside-click | `boolean` | `true` | Close the Popover when the pointer is pressed outside of it and its trigger |

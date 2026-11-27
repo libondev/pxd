@@ -11,10 +11,9 @@ defineOptions({
 const props = withDefaults(defineProps<BorderBeamProps>(), {
   variant: 'glow',
   strength: 1,
-  disabled: false,
+  animated: true,
 })
 
-// Number of color spots distributed around the border (matches the CSS gradients)
 const COLOR_SPOT_COUNT = 9
 
 const computedStyle = computed(() => {
@@ -43,7 +42,7 @@ const computedStyle = computed(() => {
     data-border-beam
     class="pxd-border-beam after:content-empty after:inset-0 before:content-empty before:inset-0 relative overflow-hidden before:pointer-events-none before:absolute before:z-1 before:rounded-inherit after:pointer-events-none after:absolute after:z-2 after:rounded-inherit motion-reduce:animate-none! motion-reduce:before:animate-none! motion-reduce:after:animate-none!"
     :data-variant="variant"
-    :data-disabled="disabled"
+    :data-animated="animated"
     :style="computedStyle"
     v-bind="$attrs"
   >
@@ -407,13 +406,13 @@ const computedStyle = computed(() => {
   mask-composite: add;
 }
 
-.pxd-border-beam[data-disabled='true'] {
+.pxd-border-beam[data-animated='false'] {
   animation-play-state: paused;
 }
 
-.pxd-border-beam[data-disabled='true']::after,
-.pxd-border-beam[data-disabled='true']::before,
-.pxd-border-beam[data-disabled='true'] .pxd-border-beam--bloom {
+.pxd-border-beam[data-animated='false']::after,
+.pxd-border-beam[data-animated='false']::before,
+.pxd-border-beam[data-animated='false'] .pxd-border-beam--bloom {
   animation: pxd-animation-border-beam-fade-out 0.5s ease forwards;
 }
 

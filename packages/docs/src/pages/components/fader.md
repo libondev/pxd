@@ -48,7 +48,7 @@ const containerRef = shallowRef()
       <div class="size-100"></div>
     </div>
 
-    <PFader :size="50" color="var(--color-blue-300)" :scroll-target="containerRef" />
+    <PFader :dimension="50" color="var(--color-blue-300)" :scroll-target="containerRef" />
   </div>
 </template>
 ```
@@ -57,7 +57,7 @@ const containerRef = shallowRef()
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `number` | `24` | Gradient width in `px` |
+| dimension | `number` | `24` | Gradient width in `px` |
 | color | `string` | - | CSS color the gradient fades into |
 | threshold | `number` | `16` | Distance in `px` from the end at which the fader is hidden |
 | scroll-target | `string \| HTMLElement \| ComponentPublicInstance \| null` | - | Scrollable container to watch: a CSS selector, an element, or a component instance |

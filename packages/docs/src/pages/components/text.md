@@ -7,13 +7,13 @@ Display text using well-defined typographic styles.
 ```vue demo
 <template>
   <PStack direction="vertical">
-    <PText :size="48">The Evil Rabbit jumps.</PText>
-    <PText :size="32">The Evil Rabbit jumps.</PText>
-    <PText :size="24">The Evil Rabbit jumps.</PText>
-    <PText :size="20">The Evil Rabbit jumps.</PText>
-    <PText :size="16">The Evil Rabbit jumps.</PText>
-    <PText :size="14">The Evil Rabbit jumps.</PText>
-    <PText :size="12">The Evil Rabbit jumps.</PText>
+    <PText :dimension="48">The Evil Rabbit jumps.</PText>
+    <PText :dimension="32">The Evil Rabbit jumps.</PText>
+    <PText :dimension="24">The Evil Rabbit jumps.</PText>
+    <PText :dimension="20">The Evil Rabbit jumps.</PText>
+    <PText :dimension="16">The Evil Rabbit jumps.</PText>
+    <PText :dimension="14">The Evil Rabbit jumps.</PText>
+    <PText :dimension="12">The Evil Rabbit jumps.</PText>
   </PStack>
 </template>
 ```
@@ -22,7 +22,7 @@ Display text using well-defined typographic styles.
 
 ```vue demo
 <template>
-  <PText :size="{ sm: 24, md: 32, lg: 48 }">The Evil Rabbit jumps.</PText>
+  <PText :dimension="{ sm: 24, md: 32, lg: 48 }">The Evil Rabbit jumps.</PText>
 </template>
 ```
 
@@ -30,7 +30,7 @@ Display text using well-defined typographic styles.
 
 ```vue demo
 <template>
-  <PText secondary>The Evil Rabbit jumps.</PText>
+  <PText variant="secondary">The Evil Rabbit jumps.</PText>
 </template>
 ```
 
@@ -59,10 +59,10 @@ Display text using well-defined typographic styles.
 | --- | --- | --- | --- |
 | as | `string \| object` | `p` | Tag or component rendered as the root element |
 | text | `string` | - | Text content, also used as the `title` attribute |
-| size | `string \| Responsive \| number` | - | Font size in `px`, or a responsive object keyed by breakpoint |
+| dimension | `string \| Responsive \| number` | - | Font size in `px`, or a responsive object keyed by breakpoint |
 | align | `'left' \| 'center' \| 'right'` | `left` | Horizontal text alignment |
 | monospace | `boolean` | - | Render with the monospace font |
-| secondary | `boolean` | - | Render with the secondary foreground color |
+| variant | `'default' \| 'secondary'` | `default` | Text color preset; `secondary` uses the secondary foreground color |
 
 ## Slots
 

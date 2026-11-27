@@ -97,7 +97,7 @@ const slides = [{ value: 1, label: 'Slide 1' }, { value: 2, label: 'Slide 2' }, 
 </template>
 ```
 
-## Disable indicator and arrow
+## Disable indicator and arrows
 
 ```vue demo
 <script setup>
@@ -105,7 +105,7 @@ const slides = [{ value: 1, label: 'Slide 1' }, { value: 2, label: 'Slide 2' }, 
 </script>
 
 <template>
-  <PCarousel :indicator="false" :arrow="false" :options="slides">
+  <PCarousel :show-indicator="false" :show-arrow="false" :options="slides">
     <template #item="{ item }">
       <div class="flex items-center justify-center h-full bg-gray-200 nth-[2n]:bg-gray-300">
         {{ item.label }}
@@ -160,11 +160,11 @@ const slides = [{ value: 1, label: 'Slide 1' }, { value: 2, label: 'Slide 2' }, 
 | options | `CarouselOption[]` | `[]` | Slides to loop over; `label` is rendered when no `item` slot is given |
 | index | `number` | `0` | Index of the initially displayed item |
 | loop | `boolean` | `true` | Wrap around when reaching either end |
-| arrow | `boolean` | `true` | Show the previous and next arrows |
+| show-arrow | `boolean` | `true` | Show the previous and next arrows |
 | height | `number \| string` | `180` | Height of the viewport; numbers are treated as `px` |
 | autoplay | `boolean` | `true` | Advance to the next item automatically |
 | interval | `number` | `3000` | Delay between autoplay transitions, in milliseconds |
-| indicator | `boolean` | `true` | Show the page indicators; the active one grows and fills as the autoplay timer runs |
+| show-indicator | `boolean` | `true` | Show the page indicators; the active one grows and fills as the autoplay timer runs |
 | direction | `'horizontal' \| 'vertical'` | `horizontal` | Axis along which the items slide and swipe |
 | indicator-position | `BasePosition \| 'center'` | `center` | Placement of the indicator relative to the viewport |
 | pause-on-hover | `boolean` | `true` | Suspend autoplay while the pointer is over the carousel |

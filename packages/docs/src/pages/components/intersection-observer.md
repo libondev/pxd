@@ -6,7 +6,7 @@ Render only when components are visible in the viewport.
 
 ## Default
 
-The component supports the `root/root-margin/threshold` attribute, which will be passed directly to IntersectionObserver.
+The component supports the `root` / `root-margin` / `threshold-rate` props, which map to the native IntersectionObserver options.
 
 ```vue demo
 <script setup>
@@ -162,7 +162,7 @@ import Counter from 'doc:Counter.vue'
 | keep-alive | `boolean` | - | Keep the slot alive instead of unmounting it when hidden |
 | root | `Element \| Document \| null` | - | Root element passed to `IntersectionObserver` |
 | root-margin | `string` | `20%` | Margin that grows or shrinks the root bounds |
-| threshold | `number \| number[]` | `0` | Visibility ratio that triggers the observer, `0` to `1` |
+| threshold-rate | `number \| number[]` | `0` | Visibility ratio that triggers the observer, `0` to `1` |
 
 ## Events
 

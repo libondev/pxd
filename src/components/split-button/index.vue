@@ -63,7 +63,7 @@ function onModelUpdate(value: SplitButtonProps['modelValue']) {
     </PButton>
 
     <PButton
-      icon
+      icon-only
       :shape="shape"
       :variant="variant"
       :disabled="disabled"

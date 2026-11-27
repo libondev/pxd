@@ -133,7 +133,7 @@ watch(
     :model-value="localVisible"
     :position="position"
     :disabled="disabled"
-    :auto-focus-element="true"
+    :initial-focus="true"
     :trigger-selector="triggerSelector"
     :content-class="POPOVER_PANEL_CLASS"
     :close-on-press-escape="!isPending"
@@ -149,8 +149,8 @@ watch(
           :active-trigger="activeTrigger"
           :active-trigger-index="activeTriggerIndex"
         >
-          <h3 v-if="title" :id="titleId" class="m-0 text-sm font-medium">
-            {{ title }}
+          <h3 v-if="heading" :id="titleId" class="m-0 text-sm font-medium">
+            {{ heading }}
           </h3>
 
           <p v-if="description" class="m-0 text-xs text-foreground-secondary">

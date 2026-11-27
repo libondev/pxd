@@ -79,7 +79,7 @@ describe('button', () => {
   it('replaces the icon with a spinner when loading', async () => {
     const wrapper = mount(Button, {
       props: {
-        icon: true,
+        iconOnly: true,
       },
       slots: {
         default: 'Icon',

@@ -21,11 +21,11 @@ defineOptions({
 
 const props = withDefaults(defineProps<ModalProps>(), {
   modelValue: false,
-  autoFocusElement: false,
+  initialFocus: false,
   defaultFooterStyle: true,
   defaultHeaderStyle: false,
   closeOnPressEscape: true,
-  closeOnClickOverlay: true,
+  closeOnOutsideClick: true,
   closeable: false,
   swipeToClose: false,
 })
@@ -67,9 +67,9 @@ const {
 } = useDialogLayer({
   visible: () => isVisible.value,
   loading: () => props.loading,
-  autoFocusElement: () => props.autoFocusElement,
+  initialFocus: () => props.initialFocus,
   closeOnPressEscape: () => props.closeOnPressEscape,
-  closeOnClickOverlay: () => props.closeOnClickOverlay,
+  closeOnOutsideClick: () => props.closeOnOutsideClick,
   onClose: (reason, event) => {
     emits('close', reason)
     return change(false, { reason, event })
@@ -118,10 +118,10 @@ watch(
   <PClientTeleport to="body">
     <dialog
       :ref="setDialogRef"
-      class="pxd-dialog inset-0 m-0 p-0 pointer-events-auto fixed size-full max-h-full max-w-full overflow-visible border-0 bg-transparent text-inherit backdrop:animate-dialog-backdrop backdrop:bg-background-100/80 backdrop:transition-opacity data-closing:backdrop:opacity-0"
+      class="pxd-dialog inset-0 m-0 p-0 pointer-events-auto fixed size-full max-h-full max-w-full overflow-visible border-0 bg-transparent text-inherit outline-none backdrop:animate-dialog-backdrop backdrop:bg-background-100/80 backdrop:transition-opacity data-closing:backdrop:opacity-0"
       :data-closing="isClosing || undefined"
       :style="computedStyle"
-      :aria-labelledby="title || $slots.title ? titleId : undefined"
+      :aria-labelledby="heading || $slots.heading ? titleId : undefined"
       :aria-describedby="subtitle || $slots.subtitle ? subtitleId : undefined"
       @cancel="onCancel"
       @close="onNativeClose"
@@ -135,7 +135,7 @@ watch(
           ref="panelRef"
           class="pxd-modal group/modal left-0 translate-z-0 sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-xl sm:[--o:0] sm:[--t:scale(0.98)] sm:w-(--modal-width) max-sm:bottom-0 pointer-events-auto fixed isolate flex w-full max-w-full flex-col overflow-clip rounded-t-lg bg-background-100 shadow-border-modal default-transition-duration default-transition-timing-function outline-none data-[dragging]:overflow-visible data-[swipe-settling]:overflow-visible motion-safe:transition-[opacity,transform,scale,background-color,box-shadow,border-color,color] dark:bg-background-200"
           :class="wrapperClass"
-          :aria-labelledby="title || $slots.title ? titleId : undefined"
+          :aria-labelledby="heading || $slots.heading ? titleId : undefined"
           :aria-describedby="subtitle || $slots.subtitle ? subtitleId : undefined"
           :data-enter-motion="configProvider.enterMotion"
           :data-leave-motion="configProvider.leaveMotion"
@@ -156,12 +156,12 @@ watch(
           >
             <slot name="header">
               <h3
-                v-if="title || $slots.title"
+                v-if="heading || $slots.heading"
                 :id="titleId"
                 class="text-lg font-semibold tracking-tight m-0"
               >
-                <slot name="title">
-                  {{ title }}
+                <slot name="heading">
+                  {{ heading }}
                 </slot>
               </h3>
 
@@ -178,10 +178,10 @@ watch(
 
             <PButton
               v-if="closeable"
-              icon
+              icon-only
               size="xs"
               variant="ghost"
-              class="top-5 right-4 absolute"
+              class="top-5 right-5 absolute"
               :aria-label="configProvider.locale.interaction.close"
               :title="configProvider.locale.interaction.close"
               @click="closeIfAllowed('close-press', $event)"

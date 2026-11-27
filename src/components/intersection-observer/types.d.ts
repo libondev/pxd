@@ -5,7 +5,7 @@ export interface IntersectionObserverProps {
   keepAlive?: boolean
   root?: Element | Document | null
   rootMargin?: string
-  threshold?: number | number[]
+  thresholdRate?: number | number[]
 }
 
 export interface IntersectionObserverEmits {

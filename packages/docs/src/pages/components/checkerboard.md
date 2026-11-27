@@ -25,7 +25,7 @@ Display a checkerboard pattern background, commonly used to indicate transparenc
 
 ```vue demo
 <template>
-  <PCheckerboard :size="40" class="h-40 rounded-lg" />
+  <PCheckerboard :dimension="40" class="h-40 rounded-lg" />
 </template>
 ```
 
@@ -52,7 +52,7 @@ Display a checkerboard pattern background, commonly used to indicate transparenc
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | variant | `'checkerboard' \| 'grid' \| 'dots'` | `'checkerboard'` | Pattern variant: checkerboard, grid lines, or dot background |
-| size | `string \| number` | `20` | Size of each pattern cell |
+| dimension | `string \| number` | `20` | Size of each pattern cell |
 | primary-color | `string` | `var(--color-gray-200)` | Primary (darker) color |
 | background-color | `string` | `var(--color-background-100)` | Background (lighter) color |
 

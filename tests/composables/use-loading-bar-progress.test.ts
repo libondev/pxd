@@ -38,7 +38,7 @@ describe('useLoadingBarProgress', () => {
   })
 
   it('should not jump to the cap when the frame timestamp crosses the trickle threshold', async () => {
-    const { result, stop } = runWithScope(() => useLoadingBarProgress({ trickleThreshold: 100 }))
+    const { result, stop } = runWithScope(() => useLoadingBarProgress({ trickleInterval: 100 }))
 
     result.start()
     await vi.advanceTimersByTimeAsync(300)

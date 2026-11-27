@@ -114,3 +114,5 @@ Set `scalable="false"` to disable zooming when pressed.
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+| prefix | Content rendered before the label |
+| suffix | Content rendered after the label |

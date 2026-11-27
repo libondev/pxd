@@ -21,7 +21,7 @@ function onChange({ item, status }) {
 </script>
 
 <template>
-  <PTodoList v-model="options" title="Tasks" @change="onChange" />
+  <PTodoList v-model="options" heading="Tasks" @change="onChange" />
 </template>
 ```
 
@@ -41,7 +41,7 @@ const options = ref([
 </script>
 
 <template>
-  <PTodoList :options="options" variant="simple" title="Plan" />
+  <PTodoList :options="options" variant="simple" heading="Plan" />
 </template>
 ```
 
@@ -139,7 +139,7 @@ const options = ref([
 </script>
 
 <template>
-  <PTodoList :options="options" title="Plan" />
+  <PTodoList :options="options" heading="Plan" />
 </template>
 ```
 
@@ -155,32 +155,32 @@ const options = ref([
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| model-value | `TodoOption[]` | - | Bound list state; takes precedence over `options`. |
-| default-value | `TodoOption[]` | - | List state used before the consumer binds `v-model`. |
-| options | `TodoOption[]` | `[]` | Items to render while uncontrolled; each entry is `{ id?, content?, description?, status?, disabled? }`. |
+| model-value | `TodoListOption[]` | - | Bound list state; takes precedence over `options`. |
+| default-value | `TodoListOption[]` | - | List state used before the consumer binds `v-model`. |
+| options | `TodoListOption[]` | `[]` | Items to render while uncontrolled; each entry is `{ id?, content?, description?, status?, disabled? }`. |
 | variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and header padding. |
 | size | `'sm' \| 'md' \| 'lg'` | - | Padding, font size and marker size; falls back to the config provider size. |
 | readonly | `boolean` | `false` | Render as a static list: status buttons are disabled and rows ignore clicks. |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes. |
-| title | `ComponentText` | - | Header title. |
+| heading | `ComponentText` | - | Header heading. |
 | empty | `ComponentText` | `locale.results.noData` | Text shown when there is no item. |
 
 ## Events
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(detail: TodoChangeDetail, details: ChangeDetails) => void` | Emitted when an item moves to another status. |
-| update:model-value | `(options: TodoOption[]) => void` | Emitted together with `change`, carrying the next list state. |
+| change | `(detail: TodoListChangeDetail, details: ChangeDetails) => void` | Emitted when an item moves to another status. |
+| update:model-value | `(options: TodoListOption[]) => void` | Emitted together with `change`, carrying the next list state. |
 
 `detail` reports which item moved and what the whole list becomes:
 
 ```ts
-interface TodoChangeDetail {
-  item: TodoOption
+interface TodoListChangeDetail {
+  item: TodoListOption
   index: number
-  status: TodoStatus
-  prevStatus: TodoStatus
-  options: TodoOption[]
+  status: TodoListStatus
+  prevStatus: TodoListStatus
+  options: TodoListOption[]
 }
 ```
 
@@ -188,7 +188,7 @@ interface TodoChangeDetail {
 
 | Name | Description |
 | --- | --- |
-| header | Replaces the header content. Slot props: `expanded`, `stats`, `title`, `summary`. |
+| header | Replaces the header content. Slot props: `expanded`, `stats`, `heading`, `summary`. |
 | item | Replaces a whole row, including its status button. Slot props: `item`, `index`, `status`, `toggle`. |
 | item-content | Replaces the text block of a row. Slot props: `item`, `index`, `status`. |
 | empty | Replaces the empty-state text. |
@@ -197,10 +197,10 @@ interface TodoChangeDetail {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| stats | `TodoStats` | Item counts per status, plus `total`. |
-| start | `(target: TodoItemKey) => void` | Move an item to `in_progress`. |
-| complete | `(target: TodoItemKey) => void` | Move an item to `completed`. |
-| cancel | `(target: TodoItemKey) => void` | Move an item to `canceled`. |
-| reset | `(target: TodoItemKey) => void` | Move an item back to `pending`. |
+| stats | `TodoListStats` | Item counts per status, plus `total`. |
+| start | `(target: TodoListItemKey) => void` | Move an item to `in_progress`. |
+| complete | `(target: TodoListItemKey) => void` | Move an item to `completed`. |
+| cancel | `(target: TodoListItemKey) => void` | Move an item to `canceled`. |
+| reset | `(target: TodoListItemKey) => void` | Move an item back to `pending`. |
 
 Every `target` is an option `id`, falling back to its index.

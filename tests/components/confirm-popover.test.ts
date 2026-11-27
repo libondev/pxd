@@ -81,7 +81,7 @@ describe('confirm-popover', () => {
   })
 
   it('should render locale labels after the trigger is clicked', async () => {
-    const wrapper = mountComponent({ title: 'Delete file' })
+    const wrapper = mountComponent({ heading: 'Delete file' })
 
     await openPopover(wrapper)
 

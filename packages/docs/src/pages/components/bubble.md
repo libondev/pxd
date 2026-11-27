@@ -60,7 +60,7 @@ import PencilEditIcon from '@gdsicon/vue/pencil-edit'
     The Evil Rabbit Jumped over the Fence
 
     <template #footer>
-      <PButton size="sm" variant="ghost" icon>
+      <PButton size="sm" variant="ghost" icon-only>
         <RefreshClockwiseIcon class="text-gray-900" />
       </PButton>
     </template>
@@ -74,7 +74,7 @@ import PencilEditIcon from '@gdsicon/vue/pencil-edit'
     </template>
 
     <template #footer>
-      <PButton size="sm" variant="ghost" icon>
+      <PButton size="sm" variant="ghost" icon-only>
         <PencilEditIcon class="text-gray-900" />
       </PButton>
     </template>
@@ -209,7 +209,7 @@ function addMessage() {
 | over-scan | `number` | `3` | Number of items to render beyond the visible area when `virtual` is enabled |
 | fader | `boolean` | `true` | Show a vertical gradient fader when messages overflow |
 
-`fader-size`, `fader-color` and `fader-direction` are forwarded to the inner [PStickToBottom](/components/stick-to-bottom); the direction defaults to `vertical`.
+`fader-dimension`, `fader-color` and `fader-direction` are forwarded to the inner [PStickToBottom](/components/stick-to-bottom); the direction defaults to `vertical`.
 
 ## BubbleGroup Slots
 

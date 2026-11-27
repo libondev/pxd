@@ -8,7 +8,9 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<PlaceholderProps>()
+const props = withDefaults(defineProps<PlaceholderProps>(), {
+  variant: 'default',
+})
 
 const computedStyle = computed(() => {
   return {
@@ -22,7 +24,8 @@ const computedStyle = computed(() => {
   <div
     data-placeholder
     class="pxd-placeholder max-w-full min-w-full"
-    :class="{ 'is-inverted': inverted }"
+    :class="{ 'is-inverted': variant === 'inverted' }"
+    :data-variant="variant"
     :style="computedStyle"
     v-bind="$attrs"
   >

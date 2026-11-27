@@ -12,19 +12,19 @@ import InboxIcon from '@gdsicon/vue/inbox'
 <template>
   <PStack>
     <PChip variant="primary">
-      <PButton icon></PButton>
+      <PButton icon-only></PButton>
     </PChip>
     <PChip variant="success">
-      <PButton icon></PButton>
+      <PButton icon-only></PButton>
     </PChip>
     <PChip variant="warning">
-      <PButton icon></PButton>
+      <PButton icon-only></PButton>
     </PChip>
     <PChip variant="error">
-      <PButton icon></PButton>
+      <PButton icon-only></PButton>
     </PChip>
     <PChip variant="secondary">
-      <PButton icon></PButton>
+      <PButton icon-only></PButton>
     </PChip>
   </PStack>
 </template>
@@ -34,8 +34,8 @@ import InboxIcon from '@gdsicon/vue/inbox'
 
 ```vue demo
 <template>
-  <PChip size="15">
-    <PButton icon />
+  <PChip dimension="15">
+    <PButton icon-only />
   </PChip>
 </template>
 ```
@@ -49,7 +49,7 @@ import InboxIcon from '@gdsicon/vue/inbox'
 
 <template>
   <PChip label="99+" variant="error">
-    <PButton icon>
+    <PButton icon-only>
       <InboxIcon />
     </PButton>
   </PChip>
@@ -72,7 +72,7 @@ Use the inset prop to display the Chip inside the component. This is useful when
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `number \| string` | - | Diameter of the dot shown when no `label` is set |
+| dimension | `number \| string` | - | Diameter of the dot shown when no `label` is set |
 | inset | `boolean` | - | Display the chip inside the wrapped component |
 | label | `string \| number \| null` | - | Text rendered inside the chip, such as `99+` |
 | variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | Chip color |

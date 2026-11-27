@@ -15,7 +15,7 @@ describe('collapse', () => {
   it('should render title', () => {
     const wrapper = mount(Collapse, {
       props: {
-        title: 'Click to expand',
+        heading: 'Click to expand',
       },
     })
 
@@ -27,7 +27,7 @@ describe('collapse', () => {
   it('should emit toggle event on click', async () => {
     const wrapper = mount(Collapse, {
       props: {
-        title: 'Toggle me',
+        heading: 'Toggle me',
       },
     })
 
@@ -55,7 +55,7 @@ describe('collapse', () => {
     const wrapper = mount(Collapse, {
       props: {
         expand: true,
-        title: 'Already open',
+        heading: 'Already open',
       },
     })
 
@@ -67,7 +67,7 @@ describe('collapse', () => {
   it('should open on trigger click', async () => {
     const wrapper = mount(Collapse, {
       props: {
-        title: 'Toggle me',
+        heading: 'Toggle me',
       },
       slots: {
         default: '<p>Panel body</p>',
@@ -85,7 +85,7 @@ describe('collapse', () => {
   it('should expand when details is opened by the browser', async () => {
     const wrapper = mount(Collapse, {
       props: {
-        title: 'Find me',
+        heading: 'Find me',
       },
       slots: {
         default: '<p>Searchable body</p>',

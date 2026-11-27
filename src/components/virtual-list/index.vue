@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<VirtualListProps>(), {
   columnGap: 0,
   columnCount: 1,
   items: () => [],
-  errorText: 'Request failed. Click to reload',
+  errorMessage: 'Request failed. Click to reload',
   loadingText: 'Loading...',
   finishedText: 'Finished',
 })
@@ -134,9 +134,11 @@ defineExpose({
       :class="{ 'cursor-pointer hover:text-gray-800': status === 'error' }"
       @click="onRetryClick"
     >
-      <slot name="message">
-        <span v-if="status === 'error'">{{ errorText }}</span>
-        <span v-else-if="status === 'finished'">{{ finishedText }}</span>
+      <slot v-if="status === 'error'" name="error-message">
+        {{ errorMessage }}
+      </slot>
+      <slot v-else name="message">
+        <span v-if="status === 'finished'">{{ finishedText }}</span>
         <template v-else-if="status === 'loading'">
           <LoaderCircleIcon class="me-1.5 motion-safe:animate-spin" />
           <span>{{ loadingText }}</span>

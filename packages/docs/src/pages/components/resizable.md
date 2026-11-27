@@ -49,7 +49,7 @@ const sizes = ref([25, 75])
   <PStack direction="vertical" gap="3">
     <PStack align="center" gap="3">
       <PButton size="sm" @click="() => (sizes = [50, 50])">Reset</PButton>
-      <PText secondary>{{ sizes.map((size) => size + '%').join(' / ') }}</PText>
+      <PText variant="secondary">{{ sizes.map((size) => size + '%').join(' / ') }}</PText>
     </PStack>
 
     <PResizable v-model="sizes" class="w-100 h-50 max-w-full text-sm border rounded-lg">
@@ -121,7 +121,7 @@ const collapsed = ref(false)
   <PStack direction="vertical" gap="3">
     <PStack align="center" gap="3">
       <PButton size="sm" @click="() => (collapsed = !collapsed)">Toggle</PButton>
-      <PText secondary>{{ collapsed ? 'Folded' : sizes[0] }}</PText>
+      <PText variant="secondary">{{ collapsed ? 'Folded' : sizes[0] }}</PText>
     </PStack>
 
     <PResizable

@@ -7,9 +7,9 @@ export interface RevealProps {
   delay?: number | string
   /** Initial offset along the reveal axis, before the element settles at its place. */
   distance?: number | string
-  direction?: BasePosition
+  from?: BasePosition
   trigger?: RevealTrigger
   root?: Element | Document | null
   rootMargin?: string
-  threshold?: number | number[]
+  thresholdRate?: number | number[]
 }

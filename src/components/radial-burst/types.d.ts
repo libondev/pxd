@@ -1,5 +1,5 @@
 export interface RadialBurstProps {
-  size?: string | number
+  dimension?: string | number
   primaryColor?: string
   backgroundColor?: string
 }

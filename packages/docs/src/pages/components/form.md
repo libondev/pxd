@@ -161,7 +161,7 @@ const model = reactive({ email: '' })
       name="email"
       label="Email"
       :component="Input"
-      :component-props="{ inputType: 'email', placeholder: 'you@example.com' }"
+      :component-props="{ type: 'email', placeholder: 'you@example.com' }"
     />
   </PForm>
 </template>
@@ -198,7 +198,7 @@ const fields = [
 ## Slots on an auto-rendered control
 
 `component-slots` forwards named slots to the inner control; `PFormItem`'s own `label`,
-`description` and `error` slots still belong to the field chrome.
+`description` and `error-message` slots still belong to the field chrome.
 
 ```vue demo
 <script setup>
@@ -335,7 +335,7 @@ async function signIn({ data }) {
     @submit="signIn"
   >
     <PFormItem name="email" label="Email" required>
-      <PInput v-model="model.email" input-type="email" :input-attrs="{ autocomplete: 'email' }" />
+      <PInput v-model="model.email" type="email" :input-attrs="{ autocomplete: 'email' }" />
     </PFormItem>
 
     <PFormItem name="password" label="Password" required>
@@ -429,7 +429,7 @@ function reset() {
 
 ## Standalone
 
-Without a `PForm`, `error` supplies the message and still marks the control invalid.
+Without a `PForm`, `error-message` supplies the message and still marks the control invalid.
 
 ```vue demo
 <script setup>
@@ -439,7 +439,7 @@ const email = ref('')
 </script>
 
 <template>
-  <PFormItem label="Email" error="Enter a valid email" class="max-w-sm">
+  <PFormItem label="Email" error-message="Enter a valid email" class="max-w-sm">
     <PInput v-model="email" />
   </PFormItem>
 </template>
@@ -510,7 +510,7 @@ Set `pending` while the app-owned save is running so an agent waits for it.
 | description | `string` | - | Helper text below the control |
 | hint | `string` | - | Right-aligned text beside the label; defaults to the optional marker |
 | required | `boolean` | `false` | Shows the asterisk and sets `required` / `aria-required` |
-| error | `string \| null` | - | Message override; also marks the control invalid without a form |
+| error-message | `string \| null` | - | Message override; also marks the control invalid without a form |
 | error-pattern | `RegExp` | - | Show errors whose path matches this pattern, e.g. `/^tags\./` for array items; works without `name` |
 | rules | `StandardSchema` | - | Field-level schema; runs together with the form schema and custom `validate` |
 | for | `string` | - | Explicit `for` target; defaults to the generated control id |
@@ -528,7 +528,7 @@ Set `pending` while the app-owned save is running so an agent waits for it.
 | default | The control; scoped with `control`, `attrs`, `value`, `setValue`, `error`, `errors`, `invalid`, `validate` and `reset`. |
 | label | Replaces the label text. |
 | description | Replaces the description text. |
-| error | Replaces the message; scoped with `error` and `errors`. |
+| error-message | Replaces the message; scoped with `error` and `errors`. |
 
 ## FormItem Methods
 
@@ -545,7 +545,7 @@ Set `pending` while the app-owned save is running so an agent waits for it.
 | Name | Description |
 | --- | --- |
 | default | The form items. |
-| error | Root and unmatched errors, scoped with `errors` and `first`. |
+| error-message | Root and unmatched errors, scoped with `errors` and `first`. |
 
 ## Methods
 

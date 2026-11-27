@@ -5,7 +5,7 @@ interface AvatarOptions {
 }
 
 export interface AvatarGroupProps {
-  max?: number
-  size?: number | string
+  maxCount?: number
+  dimension?: number | string
   options?: AvatarOptions[]
 }

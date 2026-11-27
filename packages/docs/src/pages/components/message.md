@@ -25,9 +25,9 @@ const options = [
 const loremText =
   'Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque minima, excepturi distinctio quis asperiores magnam voluptate nostrum quibusdam!'
 
-function addMessage(type) {
+function addMessage(variant) {
   const text = loremText.slice(0, Math.ceil(Math.random() * 100))
-  useMessage(text, { type })
+  useMessage(text, { variant })
 }
 </script>
 
@@ -71,7 +71,7 @@ const promise = () =>
 
 function addMessage() {
   useMessage('Loading...', {
-    type: 'loading',
+    variant: 'loading',
     promise: promise(),
     group: 'promise',
     success: (data) => {
@@ -110,7 +110,7 @@ function addMessage() {
 </script>
 
 <template>
-  <PMessage group="max" :max="5" width="240" position="bottom" />
+  <PMessage group="max" :max-count="5" width="240" position="bottom" />
 
   <PButton @click="addMessage()">Add</PButton>
 </template>
@@ -211,7 +211,7 @@ function clearAll() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| max | `number` | `3` | How many messages stay visible, the rest stack behind |
+| max-count | `number` | `3` | How many messages stay visible, the rest stack behind |
 | width | `string \| number` | - | Width of the message container, defaults to `356px` |
 | group | `string` | `default` | Group name, only messages created with the same group are handled |
 | expand | `boolean` | - | Expand the stack so every message is fully shown |
@@ -227,7 +227,7 @@ function clearAll() {
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| max | `number` | - | Visible item limit, items beyond it are hidden |
+| max-count | `number` | - | Visible item limit, items beyond it are hidden |
 | index | `number` | - | Position in the stack, driving the scale offset and `z-index` |
 | offset | `number` | `0` | Distance in px from the stack anchor when expanded, summed from the heights of the messages before it |
 | item-data | `MessageItemConfig` | - | Message configuration created by `useMessage` |

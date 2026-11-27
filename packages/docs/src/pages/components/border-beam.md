@@ -125,27 +125,27 @@ Use `color` to override the beam colors. Pass a string for a single color, or an
 </template>
 ```
 
-## Disabled
+## Animation
 
-Use `disabled` to stop the animation. The beam freezes first, then shrinks and fades out instead of disappearing instantly.
+Set `animated="false"` to stop the animation. The beam freezes first, then shrinks and fades out instead of disappearing instantly.
 
 ```vue demo
 <script setup>
 import { shallowRef } from 'vue'
 
-const disabled = shallowRef(false)
+const animated = shallowRef(true)
 </script>
 
 <template>
   <PStack direction="vertical" :gap="4">
     <PBorderBeam
       class="h-28 w-64 flex items-center shadow-border-base justify-center bg-background-100 rounded-xl"
-      :disabled="disabled"
+      :animated="animated"
     >
-      {{ disabled ? 'disabled' : 'enabled' }}
+      {{ animated ? 'enabled' : 'paused' }}
     </PBorderBeam>
 
-    <PButton @click="disabled = !disabled">Toggle</PButton>
+    <PButton @click="animated = !animated">Toggle</PButton>
   </PStack>
 </template>
 ```
@@ -157,4 +157,10 @@ const disabled = shallowRef(false)
 | variant | `'glow' \| 'line' \| 'bottom'` | `'glow'` | Beam appearance. `glow` is the broader light effect; `line` is a 1px beam that travels along the border; `bottom` is a beam that travels along the bottom edge only. |
 | color | `string \| string[]` | - | Override the beam colors. A string uses one color for all spots; an array distributes colors around the border. |
 | strength | `number` | `1` | Overall effect intensity (0-1). Only affects the beam, glow, and bloom layers. |
-| disabled | `boolean` | `false` | Stop the animation. The beam freezes, then shrinks and fades out. |
+| animated | `boolean` | `true` | Play the beam animation; set to `false` to freeze and fade it out. |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Content rendered inside the beam frame |

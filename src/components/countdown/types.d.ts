@@ -5,7 +5,7 @@ export interface CountdownProps {
    * Whether to enable count up mode.
    * @default false
    */
-  inverted?: boolean
+  countUp?: boolean
   /**
    * Whether the countdown is running.
    * @default false
@@ -26,15 +26,10 @@ export interface CountdownProps {
    */
   autoReset?: boolean
   /**
-   * The duration of the countdown.
+   * The duration of the countdown, in milliseconds.
    * @default 0
    */
   duration?: number
-  /**
-   * Whether the time stamp is in milliseconds.
-   * @default true
-   */
-  millisecond?: boolean
   /**
    * Whether to enable human-friendly time display (ceil to seconds).
    * @default false

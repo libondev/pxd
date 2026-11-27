@@ -29,7 +29,7 @@ describe('useCountdown', () => {
 
   it('should start countdown from specified duration value', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ duration: 5000, enabled: false, inverted: false, millisecond: true }),
+      useCountdown({ duration: 5000, enabled: false, countUp: false }),
     )
     expect(result.timestamp.value).toBe(5000)
     stop()
@@ -37,32 +37,16 @@ describe('useCountdown', () => {
 
   it('should start countup from 0', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ duration: 5000, enabled: false, inverted: true }),
+      useCountdown({ duration: 5000, enabled: false, countUp: true }),
     )
     expect(result.timestamp.value).toBe(0)
     stop()
   })
 
-  it('should handle millisecond mode correctly', () => {
-    const { result, stop } = runWithScope(() =>
-      useCountdown({ duration: 5000, millisecond: true, enabled: false, inverted: false }),
-    )
-    expect(result.timestamp.value).toBe(5000)
-    stop()
-  })
-
-  it('should handle second mode correctly', () => {
-    const { result, stop } = runWithScope(() =>
-      useCountdown({ duration: 5, millisecond: false, enabled: false, inverted: false }),
-    )
-    expect(result.timestamp.value).toBe(5000)
-    stop()
-  })
-
-  it('should calculate countup based on end time in inverted mode', () => {
+  it('should calculate countup based on end time in countUp mode', () => {
     mockDateNow.mockReturnValue(1005000)
     const { result, stop } = runWithScope(() =>
-      useCountdown({ endTime: 1000000, enabled: false, inverted: true }),
+      useCountdown({ endTime: 1000000, enabled: false, countUp: true }),
     )
     expect(result.timestamp.value).toBe(0)
     stop()
@@ -70,7 +54,7 @@ describe('useCountdown', () => {
 
   it('should handle duration of 0', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ duration: 0, enabled: false, inverted: false }),
+      useCountdown({ duration: 0, enabled: false, countUp: false }),
     )
     expect(result.timestamp.value).toBe(0)
     stop()
@@ -78,14 +62,14 @@ describe('useCountdown', () => {
 
   it('should handle negative duration values', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ duration: -1000, enabled: false, inverted: false }),
+      useCountdown({ duration: -1000, enabled: false, countUp: false }),
     )
     expect(result.timestamp.value).toBe(0)
     stop()
   })
 
   it('should handle undefined duration', () => {
-    const { result, stop } = runWithScope(() => useCountdown({ enabled: false, inverted: false }))
+    const { result, stop } = runWithScope(() => useCountdown({ enabled: false, countUp: false }))
     expect(result.timestamp.value).toBe(0)
     stop()
   })
@@ -93,7 +77,7 @@ describe('useCountdown', () => {
   it('should call onReset when reset', () => {
     const onReset = vi.fn()
     const { result, stop } = runWithScope(() =>
-      useCountdown({ duration: 5000, enabled: false, inverted: false, onReset }),
+      useCountdown({ duration: 5000, enabled: false, countUp: false, onReset }),
     )
     result.reset()
     expect(onReset).toHaveBeenCalledTimes(1)
@@ -143,8 +127,7 @@ describe('useCountdown', () => {
         duration: 10000,
         startAt: 3000,
         enabled: false,
-        inverted: false,
-        millisecond: true,
+        countUp: false,
       }),
     )
     expect(result.timestamp.value).toBe(7000)
@@ -157,36 +140,33 @@ describe('useCountdown', () => {
         duration: 10000,
         startAt: 3000,
         enabled: false,
-        inverted: true,
-        millisecond: true,
+        countUp: true,
       }),
     )
     expect(result.timestamp.value).toBe(3000)
     stop()
   })
 
-  it('should handle startAt in second mode correctly', () => {
+  it('should subtract startAt from duration in countdown mode', () => {
     const { result, stop } = runWithScope(() =>
       useCountdown({
-        duration: 10,
-        startAt: 3,
+        duration: 10000,
+        startAt: 3000,
         enabled: false,
-        inverted: false,
-        millisecond: false,
+        countUp: false,
       }),
     )
     expect(result.timestamp.value).toBe(7000)
     stop()
   })
 
-  it('should handle startAt in second mode for countup correctly', () => {
+  it('should start from startAt in countup mode', () => {
     const { result, stop } = runWithScope(() =>
       useCountdown({
-        duration: 10,
-        startAt: 3,
+        duration: 10000,
+        startAt: 3000,
         enabled: false,
-        inverted: true,
-        millisecond: false,
+        countUp: true,
       }),
     )
     expect(result.timestamp.value).toBe(3000)
@@ -199,8 +179,7 @@ describe('useCountdown', () => {
         duration: 5000,
         startAt: 8000,
         enabled: false,
-        inverted: true,
-        millisecond: true,
+        countUp: true,
       }),
     )
     expect(result.timestamp.value).toBe(5000)
@@ -213,8 +192,7 @@ describe('useCountdown', () => {
         duration: 5000,
         startAt: 8000,
         enabled: false,
-        inverted: false,
-        millisecond: true,
+        countUp: false,
       }),
     )
     expect(result.timestamp.value).toBe(0)
@@ -223,7 +201,7 @@ describe('useCountdown', () => {
 
   it('should default startAt to 0 when not provided', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ duration: 5000, enabled: false, inverted: false, millisecond: true }),
+      useCountdown({ duration: 5000, enabled: false, countUp: false }),
     )
     expect(result.timestamp.value).toBe(5000)
     stop()
@@ -231,23 +209,21 @@ describe('useCountdown', () => {
 
   it('should default startAt to 0 when not provided in countup mode', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ duration: 5000, enabled: false, inverted: true, millisecond: true }),
+      useCountdown({ duration: 5000, enabled: false, countUp: true }),
     )
     expect(result.timestamp.value).toBe(0)
     stop()
   })
 
-  it('should support infinite countup when inverted is true but duration is undefined', () => {
-    const { result, stop } = runWithScope(() =>
-      useCountdown({ inverted: true, enabled: false, millisecond: true }),
-    )
+  it('should support infinite countup when countUp is true but duration is undefined', () => {
+    const { result, stop } = runWithScope(() => useCountdown({ countUp: true, enabled: false }))
     expect(result.timestamp.value).toBe(0)
     stop()
   })
 
-  it('should support infinite countup with startAt when inverted is true but duration is undefined', () => {
+  it('should support infinite countup with startAt when countUp is true but duration is undefined', () => {
     const { result, stop } = runWithScope(() =>
-      useCountdown({ inverted: true, startAt: 1000, enabled: false, millisecond: true }),
+      useCountdown({ countUp: true, startAt: 1000, enabled: false }),
     )
     expect(result.timestamp.value).toBe(1000)
     stop()

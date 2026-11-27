@@ -53,7 +53,7 @@ import HeartIcon from '@gdsicon/vue/heart-fill'
   <PStack>
     <PButton disabled>disabled</PButton>
     <PButton loading>loading</PButton>
-    <PButton loading icon>
+    <PButton loading icon-only>
       <HeartIcon />
     </PButton>
   </PStack>
@@ -69,11 +69,11 @@ import HeartIcon from '@gdsicon/vue/heart-fill'
 
 <template>
   <PStack>
-    <PButton icon><HeartIcon /></PButton>
-    <PButton icon variant="primary"><HeartIcon /></PButton>
-    <PButton icon variant="success"><HeartIcon /></PButton>
-    <PButton icon variant="error"><HeartIcon /></PButton>
-    <PButton icon variant="ghost"><HeartIcon /></PButton>
+    <PButton icon-only><HeartIcon /></PButton>
+    <PButton icon-only variant="primary"><HeartIcon /></PButton>
+    <PButton icon-only variant="success"><HeartIcon /></PButton>
+    <PButton icon-only variant="error"><HeartIcon /></PButton>
+    <PButton icon-only variant="ghost"><HeartIcon /></PButton>
   </PStack>
 </template>
 ```
@@ -97,12 +97,12 @@ import ChevronDownIcon from '@gdsicon/vue/chevron-down'
 
 <template>
   <PStack direction="vertical">
-    <PButtonGroup>
+    <PButtonGroup class="w-md">
       <PButton>Previous Page</PButton>
       <PButton>Next Page</PButton>
     </PButtonGroup>
 
-    <PButtonGroup variant="primary">
+    <PButtonGroup variant="primary" align="right" class="w-md">
       <PButton>Previous Page</PButton>
       <PButton>Next Page</PButton>
     </PButtonGroup>
@@ -147,8 +147,8 @@ const submitted = ref(false)
 | variant | `'default' \| 'primary' \| 'error' \| 'warning' \| 'success' \| 'ghost' \| 'simple' \| 'link'` | - | Colour scheme, one of `primary`, `error`, `warning`, `success`, `ghost`, `simple` or `link` |
 | size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Size preset controlling height, padding and font size |
 | shape | `'default' \| 'square' \| 'rounded'` | `default` | Corner radius, `square` removes it and `rounded` makes it fully round |
-| align | `'left' \| 'center' \| 'right'` | - | Content alignment, forced to `center` when `icon` is set |
-| icon | `boolean` | `false` | Render as a square icon-only button with centered content |
+| align | `'left' \| 'center' \| 'right' \| 'between'` | - | Content alignment, `between` spreads the content to both ends, forced to `center` when `icon-only` is set |
+| icon-only | `boolean` | `false` | Render as a square icon-only button with centered content |
 | text | `string` | - | Text rendered when the default slot is empty |
 | loading | `boolean` | - | Show a spinner and treat the button as disabled |
 | disabled | `boolean` | - | Disable the button, also implied by `loading` or a disabled group |
@@ -159,7 +159,7 @@ const submitted = ref(false)
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | size | `'xs' \| 'sm' \| 'md' \| 'lg'` | - | Default size applied to child buttons |
-| align | `'left' \| 'center' \| 'right'` | - | Default content alignment for child buttons |
+| align | `'left' \| 'center' \| 'right' \| 'between'` | - | Default content alignment for child buttons, `between` spreads the content to both ends |
 | variant | `ButtonVariant` | - | Default variant applied to child buttons |
 | disabled | `boolean` | - | Disable every child button at once |
 
@@ -170,3 +170,9 @@ const submitted = ref(false)
 | default | Button label, falls back to the `text` prop. |
 | prefix | Leading content, replaced by the spinner while `loading` is `true`. |
 | suffix | Trailing content. |
+
+## ButtonGroup Slots
+
+| Name | Description |
+| --- | --- |
+| default | Buttons rendered inside the group |

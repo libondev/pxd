@@ -26,7 +26,7 @@ const isEllipsis = computed(() => {
 </script>
 
 <template>
-  <PText secondary>isEllipsis: {{ isEllipsis }}</PText>
+  <PText variant="secondary">isEllipsis: {{ isEllipsis }}</PText>
 
   <PEllipsisText
     ref="ellipsisTextRef"
@@ -63,29 +63,29 @@ const text = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum dol
 <template>
   <PStack>
     <div>
-      <PText secondary>start</PText>
+      <PText variant="secondary">start</PText>
       <PEllipsisText
         action
         :text="text"
-        position="start"
+        ellipsis-position="start"
       />
     </div>
 
     <div>
-      <PText secondary>middle</PText>
+      <PText variant="secondary">middle</PText>
       <PEllipsisText
         action
         :text="text"
-        position="middle"
+        ellipsis-position="middle"
       />
     </div>
 
     <div>
-      <PText secondary>end</PText>
+      <PText variant="secondary">end</PText>
       <PEllipsisText
         action
         :text="text"
-        position="end"
+        ellipsis-position="end"
       />
     </div>
   </PStack>
@@ -100,7 +100,7 @@ const text = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum dol
 | dots | `string` | `...` | String that marks where the text was cut |
 | rows | `number` | `1` | Maximum number of lines shown before truncating |
 | action | `boolean` | - | Render a link that expands and collapses the full text |
-| position | `'start' \| 'middle' \| 'end'` | `end` | Where `dots` are placed in the truncated text |
+| ellipsis-position | `'start' \| 'middle' \| 'end'` | `end` | Where `dots` are placed in the truncated text |
 | more-text | `string` | `Expand` | Label of the action while the text is collapsed |
 | less-text | `string` | `Collapse` | Label of the action while the text is expanded |
 | more-action-class | `string` | - | Extra class for the action in the collapsed state |

@@ -84,9 +84,9 @@ defineExpose({
 
     <PFader
       v-if="fader"
-      :size="faderSize"
       :color="faderColor"
       :direction="faderDirection"
+      :dimension="faderDimension"
       :threshold="threshold"
       :scroll-target="containerRef"
     />

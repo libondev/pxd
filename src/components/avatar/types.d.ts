@@ -3,9 +3,9 @@ export type AvatarStatus = 'idle' | 'loading' | 'loaded' | 'error'
 export interface AvatarProps {
   src?: string
   alt?: string
-  size?: number | string
+  dimension?: number | string
   loading?: boolean
-  placeholder?: boolean
+  showPlaceholder?: boolean
 }
 
 export interface AvatarEmits {

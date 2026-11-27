@@ -1,7 +1,7 @@
 import type { ComponentText, ComponentVariant } from '../../types/shared/props'
 
 export interface ChipProps {
-  size?: number | string
+  dimension?: number | string
   inset?: boolean
   label?: ComponentText
   variant?: ComponentVariant | 'secondary'

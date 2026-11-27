@@ -88,7 +88,7 @@ function mountTour(options: { visible: boolean; steps?: unknown[] }) {
     },
     template: `<Tour
       v-model="visible"
-      :steps="steps ?? [{ target: () => target, title: 'One' }, { target: () => target, title: 'Two' }]"
+      :steps="steps ?? [{ target: () => target, heading: 'One' }, { target: () => target, heading: 'Two' }]"
     />`,
     computed: {
       steps() {
@@ -212,7 +212,7 @@ describe('tour', () => {
       setup() {
         return { visible: ref(true) }
       },
-      template: `<Tour v-model="visible" :steps="[{ title: 'Intro' }]" />`,
+      template: `<Tour v-model="visible" :steps="[{ heading: 'Intro' }]" />`,
     })
 
     const wrapper = mount(Demo, { attachTo: document.body })
@@ -269,8 +269,8 @@ describe('tour', () => {
       template: `<Tour
         v-model="visible"
         :steps="[
-          { target: '#missing', title: 'One' },
-          { title: 'Two' },
+          { target: '#missing', heading: 'One' },
+          { heading: 'Two' },
         ]"
       />`,
     })
@@ -352,7 +352,7 @@ describe('tour', () => {
       setup() {
         return { visible: ref(true) }
       },
-      template: `<Tour v-model="visible" :steps="[{ title: 'Only' }]" />`,
+      template: `<Tour v-model="visible" :steps="[{ heading: 'Only' }]" />`,
     })
 
     const wrapper = mount(Demo, { attachTo: document.body })
@@ -393,8 +393,8 @@ describe('tour step handling fixes', () => {
       template: `<Tour
         v-model="visible"
         :steps="[
-          { target: () => target, title: 'One' },
-          { target: () => target, title: 'Two' },
+          { target: () => target, heading: 'One' },
+          { target: () => target, heading: 'Two' },
         ]"
       />`,
     })
@@ -431,8 +431,8 @@ describe('tour step handling fixes', () => {
         v-model="visible"
         v-model:current="current"
         :steps="[
-          { target: () => target, title: 'One' },
-          { target: () => target, title: 'Two' },
+          { target: () => target, heading: 'One' },
+          { target: () => target, heading: 'Two' },
         ]"
       />`,
     })
@@ -475,8 +475,8 @@ describe('tour step handling fixes', () => {
       template: `<Tour
         v-model="visible"
         :steps="[
-          { target: broken, title: 'Broken' },
-          { target: () => target, title: 'Two' },
+          { target: broken, heading: 'Broken' },
+          { target: () => target, heading: 'Two' },
         ]"
       />`,
     })
@@ -508,8 +508,8 @@ describe('tour step handling fixes', () => {
       template: `<Tour
         v-model="visible"
         :steps="[
-          { target: () => target, title: 'One', beforeEnter: fail },
-          { target: () => target, title: 'Two' },
+          { target: () => target, heading: 'One', beforeEnter: fail },
+          { target: () => target, heading: 'Two' },
         ]"
       />`,
     })
@@ -548,7 +548,7 @@ describe('tour step handling fixes', () => {
       },
       template: `<Tour
         v-model="visible"
-        :steps="[{ target: () => target, title: 'One', beforeEnter }]"
+        :steps="[{ target: () => target, heading: 'One', beforeEnter }]"
       />`,
     })
 
@@ -572,7 +572,7 @@ describe('tour step handling fixes', () => {
       setup() {
         return { visible: ref(true) }
       },
-      template: `<Tour v-model="visible" :steps="[{ title: 'Intro' }]" />`,
+      template: `<Tour v-model="visible" :steps="[{ heading: 'Intro' }]" />`,
     })
 
     const wrapper = mount(Demo, { attachTo: document.body })
@@ -657,7 +657,7 @@ describe('tour step handling fixes', () => {
       template: `<Tour
         v-model="visible"
         v-model:current="current"
-        :steps="[{ target: () => target, title: 'Only' }]"
+        :steps="[{ target: () => target, heading: 'Only' }]"
       />`,
     })
 
@@ -689,7 +689,7 @@ describe('tour step handling fixes', () => {
     wrapper.unmount()
   })
 
-  it('labels the popover dialog from the active step title', async () => {
+  it('labels the popover dialog from the active step heading', async () => {
     const target = makeTarget()
 
     const Demo = defineComponent({
@@ -697,16 +697,16 @@ describe('tour step handling fixes', () => {
       setup() {
         return { visible: ref(true), target }
       },
-      template: `<Tour v-model="visible" :steps="[{ target: () => target, title: 'One' }]" />`,
+      template: `<Tour v-model="visible" :steps="[{ target: () => target, heading: 'One' }]" />`,
     })
 
     const wrapper = mount(Demo, { attachTo: document.body })
     await flush()
 
     const dialog = document.querySelector('.pxd-popover--wrapper') as HTMLElement
-    const title = document.querySelector('.pxd-tour--content h4') as HTMLElement
+    const heading = document.querySelector('.pxd-tour--content h4') as HTMLElement
 
-    expect(dialog.getAttribute('aria-labelledby')).toBe(title.id)
+    expect(dialog.getAttribute('aria-labelledby')).toBe(heading.id)
 
     wrapper.unmount()
   })

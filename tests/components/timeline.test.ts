@@ -95,7 +95,7 @@ describe('timeline-item', () => {
 
     expect(wrapper.find('.pxd-timeline-item--content + .is-bottom').text()).toBe('2026-08-03')
 
-    await wrapper.setProps({ position: 'top' })
+    await wrapper.setProps({ timestampPosition: 'top' })
 
     expect(wrapper.find('.is-top + .pxd-timeline-item--content').exists()).toBe(true)
     expect(wrapper.find('.is-top').text()).toBe('2026-08-03')
@@ -107,7 +107,7 @@ describe('timeline-item', () => {
     const wrapper = mount(TimelineItem, {
       props: {
         timestamp: '2026-08-03',
-        hideTimestamp: true,
+        showTimestamp: false,
       },
     })
 

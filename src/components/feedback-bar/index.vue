@@ -45,7 +45,7 @@ function handleThumbDown() {
     <PButton
       variant="ghost"
       size="sm"
-      icon
+      icon-only
       class="text-gray-900"
       :aria-label="configProvider.locale.feedback.thumbUp"
       :title="configProvider.locale.feedback.thumbUp"
@@ -57,7 +57,7 @@ function handleThumbDown() {
     <PButton
       variant="ghost"
       size="sm"
-      icon
+      icon-only
       class="text-gray-900"
       :aria-label="configProvider.locale.feedback.thumbDown"
       :title="configProvider.locale.feedback.thumbDown"
@@ -69,7 +69,7 @@ function handleThumbDown() {
     <PButton
       variant="ghost"
       size="sm"
-      icon
+      icon-only
       class="text-gray-900"
       :aria-label="configProvider.locale.feedback.close"
       :title="configProvider.locale.feedback.close"

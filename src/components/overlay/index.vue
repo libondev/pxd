@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<OverlayProps>(), {
   modelValue: false,
   closeOnPressEscape: true,
   lockScrollOnVisible: true,
-  closeOnClickOverlay: false,
+  closeOnOutsideClick: false,
 })
 
 const emits = defineEmits<OverlayEmits>()
@@ -51,7 +51,7 @@ useOverlayManager({
 function onOverlayClick(ev: PointerEvent) {
   emits('click', ev)
 
-  if (!props.closeOnClickOverlay) {
+  if (!props.closeOnOutsideClick) {
     return
   }
 

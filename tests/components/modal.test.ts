@@ -70,10 +70,10 @@ describe('modal', () => {
     wrapper.unmount()
   })
 
-  it('should default closeOnClickOverlay to true', () => {
+  it('should default closeOnOutsideClick to true', () => {
     const wrapper = mount(Modal)
 
-    expect(wrapper.props('closeOnClickOverlay')).toBe(true)
+    expect(wrapper.props('closeOnOutsideClick')).toBe(true)
 
     wrapper.unmount()
   })
@@ -202,7 +202,7 @@ describe('modal', () => {
       attachTo: document.body,
       props: {
         modelValue: true,
-        title: 'Modal Title',
+        heading: 'Modal Title',
       },
     })
     await nextTick()
@@ -212,7 +212,26 @@ describe('modal', () => {
     wrapper.unmount()
   })
 
-  it('should keep the header childless without title, subtitle or close button', async () => {
+  it('should render the heading slot inside the default header', async () => {
+    const wrapper = mount(Modal, {
+      attachTo: document.body,
+      props: {
+        modelValue: true,
+      },
+      slots: {
+        heading: 'Custom heading',
+      },
+    })
+    await nextTick()
+
+    expect(document.body.querySelector('.pxd-modal--header h3')?.textContent).toContain(
+      'Custom heading',
+    )
+
+    wrapper.unmount()
+  })
+
+  it('should keep the header childless without heading, subtitle or close button', async () => {
     const wrapper = mount(Modal, {
       attachTo: document.body,
       props: {
@@ -460,7 +479,7 @@ describe('modal', () => {
       setup() {
         return { visible: ref(true) }
       },
-      template: '<Modal v-model="visible"><ApprovalCard title="Approve" /></Modal>',
+      template: '<Modal v-model="visible"><ApprovalCard heading="Approve" /></Modal>',
     })
     const wrapper = mount(Host, { attachTo: document.body })
     await nextTick()

@@ -17,11 +17,11 @@ export interface CarouselOption {
 export interface CarouselProps {
   index?: number
   loop?: boolean
-  arrow?: boolean
+  showArrow?: boolean
   height?: number | string
   autoplay?: boolean
   interval?: number
-  indicator?: boolean
+  showIndicator?: boolean
   direction?: ComponentDirection
   indicatorPosition?: BasePosition | 'center'
   pauseOnHover?: boolean

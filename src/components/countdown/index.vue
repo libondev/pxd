@@ -17,7 +17,6 @@ const props = withDefaults(defineProps<CountdownProps>(), {
   endTime: 0,
   duration: 0,
   autoReset: true,
-  millisecond: true,
   format: 'HH:mm:ss',
 })
 
@@ -28,13 +27,12 @@ dayjs.extend(dayjsDurationPlugin)
 dayjs.extend(dayjsMillisecondTokenPlugin)
 
 const { reset, timestamp } = useCountdown({
-  inverted: () => props.inverted,
+  countUp: () => props.countUp,
   enabled: () => props.enabled,
   startAt: () => props.startAt ?? 0,
   endTime: () => props.endTime,
   autoReset: () => props.autoReset,
   duration: () => props.duration,
-  millisecond: () => props.millisecond,
   intuitive: () => props.intuitive,
   onChange: (enabled) => notify(enabled, changeDetailsFor({ reason: 'sync' })),
   onReset: () => emits('reset'),

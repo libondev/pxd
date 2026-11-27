@@ -36,7 +36,7 @@ const code = [
   <PCodeBlock
     :content="code"
     language="ts"
-    title="greet.ts"
+    heading="greet.ts"
     line-numbers
     class="w-full max-w-[560px]"
   />
@@ -65,7 +65,7 @@ const code = [
   <PCodeBlock
     :content="code"
     language="jsx"
-    title="highlighted.jsx"
+    heading="highlighted.jsx"
     :highlighted-lines="[1, 4]"
     line-numbers
     class="w-full max-w-[560px]"
@@ -93,7 +93,7 @@ const code = [
   <PCodeBlock
     :content="code"
     language="js"
-    title="next.config.js"
+    heading="next.config.js"
     :added-lines="[5]"
     :removed-lines="[2, 3, 4]"
     line-numbers
@@ -104,7 +104,7 @@ const code = [
 
 ## Language switcher
 
-The `switcher` prop renders a select in the header; pair it with `switcher-change` to swap the displayed snippet.
+The `switcher` prop renders a language switcher in the header. Pair it with `switcher-change` to swap the displayed snippet.
 
 ```vue demo
 <script setup>
@@ -137,7 +137,7 @@ const options = [
 <template>
   <PCodeBlock
     :content="snippets[language].code"
-    :title="snippets[language].title"
+    :heading="snippets[language].title"
     :language="language"
     line-numbers
     :switcher="{ options, value: language }"
@@ -149,7 +149,7 @@ const options = [
 
 ## Language switcher with tabs
 
-Use the `tabs` prop for a tabbed language switcher above the header instead of the select.
+Use `switcher-mode="tabs"` for a tabbed language switcher above the header instead of the select. The header follows `heading`, `header` and `actions`; when it is hidden, the copy button renders as a standalone control in the content area.
 
 ```vue demo
 <script setup>
@@ -182,11 +182,12 @@ const options = [
 <template>
   <PCodeBlock
     :content="snippets[language].code"
-    :title="snippets[language].title"
+    :heading="snippets[language].title"
     :language="language"
     line-numbers
-    :tabs="{ options, value: language }"
-    @tabs-change="language = $event"
+    :switcher="{ options, value: language }"
+    switcher-mode="tabs"
+    @switcher-change="language = $event"
     class="w-full max-w-[560px]"
   />
 </template>
@@ -251,7 +252,7 @@ const code = ["const message = 'hello'", 'console.log(message)'].join('\n')
 | --- | --- | --- | --- |
 | code | `string` | - | Source text, rendered verbatim into text nodes |
 | language | `string` | - | Grammar name or alias, such as `ts`, `bash` or `vue` |
-| title | `string` | - | Header filename, ignored when the `header` slot is used |
+| heading | `string` | - | Header filename, ignored when the `header` slot is used |
 | size | `'sm' \| 'md' \| 'lg'` | - | Font size, falls back to the config provider size |
 | line-numbers | `boolean` | `false` | Show a clickable line number gutter per line |
 | highlighted-lines | `number[]` | - | One-based numbers of lines to highlight |
@@ -260,23 +261,22 @@ const code = ["const message = 'hello'", 'console.log(message)'].join('\n')
 | max-height | `number \| string` | `20rem` | Height cap of the scroll area |
 | collapsible | `boolean` | `false` | Clip the body at `max-height` and offer an expand toggle |
 | copy-btn | `'always' \| 'hover' \| 'hidden'` | `hover` | Display the copy button appropriately |
-| switcher | `CodeBlockSwitcherProps` | - | Select in the header for switching between snippets |
-| tabs | `CodeBlockSwitcherProps` | - | Tab bar above the header for switching between snippets |
+| switcher | `CodeBlockSwitcherProps` | - | Language switcher options |
+| switcher-mode | `'select' \| 'tabs'` | `select` | Render the switcher as a header select or a tab bar above the header |
 
-`switcher` and `tabs` take `{ options: { label?, value }[], value?: string }`; the block is
-controlled — swap the displayed snippet yourself when the matching change event fires.
+`switcher` takes `{ options: { label?, value }[], value?: string }`; the block is
+controlled — swap the displayed snippet yourself when `switcher-change` fires.
 
 ## Events
 
 | Name | Type | Description |
 | --- | --- | --- |
 | copy | `(text: string) => void` | Emitted after the copy button has written the code to the clipboard. |
-| switcher-change | `(value: string) => void` | Emitted when the header switcher selects an option. |
-| tabs-change | `(value: string) => void` | Emitted when a tab of the tab bar is selected. |
+| switcher-change | `(value: string) => void` | Emitted when the language switcher selects an option. |
 
 ## Slots
 
 | Name | Description |
 | --- | --- |
-| header | Header content, replaces the `title` text. |
+| header | Header content, replaces the `heading` text. |
 | actions | Header content aligned to the end. |

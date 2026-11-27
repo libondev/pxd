@@ -162,7 +162,7 @@ const value = ref('')
 | required | `boolean` | - | Native `required` attribute, the browser asks for a value before the form submits |
 | password | `boolean` | - | Mask the value and add a button to reveal it |
 | autofocus | `boolean` | - | Focus the input as soon as it is mounted |
-| input-type | `string` | - | Native `type` attribute, when set it wins over `password` masking |
+| type | `string` | - | Native `type` attribute, when set it wins over `password` masking |
 | input-mode | `'none' \| 'text' \| 'tel' \| 'url' \| 'email' \| 'numeric' \| 'decimal' \| 'search'` | - | Native `inputmode` attribute, drives the virtual keyboard |
 | input-attrs | `Record<string, string \| number \| boolean \| undefined>` | - | Extra attributes applied to the underlying `input`, such as `role` and `aria-*` |
 | min-length | `number \| string` | - | Native `minlength` attribute, validated by the browser |

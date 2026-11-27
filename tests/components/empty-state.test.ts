@@ -11,10 +11,10 @@ describe('empty-state', () => {
     wrapper.unmount()
   })
 
-  it('should render title', () => {
+  it('should render heading', () => {
     const wrapper = mount(EmptyState, {
       props: {
-        title: 'No data',
+        heading: 'No data',
       },
     })
 
@@ -26,7 +26,7 @@ describe('empty-state', () => {
   it('should render description', () => {
     const wrapper = mount(EmptyState, {
       props: {
-        title: 'Empty',
+        heading: 'Empty',
         description: 'Nothing to show here',
       },
     })

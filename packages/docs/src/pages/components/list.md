@@ -259,9 +259,9 @@ function onKeydown(ev) {
 | model-value | `ListModelValue` | - | Selected value, an array when `multiple` is set |
 | options | `ListOptions` | `() => []` | Options and `group` entries to render |
 | item-class | `ComponentClass` | - | Class merged into every internally rendered list item |
-| loading | `boolean` | - | Cover the list with a loading mask, hide the `empty` and `error` slots and block selection |
-| error | `boolean` | `false` | Show the error message instead of the `empty` slot; it is clickable and emits `retry` |
-| error-text | `ComponentText` | `'Request failed. Click to reload'` | Default text of the error message, replaceable through the `error` slot |
+| loading | `boolean` | - | Cover the list with a loading mask, hide the `empty` and `error-message` slots and block selection |
+| failed | `boolean` | `false` | Show the error message instead of the `empty` slot; it is clickable and emits `retry` |
+| error-message | `ComponentText` | `'Request failed. Click to reload'` | Default text of the error message, replaceable through the `error-message` slot |
 | multiple | `boolean` | - | Let several options be selected at the same time |
 | default-active-index | `number` | `-1` | Option active before the user navigates |
 | loop | `boolean` | `true` | Wrap keyboard navigation around both ends |
@@ -335,8 +335,14 @@ render-only `as` and `icon`.
 | Name | Description |
 | --- | --- |
 | item | Item content: `{ item, index, group, groupIndex }` |
-| error | Error message shown while `error` is set; click it to emit `retry` |
+| error-message | Error message shown while `failed` is set; click it to emit `retry` |
 | empty | Enable when there is no data to display |
+
+## ListItem Slots
+
+| Name | Description |
+| --- | --- |
+| default | Custom item content, falling back to `label` and `description` |
 
 ## Methods
 

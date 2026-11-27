@@ -116,7 +116,7 @@ describe('code-block', () => {
     const wrapper = mount(CodeBlock, {
       props: {
         content: 'a',
-        title: 'Table.jsx',
+        heading: 'Table.jsx',
         switcher: {
           options: [
             { label: 'JavaScript', value: 'js' },
@@ -131,6 +131,7 @@ describe('code-block', () => {
 
     expect(header.text()).toContain('Table.jsx')
     expect(header.find('select').exists()).toBe(true)
+    expect(wrapper.find('[role="tab"]').exists()).toBe(false)
     expect(header.find('[data-copy-button]').exists()).toBe(true)
     expect(header.find('select').element.selectedOptions[0].value).toBe('js')
 
@@ -141,17 +142,18 @@ describe('code-block', () => {
     wrapper.unmount()
   })
 
-  it('emits tabs-change from the tab bar', async () => {
+  it('emits switcher-change from the tab bar', async () => {
     const wrapper = mount(CodeBlock, {
       props: {
         content: 'a',
-        tabs: {
+        switcher: {
           options: [
             { label: 'JavaScript', value: 'js' },
             { label: 'TypeScript', value: 'ts' },
           ],
           value: 'js',
         },
+        switcherMode: 'tabs',
       },
     })
 
@@ -159,10 +161,34 @@ describe('code-block', () => {
 
     expect(tabsEls.length).toBe(2)
     expect(tabsEls[0].attributes('aria-selected')).toBe('true')
+    expect(wrapper.find('.pxd-code-block--header').exists()).toBe(false)
+    expect(wrapper.find('select').exists()).toBe(false)
 
     await tabsEls[1].trigger('click')
 
-    expect(wrapper.emitted('tabs-change')?.[0]).toEqual(['ts'])
+    expect(wrapper.emitted('switcher-change')?.[0]).toEqual(['ts'])
+
+    wrapper.unmount()
+  })
+
+  it('renders the copy button without a header in tabs mode', () => {
+    const wrapper = mount(CodeBlock, {
+      props: {
+        content: 'a',
+        copyBtn: 'always',
+        switcher: {
+          options: [
+            { label: 'JavaScript', value: 'js' },
+            { label: 'TypeScript', value: 'ts' },
+          ],
+          value: 'js',
+        },
+        switcherMode: 'tabs',
+      },
+    })
+
+    expect(wrapper.find('.pxd-code-block--header').exists()).toBe(false)
+    expect(wrapper.find('[data-copy-button]').exists()).toBe(true)
 
     wrapper.unmount()
   })

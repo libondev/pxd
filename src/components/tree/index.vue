@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
   highlightMatch: false,
   searchPlaceholder: 'Search...',
   defaultSearchValue: '',
-  errorText: 'Request failed. Click to reload',
+  errorMessage: 'Request failed. Click to reload',
 })
 
 const emits = defineEmits<TreeEmits>()
@@ -893,7 +893,7 @@ defineExpose({
         class="pxd-tree--error py-8.5 text-sm cursor-pointer text-center text-foreground-secondary hover:text-foreground motion-safe:transition-colors"
         @click="onSearchRetry"
       >
-        <slot name="error">{{ errorText }}</slot>
+        <slot name="error-message">{{ errorMessage }}</slot>
       </div>
       <div
         v-else-if="!rows.length"

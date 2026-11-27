@@ -136,7 +136,7 @@ describe('swipe-cell', () => {
     const wrapper = mount(SwipeCell, {
       props: {
         exclusive: false,
-        overSwipeThreshold: 1.5,
+        overSwipeRate: 1.5,
       },
       slots: {
         default: 'Content',
@@ -178,7 +178,7 @@ describe('swipe-cell', () => {
       props: {
         exclusive: false,
         closeOnOverSwipe: true,
-        overSwipeThreshold: 1.5,
+        overSwipeRate: 1.5,
       },
       slots: {
         default: 'Content',
@@ -208,7 +208,7 @@ describe('swipe-cell', () => {
     const wrapper = mount(SwipeCell, {
       props: {
         exclusive: false,
-        overSwipeThreshold: 1.5,
+        overSwipeRate: 1.5,
       },
       slots: {
         default: 'Content',
@@ -243,7 +243,7 @@ describe('swipe-cell', () => {
     const wrapper = mount(SwipeCell, {
       props: {
         exclusive: false,
-        overSwipeThreshold: 1.5,
+        overSwipeRate: 1.5,
       },
       slots: {
         default: 'Content',

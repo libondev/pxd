@@ -118,3 +118,15 @@ const checked = ref(false)
 | --- | --- | --- |
 | change | `(value: (string \| number \| boolean)[], details: ChangeDetails) => void` | Emitted when a checkbox inside the group is checked or unchecked. |
 | update:model-value | `(value: (string \| number \| boolean)[]) => void` | Emitted right after `change` with the new list of checked values. |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Custom label content, falling back to the `label` prop |
+
+## CheckboxGroup Slots
+
+| Name | Description |
+| --- | --- |
+| default | Checkbox items; when omitted, `options` is rendered |

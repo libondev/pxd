@@ -17,21 +17,21 @@ Fade an element in while it moves from an offset and optional blur into place. B
 
 ## Direction
 
-`direction` sets the edge the element travels from, so `bottom` means it starts below its resting place and settles upward.
+`from` sets the edge the element travels from, so `bottom` means it starts below its resting place and settles upward.
 
 ```vue demo
 <template>
   <PStack direction="vertical" :gap="4">
-    <PReveal direction="top">
+    <PReveal from="top">
       <PCard>From the top</PCard>
     </PReveal>
-    <PReveal direction="bottom">
+    <PReveal from="bottom">
       <PCard>From the bottom</PCard>
     </PReveal>
-    <PReveal direction="left">
+    <PReveal from="left">
       <PCard>From the left</PCard>
     </PReveal>
-    <PReveal direction="right">
+    <PReveal from="right">
       <PCard>From the right</PCard>
     </PReveal>
   </PStack>
@@ -40,7 +40,7 @@ Fade an element in while it moves from an offset and optional blur into place. B
 
 ## Duration and Delay
 
-A bare number is read as seconds; pass a string to carry your own unit. `delay` staggers a list — give each item its own value.
+A bare number is read as milliseconds; pass a string to carry your own unit. `delay` staggers a list — give each item its own value.
 
 ```vue demo
 <script setup>
@@ -49,13 +49,13 @@ const items = ['First', 'Second', 'Third']
 
 <template>
   <PStack direction="vertical" :gap="4">
-    <PReveal :duration="1" :delay="0">
+    <PReveal :duration="1000" :delay="0">
       <PCard>Plays over one second</PCard>
     </PReveal>
-    <PReveal duration="800ms" :delay="0.3">
+    <PReveal duration="800ms" :delay="300">
       <PCard>Waits 300ms, then plays</PCard>
     </PReveal>
-    <PReveal :delay="0.6">
+    <PReveal :delay="600">
       <PCard>Waits 600ms</PCard>
     </PReveal>
   </PStack>
@@ -105,14 +105,14 @@ const items = ['First', 'Second', 'Third']
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| duration | `number \| string` | `0.5` | Animation duration. A bare number is seconds; a string passes its unit through. |
+| duration | `number \| string` | `1000` | Animation duration in milliseconds. A string passes its unit through. |
 | delay | `number \| string` | `0` | Delay before the animation starts, in the same form as `duration`. |
 | distance | `number \| string` | `16` | Initial offset in pixels along the reveal axis. |
-| direction | `'top' \| 'bottom' \| 'left' \| 'right'` | `bottom` | Edge the element travels from. |
+| from | `'top' \| 'bottom' \| 'left' \| 'right'` | `bottom` | Edge the element travels from. |
 | trigger | `'mount' \| 'viewport'` | `mount` | `mount` plays on render without creating an observer; `viewport` waits for the element to enter the viewport. |
 | root | `Element \| Document \| null` | - | Scrolling ancestor to observe against, `null` for the viewport. |
 | rootMargin | `string` | `0px` | Margin applied to `root`, which decides how early the animation starts. |
-| threshold | `number \| number[]` | `0` | Intersection ratio at which the element counts as visible. |
+| threshold-rate | `number \| number[]` | `0` | Intersection ratio at which the element counts as visible. |
 
 ## Slots
 

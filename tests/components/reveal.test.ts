@@ -156,13 +156,13 @@ describe('reveal', () => {
     vi.stubGlobal('IntersectionObserver', MockIntersectionObserver)
   })
 
-  it('maps time props to seconds and distance to pixels', () => {
+  it('maps numeric time props to milliseconds and distance to pixels', () => {
     const wrapper = mount(Reveal, {
-      props: { duration: 0.4, delay: 0.2, distance: 24 },
+      props: { duration: 400, delay: 200, distance: 24 },
     })
 
-    expect(wrapper.element.style.getPropertyValue('--reveal-duration')).toBe('0.4s')
-    expect(wrapper.element.style.getPropertyValue('--reveal-delay')).toBe('0.2s')
+    expect(wrapper.element.style.getPropertyValue('--reveal-duration')).toBe('400ms')
+    expect(wrapper.element.style.getPropertyValue('--reveal-delay')).toBe('200ms')
     expect(wrapper.element.style.getPropertyValue('--reveal-distance')).toBe('24px')
 
     wrapper.unmount()
@@ -178,7 +178,7 @@ describe('reveal', () => {
   })
 
   it('marks the host with the reveal direction', () => {
-    const wrapper = mount(Reveal, { props: { direction: 'top' } })
+    const wrapper = mount(Reveal, { props: { from: 'top' } })
 
     expect(wrapper.attributes('data-direction')).toBe('top')
 

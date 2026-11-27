@@ -9,8 +9,8 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<StatusDotProps>(), {
-  label: false,
-  state: 'QUEUED',
+  showLabel: false,
+  status: 'QUEUED',
 })
 
 const stateClassNames = {
@@ -22,9 +22,9 @@ const stateClassNames = {
 }
 
 const labelText = computed(() =>
-  typeof props.label === 'string' || typeof props.label === 'number'
+  props.label !== undefined && props.label !== null && props.label !== ''
     ? props.label
-    : capitalizeText(props.state),
+    : capitalizeText(props.status),
 )
 </script>
 
@@ -33,10 +33,13 @@ const labelText = computed(() =>
     <i
       aria-hidden="true"
       class="w-2.5 h-2.5 inline-block rounded-full"
-      :class="stateClassNames[state]"
+      :class="stateClassNames[status]"
     />
 
-    <span v-if="label" class="ps-2 pe-1 min-w-0 text-sm truncate">
+    <span
+      v-if="showLabel || (label !== undefined && label !== null && label !== '')"
+      class="ps-2 pe-1 min-w-0 text-sm truncate"
+    >
       {{ labelText }}
     </span>
   </span>

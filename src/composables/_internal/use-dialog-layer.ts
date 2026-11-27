@@ -11,9 +11,9 @@ export type OverlayCloseReason = 'escape-key' | 'outside-press' | 'close-press' 
 interface DialogLayerOptions {
   visible: MaybeRefOrGetter<boolean>
   loading?: MaybeRefOrGetter<boolean | undefined>
-  autoFocusElement?: MaybeRefOrGetter<string | boolean | undefined>
+  initialFocus?: MaybeRefOrGetter<string | boolean | undefined>
   closeOnPressEscape?: MaybeRefOrGetter<boolean | undefined>
-  closeOnClickOverlay?: MaybeRefOrGetter<boolean | undefined>
+  closeOnOutsideClick?: MaybeRefOrGetter<boolean | undefined>
   onClose: (reason: OverlayCloseReason, event?: Event) => boolean | void
   onOutsidePress?: (ev: PointerEvent) => void
 }
@@ -94,13 +94,13 @@ export function useDialogLayer(options: DialogLayerOptions) {
 
   function focusInitialElement() {
     const dialog = dialogRef.value
-    const autoFocusElement = toValue(options.autoFocusElement)
+    const initialFocus = toValue(options.initialFocus)
 
-    if (!dialog || !isTruthyProp(autoFocusElement)) {
+    if (!dialog || !isTruthyProp(initialFocus)) {
       return
     }
 
-    const selector = typeof autoFocusElement === 'string' ? autoFocusElement : FOCUSABLE_SELECTOR
+    const selector = typeof initialFocus === 'string' ? initialFocus : FOCUSABLE_SELECTOR
 
     ;(dialog.querySelector<HTMLElement>(selector) ?? dialog).focus({ preventScroll: true })
   }
@@ -225,7 +225,7 @@ export function useDialogLayer(options: DialogLayerOptions) {
 
     options.onOutsidePress?.(ev)
 
-    if (toValue(options.closeOnClickOverlay)) {
+    if (toValue(options.closeOnOutsideClick)) {
       closeIfAllowed('outside-press', ev)
     }
   }

@@ -18,7 +18,7 @@ defineOptions({
 const props = withDefaults(defineProps<PinInputProps>(), {
   length: 4,
   modelValue: '',
-  type: 'numeric',
+  mode: 'numeric',
   placeholder: '○',
 })
 
@@ -30,18 +30,15 @@ const ALPHANUMERIC_REGEX = /^[0-9a-z]+$/i
 const fallbackId = getUniqueId('p-pin-input')
 
 const inputsRef = shallowRef<HTMLInputElement[]>([])
-const computedInputType = computed(() => {
-  const { type } = props
-
-  if (type.includes('password')) {
+const inputMode = computed(() => {
+  return props.mode.startsWith('numeric') ? 'numeric' : 'text'
+})
+const inputType = computed(() => {
+  if (props.mode.includes('password')) {
     return 'password'
   }
 
   return 'text'
-})
-
-const computedInputMode = computed(() => {
-  return props.type.startsWith('numeric') ? 'numeric' : 'text'
 })
 
 const {
@@ -192,13 +189,13 @@ function validateInputValue(value: string) {
     return false
   }
 
-  const { type } = props
+  const { mode } = props
 
-  if (type.startsWith('numeric')) {
+  if (mode.startsWith('numeric')) {
     return NUMERIC_REGEX.test(value)
-  } else if (type.startsWith('alphabetic')) {
+  } else if (mode.startsWith('alphabetic')) {
     return ALPHABETIC_REGEX.test(value)
-  } else if (type.startsWith('alphanumeric')) {
+  } else if (mode.startsWith('alphanumeric')) {
     return ALPHANUMERIC_REGEX.test(value)
   }
 
@@ -305,7 +302,7 @@ defineExpose({
         :id="i === 0 ? controlId : controlId + '-' + (i + 1)"
         :value="modelValue[i]"
         :aria-label="`pin code ${n} of ${length}`"
-        :type="computedInputType"
+        :type="inputType"
         :data-index="i"
         class="aspect-square size-full appearance-none rounded-inherit border-none bg-transparent text-center font-inherit outline-none placeholder:text-gray-600 placeholder:select-none focus:placeholder:opacity-0 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-700 disabled:placeholder:text-gray-400 motion-safe:transition-appearance"
         minlength="1"
@@ -325,7 +322,7 @@ defineExpose({
         :aria-required="isRequired || undefined"
         :aria-describedby="describedBy || undefined"
         :placeholder="placeholder"
-        :inputmode="computedInputMode"
+        :inputmode="inputMode"
         @paste="onInputPastedValue"
         @beforeinput="onBeforeInputValue"
       />

@@ -26,8 +26,8 @@ defineProps<EmptyStateProps>()
 
       <div class="pxd-empty-state--content gap-2 flex flex-col">
         <p class="pxd-empty-state--title text-base font-medium text-center text-foreground">
-          <slot name="title">
-            {{ title }}
+          <slot name="heading">
+            {{ heading }}
           </slot>
         </p>
 

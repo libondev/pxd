@@ -99,7 +99,7 @@ function search(query) {
 | placeholder | `string` | `` | Placeholder for the filter input |
 | close-on-select-item | `boolean` | `true` | Close the menu after an item is selected |
 | close-on-press-escape | `boolean` | `true` | Close the menu when `Esc` is pressed |
-| close-on-click-overlay | `boolean` | `true` | Close the menu when the overlay is clicked |
+| close-on-outside-click | `boolean` | `true` | Close the menu when the overlay is clicked |
 
 ## Events
 

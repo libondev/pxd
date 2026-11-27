@@ -6,7 +6,7 @@ export type ConfirmBeforeConfirm = () => Awaitable<boolean | void>
 
 export interface ConfirmPopoverProps {
   modelValue?: boolean
-  title?: ComponentText
+  heading?: ComponentText
   description?: ComponentText
   confirmText?: ComponentText
   cancelText?: ComponentText

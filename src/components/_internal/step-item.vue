@@ -65,7 +65,7 @@ function onClick() {
         <div
           class="pxd-steps-item--title font-medium text-(length:--steps-title-font-size) text-foreground-secondary group-data-[status=error]/steps-item:text-red-700 group-data-[status=process]/steps-item:text-foreground motion-safe:transition-colors"
         >
-          {{ option.title }}
+          {{ option.heading }}
         </div>
         <div
           v-if="option.description"

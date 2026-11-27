@@ -28,3 +28,9 @@ const next = {
 | --- | --- | --- | --- |
 | prev | `Page` | - | Previous page link on the left, built from `label` and `href` |
 | next | `Page` | - | Next page link on the right, built from `label` and `href` |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| default | Content rendered between the previous and next links |

@@ -1,6 +1,6 @@
 import type { ComponentSize } from '../../types/shared/props'
 
-export type QuestionnaireState = 'choosing' | 'skipped' | 'submitted'
+export type QuestionnaireStatus = 'choosing' | 'skipped' | 'submitted'
 
 export interface QuestionnaireQuestion {
   header: string

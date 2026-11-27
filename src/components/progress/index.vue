@@ -5,7 +5,6 @@ import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { VARIANT_COLORS } from '../../constants/variant-colors.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { isTruthyProp } from '../../utils/format.js'
 import { getColorByThreshold } from '../../utils/helper.js'
 
 defineOptions({
@@ -16,21 +15,19 @@ defineOptions({
 const props = withDefaults(defineProps<ProgressProps>(), {
   min: 0,
   max: 100,
-  label: false,
+  showLabel: false,
   variant: 'primary',
 })
 
 const progress = computed(() => props.modelValue || 0)
 
 const computedLabel = computed(() => {
-  const { label } = props
-
-  if (isTruthyProp(label)) {
-    return String(progress.value)
+  if (props.label) {
+    return String(props.label)
   }
 
-  if (typeof label === 'string' && label) {
-    return label
+  if (props.showLabel) {
+    return String(progress.value)
   }
 
   return false

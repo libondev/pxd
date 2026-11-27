@@ -19,7 +19,7 @@ export type ComponentValue = string | number
 export type ComponentClass = string | any[] | Record<string, any>
 export type ComponentStyle = CSSProperties | string
 
-export type ComponentAlign = 'left' | 'center' | 'right'
+export type ComponentAlign = 'left' | 'center' | 'right' | 'between'
 export type ComponentDirection = 'horizontal' | 'vertical'
 
 export type PopoverTrigger = 'click' | 'hover' | 'focus' | 'contextmenu' | 'manual'

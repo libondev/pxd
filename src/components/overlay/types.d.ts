@@ -3,7 +3,7 @@ export interface OverlayProps {
   variant?: 'default' | 'blurred' | 'none'
   modelValue?: boolean
   closeOnPressEscape?: boolean
-  closeOnClickOverlay?: boolean
+  closeOnOutsideClick?: boolean
   lockScrollOnVisible?: boolean
   to?: string | HTMLElement
 }

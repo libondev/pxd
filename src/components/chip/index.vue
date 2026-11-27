@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<ChipProps>(), {
   variant: 'primary',
 })
 
-const labelStyle = computed(() => ({ '--chip-size': getCssUnitValue(props.size) }))
+const labelStyle = computed(() => ({ '--chip-dimension': getCssUnitValue(props.dimension) }))
 
 const { classes } = useTailwindVariant(
   {
@@ -31,7 +31,7 @@ const { classes } = useTailwindVariant(
         false: 'translate-x-1/2 -translate-y-1/3',
       },
       hasLabel: {
-        false: 'size-(--chip-size)',
+        false: 'size-(--chip-dimension)',
       },
     },
   },

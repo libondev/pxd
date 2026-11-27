@@ -142,10 +142,8 @@
   /* component variables defaults */
   --pxd-initial-index: 10;
   --active-graph-item-radius: 0.125rem;
-  --avatar-size: 2rem;
-  --chip-size: 0.75rem;
-  --fader-size: 1rem;
-  --fader-color: var(--color-background-100);
+  --avatar-dimension: 2rem;
+  --chip-dimension: 0.75rem;
   --hold-button-progress-color: var(--color-gray-alpha-600);
   --popover-arrow-color: var(--color-gray-1000);
   --popover-scale: 0.95;
@@ -296,7 +294,7 @@
 @theme inline {
   --font-mono:
     'Berkeley Mono Variable', 'Berkeley Mono', 'MonoLisa', 'Geist Mono', 'JetBrains Mono',
-    'Input Mono', 'Fira Code', Menlo, Consolas, 'Courier New', ui-monospace, monospace;
+    'Input Mono', 'Fira Code', Menlo, Consolas, 'Courier New', monospace;
 
   --color-primary: hsl(var(--primary));
   --color-primary-hover: var(--primary-hover);

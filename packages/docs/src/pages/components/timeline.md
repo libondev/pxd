@@ -77,7 +77,7 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
     <PTimelineItem variant="success" hollow>Hollow node</PTimelineItem>
     <PTimelineItem>
       <template #dot>
-        <PStatusDot state="READY" />
+        <PStatusDot status="READY" />
       </template>
       Custom dot
     </PTimelineItem>
@@ -90,11 +90,11 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
 ```vue demo
 <template>
   <PTimeline>
-    <PTimelineItem timestamp="2026-08-03" position="top">
+    <PTimelineItem timestamp="2026-08-03" timestamp-position="top">
       Timestamp above the content
     </PTimelineItem>
     <PTimelineItem timestamp="2026-07-28">Timestamp below the content</PTimelineItem>
-    <PTimelineItem timestamp="2026-07-21" hide-timestamp>Hidden timestamp</PTimelineItem>
+    <PTimelineItem timestamp="2026-07-21" :show-timestamp="false">Hidden timestamp</PTimelineItem>
   </PTimeline>
 </template>
 ```
@@ -111,8 +111,8 @@ import CheckCircleIcon from '@gdsicon/vue/check-circle'
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | timestamp | `string` | `''` | Timestamp content |
-| hide-timestamp | `boolean` | `false` | Hide the timestamp |
-| position | `'top' \| 'bottom'` | `bottom` | Timestamp position |
+| show-timestamp | `boolean` | `true` | Show the timestamp |
+| timestamp-position | `'top' \| 'bottom'` | `bottom` | Timestamp position |
 | variant | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info' \| ''` | `''` | Node variant |
 | color | `string` | `''` | Custom node color |
 | size | `'sm' \| 'md' \| 'lg'` | - | Node size, falls back to the config provider size |

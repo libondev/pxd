@@ -7,7 +7,6 @@ import WarningIcon from '@gdsicon/vue/warning'
 import { computed, h } from 'vue'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
-import { isTruthyProp } from '../../utils/format.js'
 
 defineOptions({
   name: 'PNote',
@@ -15,7 +14,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<NoteProps>(), {
-  label: true,
+  showLabel: true,
   variant: 'default',
 })
 
@@ -31,14 +30,12 @@ const VARIANTS_ICON = {
 } as const
 
 const computedLabel = computed(() => {
-  const { label } = props
-
-  if (isTruthyProp(label)) {
-    return VARIANTS_ICON[props.variant]
+  if (props.label) {
+    return h('span', null, props.label)
   }
 
-  if (typeof label === 'string' && label) {
-    return h('span', null, label)
+  if (props.showLabel) {
+    return VARIANTS_ICON[props.variant]
   }
 
   return false

@@ -195,3 +195,10 @@ const customValue = ref(false)
 | --- | --- | --- |
 | change | `(value: boolean \| number \| string, details: ChangeDetails) => void` | Emitted when the switch is toggled and the `before-change` guard allows it. |
 | update:model-value | `(value: boolean \| number \| string) => void` | Emitted when the active or inactive value is written to the model. |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| checked | Icon rendered inside the handle when the switch is on |
+| unchecked | Icon rendered inside the handle when the switch is off |

@@ -248,7 +248,7 @@ defineExpose({
     :trigger="[]"
     keep-height
     match-width
-    :auto-focus-element="!inlineQuery"
+    :initial-focus="!inlineQuery"
     :return-focus-on-deactivate="false"
     :disabled="disabled"
     :close-on-press-escape="closeOnPressEscape"

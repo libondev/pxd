@@ -42,7 +42,7 @@ function onTriggerTargetClick(ev: KeyboardEvent) {
 <template>
   <h1 class="text-2xl font-medium">Overview</h1>
 
-  <PText secondary class="mbs-2">
+  <PText variant="secondary" class="mbs-2">
     A total of
     <span class="font-medium text-foreground">{{ allComponents.length }}</span> components
   </PText>
@@ -71,6 +71,6 @@ function onTriggerTargetClick(ev: KeyboardEvent) {
   </Grids>
 
   <template v-if="filteredComponents.length === 0">
-    <PEmptyState title="No data" description="No components found" />
+    <PEmptyState heading="No data" description="No components found" />
   </template>
 </template>

@@ -16,7 +16,7 @@ const emits = defineEmits<CopyButtonEmits>()
 
 const slots = useSlots()
 
-const iconShape = computed(() => {
+const iconOnlyShape = computed(() => {
   return !slots.prefix && !slots.suffix
 })
 
@@ -39,7 +39,7 @@ async function onCopyClick(ev: PointerEvent) {
     data-copy-button
     class="pxd-copy-button"
     v-bind="$attrs"
-    :icon="iconShape"
+    :icon-only="iconOnlyShape"
     @click="onCopyClick"
   >
     <template v-if="$slots.prefix" #prefix>

@@ -68,7 +68,7 @@ The animated frames are marked `aria-hidden` so screen readers will not announce
 <template>
   <PStack align="center" :gap="2">
     <PSpinnerDots />
-    <PText secondary>Loading…</PText>
+    <PText variant="secondary">Loading…</PText>
   </PStack>
 </template>
 ```

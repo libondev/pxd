@@ -27,6 +27,18 @@ describe('note', () => {
     wrapper.unmount()
   })
 
+  it('should hide the label area when showLabel is false', () => {
+    const wrapper = mount(Note, {
+      props: {
+        showLabel: false,
+      },
+    })
+
+    expect(wrapper.find('svg').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
   it('should render action', () => {
     const wrapper = mount(Note, {
       slots: {

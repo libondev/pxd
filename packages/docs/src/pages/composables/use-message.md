@@ -18,7 +18,7 @@ type MessageContent = string | VNode
 
 interface Options {
   id?: string | number
-  type?: 'info' | 'success' | 'warning' | 'error' | 'loading'
+  variant?: 'info' | 'success' | 'warning' | 'error' | 'loading'
   class?: ComponentClass
   group?: string
   action?: Action
@@ -38,7 +38,7 @@ interface Options {
 | --- | --- | --- |
 | `msg` | `MessageContent` | The message content |
 | `options.id` | `string \| number` | Unique identifier for the message |
-| `options.type` | `'info' \| 'success' \| 'warning' \| 'error' \| 'loading'` | Message type |
+| `options.variant` | `'info' \| 'success' \| 'warning' \| 'error' \| 'loading'` | Message variant |
 | `options.group` | `string` | Message group identifier |
 | `options.action` | `Action` | Action configuration for the message |
 | `options.message` | `string \| VNode` | The message content (alternative to `msg`) |

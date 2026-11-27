@@ -9,7 +9,7 @@ Display keyboard input that triggers an action.
   <PStack gap="2">
     <PKbd meta />
     <PKbd shift />
-    <PKbd alt />
+    <PKbd option-key />
     <PKbd ctrl />
   </PStack>
 </template>
@@ -39,7 +39,7 @@ Display keyboard input that triggers an action.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| alt | `boolean` | - | Render the `⌥` symbol for the Option key |
+| option-key | `boolean` | - | Render the `⌥` symbol for the Option key |
 | ctrl | `boolean` | - | Render the `Ctrl` text for the Control key |
 | meta | `boolean` | - | Render the `⌘` symbol for the Command key |
 | enter | `boolean` | - | Render the `↵` symbol for the Enter key |

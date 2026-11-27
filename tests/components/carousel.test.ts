@@ -225,6 +225,23 @@ describe('carousel', () => {
     wrapper.unmount()
   })
 
+  it('should hide indicators and arrows when show flags are false', async () => {
+    const wrapper = mount(Carousel, {
+      props: {
+        options: slides,
+        showIndicator: false,
+        showArrow: false,
+      },
+    })
+
+    await nextTick()
+
+    expect(wrapper.find('.pxd-carousel--indicator').exists()).toBe(false)
+    expect(wrapper.find('.pxd-carousel--toggler').exists()).toBe(false)
+
+    wrapper.unmount()
+  })
+
   it('should turn the active indicator upright when it sits on a side', () => {
     const wrapper = mount(Carousel, {
       props: {

@@ -144,7 +144,7 @@ function onRequest(index) {
 
 ## Viewer Only
 
-With `variant="viewer"` the component renders nothing but the dialog, so it can be opened from any trigger through the exposed `open` method.
+With `mode="viewer"` the component renders nothing but the dialog, so it can be opened from any trigger through the exposed `open` method.
 
 ```vue demo
 <script setup>
@@ -172,7 +172,7 @@ function open(index) {
       Image {{ index + 1 }}
     </PButton>
 
-    <PImagePreview ref="preview" variant="viewer" :data="images" />
+    <PImagePreview ref="preview" mode="viewer" :data="images" />
   </div>
 </template>
 ```
@@ -182,10 +182,10 @@ function open(index) {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | data | `(string \| ImagePreviewItem)[]` | - | Images rendered as thumbnails; an item's `src` is a URL or a function returning a promise of one |
-| variant | `'default' \| 'viewer'` | `'default'` | Render the thumbnails together with the dialog, or the dialog alone |
+| mode | `'default' \| 'viewer'` | `'default'` | Render the thumbnails together with the dialog, or the dialog alone |
 | index | `number` | `0` | Image the preview opens at |
 | close-on-press-escape | `boolean` | `true` | Close the preview when `Esc` is pressed |
-| close-on-click-overlay | `boolean` | `true` | Close the preview when the area around the image is clicked |
+| close-on-outside-click | `boolean` | `true` | Close the preview when the area around the image is clicked |
 
 ## Events
 

@@ -68,14 +68,15 @@ describe('text', () => {
     wrapper.unmount()
   })
 
-  it('should accept secondary prop', () => {
+  it('should accept variant prop', () => {
     const wrapper = mount(Text, {
       props: {
-        secondary: true,
+        variant: 'secondary',
       },
     })
 
-    expect(wrapper.props('secondary')).toBe(true)
+    expect(wrapper.props('variant')).toBe('secondary')
+    expect(wrapper.classes()).toContain('text-foreground-secondary')
 
     wrapper.unmount()
   })

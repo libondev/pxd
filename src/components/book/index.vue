@@ -86,8 +86,8 @@ const computedClasses = computed(() => {
 
           <div class="pxd-book--content-inner flex w-full flex-col">
             <span class="pxd-book--title font-semibold pe-2 text-balance break-all">
-              <slot name="title">
-                {{ title }}
+              <slot name="heading">
+                {{ heading }}
               </slot>
             </span>
 

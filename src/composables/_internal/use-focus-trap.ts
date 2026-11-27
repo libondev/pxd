@@ -8,8 +8,8 @@ import { isTruthyProp } from '../../utils/format.js'
 
 const focusTrapStack: FocusTrap[] = []
 
-export interface UseFocusTrapOptions extends FocusTrapOptions {
-  autoFocusElement?: string | boolean
+export interface UseFocusTrapOptions extends Omit<FocusTrapOptions, 'initialFocus'> {
+  initialFocus?: string | boolean
 }
 
 /**
@@ -31,7 +31,7 @@ export function useFocusTrap(
   }
 
   function activate(target: HTMLElement) {
-    const { autoFocusElement, ...restOptions } = toValue(userOptions)
+    const { initialFocus, ...restOptions } = toValue(userOptions)
 
     const defaultOptions: FocusTrapOptions = {
       allowOutsideClick: true,
@@ -46,13 +46,15 @@ export function useFocusTrap(
       delayReturnFocus: false,
       preventScroll: true,
       fallbackFocus: () => target,
-      initialFocus: (): HTMLElement => {
+      initialFocus: (): HTMLElement | false => {
+        if (initialFocus === false) {
+          return false
+        }
+
         // auto focus first tabbable element or custom element
-        if (isTruthyProp(autoFocusElement)) {
+        if (isTruthyProp(initialFocus)) {
           const elSelector =
-            typeof autoFocusElement === 'string' && autoFocusElement
-              ? autoFocusElement
-              : FOCUSABLE_SELECTOR
+            typeof initialFocus === 'string' && initialFocus ? initialFocus : FOCUSABLE_SELECTOR
 
           return target.querySelector<HTMLElement>(elSelector) ?? target
         }

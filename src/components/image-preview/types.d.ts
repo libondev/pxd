@@ -9,14 +9,14 @@ export type ImagePreviewSource = string | ImagePreviewItem
 
 export type ImagePreviewStatus = 'loading' | 'ready' | 'error'
 
-export type ImagePreviewVariant = 'default' | 'viewer'
+export type ImagePreviewMode = 'default' | 'viewer'
 
 export interface ImagePreviewProps {
   data?: readonly ImagePreviewSource[]
-  variant?: ImagePreviewVariant
+  mode?: ImagePreviewMode
   index?: number
   closeOnPressEscape?: boolean
-  closeOnClickOverlay?: boolean
+  closeOnOutsideClick?: boolean
 }
 
 export interface ImagePreviewEmits {

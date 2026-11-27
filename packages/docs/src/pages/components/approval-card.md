@@ -28,12 +28,12 @@ An array renders one command per line. The card settles the whole array with a s
 <template>
   <PStack direction="vertical" class="gap-3">
     <PApprovalCard
-      title="Run these migrations?"
+      heading="Run these migrations?"
       :command="['pnpm db:migrate', 'pnpm build']"
       variant="error"
     />
 
-    <PApprovalCard title="Install dependencies?" command="pnpm install" />
+    <PApprovalCard heading="Install dependencies?" command="pnpm install" />
   </PStack>
 </template>
 ```
@@ -44,7 +44,7 @@ The default slot replaces the command block, so a tool call that writes or edits
 
 ```vue demo
 <template>
-  <PApprovalCard title="Apply this patch?" variant="error">
+  <PApprovalCard heading="Apply this patch?" variant="error">
     <pre class="text-xs m-0 leading-tight overflow-x-auto rounded-lg border border-gray-alpha-300 bg-gray-200 p-3">--- a/src/math.ts
 +++ b/src/math.ts
 @@ -1,3 +1,3 @@
@@ -183,7 +183,7 @@ function approveAll() {
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | model-value | `'pending' \| 'approved' \| 'rejected' \| 'dismissed'` | - | Controlled status; the card manages its own status when omitted |
-| title | `ComponentText` | `'Run this command?'` | Card heading |
+| heading | `ComponentText` | `'Run this command?'` | Card heading |
 | description | `ComponentText` | - | Secondary line under the title |
 | command | `string \| string[]` | - | Command text; an array renders one command per line |
 | variant | `'primary' \| 'error' \| 'warning' \| 'success'` | `'warning'` | Risk level, tints the leading icon |

@@ -204,7 +204,7 @@ defineExpose({
     ref="formRef"
     data-form
     :id="formId"
-    class="pxd-form"
+    class="pxd-form outline-none"
     novalidate
     tabindex="-1"
     :aria-busy="isBusy || undefined"
@@ -212,7 +212,7 @@ defineExpose({
     @submit.prevent="onSubmit"
   >
     <div v-if="unmatchedErrors.length" data-form-error role="alert" class="text-xs text-red-900">
-      <slot name="error" :errors="unmatchedErrors" :first="unmatchedErrors[0]">
+      <slot name="error-message" :errors="unmatchedErrors" :first="unmatchedErrors[0]">
         <div v-for="(error, index) in unmatchedErrors" :key="`${formatPath(error.name)}-${index}`">
           {{ error.message }}
         </div>

@@ -6,7 +6,7 @@ describe('book', () => {
   it('renders properly', () => {
     const wrapper = mount(Book, {
       props: {
-        title: 'My Book',
+        heading: 'My Book',
       },
     })
 

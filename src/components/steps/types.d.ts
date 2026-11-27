@@ -4,7 +4,7 @@ import type { ComponentDirection, ComponentText, ComponentSize } from '../../typ
 export type StepsStatus = 'process' | 'finish' | 'error' | 'wait'
 
 export interface StepsOption {
-  title?: ComponentText
+  heading?: ComponentText
   description?: ComponentText
   status?: StepsStatus
   disabled?: boolean

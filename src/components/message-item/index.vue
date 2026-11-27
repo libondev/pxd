@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<MessageItemProps>(), {
 })
 const emits = defineEmits<MessageItemEmits>()
 
-const TYPE_ICONS = {
+const VARIANT_ICONS = {
   info: InformationFillIcon,
   success: SuccessFillIcon,
   warning: WarningFillIcon,
@@ -33,13 +33,13 @@ const itemRef = shallowRef<HTMLElement>()
 const contentRef = shallowRef<HTMLElement>()
 
 const computedStyle = computed(() => {
-  const { index, max } = props
+  const { index, maxCount } = props
 
   return {
     '--message-item-index': index,
     '--message-item-offset': `${props.offset}px`,
     '--message-item-height': `${props.itemData.height ?? 0}px`,
-    'z-index': max - index,
+    'z-index': maxCount - index,
   } as const
 })
 
@@ -88,12 +88,12 @@ onMounted(() => {
 <template>
   <li
     ref="itemRef"
-    :tabindex="index < max ? 0 : undefined"
-    :inert="index >= max"
+    :tabindex="index < maxCount ? 0 : undefined"
+    :inert="index >= maxCount"
     data-message-item
     :data-index="index"
     :data-front="index === 0"
-    :data-visible="index < max"
+    :data-visible="index < maxCount"
     :style="computedStyle"
     class="pxd-message-item px-3 py-2 text-sm flex w-full max-w-full shrink-0 transform-(--message-item-transform) rounded-lg bg-background-100 break-all whitespace-pre-wrap shadow-border-modal outline-none data-[visible=false]:opacity-0 motion-safe:transition-(--message-item-transition)"
     :class="[itemData.class, { 'pe-9': itemData.closeable }]"
@@ -101,10 +101,10 @@ onMounted(() => {
   >
     <div ref="contentRef" class="min-w-0 flex flex-1 self-start">
       <Component
-        :is="TYPE_ICONS[itemData.type]"
-        v-if="itemData.type"
+        :is="VARIANT_ICONS[itemData.variant]"
+        v-if="itemData.variant"
         class="pxd-message--icon me-2 size-em h-lh shrink-0"
-        :class="itemData.type"
+        :class="itemData.variant"
       />
 
       <span v-if="typeof itemData.message === 'string'" v-html="itemData.message" />
@@ -114,7 +114,7 @@ onMounted(() => {
     <PButton
       v-if="itemData.closeable || itemData.action"
       size="xs"
-      :icon="!itemData.action?.variant"
+      :icon-only="!itemData.action?.variant"
       :variant="itemData.action?.variant ?? 'ghost'"
       :aria-label="itemData.action?.label ? undefined : configProvider.locale.interaction.close"
       class="top-1.5 right-1.5 px-0! text-xs absolute z-1 touch-none text-foreground-secondary"

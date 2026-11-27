@@ -6,9 +6,9 @@ import Steps from '../../src/components/steps/index.vue'
 import { lastChangePayload } from '../helpers/changes'
 
 const OPTIONS = [
-  { description: 'Review items in your cart', title: 'Cart' },
-  { description: 'Choose a payment method', title: 'Payment' },
-  { description: 'Order confirmed', title: 'Done' },
+  { description: 'Review items in your cart', heading: 'Cart' },
+  { description: 'Choose a payment method', heading: 'Payment' },
+  { description: 'Order confirmed', heading: 'Done' },
 ]
 
 async function mountSteps(props: Record<string, unknown> = {}, slots?: Record<string, any>) {
@@ -23,7 +23,7 @@ async function mountSteps(props: Record<string, unknown> = {}, slots?: Record<st
 }
 
 describe('steps', () => {
-  it('renders every option with its title and description', async () => {
+  it('renders every option with its heading and description', async () => {
     const wrapper = await mountSteps()
 
     expect(wrapper.findAll('.pxd-steps-item')).toHaveLength(3)
@@ -55,7 +55,7 @@ describe('steps', () => {
   it('lets an option status override the derived status', async () => {
     const wrapper = await mountSteps({
       modelValue: 1,
-      options: [{ title: 'Cart' }, { status: 'error', title: 'Payment' }, { title: 'Done' }],
+      options: [{ heading: 'Cart' }, { status: 'error', heading: 'Payment' }, { heading: 'Done' }],
     })
 
     expect(wrapper.findAll('.pxd-steps-item')[1]?.attributes('data-status')).toBe('error')
@@ -112,7 +112,7 @@ describe('steps', () => {
     const wrapper = await mountSteps({
       clickable: true,
       modelValue: 0,
-      options: [{ title: 'Cart' }, { disabled: true, title: 'Payment' }],
+      options: [{ heading: 'Cart' }, { disabled: true, heading: 'Payment' }],
     })
 
     await wrapper.findAll('.pxd-steps-item')[1]!.trigger('click')
@@ -137,7 +137,7 @@ describe('steps', () => {
   })
 
   it('follows the order of the options', async () => {
-    const options = ref([{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }])
+    const options = ref([{ heading: 'Cart' }, { heading: 'Payment' }, { heading: 'Done' }])
 
     const wrapper = mount(
       defineComponent({
@@ -155,7 +155,7 @@ describe('steps', () => {
         .join(),
     ).toBe('Cart,Payment,Done')
 
-    options.value = [{ title: 'Done' }, { title: 'Cart' }]
+    options.value = [{ heading: 'Done' }, { heading: 'Cart' }]
     await nextTick()
 
     expect(wrapper.findAll('.pxd-steps-item')).toHaveLength(2)
@@ -221,9 +221,9 @@ describe('steps', () => {
       {
         clickable: true,
         modelValue: 0,
-        options: [{ title: 'Cart' }, { disabled: true, title: 'Payment' }],
+        options: [{ heading: 'Cart' }, { disabled: true, heading: 'Payment' }],
       },
-      { item: ({ item }: any) => h('span', item.title) },
+      { item: ({ item }: any) => h('span', item.heading) },
     )
 
     const items = wrapper.findAll('.pxd-steps-item')
@@ -239,7 +239,7 @@ describe('steps', () => {
       { modelValue: 1 },
       {
         item: ({ index, item, status }: any) =>
-          h('div', { class: 'custom-step' }, [index, ':', item.title, ':', status]),
+          h('div', { class: 'custom-step' }, [index, ':', item.heading, ':', status]),
       },
     )
 

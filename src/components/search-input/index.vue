@@ -69,6 +69,7 @@ defineExpose(useForwardRefExpose(inputRef))
     :model-value="modelValue"
     :disabled="disabled"
     :readonly="readonly"
+    :clearable="clearable"
     @keydown="onKeydown"
     @update:model-value="emits('update:model-value', $event)"
   >

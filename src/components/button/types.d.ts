@@ -14,7 +14,7 @@ export interface ButtonProps {
   size?: ComponentSizeWithXxs
   shape?: ComponentShape
   align?: ComponentAlign
-  icon?: boolean
+  iconOnly?: boolean
   loading?: boolean
   disabled?: boolean
   fullWidth?: boolean

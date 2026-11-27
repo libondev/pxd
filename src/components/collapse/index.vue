@@ -96,8 +96,8 @@ onBeforeUnmount(() => {
       @click.prevent="onTriggerClick"
     >
       <h3 class="pxd-collapse--title m-0 min-w-0 flex-1 font-inherit text-inherit">
-        <slot name="title">
-          {{ title }}
+        <slot name="heading">
+          {{ heading }}
         </slot>
       </h3>
 

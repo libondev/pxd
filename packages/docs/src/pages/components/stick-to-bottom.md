@@ -86,7 +86,7 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
 <template>
   <PStickToBottom class="relative h-56 rounded-lg border border-dashed" wrapper-class="p-2">
     <PCollapseGroup multiple>
-      <PCollapse v-for="i in 8" :key="i" :title="`Panel ${i}`">
+      <PCollapse v-for="i in 8" :key="i" :heading="`Panel ${i}`">
         <div class="mb-4">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
           alias debitis beatae nesciunt veniam excepturi soluta magnam vitae.
@@ -98,7 +98,7 @@ import ArrowUpIcon from '@gdsicon/vue/arrow-up'
       <PButton
         v-if="!isAtBottom"
         class="mx-auto flex"
-        size="sm" shape="rounded" icon
+        size="sm" shape="rounded" icon-only
         @click="forceStickToBottom"
       >
         <ArrowUpIcon class="rotate-180" />
@@ -137,7 +137,7 @@ function append() {
         <PButton
           v-if="!isAtBottom"
           class="mx-auto flex"
-          size="sm" shape="rounded" icon
+          size="sm" shape="rounded" icon-only
           @click="forceStickToBottom"
         >
           <ArrowUpIcon class="rotate-180" />
@@ -154,7 +154,7 @@ function append() {
 | --- | --- | --- | --- |
 | threshold | `number` | `16` | Distance from bottom considered "at bottom" |
 | fader | `boolean` | `false` | Show gradient faders at the scrollable edges, hidden within `threshold` of an edge |
-| fader-size | `number` | - | Fader gradient length in `px`, defaulting to `24` |
+| fader-dimension | `number` | - | Fader gradient length in `px`, defaulting to `24` |
 | fader-color | `string` | - | Fader gradient color, any CSS color value |
 | fader-direction | `'horizontal' \| 'vertical' \| 'both'` | - | Edges to fade: `horizontal`, `vertical` or `both` |
 | disabled | `boolean` | `false` | Stop auto-scrolling while the container is at the bottom |

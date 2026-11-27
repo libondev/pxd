@@ -16,8 +16,8 @@ defineProps<DescriptionProps>()
     <dt
       class="pxd-description--title gap-1 text-sm mbe-1.5 flex items-center leading-none text-nowrap text-foreground-secondary capitalize"
     >
-      <slot name="title">
-        {{ title }}
+      <slot name="heading">
+        {{ heading }}
       </slot>
 
       <PTooltip v-if="tooltip" :content="tooltip">

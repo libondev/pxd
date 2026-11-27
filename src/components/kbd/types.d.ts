@@ -1,7 +1,7 @@
 import type { ComponentSize, ComponentText } from '../../types/shared/props'
 
 export interface KbdProps {
-  alt?: boolean
+  optionKey?: boolean
   ctrl?: boolean
   meta?: boolean
   enter?: boolean

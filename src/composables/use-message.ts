@@ -14,7 +14,7 @@ interface Action {
 
 interface Options {
   id?: string | number
-  type?: 'info' | 'success' | 'warning' | 'error' | 'loading' | '' | false | undefined
+  variant?: 'info' | 'success' | 'warning' | 'error' | 'loading' | '' | false | undefined
   class?: ComponentClass
   group?: string
   action?: Action
@@ -78,9 +78,9 @@ export const useMessage = ((msg: MessageContent, options?: Options) => {
 
 const shortcutTypes = ['info', 'error', 'loading', 'warning', 'success'] as const
 
-shortcutTypes.forEach((type) => {
-  useMessage[type] = (msg: MessageContent, options?: Options) => {
-    useMessage(msg, { ...options, type })
+shortcutTypes.forEach((variant) => {
+  useMessage[variant] = (msg: MessageContent, options?: Options) => {
+    useMessage(msg, { ...options, variant })
   }
 })
 

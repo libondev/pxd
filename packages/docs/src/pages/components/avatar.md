@@ -28,7 +28,7 @@ const options = [
 </script>
 
 <template>
-  <PAvatarGroup :options="options" :max="3" size="28" />
+  <PAvatarGroup :options="options" :max-count="3" dimension="28" />
 </template>
 ```
 
@@ -59,17 +59,17 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 
 <template>
   <PStack direction="vertical">
-    <PAvatar placeholder>
+    <PAvatar show-placeholder>
       <template #icon>
         <ArrowCircleDownIcon class="text-gray-900" />
       </template>
     </PAvatar>
-    <PAvatar placeholder>
+    <PAvatar show-placeholder>
       <template #icon>
         <CheckCircleFillIcon class="text-gray-900" />
       </template>
     </PAvatar>
-    <PAvatar placeholder>
+    <PAvatar show-placeholder>
       <template #icon>
         <ClockDashedIcon class="text-gray-900" />
       </template>
@@ -98,7 +98,7 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 
 ```vue demo
 <template>
-  <PAvatar placeholder />
+  <PAvatar show-placeholder />
 </template>
 ```
 
@@ -108,9 +108,9 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 | --- | --- | --- | --- |
 | src | `string` | - | URL of the image to display |
 | alt | `string` | - | Image alt text, also used as the initials fallback |
-| size | `number \| string` | - | Diameter in `px`, inherits the group size when nested |
+| dimension | `number \| string` | - | Diameter in `px`, inherits the group dimension when nested |
 | loading | `boolean` | - | Show a spinning ring over the avatar |
-| placeholder | `boolean` | - | Render the shimmering placeholder instead of the image |
+| show-placeholder | `boolean` | - | Render the shimmering placeholder instead of the image |
 
 ## Events
 
@@ -124,8 +124,8 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| max | `number` | `5` | Avatars shown before the `+N` counter appears |
-| size | `number \| string` | - | Diameter in `px` applied to every avatar in the group |
+| max-count | `number` | `5` | Avatars shown before the `+N` counter appears |
+| dimension | `number \| string` | - | Diameter in `px` applied to every avatar in the group |
 | options | `AvatarOptions[]` | `() => []` | Avatars to render, each with `src`, `alt` and `loading` |
 
 ## Slots
@@ -133,6 +133,7 @@ import ClockDashedIcon from '@gdsicon/vue/clock-dashed'
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+| icon | Badge content rendered over the avatar |
 
 ## Methods
 

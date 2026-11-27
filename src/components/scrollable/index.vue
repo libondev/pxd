@@ -52,7 +52,7 @@ const horizontalThumbWidth = shallowRef(0)
 const observedContent = shallowRef<HTMLElement[]>([])
 
 const computedStyle = computed(() => ({
-  '--scrollbar-size': props.scrollbarSize,
+  '--scrollbar-dimension': props.scrollbarDimension,
   '--scrollbar-color': props.scrollbarColor,
   '--scrollbar-hover-color': props.scrollbarHoverColor,
 }))
@@ -291,9 +291,9 @@ defineExpose({
 
     <PFader
       v-if="fader"
-      :size="faderSize"
       :color="faderColor"
       :scroll-target="contentRef"
+      :dimension="faderDimension"
       :direction="faderDirection"
       :threshold="bottomThreshold"
     />
@@ -328,11 +328,11 @@ defineExpose({
 
 <style>
 .pxd-scrollable--scrollbar-x {
-  height: calc(var(--scrollbar-size, 6) * 0.0625rem);
+  height: calc(var(--scrollbar-dimension, 6) * 0.0625rem);
 }
 
 .pxd-scrollable--scrollbar-y {
-  width: calc(var(--scrollbar-size, 6) * 0.0625rem);
+  width: calc(var(--scrollbar-dimension, 6) * 0.0625rem);
 }
 
 .pxd-scrollable--thumb {

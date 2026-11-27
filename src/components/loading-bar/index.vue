@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<LoadingBarProps>(), {
   minimum: 0.08,
   trickle: true,
   hideDelay: 500,
-  trickleThreshold: 300,
+  trickleInterval: 300,
 })
 
 const {
@@ -34,7 +34,7 @@ const {
 } = useLoadingBarProgress({
   minimum: () => props.minimum,
   trickle: () => props.trickle,
-  trickleThreshold: () => props.trickleThreshold,
+  trickleInterval: () => props.trickleInterval,
   hideDelay: () => props.hideDelay,
 })
 

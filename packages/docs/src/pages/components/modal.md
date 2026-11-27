@@ -24,7 +24,7 @@ function handleClose() {
 
   <PModal
     v-model="isVisible"
-    title="Create Token"
+    heading="Create Token"
     subtitle="Enter a unique name for your token to differentiate it from other tokens and then select the scope."
     @outside-click="handleClose"
   >
@@ -69,10 +69,10 @@ function handleClose() {
 
   <PModal
     v-model="isVisible"
-    title="Async Logic"
+    heading="Async Logic"
     :loading="isLoading"
     close-on-press-escape
-    close-on-click-overlay
+    close-on-outside-click
   >
     <PText>Content of the modal.</PText>
 
@@ -103,7 +103,7 @@ function handleClose() {
 <template>
   <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
 
-  <PModal v-model="isVisible" default-header-style title="Create Token" @outside-click="handleClose">
+  <PModal v-model="isVisible" default-header-style heading="Create Token" @outside-click="handleClose">
     <PText>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat aut, blanditiis dolorem
       quaerat exercitationem quis tenetur vero fugit? Libero molestias cum, nemo repudiandae minus
@@ -171,7 +171,7 @@ function handleClose() {
 
   <PModal
     v-model="isVisible"
-    title="Create Token"
+    heading="Create Token"
     :default-footer-style="false"
     subtitle="Enter a unique name for your token to differentiate it from other tokens and then select the scope."
     @outside-click="handleClose"
@@ -202,7 +202,7 @@ const isVisible = ref(false)
 <template>
   <PButton variant="primary" @click="isVisible = true">Open Modal</PButton>
 
-  <PModal v-model="isVisible" title="Closeable Modal" closeable>
+  <PModal v-model="isVisible" heading="Closeable Modal" closeable>
     <PText>This modal shows a close button in the header.</PText>
   </PModal>
 </template>
@@ -230,7 +230,7 @@ function handleClose() {
 <template>
   <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
 
-  <PModal v-model="isVisible" title="Create Token" :close-on-click-overlay="false">
+  <PModal v-model="isVisible" heading="Create Token" :close-on-outside-click="false">
     <PText> Some content contained within the modal. </PText>
 
     <template #footer>
@@ -262,7 +262,7 @@ function handleClose() {
 <template>
   <PButton variant="primary" @click="handleOpen">Open Modal</PButton>
 
-  <PModal v-model="isVisible" title="Create Token" :close-on-press-escape="false">
+  <PModal v-model="isVisible" heading="Create Token" :close-on-press-escape="false">
     <PText> Some content contained within the modal. </PText>
 
     <template #footer>
@@ -288,7 +288,7 @@ const isVisible = ref(false)
 
   <PModal
     v-model="isVisible"
-    title="Swipe to close"
+    heading="Swipe to close"
     subtitle="Resize below 40rem and drag the handle down"
     swipe-to-close
   >
@@ -301,19 +301,19 @@ const isVisible = ref(false)
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| title | `string \| number \| null` | - | Header title text, overridable by the `title` slot |
-| subtitle | `string \| number \| null` | - | Secondary text below the title, overridable by the `subtitle` slot |
+| heading | `string \| number \| null` | - | Header heading text, overridable by the `heading` slot |
+| subtitle | `string \| number \| null` | - | Secondary text below the `heading`, overridable by the `subtitle` slot |
 | width | `string \| number` | - | Panel width, numbers become `px`, defaulting to `33.75rem` from `sm` up |
 | loading | `boolean` | - | Cover the modal with a loading mask and block closing |
 | model-value | `boolean` | `false` | Whether the modal is open |
 | loading-text | `string` | `'Loading...'` | Text shown inside the loading mask |
 | wrapper-class | `string \| any[] \| object` | - | Class applied to the modal panel element |
 | content-class | `string \| any[] \| object` | - | Class applied to the scrollable content element |
-| auto-focus-element | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |
+| initial-focus | `string \| boolean` | `false` | Focus the first tabbable element on open, or the one matching a selector |
 | default-header-style | `boolean` | `false` | Apply the default header background and bottom border |
 | default-footer-style | `boolean` | `true` | Apply the default footer background and top border |
 | close-on-press-escape | `boolean` | `true` | Close the modal when `Esc` is pressed |
-| close-on-click-overlay | `boolean` | `true` | Close the modal when the overlay mask is clicked |
+| close-on-outside-click | `boolean` | `true` | Close the modal when the overlay mask is clicked |
 | closeable | `boolean` | `false` | Show a close button on the right of the header |
 | swipe-to-close | `boolean` | `false` | Show a drag handle below `40rem` and let a downward drag dismiss the modal |
 
@@ -333,4 +333,8 @@ const isVisible = ref(false)
 
 | Name | Description |
 | --- | --- |
-| default | Default slot |
+| default | Modal body |
+| header | Replaces the whole header content, including heading and subtitle |
+| heading | Replaces the `heading` text inside the default header |
+| subtitle | Replaces the `subtitle` text inside the default header |
+| footer | Footer content, shown only when the slot is provided |

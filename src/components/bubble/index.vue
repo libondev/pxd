@@ -96,7 +96,7 @@ const { classes: contentClasses } = useTailwindVariant(
   >
     <div v-if="avatar" data-bubble-avatar class="pxd-bubble--avatar shrink-0" aria-hidden="true">
       <slot name="avatar">
-        <PAvatar :src="avatar" :alt="`${role} avatar`" size="32" />
+        <PAvatar :src="avatar" :alt="`${role} avatar`" dimension="32" />
       </slot>
     </div>
 

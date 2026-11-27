@@ -11,7 +11,8 @@ defineOptions({
 
 const props = withDefaults(defineProps<TimelineItemProps>(), {
   timestamp: '',
-  position: 'bottom',
+  timestampPosition: 'bottom',
+  showTimestamp: true,
   variant: '',
   color: '',
 })
@@ -85,7 +86,7 @@ const nodeClasses = computed(() => [
 
     <div class="pxd-timeline-item--wrapper px-5 -top-1.5 relative">
       <div
-        v-if="!hideTimestamp && position === 'top'"
+        v-if="showTimestamp && timestampPosition === 'top'"
         class="pxd-timeline-item--timestamp is-top mbe-1 pbs-1 text-xs leading-none text-foreground-secondary"
       >
         {{ timestamp }}
@@ -96,7 +97,7 @@ const nodeClasses = computed(() => [
       </div>
 
       <div
-        v-if="!hideTimestamp && position === 'bottom'"
+        v-if="showTimestamp && timestampPosition === 'bottom'"
         class="pxd-timeline-item--timestamp is-bottom mbs-0.5 text-xs leading-none text-foreground-secondary"
       >
         {{ timestamp }}

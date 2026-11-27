@@ -12,7 +12,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<IntersectionObserverProps>(), {
   rootMargin: '20%',
-  threshold: 0,
+  thresholdRate: 0,
 })
 
 const emits = defineEmits<IntersectionObserverEmits>()
@@ -27,7 +27,7 @@ const containerSize = shallowRef({
 const observerOptions = computed(() => ({
   root: props.root,
   rootMargin: props.rootMargin,
-  threshold: props.threshold,
+  threshold: props.thresholdRate,
 }))
 
 useIntersectionObserver(

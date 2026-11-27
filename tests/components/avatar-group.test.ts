@@ -8,7 +8,7 @@ describe('avatar-group', () => {
   it('renders properly', async () => {
     const wrapper = mount(AvatarGroup, {
       props: {
-        max: 1,
+        maxCount: 1,
         options: [{ src: avatarSrc }, { src: avatarSrc }],
       },
     })
@@ -24,7 +24,7 @@ describe('avatar-group', () => {
   it('should render all options when they fit within max', () => {
     const wrapper = mount(AvatarGroup, {
       props: {
-        max: 3,
+        maxCount: 3,
         options: [
           { src: avatarSrc, alt: 'A' },
           { src: avatarSrc, alt: 'B' },
@@ -44,7 +44,7 @@ describe('avatar-group', () => {
   it('should clamp options to max and show the overflow count', () => {
     const wrapper = mount(AvatarGroup, {
       props: {
-        max: 2,
+        maxCount: 2,
         options: [{ src: avatarSrc }, { src: avatarSrc }, { src: avatarSrc }, { src: avatarSrc }],
       },
     })
@@ -55,15 +55,15 @@ describe('avatar-group', () => {
     wrapper.unmount()
   })
 
-  it('should pass the group size to avatars', () => {
+  it('should pass the group dimension to avatars', () => {
     const wrapper = mount(AvatarGroup, {
       props: {
-        size: 40,
+        dimension: 40,
         options: [{ src: avatarSrc }],
       },
     })
 
-    expect(wrapper.find('.pxd-avatar').attributes('style')).toContain('--avatar-size: 40px')
+    expect(wrapper.find('.pxd-avatar').attributes('style')).toContain('--avatar-dimension: 40px')
 
     wrapper.unmount()
   })

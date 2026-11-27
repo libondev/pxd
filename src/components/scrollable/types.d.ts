@@ -4,12 +4,12 @@ export interface ScrollableProps {
   fader?: boolean
   loading?: boolean
   scrollbar?: boolean
-  faderSize?: number
   faderColor?: string
+  faderDimension?: number
   faderDirection?: ComponentDirection | 'both'
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
-  scrollbarSize?: number
+  scrollbarDimension?: number
   scrollbarColor?: string
   scrollbarHoverColor?: string
   bottomThreshold?: number

@@ -3,7 +3,7 @@ import type { ChangeDetails } from '../../types/shared/change'
 import type { ComponentClass, ComponentText } from '../../types/shared/props'
 
 export interface ModalProps {
-  title?: ComponentText
+  heading?: ComponentText
   subtitle?: ComponentText
   width?: string | number
   loading?: boolean
@@ -11,11 +11,11 @@ export interface ModalProps {
   loadingText?: ComponentText
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
-  autoFocusElement?: string | boolean
+  initialFocus?: string | boolean
   defaultHeaderStyle?: boolean
   defaultFooterStyle?: boolean
   closeOnPressEscape?: boolean
-  closeOnClickOverlay?: boolean
+  closeOnOutsideClick?: boolean
   closeable?: boolean
   swipeToClose?: boolean
 }

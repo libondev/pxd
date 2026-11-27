@@ -20,7 +20,7 @@ const SIZES = {
 const INTERNAL_KEYS = {
   meta: '⌘',
   shift: '⇧',
-  alt: '⌥',
+  optionKey: '⌥',
   ctrl: 'Ctrl',
   enter: '↵',
 }

@@ -175,11 +175,11 @@ export function useMessageGroup({ messages, expand, onTimeout }: UseMessageGroup
         }
 
         result = outcome.value
-        message.type = 'success'
+        message.variant = 'success'
         applyHandlerMessage(message, message.success, result)
       } catch (err) {
         result = err
-        message.type = 'error'
+        message.variant = 'error'
         applyHandlerMessage(message, message.error, err)
       } finally {
         applyHandlerMessage(message, message.finally, result)

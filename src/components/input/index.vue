@@ -37,9 +37,9 @@ const rootRef = shallowRef<HTMLElement>()
 const inputRef = shallowRef<HTMLInputElement>()
 const isComposing = shallowRef(false)
 const isPasswordVisible = shallowRef(!props.password)
-const inputType = computed(() => {
-  if (props.inputType) {
-    return props.inputType
+const resolvedType = computed(() => {
+  if (props.type) {
+    return props.type
   }
 
   return isPasswordVisible.value ? 'text' : 'password'
@@ -291,7 +291,7 @@ defineExpose({
       autocapitalize="off"
       :min="min"
       :max="max"
-      :type="inputType"
+      :type="resolvedType"
       :value="modelValue"
       :readonly="isReadonly"
       :disabled="isDisabled"

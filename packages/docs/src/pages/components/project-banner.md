@@ -76,3 +76,5 @@ import ShieldIcon from '@gdsicon/vue/shield'
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+| icon | Icon rendered before the banner text |
+| action | Action content rendered after the banner text |

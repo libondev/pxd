@@ -60,7 +60,7 @@ function decrease() {
 </script>
 
 <template>
-  <PProgress :model-value="progress" :colors="colors" label />
+  <PProgress :model-value="progress" :colors="colors" show-label />
   <PProgress :model-value="progress" :colors="colors"> {{ progress }} / 100 </PProgress>
 
   <PStack class="mt-4">
@@ -90,7 +90,8 @@ function decrease() {
 | min | `number` | `0` | Lower bound of the progress range |
 | max | `number` | `100` | Upper bound of the progress range |
 | size | `'sm' \| 'md' \| 'lg'` | - | Thickness of the track; falls back to the config provider size |
-| label | `boolean \| string \| number` | `false` | Show the value as text, or replace it with a custom string |
+| label | `string \| number` | - | Custom label text replacing the current value |
+| show-label | `boolean` | `false` | Show the current value as text |
 | variant | `'primary' \| 'error' \| 'warning' \| 'success' \| 'secondary'` | `primary` | Color of the filled bar |
 | colors | `Record<string, string>` | - | Threshold-to-color map; the highest key below the value wins |
 | model-value | `number \| null` | - | Current progress value, clamped between `min` and `max` |

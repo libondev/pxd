@@ -37,6 +37,40 @@ describe('virtual-list', () => {
     wrapper.unmount()
   })
 
+  it('should render errorMessage when status is error', async () => {
+    const wrapper = mount(VirtualList, {
+      props: {
+        status: 'error',
+        errorMessage: 'Load failed',
+      },
+    })
+
+    const message = wrapper.find('.pxd-virtual-list--message')
+
+    expect(message.text()).toContain('Load failed')
+
+    await message.trigger('click')
+
+    expect(wrapper.emitted('retry')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
+  it('should render the error-message slot when status is error', () => {
+    const wrapper = mount(VirtualList, {
+      props: {
+        status: 'error',
+      },
+      slots: {
+        'error-message': 'Custom error',
+      },
+    })
+
+    expect(wrapper.find('.pxd-virtual-list--message').text()).toContain('Custom error')
+
+    wrapper.unmount()
+  })
+
   it('should accept itemSize prop', () => {
     const wrapper = mount(VirtualList, {
       props: {
@@ -62,9 +96,9 @@ describe('virtual-list', () => {
 
     // The virtualizer measures its container on the next frame, so the offset arrives a flush
     // later. Poll instead of counting frames: under a full parallel pool a frame can be starved.
-    await vi.waitFor(() => expect(scrollSource.getOffsetForIndex(0)).toBe(0), { timeout: 5000 })
+    await vi.waitFor(() => expect(scrollSource.getOffsetForIndex(0)).toBe(0), { timeout: 10000 })
     expect(typeof scrollSource.scrollToIndex).toBe('function')
 
     wrapper.unmount()
-  })
+  }, 15000)
 })

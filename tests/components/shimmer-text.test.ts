@@ -28,6 +28,31 @@ describe('shimmer-text', () => {
     wrapper.unmount()
   })
 
+  it('should default animated to true', () => {
+    const wrapper = mount(ShimmerText, {
+      props: {
+        text: 'Shimmer',
+      },
+    })
+
+    expect(wrapper.attributes('data-animated')).toBe('true')
+
+    wrapper.unmount()
+  })
+
+  it('should stop the animation when animated is false', () => {
+    const wrapper = mount(ShimmerText, {
+      props: {
+        text: 'Shimmer',
+        animated: false,
+      },
+    })
+
+    expect(wrapper.attributes('data-animated')).toBe('false')
+
+    wrapper.unmount()
+  })
+
   it('should build the gradient from a variant preset', () => {
     const wrapper = mount(ShimmerText, {
       props: {

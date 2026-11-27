@@ -15,7 +15,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<ButtonProps>(), {
-  icon: false,
+  iconOnly: false,
   shape: 'default',
   as: 'button',
 })
@@ -34,31 +34,17 @@ const isDisabled = computed<boolean>(
 const computedVariant = computed(() => {
   return props.variant || buttonGroupContext?.props.variant || 'default'
 })
-const btnContentClasses = computed(() => {
-  const { icon, align } = props
-  const internalAlign = icon ? 'center' : align
-  const alignClasses = {
-    left: 'me-auto',
-    center: 'mx-auto',
-    right: 'ms-auto',
-  }[internalAlign || buttonGroupContext?.props.align || 'center']
-
-  return {
-    'not-first:ps-1.5 not-last:pe-1.5': !icon,
-    [alignClasses]: true,
-  }
-})
 
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'pxd-button inline-flex shrink-0 cursor-pointer touch-manipulation items-center font-inherit select-none focus-visible:z-1 motion-safe:transition-appearance within-group:not-first:rounded-l-none within-group:not-first:border-l-0 within-group:not-last:rounded-r-none',
     variants: {
       size: {
-        xxs: `${BASIC_HEIGHTS.xxs} px-0.5 rounded-sm ${SIZE_TEXT_CLASS.xxs}`,
-        xs: `${BASIC_HEIGHTS.xs} px-1 rounded-sm ${SIZE_TEXT_CLASS.xs}`,
-        sm: `${BASIC_HEIGHTS.sm} px-2 rounded-md ${SIZE_TEXT_CLASS.sm}`,
-        md: `${BASIC_HEIGHTS.md} px-3 rounded-md ${SIZE_TEXT_CLASS.md}`,
-        lg: `${BASIC_HEIGHTS.lg} px-4 rounded-lg ${SIZE_TEXT_CLASS.lg}`,
+        xxs: `${BASIC_HEIGHTS.xxs} gap-0.5 px-0.5 rounded-sm ${SIZE_TEXT_CLASS.xxs}`,
+        xs: `${BASIC_HEIGHTS.xs} gap-1 px-1 rounded-sm ${SIZE_TEXT_CLASS.xs}`,
+        sm: `${BASIC_HEIGHTS.sm} gap-1 px-2 rounded-md ${SIZE_TEXT_CLASS.sm}`,
+        md: `${BASIC_HEIGHTS.md} gap-1.5 px-3 rounded-md ${SIZE_TEXT_CLASS.md}`,
+        lg: `${BASIC_HEIGHTS.lg} gap-1.5 px-4 rounded-lg ${SIZE_TEXT_CLASS.lg}`,
       },
       shape: {
         square: 'rounded-none',
@@ -85,9 +71,15 @@ const { attrs, classes } = useTailwindVariant(
       fullWidth: {
         true: 'w-full',
       },
-      icon: {
+      iconOnly: {
         true: 'px-0 aspect-square',
         false: 'within-group:flex-1',
+      },
+      align: {
+        left: 'justify-start',
+        center: 'justify-center',
+        right: 'justify-end',
+        between: 'justify-between',
       },
     },
     compoundVariants: [
@@ -99,7 +91,9 @@ const { attrs, classes } = useTailwindVariant(
   },
   {
     selection: () => {
-      const { size, shape, fullWidth, icon } = props
+      const { size, shape, fullWidth, iconOnly, align } = props
+      const isIconOnly = iconOnly ? 'center' : align
+      const fallbackAlign = isIconOnly || buttonGroupContext?.props.align || 'center'
 
       return {
         size: size || buttonGroupContext?.props.size || configProvider.size,
@@ -107,11 +101,13 @@ const { attrs, classes } = useTailwindVariant(
         variant: computedVariant.value,
         fullWidth,
         disabled: isDisabled.value,
-        icon,
+        iconOnly,
+        align: fallbackAlign,
       }
     },
   },
 )
+
 useAgentNode({
   name: 'button',
   state: () => ({
@@ -131,16 +127,16 @@ useAgentNode({
     :aria-busy="loading"
     :aria-disabled="isDisabled"
     :class="classes"
-    :data-icon="icon"
+    :data-icon-only="iconOnly"
     :data-variant="computedVariant"
     :disabled="isDisabled"
     v-bind="attrs"
   >
-    <PSpinner v-if="!icon && loading" />
+    <PSpinner v-if="!iconOnly && loading" />
     <slot v-else-if="!loading" name="prefix" />
 
-    <span class="min-w-0 flex items-center whitespace-nowrap" :class="btnContentClasses">
-      <PSpinner v-if="icon && loading" />
+    <span class="min-w-0 flex items-center whitespace-nowrap">
+      <PSpinner v-if="iconOnly && loading" />
       <slot v-else>{{ text }}</slot>
     </span>
 

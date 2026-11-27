@@ -148,3 +148,9 @@ const modelValue = ref('1')
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+
+## SwitchItem Slots
+
+| Name | Description |
+| --- | --- |
+| default | Custom item label, falling back to the `label` prop |

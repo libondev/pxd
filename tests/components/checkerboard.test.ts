@@ -28,10 +28,10 @@ describe('checkerboard', () => {
     }
   })
 
-  it('should apply a custom size', () => {
+  it('should apply a custom cell dimension', () => {
     const wrapper = mount(Checkerboard, {
       props: {
-        size: 32,
+        dimension: 32,
       },
     })
     expect(wrapper.attributes('style')).toContain('--checkerboard-size: 32px')
@@ -39,7 +39,7 @@ describe('checkerboard', () => {
 
     const remWrapper = mount(Checkerboard, {
       props: {
-        size: '2rem',
+        dimension: '2rem',
       },
     })
     expect(remWrapper.attributes('style')).toContain('--checkerboard-size: 2rem')

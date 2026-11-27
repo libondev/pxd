@@ -30,9 +30,9 @@ describe('reasoning', () => {
     wrapper.unmount()
   })
 
-  it('renders the title prop instead of the locale text', () => {
+  it('renders the heading prop instead of the locale text', () => {
     const wrapper = mount(Reasoning, {
-      props: { title: 'Planning' },
+      props: { heading: 'Planning' },
     })
 
     expect(wrapper.find('.pxd-reasoning--title').text()).toBe('Planning')

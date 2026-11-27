@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<TourProps>(), {
 
 const emits = defineEmits<TourEmits>()
 
-const titleId = getUniqueId('pxd-tour-title')
+const headingId = getUniqueId('pxd-tour-heading')
 
 const popoverVisible = shallowRef(false)
 const localCurrent = shallowRef(normalizeCurrent(props.current))
@@ -292,7 +292,7 @@ defineExpose({
     :z-index="zIndex"
     :model-value="modelValue"
     :close-on-press-escape="false"
-    :close-on-click-overlay="false"
+    :close-on-outside-click="false"
   >
     <div
       v-if="modelValue"
@@ -314,8 +314,8 @@ defineExpose({
         :close-on-outside-click="false"
         :close-on-invisible="false"
         :close-on-press-escape="false"
-        :aria-labelledby="activeStep?.title ? titleId : undefined"
-        :auto-focus-element="true"
+        :aria-labelledby="activeStep?.heading ? headingId : undefined"
+        initial-focus
         :wrapper-class="isCentered ? 'pxd-tour--popover-centered' : undefined"
         :z-index="zIndex + 1"
         class="pxd-tour--popover pointer-events-auto"
@@ -328,8 +328,8 @@ defineExpose({
         />
 
         <template #content>
-          <h4 v-if="activeStep?.title" :id="titleId" class="font-medium m-0 text-[0.9375rem]">
-            {{ activeStep.title }}
+          <h4 v-if="activeStep?.heading" :id="headingId" class="font-medium m-0 text-[0.9375rem]">
+            {{ activeStep.heading }}
           </h4>
 
           <p v-if="activeStep?.description" class="text-sm m-0 text-foreground-secondary">
@@ -374,8 +374,6 @@ defineExpose({
 }
 
 .pxd-popover--wrapper.pxd-tour--popover-centered {
-  /* Centered by the stylesheet, not by the engine's placement, so the space the engine measured
-     for a side-anchored panel says nothing about this one. */
   max-height: var(--popover-max-height) !important;
   top: 50% !important;
   left: 50% !important;

@@ -25,20 +25,12 @@ export interface SwipeCellProps {
   as?: ComponentAs
   disabled?: boolean
   modelValue?: SwipeCellSide | false
-  threshold?: number
-  /**
-   * Finger-travel ratio of action width needed to emit `over-swipe`.
-   * Visual offset stays clamped to the action width.
-   * @default 1.68
-   */
-  overSwipeThreshold?: number
+  thresholdRate?: number
+  overSwipeRate?: number
   closeOnOverSwipe?: boolean
   closeOnClick?: boolean
-  /** @default true */
   exclusive?: boolean
-  /** @default 'default' */
   group?: string
-  /** Return false to prevent close; while open also blocks starting a swipe. */
   beforeClose?: SwipeCellBeforeClose
   contentClass?: ComponentClass
   prefixClass?: ComponentClass

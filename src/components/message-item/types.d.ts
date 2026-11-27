@@ -1,7 +1,7 @@
 import type { MessageItemConfig } from '../../composables/use-message'
 
 export interface MessageItemProps {
-  max: number
+  maxCount: number
   index: number
   offset?: number
   itemData: MessageItemConfig

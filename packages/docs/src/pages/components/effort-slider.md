@@ -21,7 +21,7 @@ const value = ref('medium')
 <template>
   <PStack direction="vertical" gap="3">
     <PEffortSlider v-model="value" :options="options" style="width: 240px;" />
-    <PText secondary>{{ value }}</PText>
+    <PText variant="secondary">{{ value }}</PText>
   </PStack>
 </template>
 ```

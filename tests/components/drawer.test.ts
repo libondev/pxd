@@ -24,46 +24,46 @@ describe('drawer', () => {
     wrapper.unmount()
   })
 
-  it('should default position to right', () => {
+  it('should default side to right', () => {
     const wrapper = mount(Drawer)
 
-    expect(wrapper.props('position')).toBe('right')
+    expect(wrapper.props('side')).toBe('right')
 
     wrapper.unmount()
   })
 
-  it('should accept custom position', () => {
+  it('should accept custom side', () => {
     const wrapper = mount(Drawer, {
       props: {
-        position: 'left',
+        side: 'left',
       },
     })
 
-    expect(wrapper.props('position')).toBe('left')
+    expect(wrapper.props('side')).toBe('left')
 
     wrapper.unmount()
   })
 
-  it('should accept title prop', () => {
+  it('should accept heading prop', () => {
     const wrapper = mount(Drawer, {
       props: {
-        title: 'Drawer Title',
+        heading: 'Drawer Title',
       },
     })
 
-    expect(wrapper.props('title')).toBe('Drawer Title')
+    expect(wrapper.props('heading')).toBe('Drawer Title')
 
     wrapper.unmount()
   })
 
-  it('should accept size prop', () => {
+  it('should accept dimension prop', () => {
     const wrapper = mount(Drawer, {
       props: {
-        size: '400px',
+        dimension: '400px',
       },
     })
 
-    expect(wrapper.props('size')).toBe('400px')
+    expect(wrapper.props('dimension')).toBe('400px')
 
     wrapper.unmount()
   })
@@ -76,10 +76,10 @@ describe('drawer', () => {
     wrapper.unmount()
   })
 
-  it('should default closeOnClickOverlay to true', () => {
+  it('should default closeOnOutsideClick to true', () => {
     const wrapper = mount(Drawer)
 
-    expect(wrapper.props('closeOnClickOverlay')).toBe(true)
+    expect(wrapper.props('closeOnOutsideClick')).toBe(true)
 
     wrapper.unmount()
   })
@@ -97,7 +97,7 @@ describe('drawer', () => {
       attachTo: document.body,
       props: {
         modelValue: true,
-        title: 'Drawer Title',
+        heading: 'Drawer Title',
       },
     })
     await nextTick()
@@ -107,7 +107,26 @@ describe('drawer', () => {
     wrapper.unmount()
   })
 
-  it('should keep the header childless without title, subtitle or close button', async () => {
+  it('should render the heading slot inside the default header', async () => {
+    const wrapper = mount(Drawer, {
+      attachTo: document.body,
+      props: {
+        modelValue: true,
+      },
+      slots: {
+        heading: 'Custom heading',
+      },
+    })
+    await nextTick()
+
+    expect(document.body.querySelector('.pxd-drawer--header h3')?.textContent).toContain(
+      'Custom heading',
+    )
+
+    wrapper.unmount()
+  })
+
+  it('should keep the header childless without heading, subtitle or close button', async () => {
     const wrapper = mount(Drawer, {
       attachTo: document.body,
       props: {
@@ -228,7 +247,7 @@ describe('drawer', () => {
       attachTo: document.body,
       props: {
         modelValue: true,
-        position: 'bottom',
+        side: 'bottom',
         swipeToClose: true,
       },
     })
@@ -264,7 +283,7 @@ describe('drawer', () => {
       attachTo: document.body,
       props: {
         modelValue: true,
-        position: 'bottom',
+        side: 'bottom',
       },
     })
     await nextTick()
@@ -279,7 +298,7 @@ describe('drawer', () => {
       attachTo: document.body,
       props: {
         modelValue: true,
-        position: 'right',
+        side: 'right',
         swipeToClose: true,
       },
     })
@@ -297,7 +316,7 @@ describe('drawer', () => {
       attachTo: document.body,
       props: {
         modelValue: true,
-        position: 'bottom',
+        side: 'bottom',
         swipeToClose: true,
         onChange: (_visible: boolean, details: { cancel?: () => void }) => details.cancel?.(),
       },
@@ -339,7 +358,7 @@ describe('drawer', () => {
       attachTo: document.body,
       props: {
         modelValue: true,
-        position: 'bottom',
+        side: 'bottom',
         swipeToClose: true,
         loading: true,
       },

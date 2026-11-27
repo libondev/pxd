@@ -140,7 +140,7 @@ export interface TreeProps {
   searchValue?: string
   defaultSearchValue?: string
   itemClass?: ComponentClass
-  errorText?: ComponentText
+  errorMessage?: ComponentText
 }
 
 export interface TreeEmits {

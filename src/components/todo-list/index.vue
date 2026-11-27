@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import type { ComponentSize } from '../../types/shared/props'
 import type {
-  TodoChangeDetail,
-  TodoEmits,
-  TodoItemKey,
-  TodoOption,
-  TodoProps,
-  TodoStats,
-  TodoStatus,
+  TodoListChangeDetail,
+  TodoListEmits,
+  TodoListItemKey,
+  TodoListOption,
+  TodoListProps,
+  TodoListStats,
+  TodoListStatus,
 } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
@@ -27,15 +27,15 @@ defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<TodoProps>(), {
+const props = withDefaults(defineProps<TodoListProps>(), {
   variant: 'default',
   options: () => [],
   readonly: false,
   expand: true,
 })
-const emits = defineEmits<TodoEmits>()
+const emits = defineEmits<TodoListEmits>()
 
-const MARKER_CLASSES: Record<TodoStatus, string> = {
+const MARKER_CLASSES: Record<TodoListStatus, string> = {
   pending: 'border-2 border-gray-alpha-400',
   in_progress: '',
   completed: 'bg-teal-600 text-white',
@@ -67,20 +67,20 @@ const SIZE_CLASSES: Record<
   },
 }
 
-const NEXT_STATUS: Record<TodoStatus, TodoStatus> = {
+const NEXT_STATUS: Record<TodoListStatus, TodoListStatus> = {
   pending: 'in_progress',
   in_progress: 'completed',
   completed: 'pending',
   canceled: 'pending',
 }
 
-const innerValue = shallowRef<TodoOption[] | undefined>(props.defaultValue)
+const innerValue = shallowRef<TodoListOption[] | undefined>(props.defaultValue)
 const contentRef = shallowRef<HTMLElement>()
 
 const currentOptions = computed(() => props.modelValue ?? innerValue.value ?? props.options)
-const stats = computed<TodoStats>(() => {
+const stats = computed<TodoListStats>(() => {
   const options = currentOptions.value
-  const result: TodoStats = {
+  const result: TodoListStats = {
     pending: 0,
     inProgress: 0,
     completed: 0,
@@ -158,10 +158,10 @@ useAgentNode({
   },
 })
 
-function resolveStatus(item: TodoOption): TodoStatus {
+function resolveStatus(item: TodoListOption): TodoListStatus {
   return item.status ?? 'pending'
 }
-function commit(index: number, status: TodoStatus) {
+function commit(index: number, status: TodoListStatus) {
   const prev = currentOptions.value[index]
 
   if (!prev) {
@@ -174,20 +174,20 @@ function commit(index: number, status: TodoStatus) {
     return
   }
 
-  const item: TodoOption = { ...prev, status }
+  const item: TodoListOption = { ...prev, status }
   const options = currentOptions.value.map((option, i) => (i === index ? item : option))
 
   if (props.modelValue === undefined) {
     innerValue.value = options
   }
 
-  const detail: TodoChangeDetail = { item, index, status, prevStatus, options }
+  const detail: TodoListChangeDetail = { item, index, status, prevStatus, options }
 
   notify(detail, changeDetailsFor({ reason: 'item-press' }))
   emits('update:model-value', options)
 }
 
-function onItemClick(index: number, item: TodoOption) {
+function onItemClick(index: number, item: TodoListOption) {
   if (props.readonly || item.disabled) {
     return
   }
@@ -195,7 +195,7 @@ function onItemClick(index: number, item: TodoOption) {
   commit(index, NEXT_STATUS[resolveStatus(item)])
 }
 
-function resolveIndex(target: TodoItemKey): number {
+function resolveIndex(target: TodoListItemKey): number {
   const byId = currentOptions.value.findIndex((item) => item.id === target)
 
   if (byId > -1) {
@@ -205,7 +205,7 @@ function resolveIndex(target: TodoItemKey): number {
   return typeof target === 'number' ? target : -1
 }
 
-function setStatus(target: TodoItemKey, status: TodoStatus) {
+function setStatus(target: TodoListItemKey, status: TodoListStatus) {
   if (props.readonly) {
     return
   }
@@ -219,19 +219,19 @@ function setStatus(target: TodoItemKey, status: TodoStatus) {
   commit(index, status)
 }
 
-function start(target: TodoItemKey) {
+function start(target: TodoListItemKey) {
   setStatus(target, 'in_progress')
 }
 
-function complete(target: TodoItemKey) {
+function complete(target: TodoListItemKey) {
   setStatus(target, 'completed')
 }
 
-function cancel(target: TodoItemKey) {
+function cancel(target: TodoListItemKey) {
   setStatus(target, 'canceled')
 }
 
-function reset(target: TodoItemKey) {
+function reset(target: TodoListItemKey) {
   setStatus(target, 'pending')
 }
 
@@ -272,9 +272,15 @@ defineExpose({
     >
       <ListUnorderedIcon class="size-em shrink-0" />
 
-      <slot name="header" :expanded="isOpen" :stats="stats" :title="title" :summary="summaryText">
+      <slot
+        name="header"
+        :expanded="isOpen"
+        :stats="stats"
+        :heading="heading"
+        :summary="summaryText"
+      >
         <span class="pxd-todo-list--title min-w-0 truncate">
-          {{ title }}
+          {{ heading }}
         </span>
 
         <span

@@ -7,7 +7,7 @@ Collapsible card for tool / function call traces with input and output payloads.
 ```vue demo
 <template>
   <PToolCall
-    title="search_flights"
+    heading="search_flights"
     status="completed"
     :input="{
       origin: 'LHR',
@@ -36,7 +36,7 @@ Collapsible card for tool / function call traces with input and output payloads.
 <template>
   <PToolCall
     variant="simple"
-    title="search_flights"
+    heading="search_flights"
     status="completed"
     :input="{ origin: 'LHR', destination: 'SFO' }"
     :output="{ route: 'LHR -> SFO', priceUsd: 742 }"
@@ -52,13 +52,13 @@ Tool results are not always JSON. Plain strings render as-is, and content-block 
 <template>
   <PStack direction="vertical" class="gap-3">
     <PToolCall
-      title="bash"
+      heading="bash"
       status="completed"
       :input="{ command: 'pnpm test', timeout: 30000 }"
       :output="[{ type: 'text', text: '$ pnpm test\n ✓ 8 tests passed\n Done in 2.14s' }]"
     />
     <PToolCall
-      title="bash"
+      heading="bash"
       status="error"
       :input="{ command: 'pnpm build' }"
       :output="'pnpm: command not found\nCommand exited with code 127'"
@@ -72,16 +72,16 @@ Tool results are not always JSON. Plain strings render as-is, and content-block 
 ```vue demo
 <template>
   <PStack direction="vertical" class="gap-3">
-    <PToolCall title="lookup_weather" status="pending" :input="{ city: 'San Francisco' }" />
-    <PToolCall title="lookup_weather" status="running" :input="{ city: 'San Francisco' }" />
+    <PToolCall heading="lookup_weather" status="pending" :input="{ city: 'San Francisco' }" />
+    <PToolCall heading="lookup_weather" status="running" :input="{ city: 'San Francisco' }" />
     <PToolCall
-      title="lookup_weather"
+      heading="lookup_weather"
       status="completed"
       :input="{ city: 'San Francisco' }"
       :output="{ tempC: 18, condition: 'fog' }"
     />
     <PToolCall
-      title="lookup_weather"
+      heading="lookup_weather"
       status="error"
       :input="{ city: 'San Francisco' }"
       :output="{ message: 'Upstream timeout' }"
@@ -94,7 +94,7 @@ Tool results are not always JSON. Plain strings render as-is, and content-block 
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| title | `string` | - | Tool name shown in the header |
+| heading | `string` | - | Tool name shown in the header |
 | variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and trigger padding |
 | status | `'pending' \| 'running' \| 'completed' \| 'error'` | `pending` | Status icon in the header |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes |

@@ -14,9 +14,9 @@ import { ref } from 'vue'
 const current = ref(1)
 
 const options = [
-  { description: 'Review items in your cart', title: 'Cart' },
-  { description: 'Choose a payment method', title: 'Payment' },
-  { description: 'Order confirmed', title: 'Done' },
+  { description: 'Review items in your cart', heading: 'Cart' },
+  { description: 'Choose a payment method', heading: 'Payment' },
+  { description: 'Order confirmed', heading: 'Done' },
 ]
 </script>
 
@@ -36,9 +36,9 @@ import { ref } from 'vue'
 const current = ref(1)
 
 const options = [
-  { description: 'Review items in your cart', title: 'Cart' },
-  { description: 'Choose a payment method', title: 'Payment' },
-  { description: 'Order confirmed', title: 'Done' },
+  { description: 'Review items in your cart', heading: 'Cart' },
+  { description: 'Choose a payment method', heading: 'Payment' },
+  { description: 'Order confirmed', heading: 'Done' },
 ]
 </script>
 
@@ -56,9 +56,9 @@ Without `v-model` the steps keep their own state, and `default-value` picks the 
 import { ref } from 'vue'
 
 const options = [
-  { title: 'Cart' },
-  { title: 'Payment' },
-  { title: 'Done' },
+  { heading: 'Cart' },
+  { heading: 'Payment' },
+  { heading: 'Done' },
 ]
 </script>
 
@@ -78,9 +78,9 @@ import { ref } from 'vue'
 const current = ref(1)
 
 const options = [
-  { description: 'Review items in your cart', title: 'Cart' },
-  { description: 'Choose a payment method', title: 'Payment' },
-  { description: 'Order confirmed', title: 'Done' },
+  { description: 'Review items in your cart', heading: 'Cart' },
+  { description: 'Choose a payment method', heading: 'Payment' },
+  { description: 'Order confirmed', heading: 'Done' },
 ]
 </script>
 
@@ -101,9 +101,9 @@ import { ref } from 'vue'
 const current = ref(1)
 
 const options = [
-  { description: 'Review items in your cart', title: 'Cart' },
-  { description: 'Payment failed, please retry', title: 'Payment' },
-  { description: 'Order confirmed', title: 'Done' },
+  { description: 'Review items in your cart', heading: 'Cart' },
+  { description: 'Payment failed, please retry', heading: 'Payment' },
+  { description: 'Order confirmed', heading: 'Done' },
 ]
 </script>
 
@@ -120,7 +120,7 @@ import { ref } from 'vue'
 
 const current = ref(1)
 
-const options = [{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }]
+const options = [{ heading: 'Cart' }, { heading: 'Payment' }, { heading: 'Done' }]
 </script>
 
 <template>
@@ -143,9 +143,9 @@ import { ref } from 'vue'
 const current = ref(0)
 
 const options = [
-  { title: 'Cart' },
-  { disabled: true, title: 'Payment' },
-  { disabled: true, title: 'Done' },
+  { heading: 'Cart' },
+  { disabled: true, heading: 'Payment' },
+  { disabled: true, heading: 'Done' },
 ]
 </script>
 
@@ -165,13 +165,13 @@ import { ref } from 'vue'
 
 const current = ref(1)
 
-const options = [{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }]
+const options = [{ heading: 'Cart' }, { heading: 'Payment' }, { heading: 'Done' }]
 </script>
 
 <template>
   <PSteps v-model="current" clickable :options="options">
     <template #item="{ item, status }">
-      <strong>{{ item.title }}</strong>
+      <strong>{{ item.heading }}</strong>
       <span class="text-gray-600">({{ status }})</span>
     </template>
   </PSteps>
@@ -188,7 +188,7 @@ const options = [{ title: 'Cart' }, { title: 'Payment' }, { title: 'Done' }]
 | status | `'process' \| 'finish' \| 'error' \| 'wait'` | `'process'` | Status of the current step. |
 | size | `'sm' \| 'md' \| 'lg'` | `configProvider.size` | Size of indicators and text. |
 | clickable | `boolean` | `false` | Allow switching steps by clicking. |
-| options | `StepsOption[]` | `[]` | Steps to render; each entry is `{ title?, description?, status?, disabled? }`. |
+| options | `StepsOption[]` | `[]` | Steps to render; each entry is `{ heading?, description?, status?, disabled? }`. |
 
 ## Events
 

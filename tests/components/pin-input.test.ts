@@ -57,14 +57,14 @@ describe('pin-input', () => {
     wrapper.unmount()
   })
 
-  it('should accept type prop', () => {
+  it('should accept mode prop', () => {
     const wrapper = mount(PinInput, {
       props: {
-        type: 'alphanumeric',
+        mode: 'alphanumeric',
       },
     })
 
-    expect(wrapper.props('type')).toBe('alphanumeric')
+    expect(wrapper.props('mode')).toBe('alphanumeric')
 
     wrapper.unmount()
   })

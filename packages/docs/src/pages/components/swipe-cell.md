@@ -114,7 +114,7 @@ By default, opening one cell closes other cells in the same `group` (default `"d
 
 ## Over Swipe
 
-Offset is hard-clamped to the action width. Releasing at full open (`over-swipe-threshold`, default `1.68`) emits `over-swipe`. Slot props `progress` / `overSwipe` follow the same ratio.
+Offset is hard-clamped to the action width. Releasing at full open (`over-swipe-rate`, default `1.68`) emits `over-swipe`. Slot props `progress` / `overSwipe` follow the same ratio.
 
 ```vue demo
 <script setup>
@@ -229,8 +229,8 @@ async function beforeClose() {
 | as | `string \| object` | `div` | Tag or component rendered as the root element |
 | disabled | `boolean` | - | Disable swipe gestures and click-to-close. |
 | model-value | `'prefix' \| 'suffix' \| false` | `false` | Controlled open side. |
-| threshold | `number` | `0.5` | Minimum ratio of action slot width needed to keep the cell open after release. |
-| over-swipe-threshold | `number` | `1.68` | Finger-travel ratio of action width needed to emit `over-swipe` (visual offset stays clamped). |
+| threshold-rate | `number` | `0.5` | Minimum ratio of action slot width needed to keep the cell open after release. |
+| over-swipe-rate | `number` | `1.68` | Finger-travel ratio of action width needed to emit `over-swipe` (visual offset stays clamped). |
 | close-on-over-swipe | `boolean` | `false` | Close the cell after `over-swipe` is emitted. |
 | close-on-click | `boolean` | `true` | Close the cell when clicking the content while it is open. |
 | exclusive | `boolean` | `true` | Close other cells in the same `group` when this one opens. |
@@ -246,7 +246,7 @@ async function beforeClose() {
 | --- | --- | --- |
 | open | `(side: 'prefix' \| 'suffix') => void` | Emitted when the cell opens. |
 | close | `() => void` | Emitted when the cell closes. |
-| over-swipe | `(state: SwipeCellOverSwipeState) => void` | Emitted after release when drag distance reaches the over-swipe threshold. |
+| over-swipe | `(state: SwipeCellOverSwipeState) => void` | Emitted after release when drag distance reaches the over-swipe rate. |
 | update:model-value | `(side: 'prefix' \| 'suffix' \| false) => void` | Emitted when the open state changes. |
 
 ## Slots

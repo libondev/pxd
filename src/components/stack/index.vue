@@ -71,9 +71,6 @@ const { attrs, classes: variantClasses } = useTailwindVariant(
         start: 'items-start',
         end: 'items-end',
         center: 'items-center',
-        between: 'items-between',
-        around: 'items-around',
-        evenly: 'items-evenly',
         stretch: 'items-stretch',
       },
       justify: {

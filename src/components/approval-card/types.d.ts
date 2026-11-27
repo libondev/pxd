@@ -15,7 +15,7 @@ export interface ApprovalResult {
 
 export interface ApprovalCardProps {
   modelValue?: ApprovalStatus
-  title?: ComponentText
+  heading?: ComponentText
   description?: ComponentText
   command?: string | string[]
   variant?: ComponentVariant

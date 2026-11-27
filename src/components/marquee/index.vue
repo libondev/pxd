@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<MarqueeProps>(), {
   text: '',
   color: 'var(--color-amber-900)',
   background: 'var(--color-amber-100)',
-  delay: 1,
+  delay: 1000,
   speed: 60,
   wrapable: false,
   scrollable: true,
@@ -40,7 +40,7 @@ const contentRef = shallowRef<HTMLElement>()
 
 const phase = shallowRef<'idle' | 'first' | 'loop'>('idle')
 const contentStyle = shallowRef<Record<string, string>>()
-const delaySec = computed(() => toDelay(props.delay))
+const delayMs = computed(() => toDelay(props.delay))
 const speed = computed(() => toSpeed(props.speed))
 
 const isWrapMode = computed(() => props.wrapable && props.scrollable === false)
@@ -68,12 +68,12 @@ const minHeightClass = computed(() => BASIC_MIN_HEIGHTS[configProvider.size])
 
 useResizeObserver(wrapRef, scheduleSync)
 
-function toDelay(value: number | string | undefined) {
+function toDelay(value: number | undefined) {
   const n = Number(value)
-  return Number.isFinite(n) && n >= 0 ? n : 1
+  return Number.isFinite(n) && n >= 0 ? n : 1000
 }
 
-function toSpeed(value: number | string | undefined) {
+function toSpeed(value: number | undefined) {
   const n = Number(value)
   return Number.isFinite(n) && n > 0 ? n : 60
 }
@@ -100,7 +100,7 @@ function buildStyle(nextWrap: number, nextContent: number, nextSpeed: number, ne
     '--marquee-to': `${-nextContent}px`,
     '--marquee-first-duration': `${nextContent / nextSpeed}s`,
     '--marquee-duration': `${(nextContent + nextWrap) / nextSpeed}s`,
-    '--marquee-delay': `${nextDelay}s`,
+    '--marquee-delay': `${nextDelay}ms`,
   }
 }
 
@@ -133,7 +133,7 @@ function syncScroll(force = false) {
   const nextWrap = wrap.clientWidth
   const nextContent = content.scrollWidth
   const nextSpeed = speed.value
-  const nextDelay = delaySec.value
+  const nextDelay = delayMs.value
 
   if (!nextWrap || !nextContent) {
     return
@@ -199,7 +199,7 @@ function onAnimationIteration(event: AnimationEvent) {
   emits('replay')
 }
 
-watch(() => [props.scrollable, props.wrapable, props.text, delaySec.value, speed.value], reset)
+watch(() => [props.scrollable, props.wrapable, props.text, delayMs.value, speed.value], reset)
 
 onMounted(reset)
 onBeforeUnmount(() => {

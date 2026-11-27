@@ -23,8 +23,8 @@ defineOptions({
 const props = withDefaults(defineProps<SwipeCellProps>(), {
   as: 'div',
   modelValue: false,
-  threshold: 0.5,
-  overSwipeThreshold: 1.68,
+  thresholdRate: 0.5,
+  overSwipeRate: 1.68,
   closeOnOverSwipe: false,
   closeOnClick: true,
   exclusive: true,
@@ -215,7 +215,7 @@ function syncSlots() {
     const state = side === 'prefix' ? prefixSlotState : suffixSlotState
     const width = side === 'prefix' ? prefixWidth.value : suffixWidth.value
     const distance = Math.max(0, Math.round(side === 'prefix' ? trackOffset : -trackOffset))
-    const trigger = width * props.overSwipeThreshold
+    const trigger = width * props.overSwipeRate
     const progress = trigger > 0 ? Math.round(Math.min(distance / trigger, 1) * 100) / 100 : 0
     const overSwipe = trigger > 0 && distance >= trigger
     const active = distance > 0
@@ -345,7 +345,7 @@ async function releaseSwipe(velocity = 0) {
   const width = side === 'prefix' ? prefixWidth.value : side === 'suffix' ? suffixWidth.value : 0
   const distance = Math.abs(trackOffset)
 
-  if (side && width > 0 && distance >= width * props.overSwipeThreshold) {
+  if (side && width > 0 && distance >= width * props.overSwipeRate) {
     emits('over-swipe', {
       side,
       distance,
@@ -363,7 +363,7 @@ async function releaseSwipe(velocity = 0) {
   // Velocity is signed along the horizontal axis; only motion toward this side counts.
   const velocityTowardSide = side === 'prefix' ? velocity : -velocity
   const flung = velocityTowardSide >= 0.3
-  const next = side && width > 0 && (reveal >= width * props.threshold || flung) ? side : false
+  const next = side && width > 0 && (reveal >= width * props.thresholdRate || flung) ? side : false
 
   if (!next && openedSide.value) {
     await setOpen(false, openedSide.value)

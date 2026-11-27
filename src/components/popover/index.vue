@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<PopoverProps>(), {
   destroyDelay: 3000,
   toggleOnTrigger: true,
   closeOnInvisible: true,
-  autoFocusElement: false,
+  initialFocus: false,
   closeOnPressEscape: true,
   closeOnOutsideClick: true,
   returnFocusOnDeactivate: true,
@@ -110,7 +110,7 @@ const engine = usePopupEngine({
   contentRole: () => props.contentRole,
   ariaTarget: () => props.ariaTarget,
   toggleOnTrigger: () => props.toggleOnTrigger,
-  autoFocusElement: () => props.autoFocusElement,
+  initialFocus: () => props.initialFocus,
   matchReferenceWidth: () => props.matchWidth,
   stableHeight: () => props.keepHeight,
   closeOnInvisible: () => props.closeOnInvisible,
@@ -158,11 +158,11 @@ const triggerProps = computed(() =>
 
 useFocusTrap(engine.focusTrapContainer, () => {
   const options = {
-    autoFocusElement: props.autoFocusElement,
+    initialFocus: props.initialFocus,
     returnFocusOnDeactivate: props.returnFocusOnDeactivate,
   }
 
-  return isTruthyProp(props.autoFocusElement) ? options : { ...options, initialFocus: false }
+  return isTruthyProp(props.initialFocus) ? options : { ...options, initialFocus: false }
 })
 
 function setTriggerElement(element: Element | ComponentPublicInstance | null) {

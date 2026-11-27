@@ -52,14 +52,14 @@ describe('ellipsis-text', () => {
     wrapper.unmount()
   })
 
-  it('should default position to end', () => {
+  it('should default ellipsisPosition to end', () => {
     const wrapper = mount(EllipsisText, {
       props: {
         text: 'Text',
       },
     })
 
-    expect(wrapper.props('position')).toBe('end')
+    expect(wrapper.props('ellipsisPosition')).toBe('end')
 
     wrapper.unmount()
   })

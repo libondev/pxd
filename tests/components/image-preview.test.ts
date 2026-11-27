@@ -95,12 +95,12 @@ describe('image-preview', () => {
     wrapper.unmount()
   })
 
-  it('defaults index, closeOnPressEscape and closeOnClickOverlay', () => {
+  it('defaults index, closeOnPressEscape and closeOnOutsideClick', () => {
     const wrapper = mountImagePreview()
 
     expect(wrapper.props('index')).toBe(0)
     expect(wrapper.props('closeOnPressEscape')).toBe(true)
-    expect(wrapper.props('closeOnClickOverlay')).toBe(true)
+    expect(wrapper.props('closeOnOutsideClick')).toBe(true)
 
     wrapper.unmount()
   })
@@ -130,10 +130,10 @@ describe('image-preview', () => {
     wrapper.unmount()
   })
 
-  it('renders only the viewer with the viewer variant', async () => {
-    const wrapper = mountImagePreview({ variant: 'viewer' })
+  it('renders only the viewer in viewer mode', async () => {
+    const wrapper = mountImagePreview({ mode: 'viewer' })
 
-    expect(wrapper.props('variant')).toBe('viewer')
+    expect(wrapper.props('mode')).toBe('viewer')
     expect(wrapper.findAll('button')).toHaveLength(0)
 
     ;(wrapper.vm as unknown as { open: (index: number) => void }).open(2)
@@ -145,11 +145,11 @@ describe('image-preview', () => {
     wrapper.unmount()
   })
 
-  it('loads sources on demand with the viewer variant', async () => {
+  it('loads sources on demand in viewer mode', async () => {
     const first = vi.fn().mockResolvedValue('https://example.com/one.jpg')
     const second = vi.fn().mockResolvedValue('https://example.com/two.jpg')
     const wrapper = mountImagePreview({
-      variant: 'viewer',
+      mode: 'viewer',
       data: [{ src: first }, { src: second }],
     })
 
@@ -271,7 +271,7 @@ describe('image-preview', () => {
   })
 
   it('keeps the preview open on a backdrop click when disabled', async () => {
-    const wrapper = mountImagePreview({ closeOnClickOverlay: false })
+    const wrapper = mountImagePreview({ closeOnOutsideClick: false })
 
     await openPreview(wrapper)
 

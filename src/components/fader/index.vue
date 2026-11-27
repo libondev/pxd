@@ -15,7 +15,7 @@ defineOptions({
 const props = withDefaults(defineProps<FaderProps>(), {
   direction: 'both',
   threshold: 16,
-  size: 24,
+  dimension: 24,
 })
 
 const FADER_ITEM_BASE =
@@ -29,7 +29,7 @@ const observedContent = shallowRef<HTMLElement[]>([])
 
 const computedStyle = computed(() => ({
   '--fader-color': props.color,
-  '--fader-size': getCssUnitValue(props.size),
+  '--fader-dimension': getCssUnitValue(props.dimension),
 }))
 
 const formattedContainer = computed(() => getElement(props.scrollTarget))
@@ -41,12 +41,12 @@ const updateFaders = throttleByRaf(() => {
     return
   }
 
-  const { size, threshold } = props
+  const { dimension, threshold } = props
   const { scrollLeft, scrollWidth, clientWidth, scrollTop, clientHeight, scrollHeight } = container
 
-  showLeft.value = scrollLeft >= size
+  showLeft.value = scrollLeft >= dimension
   showRight.value = scrollLeft + clientWidth < scrollWidth - threshold
-  showTop.value = scrollTop >= size
+  showTop.value = scrollTop >= dimension
   showBottom.value = scrollTop + clientHeight < scrollHeight - threshold
 })
 
@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
 
 <style lang="postcss">
 .pxd-fader {
-  --fader-feather: calc(var(--fader-size, 1.5rem) * 0.5);
+  --fader-feather: calc(var(--fader-dimension, 1.5rem) * 0.5);
 }
 
 .pxd-fader--item::before,
@@ -133,7 +133,7 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   border-radius: inherit;
-  background: var(--fader-color);
+  background: var(--fader-color, var(--color-background-100));
   mask-image: linear-gradient(
     var(--dir),
     black,
@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
   &::before,
   &::after {
     top: 0;
-    width: var(--fader-size, 1.5rem);
+    width: var(--fader-dimension, 1.5rem);
     height: 100%;
   }
 
@@ -205,7 +205,7 @@ onBeforeUnmount(() => {
   &::after {
     left: 0;
     width: 100%;
-    height: var(--fader-size, 1.5rem);
+    height: var(--fader-dimension, 1.5rem);
   }
 
   &::before {

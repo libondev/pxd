@@ -15,7 +15,7 @@ function handleConfirm() {
 
 <template>
   <PConfirmPopover
-    title="Delete this file?"
+    heading="Delete this file?"
     description="This action cannot be undone."
     @confirm="handleConfirm"
   >
@@ -29,7 +29,7 @@ function handleConfirm() {
 ```vue demo
 <template>
   <PConfirmPopover
-    title="Delete 12 items?"
+    heading="Delete 12 items?"
     description="Every selected item will be removed."
     confirm-variant="error"
     confirm-text="Delete"
@@ -57,7 +57,7 @@ function handleConfirm() {
 
 <template>
   <PConfirmPopover
-    title="Delete this file?"
+    heading="Delete this file?"
     :before-confirm="deleteItem"
     @confirm="handleConfirm"
   >
@@ -72,7 +72,7 @@ Replace the buttons with the `actions` slot — for example a hold button that o
 
 ```vue demo
 <template>
-  <PConfirmPopover title="Hold to delete">
+  <PConfirmPopover heading="Hold to delete">
     <PButton variant="error">Delete</PButton>
 
     <template #actions="{ confirm }">
@@ -129,7 +129,7 @@ Replace the buttons with the `actions` slot — for example a hold button that o
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | model-value | `boolean` | - | Controlled visibility; omit it to let the component track visibility on its own |
-| title | `string` | - | Title rendered above the description, also used as the dialog label |
+| heading | `string` | - | Heading rendered above the description, also used as the dialog label |
 | description | `string` | - | Secondary line rendered between the title and the actions |
 | confirm-text | `string` | - | Label of the confirm button, defaulting to `locale.interaction.confirm` |
 | cancel-text | `string` | - | Label of the cancel button, defaulting to `locale.interaction.cancel` |

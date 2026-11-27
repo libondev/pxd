@@ -5,7 +5,7 @@ export interface VirtualListProps extends Omit<VirtualListOptions, 'enabled'> {
   enabled?: boolean
   listClass?: ComponentClass
   itemClass?: ComponentClass
-  errorText?: ComponentText
+  errorMessage?: ComponentText
   loadingText?: ComponentText
   finishedText?: ComponentText
 }

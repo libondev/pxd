@@ -50,7 +50,7 @@ function onClickToClose() {
 | variant | `'default' \| 'blurred' \| 'none'` | - | Backdrop treatment; `blurred` adds a backdrop blur, `none` renders no backdrop at all so only the slotted content is placed |
 | model-value | `boolean` | `false` | Whether the overlay is visible |
 | close-on-press-escape | `boolean` | `true` | Close the overlay when `Esc` is pressed |
-| close-on-click-overlay | `boolean` | `false` | Close the overlay when the backdrop is clicked |
+| close-on-outside-click | `boolean` | `false` | Close the overlay when the backdrop is clicked |
 | lock-scroll-on-visible | `boolean` | `true` | Prevent the page behind the overlay from scrolling |
 | to | `string \| HTMLElement` | `'body'` | Element the backdrop and slotted content are teleported into; a top-layer `<dialog>` opened from inside needs its overlays teleported into itself |
 
@@ -60,7 +60,7 @@ function onClickToClose() {
 | --- | --- | --- |
 | click | `(event: PointerEvent) => void` | Emitted when the backdrop is clicked. |
 | escape | `(event: KeyboardEvent) => void` | Emitted when Escape reaches this overlay: either it is the topmost one, or every overlay above it left the event unconsumed. Call `event.preventDefault()` to keep the overlay open. |
-| update:model-value | `(value: boolean) => void` | Emitted with `false` after Escape unless the `escape` handler prevented it, or after a backdrop click when `close-on-click-overlay` is set. |
+| update:model-value | `(value: boolean) => void` | Emitted with `false` after Escape unless the `escape` handler prevented it, or after a backdrop click when `close-on-outside-click` is set. |
 
 ## Slots
 

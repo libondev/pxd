@@ -109,4 +109,4 @@ function increase() {
 | minimum | `number` | `0.08` | Progress ratio the bar starts from, `0.08` means 8% |
 | trickle | `boolean` | `true` | Auto-increase progress with a shrinking step, capped at 99.4% |
 | hide-delay | `number` | `500` | Delay in `ms` before hiding after `finish` or `error` |
-| trickle-threshold | `number` | `300` | Minimum `ms` between two automatic progress steps |
+| trickle-interval | `number` | `300` | Minimum `ms` between two automatic progress steps |

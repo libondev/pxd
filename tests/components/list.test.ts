@@ -60,6 +60,25 @@ describe('list', () => {
     wrapper.unmount()
   })
 
+  it('should render errorMessage when failed', async () => {
+    const wrapper = mount(List, {
+      props: {
+        failed: true,
+        errorMessage: 'Load failed',
+      },
+    })
+
+    const error = wrapper.find('.pxd-list--error')
+
+    expect(error.text()).toContain('Load failed')
+
+    await error.trigger('click')
+
+    expect(wrapper.emitted('retry')).toHaveLength(1)
+
+    wrapper.unmount()
+  })
+
   it('should render grouped options from prop', () => {
     const wrapper = mount(List, {
       props: {

@@ -20,26 +20,26 @@ describe('status-dot', () => {
   it('should render different colors for different states', async () => {
     const wrapper = mount(StatusDot)
 
-    await wrapper.setProps({ state: 'READY' })
+    await wrapper.setProps({ status: 'READY' })
     expect(wrapper.find('i').classes()).toContain('is-ready')
 
-    await wrapper.setProps({ state: 'ERROR' })
+    await wrapper.setProps({ status: 'ERROR' })
     expect(wrapper.find('i').classes()).toContain('is-error')
 
-    await wrapper.setProps({ state: 'BUILDING' })
+    await wrapper.setProps({ status: 'BUILDING' })
     expect(wrapper.find('i').classes()).toContain('is-building')
 
-    await wrapper.setProps({ state: 'CANCELED' })
+    await wrapper.setProps({ status: 'CANCELED' })
     expect(wrapper.find('i').classes()).toContain('is-canceled')
 
     wrapper.unmount()
   })
 
-  it('should render uppercase state text when label is true', async () => {
+  it('should render uppercase status text when showLabel is true', async () => {
     const wrapper = mount(StatusDot, {
       props: {
-        label: true,
-        state: 'ERROR',
+        showLabel: true,
+        status: 'ERROR',
       },
     })
 
@@ -56,7 +56,7 @@ describe('status-dot', () => {
     const wrapper = mount(StatusDot, {
       props: {
         label: customLabel,
-        state: 'READY',
+        status: 'READY',
       },
     })
 
@@ -68,17 +68,31 @@ describe('status-dot', () => {
     wrapper.unmount()
   })
 
-  it('should return the uppercase text when state changes', async () => {
+  it('should fall back to the status text when label is empty', () => {
     const wrapper = mount(StatusDot, {
       props: {
-        label: true,
-        state: 'QUEUED',
+        label: '',
+        showLabel: true,
+        status: 'READY',
+      },
+    })
+
+    expect(wrapper.find('span span').text()).toBe('Ready')
+
+    wrapper.unmount()
+  })
+
+  it('should return the uppercase text when status changes', async () => {
+    const wrapper = mount(StatusDot, {
+      props: {
+        showLabel: true,
+        status: 'QUEUED',
       },
     })
 
     expect(wrapper.find('span span').text()).toBe('Queued')
 
-    await wrapper.setProps({ state: 'BUILDING' })
+    await wrapper.setProps({ status: 'BUILDING' })
     expect(wrapper.find('span span').text()).toBe('Building')
 
     wrapper.unmount()

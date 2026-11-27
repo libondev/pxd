@@ -16,7 +16,7 @@ setTimeout(() => {
 </script>
 
 <template>
-  <PReasoning :streaming="streaming" :title="streaming ? 'Thinking...' : 'Thought'">
+  <PReasoning :streaming="streaming" :heading="streaming ? 'Thinking...' : 'Thought'">
     <div v-for="i in 5" :key="i">
       <p>This is a reasoning component. {{ i }}</p>
     </div>
@@ -28,7 +28,7 @@ setTimeout(() => {
 
 ```vue demo
 <template>
-  <PReasoning variant="simple" :expand="false" title="Thought">
+  <PReasoning variant="simple" :expand="false" heading="Thought">
     <div v-for="i in 5" :key="i">
       <p>This is a reasoning component. {{ i }}</p>
     </div>
@@ -43,7 +43,7 @@ setTimeout(() => {
 | variant | `'default' \| 'simple'` | `default` | `simple` drops the card background, border and trigger padding |
 | streaming | `boolean` | `true` | Streaming state; drives the shimmer |
 | expand | `boolean` | `true` | Expanded state, applied whenever the value changes |
-| title | `ComponentText` | - | Title text |
+| heading | `ComponentText` | - | Heading text |
 | shimmerVariant | `'sunrise' \| 'bubble' \| 'tonic' \| 'spring' \| 'twilight'` | - | Gradient preset forwarded to the inner Shimmer Text while streaming |
 
 ## Slots

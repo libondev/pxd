@@ -52,8 +52,8 @@ export interface ListProps {
   itemClass?: ComponentClass
   defaultActiveIndex?: number
   loading?: boolean
-  error?: boolean
-  errorText?: ComponentText
+  failed?: boolean
+  errorMessage?: ComponentText
   virtual?: boolean
   itemSize?: number
   overScan?: number

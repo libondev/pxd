@@ -5,7 +5,7 @@ import { clampValue } from '../../utils/format.js'
 
 const ENABLE_TRANSITION_DELAY = 0
 const DEFAULT_HIDE_DELAY = 500
-const DEFAULT_TRICKLE_THRESHOLD = 200
+const DEFAULT_TRICKLE_INTERVAL = 200
 const DEFAULT_MINIMUM = 0.08
 const MAX_TRICKLE_PROGRESS = 0.994
 
@@ -14,7 +14,7 @@ export type LoadingBarProgressStatus = 'running' | 'finish' | 'error'
 export interface LoadingBarProgressOptions {
   minimum?: MaybeRefOrGetter<number | undefined>
   trickle?: MaybeRefOrGetter<boolean | undefined>
-  trickleThreshold?: MaybeRefOrGetter<number | undefined>
+  trickleInterval?: MaybeRefOrGetter<number | undefined>
   hideDelay?: MaybeRefOrGetter<number | undefined>
 }
 
@@ -75,9 +75,9 @@ export function useLoadingBarProgress(options: LoadingBarProgressOptions = {}): 
 
     const now = performance.now()
     const delta = now - prevTimestamp
-    const threshold = toValue(options.trickleThreshold) || DEFAULT_TRICKLE_THRESHOLD
+    const interval = toValue(options.trickleInterval) || DEFAULT_TRICKLE_INTERVAL
 
-    if (delta < threshold && isTrickling()) {
+    if (delta < interval && isTrickling()) {
       animationId = raf(() => increase())
 
       return

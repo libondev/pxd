@@ -71,7 +71,11 @@ describe('form-item', () => {
 
   it('renders a manual error and marks the control invalid', () => {
     const model = reactive({ email: '' })
-    const wrapper = mountItem({ label: 'Email', error: 'Bad email' }, model, inputSlot(model))
+    const wrapper = mountItem(
+      { label: 'Email', errorMessage: 'Bad email' },
+      model,
+      inputSlot(model),
+    )
 
     expect(wrapper.text()).toContain('Bad email')
     expect(wrapper.find('[data-form-item]').attributes('data-invalid')).toBe('true')
@@ -293,7 +297,7 @@ describe('form-item', () => {
   it('works without a form and still marks the control', () => {
     const model = reactive({ email: '' })
     const wrapper = mount(PFormItem, {
-      props: { label: 'Email', error: 'Bad email' },
+      props: { label: 'Email', errorMessage: 'Bad email' },
       slots: { default: inputSlot(model) },
     })
 

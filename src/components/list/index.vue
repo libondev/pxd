@@ -42,8 +42,8 @@ const props = withDefaults(defineProps<ListProps>(), {
   virtual: false,
   itemSize: 36,
   overScan: 4,
-  error: false,
-  errorText: 'Request failed. Click to reload',
+  failed: false,
+  errorMessage: 'Request failed. Click to reload',
 })
 
 const emits = defineEmits<ListEmits>()
@@ -390,12 +390,12 @@ defineExpose({
 
     <PLoadingMask v-if="loading" />
     <p
-      v-else-if="error"
+      v-else-if="failed"
       role="alert"
       class="pxd-list--error py-6.5 m-0 text-sm cursor-pointer text-center text-foreground-secondary hover:text-foreground motion-safe:transition-colors"
       @click="emits('retry')"
     >
-      <slot name="error">{{ errorText }}</slot>
+      <slot name="error-message">{{ errorMessage }}</slot>
     </p>
     <p
       v-else-if="!rows.length"

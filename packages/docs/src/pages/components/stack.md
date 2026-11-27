@@ -65,8 +65,8 @@ Resize the window to observe changes to the layout.
 | gap | `string \| Responsive \| number` | - | Gap units multiplied by `scale`; accepts a responsive object per breakpoint |
 | wrap | `boolean` | `true` | Allow children to wrap onto multiple lines |
 | scale | `number` | `4` | Pixels per gap unit, the default `4` gives a `4px` grid |
-| align | `Align` | `start` | Cross-axis alignment: `start`, `end`, `center`, `between`, `around`, `evenly`, `stretch` |
-| justify | `Align` | `start` | Main-axis alignment, the same values as `align` |
+| align | `'start' \| 'end' \| 'center' \| 'stretch'` | `start` | Cross-axis alignment |
+| justify | `'start' \| 'end' \| 'center' \| 'between' \| 'around' \| 'evenly' \| 'stretch'` | `start` | Main-axis alignment |
 | direction | `'horizontal' \| 'vertical' \| Responsive` | - | Layout direction, defaults to `horizontal`; accepts a responsive object |
 
 ## Slots

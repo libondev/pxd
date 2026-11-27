@@ -18,7 +18,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<MessageProps>(), {
-  max: 3,
+  maxCount: 3,
   group: 'default',
   position: 'top',
 })
@@ -162,7 +162,7 @@ function handleCreateMessage(data: MessageItemConfig) {
 
   // If it's a loading type with promise, don't start auto-close timer
   // Wait for promise to resolve/reject first
-  const isPromiseLoading = data.type === 'loading' && data.promise
+  const isPromiseLoading = data.variant === 'loading' && data.promise
 
   // Make sure the data has been converted to responsive
   // to avoid changing the type from not taking effect.
@@ -246,7 +246,7 @@ defineExpose({
         <PMessageItem
           v-for="(item, index) of groupMessages"
           :key="item.id"
-          :max="max"
+          :max-count="maxCount"
           :index="index"
           :offset="itemOffsets[index] ?? 0"
           :item-data="item"

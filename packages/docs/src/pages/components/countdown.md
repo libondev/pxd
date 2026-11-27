@@ -162,32 +162,6 @@ function resetStatus() {
 </template>
 ```
 
-## Seconds timestamp
-
-Passing in a target time will automatically calculate the remaining time.
-
-```vue demo
-<script setup>
-import { shallowRef } from 'vue'
-
-const active = shallowRef(false)
-
-const endTime = 3600 // 3600 seconds(1 hour)
-
-function resetStatus() {
-  active.value = false
-}
-</script>
-
-<template>
-  <PStack direction="vertical">
-    <PToggle v-model="active" label="Active" />
-
-    <PCountdown :enabled="active" :millisecond="false" :duration="endTime" @finish="resetStatus" />
-  </PStack>
-</template>
-```
-
 ## StartAt
 
 Specifies when to start, and is often used to resume timing from an interrupted timer.
@@ -216,7 +190,7 @@ function resetStatus() {
     />
 
     <PCountdown
-      inverted
+      count-up
       :enabled="active"
       :start-at="3000"
       format="HH:mm:ss.SSS"
@@ -227,9 +201,9 @@ function resetStatus() {
 </template>
 ```
 
-## Invert
+## Count up
 
-Setting the `inverted` property can be converted into positive timing, and the `duration` passed in is the end time. If it is not set, it will not stop automatically.
+Setting `count-up` makes the timer count up. `duration` is the end value in milliseconds; without it, the timer counts up indefinitely.
 
 ```vue demo
 <script setup>
@@ -246,10 +220,10 @@ function resetStatus() {
   <PStack direction="vertical">
     <PToggle v-model="active" label="Active" />
 
-    <PCountdown inverted :enabled="active" :duration="5000" @finish="resetStatus" />
+    <PCountdown count-up :enabled="active" :duration="5000" @finish="resetStatus" />
 
     <!-- timers without duration will not stop voluntarily -->
-    <PCountdown inverted :enabled="active" :start-at="3000" />
+    <PCountdown count-up :enabled="active" :start-at="3000" />
   </PStack>
 </template>
 ```
@@ -296,12 +270,11 @@ const active = ref(false)
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | enabled | `boolean` | `false` | Start the timer; switching it off pauses, switching it back on resumes |
-| inverted | `boolean` | `false` | Count up instead of down |
-| startAt | `number` | - | Time already elapsed when the timer starts; in count-up mode the starting value |
-| endTime | `number` | `0` | Absolute end timestamp; takes precedence over `duration` |
-| duration | `number` | `0` | Timer length; in count-up mode `0` counts up indefinitely |
+| count-up | `boolean` | `false` | Count up instead of down |
+| startAt | `number` | - | Time already elapsed in milliseconds when the timer starts; in count-up mode the starting value |
+| endTime | `number` | `0` | Absolute end timestamp in milliseconds; takes precedence over `duration` |
+| duration | `number` | `0` | Timer length in milliseconds; in count-up mode `0` counts up indefinitely |
 | autoReset | `boolean` | `true` | Restart from the initial time when `enabled` turns on after `finish` |
-| millisecond | `boolean` | `true` | Interpret `startAt`, `endTime` and `duration` as milliseconds; `false` means seconds |
 | intuitive | `boolean` | `false` | Round the remaining time up to whole seconds |
 | format | `string` | `'HH:mm:ss'` | dayjs duration format of the rendered value |
 

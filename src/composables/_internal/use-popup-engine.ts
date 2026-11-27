@@ -14,7 +14,7 @@ export interface PopupOptions {
   alignPoint?: MaybeRefOrGetter<boolean | undefined>
   ariaTarget?: MaybeRefOrGetter<HTMLElement | null | undefined>
   arrowColor?: MaybeRefOrGetter<string | undefined>
-  autoFocusElement?: MaybeRefOrGetter<string | boolean | undefined>
+  initialFocus?: MaybeRefOrGetter<string | boolean | undefined>
   autoPosition?: MaybeRefOrGetter<boolean | undefined>
   closeOnInvisible?: MaybeRefOrGetter<boolean | undefined>
   closeOnOutsideClick?: MaybeRefOrGetter<boolean | undefined>
@@ -177,7 +177,7 @@ export function usePopupEngine(options: PopupEngineOptions): {
   // Hover popovers must not steal focus; click ones trap Tab but only focus on request.
   const focusTrapContainer = computed(() =>
     isRevealed.value &&
-    (isTruthyProp(toValue(options.autoFocusElement)) || triggerMethods.value.includes('click'))
+    (isTruthyProp(toValue(options.initialFocus)) || triggerMethods.value.includes('click'))
       ? wrapperRef.value
       : null,
   )

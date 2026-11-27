@@ -35,9 +35,9 @@ defineOptions({
 
 const props = withDefaults(defineProps<ImagePreviewProps>(), {
   index: 0,
-  variant: 'default',
+  mode: 'default',
   closeOnPressEscape: true,
-  closeOnClickOverlay: true,
+  closeOnOutsideClick: true,
 })
 
 const emits = defineEmits<ImagePreviewEmits>()
@@ -286,7 +286,7 @@ function onBackdropClick(ev: MouseEvent) {
     return
   }
 
-  if (props.closeOnClickOverlay) {
+  if (props.closeOnOutsideClick) {
     close()
   }
 }
@@ -363,7 +363,7 @@ watch(
 
     previousSources = sources
 
-    if (unchanged || isServer() || props.variant === 'viewer') {
+    if (unchanged || isServer() || props.mode === 'viewer') {
       return
     }
 
@@ -400,7 +400,7 @@ defineExpose({
 
 <template>
   <div data-image-preview v-bind="$attrs">
-    <div v-if="variant !== 'viewer'" class="gap-2 flex flex-wrap">
+    <div v-if="mode !== 'viewer'" class="gap-2 flex flex-wrap">
       <button
         v-for="item in items"
         :key="item.index"

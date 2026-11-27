@@ -27,7 +27,7 @@ const itemRef = shallowRef<HTMLElement>()
 const path = computed(() => (props.name == null ? '' : formatPath(props.name)))
 const hasName = computed(() => path.value !== '')
 const isRequired = computed(() => props.required ?? false)
-const manualError = computed(() => (props.error ? props.error : undefined))
+const manualError = computed(() => (props.errorMessage ? props.errorMessage : undefined))
 const isNative = computed(() => typeof props.component === 'string')
 const nativeType = computed(() => String(props.componentProps?.type ?? ''))
 const nativeValue = computed(() => props.componentProps?.value ?? true)
@@ -388,7 +388,7 @@ defineExpose({
         class="pxd-form-item--error text-xs text-red-900"
         role="alert"
       >
-        <slot name="error" :error="error" :errors="visibleErrors">
+        <slot name="error-message" :error="error" :errors="visibleErrors">
           <span v-if="error">{{ error }}</span>
         </slot>
       </div>

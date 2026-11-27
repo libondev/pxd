@@ -23,6 +23,18 @@ describe('marquee', () => {
     wrapper.unmount()
   })
 
+  it('should default delay to 1000 milliseconds', () => {
+    const wrapper = mount(Marquee, {
+      props: {
+        text: 'Delay',
+      },
+    })
+
+    expect(wrapper.props('delay')).toBe(1000)
+
+    wrapper.unmount()
+  })
+
   it('should enable pause on hover by default', () => {
     const wrapper = mount(Marquee, {
       props: {

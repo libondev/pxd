@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<CheckerboardProps>(), {
 })
 
 const computedStyle = computed(() => ({
-  '--checkerboard-size': getCssUnitValue(props.size),
+  '--checkerboard-size': getCssUnitValue(props.dimension),
   '--checkerboard-primary-color': props.primaryColor,
   '--checkerboard-background-color': props.backgroundColor,
 }))

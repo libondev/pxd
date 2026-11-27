@@ -1,6 +1,6 @@
 export interface CheckerboardProps {
   variant?: 'checkerboard' | 'grid' | 'dots'
-  size?: string | number
+  dimension?: string | number
   primaryColor?: string
   backgroundColor?: string
 }

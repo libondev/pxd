@@ -13,6 +13,7 @@ defineOptions({
 const props = withDefaults(defineProps<TextProps>(), {
   as: 'p',
   align: 'left',
+  variant: 'default',
 })
 
 const presetSize = {
@@ -24,11 +25,11 @@ const presetSize = {
 }
 
 const computedStyle = computed(() => {
-  const { size } = props
+  const { dimension } = props
 
   return getResponsiveValue(
-    size,
-    (typeof size === 'object' ? size.xs : size) ?? '0.875rem',
+    dimension,
+    (typeof dimension === 'object' ? dimension.xs : dimension) ?? '0.875rem',
     (acc, bp, value) => {
       acc[`--text-${bp}`] = getCssUnitValue(value)
     },
@@ -47,8 +48,9 @@ const { attrs, classes: variantClasses } = useTailwindVariant(
       monospace: {
         true: 'font-mono',
       },
-      secondary: {
-        true: 'text-foreground-secondary',
+      variant: {
+        default: '',
+        secondary: 'text-foreground-secondary',
       },
     },
   },
@@ -56,7 +58,7 @@ const { attrs, classes: variantClasses } = useTailwindVariant(
     selection: () => ({
       align: props.align,
       monospace: props.monospace,
-      secondary: props.secondary,
+      variant: props.variant,
     }),
   },
 )

@@ -54,7 +54,7 @@ describe('message', () => {
     const wrapper = mount(Message, {
       props: {
         group: 'g1',
-        max: 5,
+        maxCount: 5,
         position: 'top',
       },
       attachTo: document.body,
@@ -64,7 +64,7 @@ describe('message', () => {
     dispatchCreate({
       id: 'k1',
       group: 'g1',
-      type: 'info',
+      variant: 'info',
       message: 'hello g1',
       duration: 0,
       closeable: true,
@@ -73,7 +73,7 @@ describe('message', () => {
     dispatchCreate({
       id: 'k2',
       group: 'g2',
-      type: 'success',
+      variant: 'success',
       message: 'hello g2',
       duration: 0,
       closeable: true,
@@ -89,15 +89,15 @@ describe('message', () => {
     const wrapper = mount(Message, {
       props: {
         group: 'g1',
-        max: 2,
+        maxCount: 2,
       },
       attachTo: document.body,
     })
 
-    dispatchCreate({ id: 'a', group: 'g1', type: 'info', message: 'a', duration: 0 })
-    dispatchCreate({ id: 'b', group: 'g1', type: 'info', message: 'b', duration: 0 })
-    dispatchCreate({ id: 'c', group: 'g1', type: 'info', message: 'c', duration: 0 })
-    dispatchCreate({ id: 'd', group: 'g1', type: 'info', message: 'd', duration: 0 })
+    dispatchCreate({ id: 'a', group: 'g1', variant: 'info', message: 'a', duration: 0 })
+    dispatchCreate({ id: 'b', group: 'g1', variant: 'info', message: 'b', duration: 0 })
+    dispatchCreate({ id: 'c', group: 'g1', variant: 'info', message: 'c', duration: 0 })
+    dispatchCreate({ id: 'd', group: 'g1', variant: 'info', message: 'd', duration: 0 })
 
     expect(wrapper.vm.messages.length).toBe(4)
 
@@ -116,7 +116,7 @@ describe('message', () => {
     dispatchCreate({
       id: 'closeable-1',
       group: 'g1',
-      type: 'info',
+      variant: 'info',
       message: 'can close',
       duration: 0,
       closeable: true,
@@ -138,7 +138,7 @@ describe('message', () => {
     dispatchCreate({
       id: 'pending',
       group: 'g1',
-      type: 'loading',
+      variant: 'loading',
       message: 'Saving...',
       duration: 3000,
       promise: new Promise(() => {}),
@@ -157,7 +157,7 @@ describe('message', () => {
   it('should not double-subtract remaining time on repeated pause', async () => {
     const wrapper = mount(Message, { props: { group: 'g1' }, attachTo: document.body })
 
-    dispatchCreate({ id: 'paused', group: 'g1', type: 'info', message: 'x', duration: 3000 })
+    dispatchCreate({ id: 'paused', group: 'g1', variant: 'info', message: 'x', duration: 3000 })
     await wrapper.vm.$nextTick()
 
     vi.advanceTimersByTime(1000)
@@ -172,10 +172,10 @@ describe('message', () => {
   })
 
   it('should resume every paused message when the tab becomes visible', async () => {
-    const wrapper = mount(Message, { props: { group: 'g1', max: 5 }, attachTo: document.body })
+    const wrapper = mount(Message, { props: { group: 'g1', maxCount: 5 }, attachTo: document.body })
 
-    dispatchCreate({ id: 'ra', group: 'g1', type: 'info', message: 'a', duration: 3000 })
-    dispatchCreate({ id: 'rb', group: 'g1', type: 'info', message: 'b', duration: 3000 })
+    dispatchCreate({ id: 'ra', group: 'g1', variant: 'info', message: 'a', duration: 3000 })
+    dispatchCreate({ id: 'rb', group: 'g1', variant: 'info', message: 'b', duration: 3000 })
     await wrapper.vm.$nextTick()
 
     // leaves both messages with 100ms left, which resume closes directly
@@ -203,7 +203,7 @@ describe('message', () => {
     try {
       const wrapper = mount(Message, { props: { group: 'g1' }, attachTo: document.body })
 
-      dispatchCreate({ id: 'sized', group: 'g1', type: 'info', message: 'hello', duration: 0 })
+      dispatchCreate({ id: 'sized', group: 'g1', variant: 'info', message: 'hello', duration: 0 })
       await wrapper.vm.$nextTick()
       expect(wrapper.vm.messages[0].height).toBe(5)
 
@@ -227,7 +227,7 @@ describe('message', () => {
     dispatchCreate({
       id: 'vnode',
       group: 'g1',
-      type: 'loading',
+      variant: 'loading',
       message: 'orig',
       duration: 0,
       promise: Promise.resolve(1),
@@ -249,7 +249,7 @@ describe('message', () => {
     dispatchCreate({
       id: 'dropped',
       group: 'g1',
-      type: 'loading',
+      variant: 'loading',
       message: 'wait',
       duration: 3000,
       promise: new Promise((resolve) => {
@@ -273,7 +273,7 @@ describe('message', () => {
     dispatchCreate({
       id: 'settled',
       group: 'g1',
-      type: 'loading',
+      variant: 'loading',
       message: 'wait',
       duration: 3000,
       promise: Promise.resolve(1),
@@ -290,13 +290,13 @@ describe('message', () => {
 
   it('should hide messages past max', async () => {
     const wrapper = mount(Message, {
-      props: { group: 'g1', max: 2, expand: true },
+      props: { group: 'g1', maxCount: 2, expand: true },
       attachTo: document.body,
     })
 
-    dispatchCreate({ id: 'oa', group: 'g1', type: 'info', message: 'a', duration: 0 })
-    dispatchCreate({ id: 'ob', group: 'g1', type: 'info', message: 'b', duration: 0 })
-    dispatchCreate({ id: 'oc', group: 'g1', type: 'info', message: 'c', duration: 0 })
+    dispatchCreate({ id: 'oa', group: 'g1', variant: 'info', message: 'a', duration: 0 })
+    dispatchCreate({ id: 'ob', group: 'g1', variant: 'info', message: 'b', duration: 0 })
+    dispatchCreate({ id: 'oc', group: 'g1', variant: 'info', message: 'c', duration: 0 })
     await wrapper.vm.$nextTick()
     await wrapper.vm.$nextTick()
 
@@ -317,9 +317,9 @@ describe('message', () => {
       attachTo: document.body,
     })
 
-    dispatchCreate({ id: 'oa', group: 'g1', type: 'info', message: 'a', duration: 0 })
-    dispatchCreate({ id: 'ob', group: 'g1', type: 'info', message: 'b', duration: 0 })
-    dispatchCreate({ id: 'oc', group: 'g1', type: 'info', message: 'c', duration: 0 })
+    dispatchCreate({ id: 'oa', group: 'g1', variant: 'info', message: 'a', duration: 0 })
+    dispatchCreate({ id: 'ob', group: 'g1', variant: 'info', message: 'b', duration: 0 })
+    dispatchCreate({ id: 'oc', group: 'g1', variant: 'info', message: 'c', duration: 0 })
     await wrapper.vm.$nextTick()
     await wrapper.vm.$nextTick()
 
@@ -339,7 +339,7 @@ describe('message', () => {
   it('should collapse after clear()', async () => {
     const wrapper = mount(Message, { props: { group: 'g1' }, attachTo: document.body })
 
-    dispatchCreate({ id: 'cleared', group: 'g1', type: 'info', message: 'c', duration: 0 })
+    dispatchCreate({ id: 'cleared', group: 'g1', variant: 'info', message: 'c', duration: 0 })
     await wrapper.vm.$nextTick()
 
     dispatchPointerEnter()
@@ -360,7 +360,7 @@ describe('message', () => {
       attachTo: document.body,
     })
 
-    dispatchCreate({ id: 'expanded', group: 'g1', type: 'info', message: 'c', duration: 0 })
+    dispatchCreate({ id: 'expanded', group: 'g1', variant: 'info', message: 'c', duration: 0 })
     await wrapper.vm.$nextTick()
 
     wrapper.vm.clear()

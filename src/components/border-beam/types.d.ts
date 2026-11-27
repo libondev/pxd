@@ -4,5 +4,5 @@ export interface BorderBeamProps {
   variant?: BorderBeamVariant
   color?: string | string[]
   strength?: number
-  disabled?: boolean
+  animated?: boolean
 }

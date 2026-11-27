@@ -6,7 +6,7 @@ import MessageItem from '../../src/components/message-item/index.vue'
 describe('message-item', () => {
   const defaultItemData = {
     id: 'test-1',
-    type: 'info',
+    variant: 'info',
     message: 'Test message',
     duration: 3000,
   } satisfies MessageItemConfig
@@ -16,7 +16,7 @@ describe('message-item', () => {
       props: {
         itemData: defaultItemData,
         index: 0,
-        max: 5,
+        maxCount: 5,
       },
     })
 
@@ -30,7 +30,7 @@ describe('message-item', () => {
       props: {
         itemData: { ...defaultItemData, message: 'Hello World' },
         index: 0,
-        max: 5,
+        maxCount: 5,
       },
     })
 
@@ -44,7 +44,7 @@ describe('message-item', () => {
       props: {
         itemData: defaultItemData,
         index: 0,
-        max: 5,
+        maxCount: 5,
       },
     })
 
@@ -54,15 +54,15 @@ describe('message-item', () => {
     wrapper.unmount()
   })
 
-  it('should accept different types', () => {
-    const types = ['info', 'success', 'warning', 'error', 'loading'] as const
+  it('should accept different variants', () => {
+    const variants = ['info', 'success', 'warning', 'error', 'loading'] as const
 
-    for (const type of types) {
+    for (const variant of variants) {
       const wrapper = mount(MessageItem, {
         props: {
-          itemData: { ...defaultItemData, type },
+          itemData: { ...defaultItemData, variant },
           index: 0,
-          max: 5,
+          maxCount: 5,
         },
       })
 

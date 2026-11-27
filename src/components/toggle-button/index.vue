@@ -64,7 +64,7 @@ const { attrs, classes } = useTailwindVariant(
         false: 'cursor-pointer',
       },
       checked: {},
-      icon: {
+      iconOnly: {
         true: 'aspect-square',
       },
     },
@@ -87,7 +87,7 @@ const { attrs, classes } = useTailwindVariant(
   },
   {
     selection: () => ({
-      icon: props.icon,
+      iconOnly: props.iconOnly,
       size: props.size || toggleButtonGroupContext?.props.size || configProvider.size,
       checked: isChecked.value,
       variant: computedVariant.value,

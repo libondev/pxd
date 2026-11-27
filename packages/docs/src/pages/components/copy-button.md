@@ -32,9 +32,9 @@ CopyButton extends the [Button component](/components/button).
 ```vue demo
 <template>
   <PCopyButton content="lorem" variant="default">
-    <span>
-      Click to copy
-    </span>
+    <template #prefix>
+      <span>Click to copy</span>
+    </template>
   </PCopyButton>
 </template>
 ```
@@ -51,3 +51,10 @@ CopyButton extends the [Button component](/components/button).
 | --- | --- | --- |
 | copy | `(content: string, event: PointerEvent) => void` | Emitted after the text has been copied to the clipboard. |
 | error | `(error: unknown, event: PointerEvent) => void` | Emitted when copying fails after both the Clipboard API and the fallback failed. |
+
+## Slots
+
+| Name | Description |
+| --- | --- |
+| prefix | Content before the copy icon, scoped with `{ copied }` |
+| suffix | Content after the copy icon, scoped with `{ copied }` |

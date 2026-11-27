@@ -100,7 +100,7 @@ function handleCustomPrefixChange(event: Event) {
 <template>
   <h1 class="text-2xl font-medium">Icons</h1>
 
-  <PText secondary class="mbs-2">
+  <PText variant="secondary" class="mbs-2">
     A total of <span class="font-medium text-foreground">{{ iconCount }}</span> icons
   </PText>
 
@@ -147,6 +147,6 @@ function handleCustomPrefixChange(event: Event) {
   </Grids>
 
   <template v-if="iconCount > 0 && filteredComponents.length === 0">
-    <PEmptyState class="col-span-full" title="No data" description="No icons found" />
+    <PEmptyState class="col-span-full" heading="No data" description="No icons found" />
   </template>
 </template>

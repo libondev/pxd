@@ -1,10 +1,10 @@
-import type { TodoOption } from '../../src/components/todo-list/types'
+import type { TodoListOption } from '../../src/components/todo-list/types'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { h, nextTick, ref } from 'vue'
 import TodoList from '../../src/components/todo-list/index.vue'
 
-const OPTIONS: TodoOption[] = [
+const OPTIONS: TodoListOption[] = [
   { content: 'Rewrite types.d.ts', status: 'in_progress' },
   { content: 'Delete legacy components', status: 'pending' },
   { content: 'Sync docs', status: 'completed' },
@@ -100,7 +100,7 @@ describe('todo-list', () => {
   })
 
   it('summarises progress in the header', async () => {
-    const wrapper = await mountTodoList({ title: 'Tasks' })
+    const wrapper = await mountTodoList({ heading: 'Tasks' })
 
     expect(wrapper.find('.pxd-todo-list--title').text()).toBe('Tasks')
     expect(wrapper.find('.pxd-todo-list--summary').text()).toBe('1/3')
@@ -122,8 +122,8 @@ describe('todo-list', () => {
     wrapper.unmount()
   })
 
-  it('uses a custom header title', async () => {
-    const wrapper = await mountTodoList({ title: 'Plan' })
+  it('uses a custom header heading', async () => {
+    const wrapper = await mountTodoList({ heading: 'Plan' })
 
     expect(wrapper.find('.pxd-todo-list--title').text()).toBe('Plan')
 

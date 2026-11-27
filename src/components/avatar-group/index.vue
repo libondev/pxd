@@ -10,15 +10,15 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<AvatarGroupProps>(), {
-  max: 5,
+  maxCount: 5,
   options: () => [],
 })
 
 const slicedOptions = computed(() => {
-  const { max, options } = props
-  const maxCount = Math.max(Math.min(max, options.length), 1)
+  const { maxCount, options } = props
+  const visibleCount = Math.max(Math.min(maxCount, options.length), 1)
 
-  return options.slice(0, maxCount)
+  return options.slice(0, visibleCount)
 })
 
 provideAvatarGroupContext({ props })
@@ -32,7 +32,7 @@ provideAvatarGroupContext({ props })
       class="group nth-[n+2]:-ms-2.5"
     >
       <PAvatar
-        :size="size"
+        :dimension="dimension"
         :src="option.src"
         :alt="option.alt"
         :loading="option.loading"

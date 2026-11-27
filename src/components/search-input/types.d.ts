@@ -1,6 +1,9 @@
 import type { InputProps } from '../input/types'
 
-export interface SearchInputProps extends Pick<InputProps, 'modelValue' | 'disabled' | 'readonly'> {
+export interface SearchInputProps extends Pick<
+  InputProps,
+  'modelValue' | 'disabled' | 'readonly' | 'clearable'
+> {
   loading?: boolean
 }
 

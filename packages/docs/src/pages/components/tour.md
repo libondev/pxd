@@ -14,12 +14,12 @@ const isVisible = ref(false)
 const steps = [
   {
     target: () => document.querySelector("[data-demo-tour-target]"),
-    title: "Search anything",
+    heading: "Search anything",
     description: "Find components, tokens and guidance from here.",
   },
   {
     target: () => document.querySelector("[data-demo-tour-target-2]"),
-    title: "Copy the snippet",
+    heading: "Copy the snippet",
     description: "Every demo ships with copy-ready code.",
     position: "top",
   },
@@ -59,7 +59,7 @@ function openTour() {
 | Name | Type | Description |
 | --- | --- | --- |
 | target | `string \| HTMLElement \| (() => HTMLElement \| null)` | Element to highlight; omitting it shows a centred intro panel |
-| title | `string` | Bubble title |
+| heading | `string` | Bubble heading |
 | description | `string` | Bubble description |
 | position | `ComponentPosition` | Placement of the bubble relative to the target |
 | next-text | `string` | Label of the next button |

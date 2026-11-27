@@ -29,11 +29,11 @@ describe('border-beam', () => {
     wrapper.unmount()
   })
 
-  it('should set the default variant and disabled state', () => {
+  it('should default animated to true', () => {
     const wrapper = mount(BorderBeam)
 
     expect(wrapper.attributes('data-variant')).toBe('glow')
-    expect(wrapper.attributes('data-disabled')).toBe('false')
+    expect(wrapper.attributes('data-animated')).toBe('true')
 
     wrapper.unmount()
   })
@@ -62,17 +62,17 @@ describe('border-beam', () => {
     wrapper.unmount()
   })
 
-  it('should reflect the disabled prop on data-disabled', async () => {
+  it('should reflect the animated prop on data-animated', async () => {
     const wrapper = mount(BorderBeam, {
       props: {
-        disabled: true,
+        animated: false,
       },
     })
 
-    expect(wrapper.attributes('data-disabled')).toBe('true')
+    expect(wrapper.attributes('data-animated')).toBe('false')
 
-    await wrapper.setProps({ disabled: false })
-    expect(wrapper.attributes('data-disabled')).toBe('false')
+    await wrapper.setProps({ animated: true })
+    expect(wrapper.attributes('data-animated')).toBe('true')
 
     wrapper.unmount()
   })

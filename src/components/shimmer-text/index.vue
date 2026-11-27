@@ -8,7 +8,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<ShimmerTextProps>(), {
-  disabled: false,
+  animated: true,
   duration: 1500,
   color: 'var(--color-gray-100)',
 })
@@ -102,7 +102,7 @@ function buildBandGradient(stops: ShimmerGradientStop[]) {
   <span
     data-shimmer-text
     class="pxd-shimmer-text inline-flex max-w-full bg-transparent bg-no-repeat motion-reduce:animate-none!"
-    :data-disabled="disabled"
+    :data-animated="animated"
     :data-variant="variant"
     :style="shimmerStyle"
     v-bind="$attrs"
@@ -114,7 +114,7 @@ function buildBandGradient(stops: ShimmerGradientStop[]) {
 </template>
 
 <style>
-.pxd-shimmer-text[data-disabled='false'] {
+.pxd-shimmer-text[data-animated='true'] {
   --shimmer-text-spread: 1.5em;
   --shimmer-text-spread-mid: calc(var(--shimmer-text-spread) * 0.68);
   background-size: 350% 100%;

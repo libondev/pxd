@@ -184,7 +184,7 @@ onMounted(() => {
 | on-geometry-change | `() => void` | - | Called once a frame after the container geometry settles, for hosts that size the list |
 | list-class | `ComponentClass` | - | Extra class on the inner content wrapper |
 | item-class | `ComponentClass` | - | Extra class on every item wrapper |
-| error-text | `ComponentText` | `'Request failed. Click to reload'` | Message shown while `status` is `error` |
+| error-message | `ComponentText` | `'Request failed. Click to reload'` | Message shown while `status` is `error` |
 | loading-text | `ComponentText` | `'Loading...'` | Message shown while `status` is `loading` |
 | finished-text | `ComponentText` | `'Finished'` | Message shown while `status` is `finished` |
 
@@ -200,8 +200,9 @@ Reaching the bottom is reported through the `on-bottom` prop, not an event.
 
 | Name | Description |
 | --- | --- |
-| item | item slot |
-| message | message slot |
+| item | Item content |
+| error-message | Replaces the error message shown while `status` is `error` |
+| message | Replaces the loading and finished status content |
 
 ## Methods
 

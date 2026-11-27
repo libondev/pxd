@@ -9,7 +9,7 @@ export interface CountdownOptions {
    * Whether to enable count up mode.
    * @default false
    */
-  inverted?: MaybeRefOrGetter<boolean>
+  countUp?: MaybeRefOrGetter<boolean>
   /**
    * Whether the countdown is running.
    * @default false
@@ -29,15 +29,10 @@ export interface CountdownOptions {
    */
   autoReset?: MaybeRefOrGetter<boolean>
   /**
-   * The duration of the countdown.
+   * The duration of the countdown, in milliseconds.
    * @default 0
    */
   duration?: MaybeRefOrGetter<number>
-  /**
-   * Whether the time stamp is in milliseconds.
-   * @default true
-   */
-  millisecond?: MaybeRefOrGetter<boolean>
   /**
    * Whether to enable human-friendly time display (ceil to seconds).
    * @default false
@@ -76,39 +71,39 @@ export function useCountdown(options: CountdownOptions = {}): Results {
 
   const timeRef = shallowRef<number>(0)
 
-  const isInverted = () => read(options.inverted, false)
+  const isCountingUp = () => read(options.countUp, false)
   const isIntuitive = () => read(options.intuitive, false)
 
   const totalDuration = computed(() => {
     const endTime = toValue(options.endTime)
 
     if (endTime) {
-      const end = formatTime(endTime) - Date.now()
+      const end = formatTimestamp(endTime) - Date.now()
       return Math.max(0, end)
     }
 
     // In count-up mode with no duration, count up indefinitely.
-    if (isInverted() && [undefined, 0].includes(toValue(options.duration))) {
+    if (isCountingUp() && [undefined, 0].includes(toValue(options.duration))) {
       return Infinity
     }
 
-    return Math.max(0, formatTime(read(options.duration, 0)))
+    return Math.max(0, read(options.duration, 0))
   })
 
-  const isInfiniteCountup = computed(() => isInverted() && totalDuration.value === Infinity)
+  const isInfiniteCountup = computed(() => isCountingUp() && totalDuration.value === Infinity)
 
-  function formatTime(time: number = 0): number {
-    return read(options.millisecond, true) ? Math.round(time) : Math.round(time * 1000)
+  function formatTimestamp(time: number = 0): number {
+    return Math.round(time)
   }
 
   // Get the current elapsed time.
   function getCurrent(now: DOMHighResTimeStamp): number {
-    const rawCurrent = isInverted()
+    const rawCurrent = isCountingUp()
       ? now - startTimestamp
       : totalDuration.value + startTimestamp - now
 
     // Convert milliseconds to seconds, round up, then back to milliseconds.
-    if (isIntuitive() && !isInverted() && rawCurrent > 0) {
+    if (isIntuitive() && !isCountingUp() && rawCurrent > 0) {
       const seconds = Math.ceil(rawCurrent / 1000)
       return Math.max(0, seconds * 1000)
     }
@@ -117,9 +112,9 @@ export function useCountdown(options: CountdownOptions = {}): Results {
   }
 
   function setCurrent(): void {
-    const startAtValue = formatTime(toValue(options.startAt))
+    const startAtValue = formatTimestamp(toValue(options.startAt))
 
-    if (isInverted()) {
+    if (isCountingUp()) {
       // Count-up mode: start counting from startAt.
       timeRef.value = isInfiniteCountup.value
         ? startAtValue
@@ -139,7 +134,7 @@ export function useCountdown(options: CountdownOptions = {}): Results {
   }
 
   function shouldFinish(current: number): boolean {
-    if (!isInverted()) {
+    if (!isCountingUp()) {
       if (isIntuitive()) {
         const actualCurrent = totalDuration.value + startTimestamp - performance.now()
         return actualCurrent <= 0
@@ -152,13 +147,13 @@ export function useCountdown(options: CountdownOptions = {}): Results {
   }
 
   function finish(): void {
-    timeRef.value = isInverted() ? totalDuration.value : 0
+    timeRef.value = isCountingUp() ? totalDuration.value : 0
     isFinished = true
     options.onFinish?.()
   }
 
   function reset(): void {
-    startTimestamp = performance.now() - formatTime(toValue(options.startAt))
+    startTimestamp = performance.now() - formatTimestamp(toValue(options.startAt))
     isFinished = false
     isPaused = false
     setCurrent()
@@ -195,7 +190,7 @@ export function useCountdown(options: CountdownOptions = {}): Results {
       return
     }
 
-    if (isInverted()) {
+    if (isCountingUp()) {
       timeRef.value = isInfiniteCountup.value ? current : Math.min(current, totalDuration.value)
     } else {
       timeRef.value = Math.max(0, current)
@@ -212,10 +207,10 @@ export function useCountdown(options: CountdownOptions = {}): Results {
 
       if (isEnabled) {
         if (isPaused) {
-          const elapsed = isInverted() ? timeRef.value : totalDuration.value - timeRef.value
+          const elapsed = isCountingUp() ? timeRef.value : totalDuration.value - timeRef.value
           startTimestamp = performance.now() - elapsed
         } else {
-          startTimestamp = performance.now() - formatTime(toValue(options.startAt))
+          startTimestamp = performance.now() - formatTimestamp(toValue(options.startAt))
         }
 
         isPaused = false

@@ -4,7 +4,7 @@ import type { ComponentText, ComponentSizeWithXxs, ComponentValue } from '../../
 export type ToggleButtonModelValue = ComponentValue | boolean
 
 export interface ToggleButtonProps {
-  icon?: boolean
+  iconOnly?: boolean
   size?: ComponentSizeWithXxs
   label?: ComponentText
   value?: ToggleButtonModelValue

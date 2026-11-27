@@ -5,8 +5,8 @@ export interface StickToBottomProps {
   disabled?: boolean
   threshold?: number
   fader?: boolean
-  faderSize?: number
   faderColor?: string
+  faderDimension?: number
   faderDirection?: ComponentDirection | 'both'
   contentClass?: ComponentClass
   wrapperClass?: ComponentClass

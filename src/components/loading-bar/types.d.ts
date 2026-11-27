@@ -6,5 +6,5 @@ export interface LoadingBarProps {
   minimum?: number
   trickle?: boolean
   hideDelay?: number
-  trickleThreshold?: number
+  trickleInterval?: number
 }

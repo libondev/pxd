@@ -7,7 +7,7 @@ describe('description', () => {
   it('should render properly', () => {
     const wrapper = mount(Description, {
       props: {
-        title: 'Title',
+        heading: 'Title',
         description: 'Content',
       },
     })
@@ -18,14 +18,14 @@ describe('description', () => {
     wrapper.unmount()
   })
 
-  it('should prefer title and description slots over props', () => {
+  it('should prefer heading and description slots over props', () => {
     const wrapper = mount(Description, {
       props: {
-        title: 'Prop Title',
+        heading: 'Prop Title',
         description: 'Prop Description',
       },
       slots: {
-        title: 'Slot Title',
+        heading: 'Slot Title',
         description: 'Slot Description',
       },
     })
@@ -39,7 +39,7 @@ describe('description', () => {
   it('should render a tooltip when tooltip prop is set', () => {
     const wrapper = mount(Description, {
       props: {
-        title: 'Title',
+        heading: 'Title',
         tooltip: 'Tooltip Content',
       },
     })
@@ -54,7 +54,7 @@ describe('description', () => {
   it('should not render a tooltip without the tooltip prop', () => {
     const wrapper = mount(Description, {
       props: {
-        title: 'Title',
+        heading: 'Title',
       },
     })
 

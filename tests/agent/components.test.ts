@@ -492,7 +492,7 @@ describe('agent components', () => {
       mount(Tour, {
         props: {
           current: 0,
-          steps: [{ title: 'One' }, { title: 'Two' }, { title: 'Three' }],
+          steps: [{ heading: 'One' }, { heading: 'Two' }, { heading: 'Three' }],
         },
         attrs: { 'aria-label': 'Onboarding' },
       }),
@@ -648,7 +648,7 @@ describe('agent components', () => {
       mount(Modal, {
         props: {
           modelValue: true,
-          title: 'Settings',
+          heading: 'Settings',
           subtitle: 'Applies to this project',
           'onUpdate:model-value': () => {},
         },
@@ -674,7 +674,7 @@ describe('agent components', () => {
               Modal,
               {
                 modelValue: open.value,
-                title: 'Settings',
+                heading: 'Settings',
                 'onUpdate:model-value': (next: unknown) => {
                   open.value = Boolean(next)
                 },
@@ -819,7 +819,7 @@ describe('agent components', () => {
   it('should approve an approval card', async () => {
     track(
       mount(ApprovalCard, {
-        props: { title: 'Run command', command: 'rm -rf dist' },
+        props: { heading: 'Run command', command: 'rm -rf dist' },
         attrs: { 'aria-label': 'Approval' },
       }),
     )
@@ -840,7 +840,7 @@ describe('agent components', () => {
   it('should report an approval card that is busy as pending, and refuse it', async () => {
     track(
       mount(ApprovalCard, {
-        props: { title: 'Run command', command: 'rm -rf dist', loading: true },
+        props: { heading: 'Run command', command: 'rm -rf dist', loading: true },
         attrs: { 'aria-label': 'Approval' },
       }),
     )
@@ -1082,7 +1082,7 @@ describe('agent components', () => {
             h(
               Button,
               {
-                icon: true,
+                iconOnly: true,
                 'aria-label': 'Clear',
                 onClick: () => {
                   clicks.value += 1
@@ -1159,7 +1159,7 @@ describe('agent components', () => {
               Drawer,
               {
                 modelValue: open.value,
-                title: 'Filters',
+                heading: 'Filters',
                 'onUpdate:model-value': (next: unknown) => {
                   open.value = Boolean(next)
                 },
@@ -1272,7 +1272,7 @@ describe('agent components', () => {
                 Modal,
                 {
                   modelValue: open.value,
-                  title: 'Settings',
+                  heading: 'Settings',
                   'onUpdate:model-value': (next: unknown) => {
                     open.value = Boolean(next)
                   },
@@ -1491,7 +1491,7 @@ describe('agent components', () => {
       Steps,
       {
         clickable: true,
-        options: [{ title: 'One' }, { title: 'Two' }],
+        options: [{ heading: 'One' }, { heading: 'Two' }],
         'aria-label': 'Progress',
       },
       0,
@@ -1726,7 +1726,7 @@ describe('agent components', () => {
               Modal,
               {
                 modelValue: open.value,
-                title: 'Settings',
+                heading: 'Settings',
                 'onUpdate:model-value': (next: unknown) => {
                   open.value = Boolean(next)
                 },

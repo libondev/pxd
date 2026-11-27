@@ -56,7 +56,7 @@ describe('useDialogLayer', () => {
     const onClose = vi.fn()
     const onOutsidePress = vi.fn()
     const { dialogRef, onDialogPointerDown, unmount } = useSetupWrapper(() =>
-      useDialogLayer({ visible: true, closeOnClickOverlay: true, onClose, onOutsidePress }),
+      useDialogLayer({ visible: true, closeOnOutsideClick: true, onClose, onOutsidePress }),
     )
     const dialog = document.createElement('dialog')
 
@@ -76,7 +76,7 @@ describe('useDialogLayer', () => {
   it('should not close on a non-primary button on the backdrop', () => {
     const onClose = vi.fn()
     const { dialogRef, onDialogPointerDown, unmount } = useSetupWrapper(() =>
-      useDialogLayer({ visible: true, closeOnClickOverlay: true, onClose }),
+      useDialogLayer({ visible: true, closeOnOutsideClick: true, onClose }),
     )
     const dialog = document.createElement('dialog')
 
@@ -94,7 +94,7 @@ describe('useDialogLayer', () => {
   it('should ignore presses inside the panel', () => {
     const onClose = vi.fn()
     const { dialogRef, onDialogPointerDown, unmount } = useSetupWrapper(() =>
-      useDialogLayer({ visible: true, closeOnClickOverlay: true, onClose }),
+      useDialogLayer({ visible: true, closeOnOutsideClick: true, onClose }),
     )
     const dialog = document.createElement('dialog')
     const panel = document.createElement('div')

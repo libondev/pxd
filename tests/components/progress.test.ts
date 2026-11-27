@@ -126,11 +126,25 @@ describe('progress', () => {
     wrapper.unmount()
   })
 
-  it('should render the current value as label when label is true', () => {
+  it('should render the current value as label when showLabel is true', () => {
     const wrapper = mount(Progress, {
       props: {
         modelValue: 30,
-        label: true,
+        showLabel: true,
+      },
+    })
+
+    expect(wrapper.find('span').text()).toBe('30')
+
+    wrapper.unmount()
+  })
+
+  it('should fall back to the current value when label is empty', () => {
+    const wrapper = mount(Progress, {
+      props: {
+        modelValue: 30,
+        label: '',
+        showLabel: true,
       },
     })
 
@@ -143,7 +157,7 @@ describe('progress', () => {
     const wrapper = mount(Progress, {
       props: {
         modelValue: 30,
-        label: true,
+        showLabel: true,
       },
       slots: {
         default: 'Custom',

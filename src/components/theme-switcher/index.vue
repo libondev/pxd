@@ -36,7 +36,7 @@ watch(
 
 <template>
   <PButton
-    icon
+    icon-only
     data-theme-switcher
     aria-label="Toggle color mode"
     class="pxd-theme-switcher"

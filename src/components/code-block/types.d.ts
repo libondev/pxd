@@ -13,7 +13,7 @@ export interface CodeBlockSwitcherProps {
 export interface CodeBlockProps {
   content: string
   language?: string
-  title?: ComponentText
+  heading?: ComponentText
   size?: 'sm' | 'md' | 'lg'
   lineNumbers?: boolean
   highlightedLines?: number[]
@@ -23,11 +23,10 @@ export interface CodeBlockProps {
   collapsible?: boolean
   copyBtn?: 'always' | 'hover' | 'hidden'
   switcher?: CodeBlockSwitcherProps
-  tabs?: CodeBlockSwitcherProps
+  switcherMode?: 'select' | 'tabs'
 }
 
 export interface CodeBlockEmits {
   copy: [string]
   'switcher-change': [string]
-  'tabs-change': [string]
 }

@@ -5,7 +5,7 @@ export interface EllipsisTextProps {
   dots?: string
   rows?: number
   action?: boolean
-  position?: 'start' | 'middle' | 'end'
+  ellipsisPosition?: 'start' | 'middle' | 'end'
   moreText?: ComponentText
   lessText?: ComponentText
   moreActionClass?: string

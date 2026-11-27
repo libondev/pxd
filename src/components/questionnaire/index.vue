@@ -6,7 +6,7 @@ import type {
   QuestionnaireEmits,
   QuestionnaireProps,
   QuestionnaireAnswers,
-  QuestionnaireState,
+  QuestionnaireStatus,
   QuestionnaireQuestion,
 } from './types'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
@@ -77,7 +77,7 @@ const SIZE_CLASSES: Record<
 
 const contentRef = shallowRef<HTMLElement>()
 const totalAnswers = shallowReactive<QuestionnaireAnswers>({})
-const currentState = shallowRef<QuestionnaireState>('choosing')
+const currentState = shallowRef<QuestionnaireStatus>('choosing')
 const currentIndex = shallowRef(0)
 const currentQuestion = computed(() => {
   const question = props.data[currentIndex.value]
@@ -459,7 +459,7 @@ watch(
           </span>
 
           <PButton
-            icon
+            icon-only
             size="xs"
             variant="ghost"
             :title="configProvider.locale.questionnaire.skipAll"
@@ -470,7 +470,7 @@ watch(
           </PButton>
 
           <PButton
-            icon
+            icon-only
             size="xs"
             variant="ghost"
             :title="getToggleLabel()"
@@ -529,7 +529,7 @@ watch(
             >
               <div v-if="data.length > 1" class="gap-1 flex items-center">
                 <PButton
-                  icon
+                  icon-only
                   size="xs"
                   variant="ghost"
                   :class="{ 'pointer-events-none opacity-50': !currentIndex }"
@@ -542,7 +542,7 @@ watch(
                 </PButton>
 
                 <PButton
-                  icon
+                  icon-only
                   size="xs"
                   variant="ghost"
                   :class="{

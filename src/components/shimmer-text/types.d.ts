@@ -11,6 +11,6 @@ export interface ShimmerTextProps {
   text?: ComponentText
   color?: string | ShimmerGradientStop[]
   variant?: ShimmerTextVariant
-  disabled?: boolean
+  animated?: boolean
   duration?: number
 }

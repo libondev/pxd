@@ -106,7 +106,7 @@ describe('agent boundaries', () => {
             h('div', { 'data-agent-confirm': 'Opens the settings' }, [
               h(Modal, {
                 modelValue: open.value,
-                title: 'Settings',
+                heading: 'Settings',
                 'onUpdate:model-value': (next: unknown) => {
                   open.value = Boolean(next)
                 },

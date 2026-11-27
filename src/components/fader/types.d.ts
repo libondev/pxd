@@ -2,7 +2,7 @@ import type { ComponentDirection } from '../../types/shared/props'
 import type { ComponentPublicInstance } from 'vue'
 
 export interface FaderProps {
-  size?: number
+  dimension?: number
   color?: string
   threshold?: number
   direction?: ComponentDirection | 'both'

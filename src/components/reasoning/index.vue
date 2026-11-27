@@ -45,8 +45,8 @@ const { isOpen, detailsOpen, everOpened, onToggleClick, onDetailsToggle } = useD
     >
       <BrainIcon class="size-em shrink-0" />
 
-      <PShimmerText :variant="shimmerVariant" class="pxd-reasoning--title" :disabled="!streaming">
-        {{ title }}
+      <PShimmerText :variant="shimmerVariant" class="pxd-reasoning--title" :animated="streaming">
+        {{ heading }}
       </PShimmerText>
 
       <ChevronRightIcon

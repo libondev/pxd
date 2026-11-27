@@ -20,6 +20,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<CodeBlockProps>(), {
   copyBtn: 'hover',
+  switcherMode: 'select',
 })
 
 const emits = defineEmits<CodeBlockEmits>()
@@ -61,7 +62,6 @@ const activeSwitcherLabel = computed(() => {
 
   return option?.label ?? option?.value
 })
-const activeTabValue = computed(() => props.tabs?.value ?? props.tabs?.options[0]?.value)
 
 const configProvider = useConfigProvider()
 
@@ -74,7 +74,15 @@ const lineCodeClass = computed(() => (resolvedSize.value === 'lg' ? 'leading-6' 
 const { scheduleHighlight } = useCodeHighlight(() => Boolean(languageClass.value))
 const slots = useSlots()
 
-const hasHeader = computed(() => !!(props.title || props.switcher || slots.header || slots.actions))
+const hasHeader = computed(
+  () =>
+    !!(
+      props.heading ||
+      (props.switcher && props.switcherMode === 'select') ||
+      slots.header ||
+      slots.actions
+    ),
+)
 
 const { attrs, classes } = useTailwindVariant(
   {
@@ -164,7 +172,7 @@ function onSwitcherChange(event: Event) {
 }
 
 function onTabSelect(value: string) {
-  emits('tabs-change', value)
+  emits('switcher-change', value)
 }
 
 function setTabRef(value: string, el: unknown) {
@@ -184,7 +192,7 @@ function onTabsKeydown(event: KeyboardEvent) {
 
   event.preventDefault()
 
-  const tabEls = props.tabs?.options.map((option) => tabRefs.get(option.value)) ?? []
+  const tabEls = props.switcher?.options.map((option) => tabRefs.get(option.value)) ?? []
   const currentIndex = tabEls.findIndex((element) => element === document.activeElement)
   let nextIndex = currentIndex
 
@@ -246,18 +254,18 @@ onUnmounted(() => {
 <template>
   <div data-code-block :class="classes" v-bind="attrs">
     <div
-      v-if="tabs"
+      v-if="switcher && switcherMode === 'tabs'"
       class="pxd-code-block--tabs-bar pbs-4 pbe-3 scrollbar-none flex items-center overflow-x-auto"
     >
       <div role="tablist" class="min-w-0 flex items-center" @keydown="onTabsKeydown">
         <button
-          v-for="option in tabs.options"
+          v-for="option in switcher.options"
           :key="option.value"
           type="button"
           role="tab"
           :ref="(el: unknown) => setTabRef(option.value, el)"
-          :tabindex="option.value === activeTabValue ? 0 : -1"
-          :aria-selected="option.value === activeTabValue"
+          :tabindex="option.value === activeSwitcherValue ? 0 : -1"
+          :aria-selected="option.value === activeSwitcherValue"
           class="h-8 px-3 font-medium text-xs cursor-pointer rounded-md text-gray-900 not-aria-selected:hover:text-gray-1000 aria-selected:bg-gray-200 aria-selected:text-gray-1000 motion-safe:transition-colors"
           @click="onTabSelect(option.value)"
         >
@@ -272,13 +280,16 @@ onUnmounted(() => {
     >
       <slot name="header">
         <FileIcon class="size-em shrink-0 text-gray-900" aria-hidden="true" />
-        <span class="min-w-0 text-xs truncate text-gray-900">{{ title }}</span>
+        <span class="min-w-0 text-xs truncate text-gray-900">{{ heading }}</span>
       </slot>
 
       <div class="gap-1 min-w-0 ms-auto flex items-center">
         <slot name="actions" />
 
-        <div v-if="switcher" class="h-7 group/select relative shrink-0">
+        <div
+          v-if="switcher && switcherMode === 'select'"
+          class="h-7 group/select relative shrink-0"
+        >
           <div
             aria-hidden="true"
             class="px-2 gap-1 text-xs flex h-full cursor-pointer items-center rounded-md bg-background-200 whitespace-nowrap text-gray-900 group-hover/select:bg-gray-200 has-focus-visible:self-focus-ring motion-safe:transition-colors"

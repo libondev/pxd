@@ -198,10 +198,10 @@ describe('fader', () => {
     wrapper.unmount()
   })
 
-  it('applies the default gradient size when size is omitted', () => {
+  it('applies the default gradient size when dimension is omitted', () => {
     const wrapper = mount(Fader)
 
-    expect(wrapper.attributes('style')).toContain('--fader-size')
+    expect(wrapper.attributes('style')).toContain('--fader-dimension')
     expect(wrapper.attributes('style')).toContain('24px')
 
     wrapper.unmount()

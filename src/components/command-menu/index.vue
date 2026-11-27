@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<CommandMenuProps>(), {
   placeholder: '',
   closeOnSelectItem: true,
   closeOnPressEscape: true,
-  closeOnClickOverlay: true,
+  closeOnOutsideClick: true,
 })
 
 const emits = defineEmits<CommandMenuEmits>()
@@ -128,9 +128,9 @@ watch(listOptions, async () => {
     class="pxd-command-menu max-sm:h-full"
     content-class="!p-0 overflow-hidden"
     wrapper-class="sm:top-1/8 sm:translate-y-0"
-    :auto-focus-element="!isSmallScreen"
+    :initial-focus="!isSmallScreen"
     :close-on-press-escape="closeOnPressEscape"
-    :close-on-click-overlay="closeOnClickOverlay"
+    :close-on-outside-click="closeOnOutsideClick"
     v-bind="$attrs"
     @keydown="onModalKeydown"
     @show="showModal"

@@ -38,19 +38,19 @@ const code = ref('12')
 </template>
 ```
 
-## Types
+## Modes
 
-Set the `type` attribute to limit what can be entered. (Default: `numeric`)
+Set the `mode` attribute to limit what can be entered. (Default: `numeric`)
 
 ```vue demo
 <template>
   <PStack direction="vertical">
-    <PPinInput label="numeric" type="numeric" />
-    <PPinInput label="alphabetic" type="alphabetic" />
-    <PPinInput label="alphanumeric" type="alphanumeric" />
-    <PPinInput label="numeric-password" type="numeric-password" />
-    <PPinInput label="alphabetic-password" type="alphabetic-password" />
-    <PPinInput label="alphanumeric-password" type="alphanumeric-password" />
+    <PPinInput label="numeric" mode="numeric" />
+    <PPinInput label="alphabetic" mode="alphabetic" />
+    <PPinInput label="alphanumeric" mode="alphanumeric" />
+    <PPinInput label="numeric-password" mode="numeric-password" />
+    <PPinInput label="alphabetic-password" mode="alphabetic-password" />
+    <PPinInput label="alphanumeric-password" mode="alphanumeric-password" />
   </PStack>
 </template>
 ```
@@ -83,7 +83,7 @@ Set the `type` attribute to limit what can be entered. (Default: `numeric`)
 | disabled | `boolean` | - | Disable all boxes and ignore typed or pasted input |
 | model-value | `string` | `` | Current pin code, one character per box |
 | placeholder | `string` | `○` | Character shown in each empty box |
-| type | `'numeric' \| 'alphabetic' \| 'alphanumeric' \| 'numeric-password' \| 'alphabetic-password' \| 'alphanumeric-password'` | `numeric` | Restrict input to the given character set, the `-password` variants also mask it |
+| mode | `'numeric' \| 'alphabetic' \| 'alphanumeric' \| 'numeric-password' \| 'alphabetic-password' \| 'alphanumeric-password'` | `numeric` | Restrict input to the given character set, the `-password` variants also mask it |
 
 ## Events
 

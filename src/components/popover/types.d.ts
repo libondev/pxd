@@ -30,7 +30,7 @@ export interface PopoverProps {
   ariaLabelledby?: string
   ariaTarget?: HTMLElement
   toggleOnTrigger?: boolean
-  autoFocusElement?: string | boolean
+  initialFocus?: string | boolean
   closeOnInvisible?: boolean
   closeOnPressEscape?: boolean
   closeOnOutsideClick?: boolean

@@ -6,7 +6,7 @@ A responsive book component.
 
 ```vue demo
 <template>
-  <PBook title="The user experience of the Frontend Cloud" />
+  <PBook heading="The user experience of the Frontend Cloud" />
 </template>
 ```
 
@@ -15,8 +15,8 @@ A responsive book component.
 ```vue demo
 <template>
   <PStack gap="8">
-    <PBook title="The user experience of the Frontend Cloud" variant="simple" />
-    <PBook title="The user experience of the Frontend Cloud" variant="stripe" />
+    <PBook heading="The user experience of the Frontend Cloud" variant="simple" />
+    <PBook heading="The user experience of the Frontend Cloud" variant="stripe" />
   </PStack>
 </template>
 ```
@@ -26,14 +26,14 @@ A responsive book component.
 ```vue demo
 <template>
   <PStack gap="8">
-    <PBook color="#9D2127" title="How Vercel improves your website's search engine ranking" />
+    <PBook color="#9D2127" heading="How Vercel improves your website's search engine ranking" />
     <PBook
       color="#7DC1C1"
-      title="Design Engineering at Vercel"
+      heading="Design Engineering at Vercel"
       class="text-white"
       variant="simple"
     />
-    <PBook color="#FED954" title="The user experience of the Frontend Cloud" />
+    <PBook color="#FED954" heading="The user experience of the Frontend Cloud" />
   </PStack>
 </template>
 ```
@@ -47,7 +47,7 @@ import Alpha from '@gdsicon/vue/alpha'
 
 <template>
   <PStack gap="8">
-    <PBook color="#9D2127" title="The user experience of the Frontend Cloud">
+    <PBook color="#9D2127" heading="The user experience of the Frontend Cloud">
       <template #icon>
         <svg
           fill="none"
@@ -77,7 +77,7 @@ import Alpha from '@gdsicon/vue/alpha'
         </svg>
       </template>
     </PBook>
-    <PBook color="#7DC1C1" title="Design Engineering at Vercel" class="text-white" variant="simple">
+    <PBook color="#7DC1C1" heading="Design Engineering at Vercel" class="text-white" variant="simple">
       <template #icon>
         <Alpha class="text-2xl" />
       </template>
@@ -90,7 +90,7 @@ import Alpha from '@gdsicon/vue/alpha'
 
 ```vue demo
 <template>
-  <PBook title="The user experience of the Frontend Cloud" :width="{ sm: 150, md: 220 }" />
+  <PBook heading="The user experience of the Frontend Cloud" :width="{ sm: 150, md: 220 }" />
 </template>
 ```
 
@@ -99,9 +99,9 @@ import Alpha from '@gdsicon/vue/alpha'
 ```vue demo
 <template>
   <PStack gap="8" align="end">
-    <PBook title="The user experience of the Frontend Cloud" width="300" />
-    <PBook title="The user experience of the Frontend Cloud" width="200" />
-    <PBook title="The user experience of the Frontend Cloud" width="150" />
+    <PBook heading="The user experience of the Frontend Cloud" width="300" />
+    <PBook heading="The user experience of the Frontend Cloud" width="200" />
+    <PBook heading="The user experience of the Frontend Cloud" width="150" />
   </PStack>
 </template>
 ```
@@ -111,8 +111,8 @@ import Alpha from '@gdsicon/vue/alpha'
 ```vue demo
 <template>
   <PStack gap="8">
-    <PBook title="The user experience of the Frontend Cloud" variant="simple" textured />
-    <PBook title="The user experience of the Frontend Cloud" variant="stripe" textured />
+    <PBook heading="The user experience of the Frontend Cloud" variant="simple" textured />
+    <PBook heading="The user experience of the Frontend Cloud" variant="stripe" textured />
   </PStack>
 </template>
 ```
@@ -122,7 +122,7 @@ import Alpha from '@gdsicon/vue/alpha'
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | color | `string` | - | Accent color of the spine and cover, any CSS color value |
-| title | `string \| number \| null` | - | Title text rendered on the cover |
+| heading | `string \| number \| null` | - | Heading text rendered on the cover |
 | width | `string \| Responsive \| number` | - | Book width in `px`, accepts a responsive object, defaults to `196` |
 | variant | `'simple' \| 'stripe'` | `stripe` | `stripe` adds the colored icon band, `simple` a flat cover |
 | textured | `boolean` | `false` | Overlay a paper texture on the cover |
@@ -132,4 +132,4 @@ import Alpha from '@gdsicon/vue/alpha'
 | Name | Description |
 | --- | --- |
 | icon | Icon slot |
-| title | Title slot |
+| heading | Heading slot |

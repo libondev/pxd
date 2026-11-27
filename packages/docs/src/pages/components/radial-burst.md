@@ -38,19 +38,19 @@ Use `primary-color` for the ray color and `background-color` for the base fill.
 </template>
 ```
 
-## Custom size
+## Custom dimension
 
-Use `size` to control the diameter of the rotating ray layer. When omitted, it defaults to `150%` of the container width.
+Use `dimension` to control the diameter of the rotating ray layer. When omitted, it defaults to `150%` of the container width.
 
 ```vue demo
 <template>
   <PStack align="center" gap="8">
-    <PRadialBurst class="h-80 w-80" size="175%">
-      <PText class="text-sm">size="175%"</PText>
+    <PRadialBurst class="h-80 w-80" dimension="175%">
+      <PText class="text-sm">dimension="175%"</PText>
     </PRadialBurst>
 
-    <PRadialBurst class="h-80 w-80" size="200%">
-      <PText class="text-sm">size="200%"</PText>
+    <PRadialBurst class="h-80 w-80" dimension="200%">
+      <PText class="text-sm">dimension="200%"</PText>
     </PRadialBurst>
   </PStack>
 </template>
@@ -76,7 +76,7 @@ Place any content in the default slot. It stays centered above the animated back
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| size | `string \| number` | - | Diameter of the rotating ray layer. Falls back to `150%` of the container when omitted. |
+| dimension | `string \| number` | - | Diameter of the rotating ray layer. Falls back to `150%` of the container when omitted. |
 | primary-color | `string` | `var(--color-yellow-400)` | Color of the radial rays. |
 | background-color | `string` | `var(--color-yellow-300)` | Background fill behind the rays. |
 

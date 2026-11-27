@@ -194,7 +194,7 @@ watch(
       </div>
 
       <PButton
-        icon
+        icon-only
         size="sm"
         variant="ghost"
         class="text-foreground-secondary"
@@ -204,7 +204,7 @@ watch(
         <ChevronDoubleLeftIcon class="size-em" aria-hidden="true" />
       </PButton>
       <PButton
-        icon
+        icon-only
         size="xs"
         variant="ghost"
         class="text-foreground-secondary"
@@ -222,7 +222,7 @@ watch(
       />
 
       <PButton
-        icon
+        icon-only
         size="xs"
         variant="ghost"
         class="text-foreground-secondary"
@@ -232,7 +232,7 @@ watch(
         <ChevronRightIcon class="size-em" aria-hidden="true" />
       </PButton>
       <PButton
-        icon
+        icon-only
         size="xs"
         variant="ghost"
         class="text-foreground-secondary"

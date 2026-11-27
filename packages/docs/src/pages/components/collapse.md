@@ -7,7 +7,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
 ```vue demo
 <template>
   <PCollapseGroup>
-    <PCollapse title="Question A">
+    <PCollapse heading="Question A">
       <div class="mb-4">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
         debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
@@ -15,7 +15,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
       </div>
     </PCollapse>
 
-    <PCollapse title="Question B">
+    <PCollapse heading="Question B">
       <div class="mb-4">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
         debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
@@ -31,7 +31,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
 ```vue demo
 <template>
   <PCollapseGroup>
-    <PCollapse expand title="Question A">
+    <PCollapse expand heading="Question A">
       <div class="mb-4">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
         debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
@@ -39,7 +39,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
       </div>
     </PCollapse>
 
-    <PCollapse title="Question B">
+    <PCollapse heading="Question B">
       <div class="mb-4">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
         debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
@@ -55,7 +55,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
 ```vue demo
 <template>
   <PCollapseGroup multiple>
-    <PCollapse title="Question A">
+    <PCollapse heading="Question A">
       <div class="mb-4">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
         debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
@@ -63,7 +63,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
       </div>
     </PCollapse>
 
-    <PCollapse title="Question B">
+    <PCollapse heading="Question B">
       <div class="mb-4">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae alias
         debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non doloremque
@@ -80,7 +80,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
 <template>
   <PStack direction="vertical" gap="8">
     <PCollapseGroup size="sm">
-      <PCollapse title="Question A">
+      <PCollapse heading="Question A">
         <div class="mb-4">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
           alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
@@ -88,7 +88,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
         </div>
       </PCollapse>
 
-      <PCollapse title="Question B">
+      <PCollapse heading="Question B">
         <div class="mb-4">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
           alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
@@ -98,7 +98,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
     </PCollapseGroup>
 
     <PCollapseGroup size="md">
-      <PCollapse title="Question A">
+      <PCollapse heading="Question A">
         <div class="mb-4">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
           alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
@@ -106,7 +106,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
         </div>
       </PCollapse>
 
-      <PCollapse title="Question B">
+      <PCollapse heading="Question B">
         <div class="mb-4">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
           alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
@@ -116,7 +116,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
     </PCollapseGroup>
 
     <PCollapseGroup size="lg">
-      <PCollapse title="Question A">
+      <PCollapse heading="Question A">
         <div class="mb-4">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
           alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
@@ -124,7 +124,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
         </div>
       </PCollapse>
 
-      <PCollapse title="Question B">
+      <PCollapse heading="Question B">
         <div class="mb-4">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, cupiditate magnam? Quae
           alias debitis beatae nesciunt veniam excepturi soluta magnam vitae, eius deleniti non
@@ -140,7 +140,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| title | `string` | - | Heading rendered in the trigger, overridable by the `title` slot |
+| heading | `string` | - | Heading rendered in the trigger, overridable by the `heading` slot |
 | expand | `boolean` | `false` | Expand the panel; inside a group this is the initial state only |
 
 ## Events
@@ -161,7 +161,7 @@ A set of headings, vertically stacked, that each reveal an related section of co
 | Name | Description |
 | --- | --- |
 | default | Content revealed when the panel expands. |
-| title | Heading inside the trigger, falling back to the `title` prop. |
+| heading | Heading inside the trigger, falling back to the `heading` prop. |
 
 ## CollapseGroup Slots
 

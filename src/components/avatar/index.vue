@@ -15,12 +15,14 @@ const emits = defineEmits<AvatarEmits>()
 
 const loadingStatus = shallowRef<AvatarStatus>('idle')
 const isHideAvatar = computed(
-  () => !props.src || props.placeholder || loadingStatus.value === 'error',
+  () => !props.src || props.showPlaceholder || loadingStatus.value === 'error',
 )
 
 const avatarGroupContext = useAvatarGroupContext()
 
-const computedSize = computed(() => getCssUnitValue(props.size || avatarGroupContext?.props.size))
+const computedSize = computed(() =>
+  getCssUnitValue(props.dimension || avatarGroupContext?.props.dimension),
+)
 
 function onLoadError(event: Event) {
   loadingStatus.value = 'error'
@@ -49,13 +51,13 @@ defineExpose({
 <template>
   <div
     data-avatar
-    class="pxd-avatar text-xs after:inset-0 relative inline-flex size-(--avatar-size) items-center justify-center rounded-full bg-background-100 select-none after:absolute after:rounded-inherit after:border after:border-gray-alpha-300"
-    :style="{ '--avatar-size': computedSize }"
-    :data-placeholder="placeholder"
+    class="pxd-avatar text-xs after:inset-0 relative inline-flex size-(--avatar-dimension) items-center justify-center rounded-full bg-background-100 select-none after:absolute after:rounded-inherit after:border after:border-gray-alpha-300"
+    :style="{ '--avatar-dimension': computedSize }"
+    :data-placeholder="showPlaceholder"
     v-bind="$attrs"
   >
     <span
-      v-if="placeholder"
+      v-if="showPlaceholder"
       aria-hidden="true"
       class="pxd-avatar--placeholder inset-0 pointer-events-none absolute overflow-hidden rounded-inherit"
     >

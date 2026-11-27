@@ -7,43 +7,43 @@ Display an indicator of deployment status.
 ```vue demo
 <template>
   <PStack direction="vertical">
-    <PStatusDot state="QUEUED" />
-    <PStatusDot state="BUILDING" />
-    <PStatusDot state="ERROR" />
-    <PStatusDot state="READY" />
-    <PStatusDot state="CANCELED" />
+    <PStatusDot status="QUEUED" />
+    <PStatusDot status="BUILDING" />
+    <PStatusDot status="ERROR" />
+    <PStatusDot status="READY" />
+    <PStatusDot status="CANCELED" />
   </PStack>
 </template>
 ```
 
 ## Label
 
-Set the `label` property to show the status text.
+Set the `show-label` property to show the status text.
 
 ```vue demo
 <template>
   <PStack direction="vertical">
-    <PStatusDot label state="QUEUED" />
-    <PStatusDot label state="BUILDING" />
-    <PStatusDot label state="ERROR" />
-    <PStatusDot label state="READY" />
-    <PStatusDot label state="CANCELED" />
+    <PStatusDot show-label status="QUEUED" />
+    <PStatusDot show-label status="BUILDING" />
+    <PStatusDot show-label status="ERROR" />
+    <PStatusDot show-label status="READY" />
+    <PStatusDot show-label status="CANCELED" />
   </PStack>
 </template>
 ```
 
 ## Custom Label Text
 
-Or pass a `string` to the `label` to customize the text.
+Or pass a `string` to the `label` prop to customize the text.
 
 ```vue demo
 <template>
   <PStack direction="vertical">
-    <PStatusDot label="QuEuEd" state="QUEUED" />
-    <PStatusDot label="BuIlDiNg" state="BUILDING" />
-    <PStatusDot label="ErRoR" state="ERROR" />
-    <PStatusDot label="ReDaY" state="READY" />
-    <PStatusDot label="CaNcElEd" state="CANCELED" />
+    <PStatusDot label="QuEuEd" status="QUEUED" />
+    <PStatusDot label="BuIlDiNg" status="BUILDING" />
+    <PStatusDot label="ErRoR" status="ERROR" />
+    <PStatusDot label="ReDaY" status="READY" />
+    <PStatusDot label="CaNcElEd" status="CANCELED" />
   </PStack>
 </template>
 ```
@@ -52,5 +52,6 @@ Or pass a `string` to the `label` to customize the text.
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| label | `boolean \| string \| number \| null` | `false` | `true` shows the capitalized `state`, a value shows custom text |
-| state | `'QUEUED' \| 'BUILDING' \| 'READY' \| 'ERROR' \| 'CANCELED'` | `QUEUED` | Deployment status driving the dot color and default label |
+| label | `string \| number \| null` | - | Custom text shown next to the dot |
+| show-label | `boolean` | `false` | Show the capitalized `status` when no `label` is given |
+| status | `'QUEUED' \| 'BUILDING' \| 'READY' \| 'ERROR' \| 'CANCELED'` | `QUEUED` | Deployment status driving the dot color and default label |

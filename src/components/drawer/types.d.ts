@@ -3,20 +3,20 @@ import type { ChangeDetails } from '../../types/shared/change'
 import type { BasePosition, ComponentClass, ComponentText } from '../../types/shared/props'
 
 export interface DrawerProps {
-  title?: ComponentText
+  heading?: ComponentText
   subtitle?: ComponentText
-  size?: number | string
+  dimension?: number | string
   loading?: boolean
-  position?: BasePosition
+  side?: BasePosition
   modelValue?: boolean
   loadingText?: ComponentText
   wrapperClass?: ComponentClass
   contentClass?: ComponentClass
-  autoFocusElement?: string | boolean
+  initialFocus?: string | boolean
   defaultHeaderStyle?: boolean
   defaultFooterStyle?: boolean
   closeOnPressEscape?: boolean
-  closeOnClickOverlay?: boolean
+  closeOnOutsideClick?: boolean
   closeable?: boolean
   swipeToClose?: boolean
 }

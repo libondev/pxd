@@ -5,8 +5,8 @@ export interface MarqueeProps {
   text?: ComponentText
   color?: string
   background?: string
-  delay?: number | string
-  speed?: number | string
+  delay?: number
+  speed?: number
   scrollable?: boolean
   wrapable?: boolean
   pauseOnHover?: boolean

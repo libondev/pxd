@@ -86,7 +86,7 @@ import CrossIcon from '@gdsicon/vue/cross'
       </template>
 
       <template #suffix>
-        <PButton icon size="xs" variant="ghost">
+        <PButton icon-only size="xs" variant="ghost">
           <CrossIcon />
         </PButton>
       </template>
@@ -97,7 +97,7 @@ import CrossIcon from '@gdsicon/vue/cross'
 
 ## Speed and Delay
 
-Control the scrolling speed with `speed` (px/s) and the initial delay with `delay` (seconds).
+Control the scrolling speed with `speed` (px/s) and the initial delay with `delay` (milliseconds).
 
 ```vue demo
 <template>
@@ -105,7 +105,7 @@ Control the scrolling speed with `speed` (px/s) and the initial delay with `dela
     <PMarquee
       text="Slow scrolling speed at 30px/s with 2 seconds delay."
       :speed="30"
-      :delay="2"
+      :delay="2000"
     />
 
     <PMarquee
@@ -203,8 +203,8 @@ const marqueeRef = shallowRef()
 | text | `string` | `` | Text to scroll, used when the default slot is empty |
 | color | `string` | `var(--color-amber-900)` | Any CSS color applied to the text |
 | background | `string` | `var(--color-amber-100)` | Any CSS color applied to the background |
-| delay | `number \| string` | `1` | Seconds to wait before the first scroll starts |
-| speed | `number \| string` | `60` | Scrolling speed in pixels per second |
+| delay | `number` | `1000` | Milliseconds to wait before the first scroll starts |
+| speed | `number` | `60` | Scrolling speed in pixels per second |
 | scrollable | `boolean` | `true` | Animate the content; `false` truncates it with an ellipsis |
 | wrapable | `boolean` | `false` | Let the text wrap onto multiple lines, requires `scrollable` to be `false` |
 | pause-on-hover | `boolean` | `true` | Pause the animation while the pointer is over the marquee |
@@ -221,6 +221,8 @@ const marqueeRef = shallowRef()
 | Name | Description |
 | --- | --- |
 | default | Default slot |
+| prefix | Content rendered before the scrolling text |
+| suffix | Content rendered after the scrolling text |
 
 ## Methods
 

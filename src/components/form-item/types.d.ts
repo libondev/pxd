@@ -7,7 +7,7 @@ export interface FormItemProps {
   description?: string
   hint?: string
   required?: boolean
-  error?: string | null
+  errorMessage?: string | null
   errorPattern?: RegExp
   rules?: StandardSchema
   for?: string

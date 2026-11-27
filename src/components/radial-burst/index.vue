@@ -18,7 +18,7 @@ const wrapperStyle = computed<CSSProperties>(() => {
 
 const containerStyle = computed<CSSProperties>(() => {
   return {
-    'inline-size': getCssUnitValue(props.size),
+    'inline-size': getCssUnitValue(props.dimension),
     '--radial-burst-color-accent': props.primaryColor,
   }
 })

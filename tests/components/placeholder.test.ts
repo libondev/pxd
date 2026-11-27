@@ -23,6 +23,19 @@ describe('placeholder', () => {
     wrapper.unmount()
   })
 
+  it('should accept a variant prop', () => {
+    const wrapper = mount(Placeholder, {
+      props: {
+        variant: 'inverted',
+      },
+    })
+
+    expect(wrapper.attributes('data-variant')).toBe('inverted')
+    expect(wrapper.classes()).toContain('is-inverted')
+
+    wrapper.unmount()
+  })
+
   it('should accept color prop', () => {
     const wrapper = mount(Placeholder, {
       props: {
