@@ -215,6 +215,11 @@
     "category": "Typography"
   },
   {
+    "camelized": "Image Cropper",
+    "name": "image-cropper",
+    "category": "Form"
+  },
+  {
     "camelized": "Image Preview",
     "name": "image-preview",
     "category": "Data Display"

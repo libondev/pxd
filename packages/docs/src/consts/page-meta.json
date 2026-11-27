@@ -171,6 +171,10 @@
     "title": "Hue Text",
     "description": "Colors text deterministically from its own content. The same string always resolves to the same color, so a name, an ID or a tag keeps a stable identity across…"
   },
+  "/components/image-cropper": {
+    "title": "Image Cropper",
+    "description": "Choose the part of an image to keep by moving and resizing a selection, or by panning and zooming the image under a fixed frame."
+  },
   "/components/image-preview": {
     "title": "Image Preview",
     "description": "A thumbnail strip that opens a full-screen viewer with zoom, rotation, panning and gallery navigation."

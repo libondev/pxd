@@ -23,6 +23,7 @@ import Drawer from '../../src/components/drawer/index.vue'
 import EffortSlider from '../../src/components/effort-slider/index.vue'
 import Gauge from '../../src/components/gauge/index.vue'
 import HoldButton from '../../src/components/hold-button/index.vue'
+import ImageCropper from '../../src/components/image-cropper/index.vue'
 import ImagePreview from '../../src/components/image-preview/index.vue'
 import Input from '../../src/components/input/index.vue'
 import List from '../../src/components/list/index.vue'
@@ -2032,6 +2033,55 @@ describe('agent readings and pages', () => {
     await agent.act({ steps: [{ ref: 'image-preview', action: 'setValue', args: ['Desk'] }] })
 
     expect(find(agent.snapshot(), 'image-preview')).toMatchObject({ value: 1, label: 'Desk' })
+  })
+
+  it('should take an image cropper crop and turn the image', async () => {
+    const wrapper = track(
+      mount(ImageCropper, {
+        props: { src: 'photo.png' },
+        attrs: { 'aria-label': 'Photo' },
+      }),
+    )
+    const image = wrapper.find('[data-image-cropper-image]')
+
+    Object.defineProperty(image.element, 'naturalWidth', { configurable: true, value: 640 })
+    Object.defineProperty(image.element, 'naturalHeight', { configurable: true, value: 420 })
+    await image.trigger('load')
+
+    const agent = createAgent()
+
+    expect(find(agent.snapshot(), 'image-cropper')).toMatchObject({
+      label: 'Photo',
+      actions: ['setCrop', 'rotate', 'flip', 'setZoom'],
+    })
+
+    const set = await agent.act({
+      steps: [
+        {
+          ref: 'image-cropper',
+          action: 'setCrop',
+          args: [{ x: 0, y: 0, width: 320, height: 210 }],
+        },
+      ],
+    })
+
+    expect(set.ok).toBe(true)
+    expect(find(agent.snapshot(), 'image-cropper').value).toMatchObject({
+      x: 0,
+      y: 0,
+      width: 320,
+      height: 210,
+    })
+
+    const rotated = await agent.act({
+      steps: [{ ref: 'image-cropper', action: 'rotate', args: [1] }],
+    })
+
+    expect(rotated.ok).toBe(true)
+    expect(find(agent.snapshot(), 'image-cropper').value).toMatchObject({ rotation: 90 })
+    expect(wrapper.findComponent(ImageCropper).emitted('crop-commit')?.at(-1)?.[1]).toMatchObject({
+      source: 'agent',
+    })
   })
 
   it('should take a page number and refuse a page size it does not offer', async () => {

@@ -309,7 +309,7 @@ function onChange(value: string, details: ChangeDetails) {
 | Field | Type | Meaning |
 | --- | --- | --- |
 | source | `'user' \| 'agent' \| 'programmatic' \| undefined` | Who changed it: a person, a step, or code. |
-| reason | `string \| undefined` | Why it changed, from a closed list: a person's `'typed'`, `'cleared'`, `'item-press'`, `'trigger-press'`, `'escape-key'`, `'outside-press'`, `'close-press'`, `'swipe'`, `'step'`, `'settle'`; or `'api'` and `'sync'` when nobody pressed anything. |
+| reason | `string \| undefined` | Why it changed, from a closed list: a person's `'typed'`, `'cleared'`, `'item-press'`, `'trigger-press'`, `'escape-key'`, `'outside-press'`, `'close-press'`, `'swipe'`, `'step'`, `'settle'`, `'drag'`, `'pinch'`, `'wheel'`, `'step-key'`, `'zoom-key'`, `'zoom-input'`, `'rotate-key'`, `'rotate-press'`, `'flip-press'`; or `'api'`, `'sync'`, `'image-load'` and `'aspect-ratio-change'` when nobody pressed anything. |
 | cancel | `() => void` | Refuses the write, where the component owns it: the value stays, and `update:model-value` is not emitted. |
 | canceled | `boolean` | Whether `cancel()` was called. |
 
@@ -419,6 +419,7 @@ A component appears in `snapshot` only when it declares itself to the bridge. To
 | `form` | `validate`, `submit` |
 | `gauge` | — |
 | `hold-button` | `hold` |
+| `image-cropper` | `setCrop`, `rotate`, `flip`, `setZoom` |
 | `image-preview` | `setOpen`, `setValue`, `zoomIn`, `zoomOut`, `rotate`, `reset` |
 | `input` | `setValue`, `focus`, `blur`, `select` |
 | `list` | `setValue`, `focus`, `dispatch` |

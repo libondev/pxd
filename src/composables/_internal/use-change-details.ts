@@ -18,6 +18,15 @@ const INTERACTION_REASONS: ReadonlySet<ChangeReason> = new Set<ChangeReason>([
   'swipe',
   'step',
   'settle',
+  'drag',
+  'pinch',
+  'wheel',
+  'step-key',
+  'zoom-key',
+  'zoom-input',
+  'rotate-key',
+  'rotate-press',
+  'flip-press',
 ])
 
 // The cause of the change being dispatched, read by the emits it flows through, so a call
