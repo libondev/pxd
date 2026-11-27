@@ -52,7 +52,7 @@ function createHarness(
   options: HarnessOptions = {},
 ): Harness {
   const editor = document.createElement('div')
-  editor.className = 'pxd-mention-editor'
+  editor.className = 'pxd-mention--editor'
   editor.setAttribute('contenteditable', 'true')
   document.body.appendChild(editor)
   editor.focus()

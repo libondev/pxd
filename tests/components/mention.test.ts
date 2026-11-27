@@ -259,14 +259,14 @@ describe('mention', () => {
       attachTo: document.body,
       props: { placeholder: 'Type here' },
     })
-    expect(wrapper.find('.pxd-mention-editor--placeholder').exists()).toBe(true)
+    expect(wrapper.find('.pxd-mention--editor-placeholder').exists()).toBe(true)
 
     const el = editor()!
     el.textContent = ' '
     el.dispatchEvent(new InputEvent('input', { bubbles: true }))
     await nextTick()
 
-    expect(wrapper.find('.pxd-mention-editor--placeholder').exists()).toBe(false)
+    expect(wrapper.find('.pxd-mention--editor-placeholder').exists()).toBe(false)
 
     wrapper.unmount()
   })

@@ -183,9 +183,9 @@ watch(
 
 <template>
   <div data-calendar class="pxd-calendar w-full max-w-full text-foreground" v-bind="$attrs">
-    <div class="gap-1 mbe-2 flex items-center">
+    <div class="gap-0.5 mbe-2 flex items-center">
       <div
-        class="pxd-calendar--date min-w-0 ps-1 flex-1 truncate"
+        class="pxd-calendar--date min-w-0 ps-1 me-2 flex-1 truncate"
         :class="{ 'font-medium': !compact }"
       >
         <slot name="header" v-bind="panelInfo">
@@ -195,7 +195,7 @@ watch(
 
       <PButton
         icon-only
-        size="sm"
+        size="xs"
         variant="ghost"
         class="text-foreground-secondary"
         aria-label="Previous year"
@@ -216,7 +216,7 @@ watch(
 
       <PButton
         size="xs"
-        class="px-0.5"
+        variant="ghost"
         :text="configProvider.locale.date.today"
         @click="selectToday"
       />

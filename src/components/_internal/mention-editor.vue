@@ -162,13 +162,12 @@ defineExpose({
   <div
     data-mention-editor
     class="pxd-mention relative w-full max-w-full rounded-md bg-background-100"
-    :class="SIZES[computedSize].padding"
+    :class="[SIZES[computedSize].padding, SIZE_TEXT_CLASS[computedSize]]"
     v-bind="$attrs"
   >
     <span
       v-if="isEmpty && !isComposing && placeholder"
-      :class="SIZE_TEXT_CLASS[computedSize]"
-      class="pxd-mention-editor--placeholder inset-0 pointer-events-none absolute overflow-hidden px-(--input-ip) py-(--input-bp) text-gray-600 select-none"
+      class="pxd-mention--editor-placeholder inset-0 pointer-events-none absolute overflow-hidden px-(--input-ip) py-(--input-bp) text-gray-600 select-none"
       aria-hidden="true"
     >
       {{ placeholder }}
@@ -176,8 +175,8 @@ defineExpose({
 
     <div
       ref="editorRef"
-      class="pxd-mention-editor pxd-input--border relative w-full max-w-full appearance-none rounded-inherit bg-transparent px-(--input-ip) py-(--input-bp) font-inherit break-all text-foreground outline-none motion-safe:transition-appearance"
-      :class="[SIZES[computedSize].height, SIZE_TEXT_CLASS[computedSize], editorClass]"
+      class="pxd-mention--editor pxd-input--border relative w-full max-w-full appearance-none rounded-inherit bg-transparent px-(--input-ip) py-(--input-bp) font-inherit break-all text-foreground outline-none motion-safe:transition-appearance"
+      :class="[SIZES[computedSize].height, editorClass]"
       :style="editorSizeStyle"
       role="textbox"
       spellcheck="false"
@@ -205,7 +204,7 @@ defineExpose({
 </template>
 
 <style lang="postcss">
-.pxd-mention-editor[data-disabled='true'] {
+.pxd-mention--editor[data-disabled='true'] {
   cursor: not-allowed;
   color: var(--color-gray-700);
 }
