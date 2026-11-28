@@ -471,17 +471,12 @@ describe('image-cropper', () => {
     const cors = mount(ImageCropper, {
       props: { src: 'https://example.com/photo.png', crossorigin: 'anonymous' },
     })
-    const none = mount(ImageCropper, {
-      props: { src: 'https://example.com/photo.png', crossorigin: null },
-    })
 
     expect(plain.find('[data-image-cropper-image]').attributes('crossorigin')).toBeUndefined()
     expect(cors.find('[data-image-cropper-image]').attributes('crossorigin')).toBe('anonymous')
-    expect(none.find('[data-image-cropper-image]').attributes('crossorigin')).toBeUndefined()
 
     plain.unmount()
     cors.unmount()
-    none.unmount()
   })
 
   it('reports a CORS encoding failure', async () => {

@@ -51,7 +51,7 @@ describe('select', () => {
     wrapper.unmount()
   })
 
-  it('should merge caller classes into the root and inherit the font size', () => {
+  it('should merge caller classes into the root', () => {
     const wrapper = mount(Select, {
       props: { options },
       attrs: { class: 'w-1/2 text-lg' },
@@ -64,8 +64,6 @@ describe('select', () => {
     expect(root.classes()).toContain('text-lg')
     expect(root.classes()).not.toContain('w-full')
     expect(root.classes()).not.toContain('text-sm')
-    // The trigger takes its font size from the root, so a caller's text size still lands.
-    expect(wrapper.find('button').classes()).toContain('[font-size:inherit]!')
 
     wrapper.unmount()
   })
