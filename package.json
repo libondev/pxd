@@ -1,6 +1,6 @@
 {
   "name": "pxd",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "description": "A universal Vue 3.3+ component library with an agent-ready bridge: AI agents read and drive your UI through snapshot/act/query, WebMCP-ready, with a per-step policy gate and secret redaction. Built-in light/dark theme, PC & mobile ready, animation-free mode.",
   "keywords": [
     "agent",
