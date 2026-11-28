@@ -25,7 +25,7 @@ const isMultiple = computed(() => {
 })
 
 const isDisabled = computed(() => {
-  return props.disabled || !!choiceboxGroupContext?.props.disabled
+  return props.disabled || !!choiceboxGroupContext?.disabled
 })
 const inputName = computed(() => {
   if (isMultiple.value) {

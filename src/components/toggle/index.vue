@@ -3,6 +3,7 @@ import type { ToggleEmits, ToggleProps } from './types'
 import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import { computed } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { SIZE_TEXT_CLASS } from '../../constants/size.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -28,7 +29,11 @@ const SIZES = {
 
 const uniqueId = getUniqueId()
 
-const isDisabled = computed(() => props.disabled || props.loading)
+const { disabled: isFormDisabled } = useFormControl({
+  disabled: () => props.disabled,
+})
+
+const isDisabled = computed(() => isFormDisabled.value || props.loading)
 
 const configProvider = useConfigProvider()
 
@@ -45,7 +50,7 @@ useAgentNode({
   state: () => ({
     value: modelValue.value,
     checked: modelValue.value === props.activeValue,
-    disabled: props.disabled ?? false,
+    disabled: isDisabled.value,
   }),
   actions: {
     setValue: async (value) => {

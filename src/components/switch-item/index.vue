@@ -3,6 +3,7 @@ import type { SwitchItemProps, SwitchItemEmits } from './types'
 import { computed } from 'vue'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { useFormItem } from '../../composables/use-form-item.js'
 import { useSwitchContext } from '../../contexts/switch.js'
 import { getUniqueId } from '../../utils/helper.js'
 
@@ -20,7 +21,11 @@ const switchGroupContext = useSwitchContext()
 
 const switchGroupName = switchGroupContext?.name ?? getUniqueId()
 
-const isDisabled = computed(() => props.disabled || switchGroupContext?.props.disabled || false)
+const formItem = useFormItem()
+
+const isDisabled = computed(
+  () => props.disabled || switchGroupContext?.disabled || formItem?.disabled || false,
+)
 
 const { modelValue, change } = useModelValue(
   switchGroupContext?.props ?? props,

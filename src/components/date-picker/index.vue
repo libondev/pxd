@@ -6,6 +6,7 @@ import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useFieldAttrs } from '../../composables/_internal/use-field-attrs.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
@@ -39,6 +40,9 @@ const calendarModelValue = computed(() => dayjsDateTime.value?.valueOf() ?? null
 
 const isSheet = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 const { fieldAttrs, popoverAttrs } = useFieldAttrs()
+const { disabled: isDisabled } = useFormControl({
+  disabled: () => props.disabled,
+})
 const { modelValue, change } = useModelValue(props, emits, {
   get() {
     if (draftInput.value !== null) {
@@ -265,7 +269,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
     v-model="popoverVisible"
     class="pxd-date-picker w-full"
     trigger="click"
-    :disabled="disabled"
+    :disabled="isDisabled"
     v-bind="popoverAttrs"
     :toggle-on-trigger="false"
     :content-class="POPOVER_PANEL_CLASS"
@@ -276,7 +280,7 @@ watch(() => props.modelValue, updateDayjsDateTime, { immediate: true })
       :id="id"
       :size="size"
       :invalid="invalid"
-      :disabled="disabled"
+      :disabled="isDisabled"
       :readonly="isSheet"
       :clearable="clearable"
       :model-value="modelValue"

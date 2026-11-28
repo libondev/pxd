@@ -38,6 +38,7 @@ const computedSize = computed(() => getFallbackValue(props.size, SIZES, configPr
 const {
   id: controlId,
   invalid: isInvalid,
+  disabled: isDisabled,
   required: isRequired,
   describedBy,
   labelId,
@@ -45,6 +46,7 @@ const {
   id: () => props.id,
   fallbackId: getUniqueId('p-switch'),
   invalid: () => props.invalid,
+  disabled: () => props.disabled,
 })
 useAgentNode({
   name: 'switch',
@@ -63,7 +65,14 @@ useAgentNode({
   },
 })
 
-provideSwitchContext({ props, emits, name: getUniqueId() })
+provideSwitchContext({
+  props,
+  emits,
+  name: getUniqueId(),
+  get disabled() {
+    return isDisabled.value
+  },
+})
 </script>
 
 <template>
@@ -74,6 +83,7 @@ provideSwitchContext({ props, emits, name: getUniqueId() })
     class="pxd-switch p-1 flex touch-manipulation rounded-lg border"
     :class="[fullWidth ? 'w-full' : 'w-max', computedSize]"
     :aria-invalid="isInvalid || undefined"
+    :aria-disabled="isDisabled || undefined"
     :aria-required="isRequired || undefined"
     :aria-describedby="describedBy || undefined"
     :aria-labelledby="labelId || undefined"

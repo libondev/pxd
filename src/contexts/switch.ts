@@ -6,6 +6,7 @@ export interface SwitchContext {
   name: string
   props: SwitchProps
   emits: EmitFn<SwitchEmits>
+  disabled?: boolean
 }
 
 export const [provideSwitchContext, useSwitchContext] = createContext<SwitchContext>('Switch')

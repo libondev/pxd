@@ -4,6 +4,7 @@ import MinusIcon from '@gdsicon/vue/minus'
 import PlusIcon from '@gdsicon/vue/plus'
 import { computed, reactive, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useModelCommit } from '../../composables/_internal/use-model-commit.js'
 import { useRepeatAction } from '../../composables/use-repeat-action.js'
 import { NOOP, isCompositionKeydown } from '../../utils/event.js'
@@ -38,7 +39,6 @@ const REGEXPS = {
 }
 
 const isFocused = shallowRef(false)
-
 const inputData = reactive<NumberInputData>({
   currentValue: props.modelValue ?? null,
   userInput: null,
@@ -70,13 +70,6 @@ const inputValue = computed(() => {
 
   return currentValue
 })
-
-const decreaseDisabled = computed(
-  () => props.disabled || (isNumber(props.modelValue) && props.modelValue <= props.min),
-)
-const increaseDisabled = computed(
-  () => props.disabled || (isNumber(props.modelValue) && props.modelValue >= props.max),
-)
 const valuePrecision = computed(() => {
   if (!isUndefined(props.precision)) {
     return props.precision
@@ -99,6 +92,18 @@ const inputAttrs = computed(() => ({
   'aria-valuemax': props.max,
 }))
 
+const { disabled: isDisabled, readonly: isReadonly } = useFormControl({
+  disabled: () => props.disabled,
+  readonly: () => props.readonly,
+})
+
+const decreaseDisabled = computed(
+  () => isDisabled.value || (isNumber(props.modelValue) && props.modelValue <= props.min),
+)
+const increaseDisabled = computed(
+  () => isDisabled.value || (isNumber(props.modelValue) && props.modelValue >= props.max),
+)
+
 const { modelValue, commit } = useModelCommit(props, emits)
 const { start: startDecrease, stop: stopDecrease } = useRepeatAction({
   enabled: () => !decreaseDisabled.value,
@@ -115,7 +120,7 @@ useAgentNode({
     value: modelValue.value ?? null,
     min: props.min,
     max: props.max,
-    disabled: props.disabled ?? false,
+    disabled: isDisabled.value,
   }),
   actions: {
     setValue: (value) => {
@@ -181,7 +186,7 @@ function normalize(value: number | null) {
 }
 
 function increaseValue() {
-  if (props.readonly || props.disabled || increaseDisabled.value) {
+  if (isReadonly.value || isDisabled.value || increaseDisabled.value) {
     return
   }
 
@@ -192,7 +197,7 @@ function increaseValue() {
 }
 
 function decreaseValue() {
-  if (props.readonly || props.disabled || decreaseDisabled.value) {
+  if (isReadonly.value || isDisabled.value || decreaseDisabled.value) {
     return
   }
 
@@ -317,8 +322,8 @@ watch(
     type="text"
     input-mode="decimal"
     :input-attrs="inputAttrs"
-    :disabled="disabled"
-    :readonly="readonly"
+    :disabled="isDisabled"
+    :readonly="isReadonly"
     :invalid="invalid"
     :clear-on-press-escape="false"
     :model-value="inputValue"

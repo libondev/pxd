@@ -4,6 +4,7 @@ import { optionItems } from '../../agent/items.js'
 import { useAgentChange } from '../../composables/_internal/use-agent-change.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { provideChoiceboxContext } from '../../contexts/choicebox.js'
 import { getUniqueId } from '../../utils/helper.js'
 import PChoiceboxItem from '../choicebox-item/index.vue'
@@ -17,6 +18,10 @@ defineOptions({
 const props = withDefaults(defineProps<ChoiceboxProps>(), { gap: 3 })
 const emits = defineEmits<ChoiceboxEmits>()
 const notify = useAgentChange(emits)
+
+const { disabled: isDisabled } = useFormControl({
+  disabled: () => props.disabled,
+})
 
 useAgentNode({
   name: 'choicebox',
@@ -36,7 +41,14 @@ useAgentNode({
   },
 })
 
-provideChoiceboxContext({ props, emits, name: getUniqueId() })
+provideChoiceboxContext({
+  props,
+  emits,
+  name: getUniqueId(),
+  get disabled() {
+    return isDisabled.value
+  },
+})
 </script>
 
 <template>
@@ -46,6 +58,7 @@ provideChoiceboxContext({ props, emits, name: getUniqueId() })
     :aria-label="label"
     :aria-multiselectable="multiple"
     :role="multiple ? 'group' : 'radiogroup'"
+    :aria-disabled="isDisabled || undefined"
     class="pxd-choicebox"
     v-bind="$attrs"
   >

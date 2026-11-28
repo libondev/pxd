@@ -6,6 +6,7 @@ interface ChoiceboxContext {
   name: string
   props: ChoiceboxProps
   emits: EmitFn<ChoiceboxEmits>
+  disabled?: boolean
 }
 
 export const [provideChoiceboxContext, useChoiceboxContext] =

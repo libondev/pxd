@@ -28,6 +28,7 @@ import {
 import { notifyAgentChange } from '../../agent/report.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
 import {
   completeCrop,
@@ -234,19 +235,9 @@ const zoomLimit = computed(() => {
 })
 const zoomPercent = computed(() => `${Math.round(zoom.value * 100)}%`)
 const isReady = computed(() => status.value === 'loaded')
-const isInert = computed(() => props.disabled || !isReady.value)
-const canZoomIn = computed(() => !isInert.value && zoom.value < zoomLimit.value - 0.001)
-const canZoomOut = computed(() => !isInert.value && zoom.value > 1.001)
 const viewportRatio = computed(() =>
   naturalSize.value ? `${naturalSize.value.width} / ${naturalSize.value.height}` : '4 / 3',
 )
-const viewportCursor = computed(() => {
-  if (props.mode !== 'frame' || isInert.value) {
-    return undefined
-  }
-
-  return dragging.value ? 'grabbing' : 'grab'
-})
 const imageStyle = computed(() => {
   const at = layout.value
   const crop = activeCrop.value
@@ -292,6 +283,21 @@ const selectionAria = computed(() => {
     'aria-valuemax': Math.max(0, Math.round(size.width - crop.width)),
     'aria-valuetext': `${crop.width} by ${crop.height} pixels, at ${crop.x}, ${crop.y}`,
   }
+})
+
+const { disabled: isDisabled } = useFormControl({
+  disabled: () => props.disabled,
+})
+
+const isInert = computed(() => isDisabled.value || !isReady.value)
+const canZoomIn = computed(() => !isInert.value && zoom.value < zoomLimit.value - 0.001)
+const canZoomOut = computed(() => !isInert.value && zoom.value > 1.001)
+const viewportCursor = computed(() => {
+  if (props.mode !== 'frame' || isInert.value) {
+    return undefined
+  }
+
+  return dragging.value ? 'grabbing' : 'grab'
 })
 const handleList = computed(() => {
   const at = layout.value
@@ -346,7 +352,7 @@ useAgentNode({
     rotation: activeCrop.value?.rotation ?? 0,
     mode: props.mode,
     shape: props.shape,
-    disabled: props.disabled,
+    disabled: isDisabled.value,
   }),
   actions: {
     setCrop: (value) => setCrop(value as ImageCrop),
@@ -1308,7 +1314,7 @@ defineExpose({
     :data-shape="shape"
     :data-loading="status === 'loading' || undefined"
     :data-error="status === 'error' || undefined"
-    :data-disabled="disabled || undefined"
+    :data-disabled="isDisabled || undefined"
     :data-dragging="dragging ? true : undefined"
     class="pxd-image-cropper w-full overflow-hidden rounded-lg border bg-background-100"
   >
@@ -1347,7 +1353,7 @@ defineExpose({
           aria-label="Crop area"
           aria-roledescription="crop area"
           v-bind="selectionAria"
-          :aria-disabled="disabled || undefined"
+          :aria-disabled="isDisabled || undefined"
           :data-dragging="dragging === 'move' || dragging === 'pan' || undefined"
           class="pxd-image-cropper--selection border-white absolute z-1 border self-focus-ring outline-none"
           :class="[

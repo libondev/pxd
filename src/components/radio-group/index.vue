@@ -24,6 +24,7 @@ const notify = useAgentChange(emits)
 const {
   id: controlId,
   invalid: isInvalid,
+  disabled: isDisabled,
   required: isRequired,
   describedBy,
   labelId,
@@ -31,6 +32,7 @@ const {
   id: () => props.id,
   fallbackId: groupId,
   invalid: () => props.invalid,
+  disabled: () => props.disabled,
 })
 
 useAgentNode({
@@ -51,7 +53,14 @@ useAgentNode({
   },
 })
 
-provideRadioGroupContext({ props, emits, name: groupId })
+provideRadioGroupContext({
+  props,
+  emits,
+  name: groupId,
+  get disabled() {
+    return isDisabled.value
+  },
+})
 </script>
 
 <template>
@@ -61,6 +70,7 @@ provideRadioGroupContext({ props, emits, name: groupId })
     role="radiogroup"
     :id="controlId"
     :aria-invalid="isInvalid || undefined"
+    :aria-disabled="isDisabled || undefined"
     :aria-required="isRequired || undefined"
     :aria-describedby="describedBy || undefined"
     :aria-labelledby="labelId || undefined"

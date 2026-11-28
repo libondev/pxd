@@ -4,6 +4,7 @@ import StarIcon from '@gdsicon/vue/star'
 import StarFillIcon from '@gdsicon/vue/star-fill'
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
 import { useConfigProvider } from '../../contexts/config-provider.js'
@@ -73,6 +74,10 @@ const fills = computed(() => {
   return result
 })
 
+const { disabled: isDisabled, readonly: isReadonly } = useFormControl({
+  disabled: () => props.disabled,
+  readonly: () => props.readonly,
+})
 const { attrs, classes } = useTailwindVariant(
   {
     base: 'pxd-rating inline-flex cursor-pointer touch-none items-center rounded-sm self-focus-ring select-none',
@@ -93,12 +98,12 @@ const { attrs, classes } = useTailwindVariant(
   },
   {
     selection: () => {
-      const { size, disabled, readonly } = props
+      const { size } = props
 
       return {
         size: size || configProvider.size,
-        disabled,
-        readonly,
+        disabled: isDisabled.value,
+        readonly: isReadonly.value,
       }
     },
   },
@@ -155,7 +160,7 @@ function isActivePointer(event: PointerEvent) {
   return isDragging.value && event.pointerId === activePointerId
 }
 function handlePointerDown(event: PointerEvent) {
-  if (props.readonly || props.disabled || !ratingRef.value) {
+  if (isReadonly.value || isDisabled.value || !ratingRef.value) {
     return
   }
 
@@ -207,7 +212,7 @@ function handlePointerEnter() {
 }
 
 function handlePointerMove(event: PointerEvent) {
-  if (props.readonly || props.disabled || isDragging.value || event.pointerType !== 'mouse') {
+  if (isReadonly.value || isDisabled.value || isDragging.value || event.pointerType !== 'mouse') {
     return
   }
 
@@ -227,7 +232,7 @@ function handlePointerLeave() {
 }
 
 function handleKeydown(event: KeyboardEvent) {
-  if (props.readonly || props.disabled) {
+  if (isReadonly.value || isDisabled.value) {
     return
   }
   const { key } = event
@@ -280,7 +285,7 @@ onBeforeUnmount(() => {
 
       <span
         class="pxd-rating--star-filled inset-0 absolute inline-flex text-trim-both"
-        :class="disabled ? 'text-gray-500' : 'text-primary'"
+        :class="isDisabled ? 'text-gray-500' : 'text-primary'"
         :style="{
           clipPath: `inset(0 ${(1 - fills[i - 1]) * 100}% 0 0)`,
           color: color,

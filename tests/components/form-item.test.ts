@@ -2,10 +2,13 @@ import type { StandardSchema } from '../../src/types/shared/form'
 import { flushPromises, mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vite-plus/test'
 import { defineComponent, h, nextTick, reactive, ref } from 'vue'
+import PCheckboxGroup from '../../src/components/checkbox-group/index.vue'
 import PFormItem from '../../src/components/form-item/index.vue'
 import PForm from '../../src/components/form/index.vue'
 import PInput from '../../src/components/input/index.vue'
+import PNumberInput from '../../src/components/number-input/index.vue'
 import PSelect from '../../src/components/select/index.vue'
+import PSlider from '../../src/components/slider/index.vue'
 
 const requiredSchema: StandardSchema = {
   '~standard': {
@@ -258,6 +261,96 @@ describe('form-item', () => {
 
     expect(wrapper.find(`[id="${ids[0]}"]`).text()).toContain('Role')
     expect(wrapper.find(`[id="${ids[1]}"]`).text()).toContain('User')
+
+    wrapper.unmount()
+  })
+
+  it('passes a disabled form down to the controls inside its items', () => {
+    const model = reactive({ role: 'user', email: '' })
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(
+            PForm,
+            { model, disabled: true },
+            {
+              default: () => [
+                h(
+                  PFormItem,
+                  { name: 'role', label: 'Role' },
+                  {
+                    default: () =>
+                      h(PSelect, {
+                        modelValue: model.role,
+                        options: [{ label: 'User', value: 'user' }],
+                      }),
+                  },
+                ),
+                h(
+                  PFormItem,
+                  { name: 'email', label: 'Email' },
+                  { default: () => h(PInput, { modelValue: model.email }) },
+                ),
+              ],
+            },
+          ),
+      }),
+    )
+
+    expect(wrapper.find('.pxd-button').attributes('disabled')).toBeDefined()
+    expect(wrapper.find('input').attributes('disabled')).toBeDefined()
+
+    wrapper.unmount()
+  })
+
+  it('passes a disabled form down to grouped, ranged and wrapped controls', () => {
+    const model = reactive({ picks: [] as string[], step: 1, level: 2 })
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(
+            PForm,
+            { model, disabled: true },
+            {
+              default: () => [
+                h(
+                  PFormItem,
+                  { name: 'picks', label: 'Picks' },
+                  {
+                    default: () =>
+                      h(PCheckboxGroup, {
+                        modelValue: model.picks,
+                        options: [
+                          { label: 'One', value: 'one' },
+                          { label: 'Two', value: 'two' },
+                        ],
+                      }),
+                  },
+                ),
+                h(
+                  PFormItem,
+                  { name: 'level', label: 'Level' },
+                  { default: () => h(PSlider, { modelValue: model.level }) },
+                ),
+                h(
+                  PFormItem,
+                  { name: 'step', label: 'Step' },
+                  { default: () => h(PNumberInput, { modelValue: model.step }) },
+                ),
+              ],
+            },
+          ),
+      }),
+    )
+
+    const checkboxes = wrapper.findAll('input[type="checkbox"]')
+
+    expect(checkboxes.length).toBe(2)
+    expect(checkboxes.every((box) => box.attributes('disabled') !== undefined)).toBe(true)
+    expect(wrapper.find('[role="slider"]').attributes('aria-disabled')).toBe('true')
+    expect(
+      wrapper.findAll('button').every((button) => button.attributes('disabled') !== undefined),
+    ).toBe(true)
 
     wrapper.unmount()
   })

@@ -9,6 +9,7 @@ import type {
 } from './types'
 import { computed, nextTick, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useListKeyboardController } from '../../composables/_internal/use-list-keyboard-controller.js'
 import { useMentionSuggest } from '../../composables/_internal/use-mention-suggest.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
@@ -59,6 +60,9 @@ const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
 
+const { disabled: isDisabled } = useFormControl({
+  disabled: () => props.disabled,
+})
 const { value: popoverVisible, toggle: togglePopoverVisible } = useToggleValue(false)
 
 const {
@@ -75,7 +79,7 @@ const {
   getFilter: () => props.filterMethod,
   getRemoteFilter: () => props.remoteFilter,
   isFilterDebounced: () => props.filterDebounce,
-  isDisabled: () => props.disabled,
+  isDisabled: () => isDisabled.value,
   visible: popoverVisible,
   setVisible: (visible) => togglePopoverVisible(visible),
 })
@@ -250,7 +254,7 @@ defineExpose({
     match-width
     :initial-focus="!inlineQuery"
     :return-focus-on-deactivate="false"
-    :disabled="disabled"
+    :disabled="isDisabled"
     :close-on-press-escape="closeOnPressEscape"
     v-bind="$attrs"
     :wrapper-class="wrapperClass"
@@ -264,10 +268,10 @@ defineExpose({
       :model-value="modelValue"
       @update:model-value="onModelUpdate"
       :size="computedSize"
-      :data-disabled="disabled"
-      :class="{ 'is-disabled': disabled }"
+      :data-disabled="isDisabled"
+      :class="{ 'is-disabled': isDisabled }"
       :placeholder="placeholder"
-      :disabled="disabled"
+      :disabled="isDisabled"
       :triggers="triggers"
       :submit-on-enter="submitOnEnter"
       :rows="rows"
@@ -306,7 +310,7 @@ defineExpose({
           :aria-controls="listId"
           :aria-expanded="popoverVisible"
           :aria-busy="isPending"
-          :aria-disabled="disabled"
+          :aria-disabled="isDisabled"
           :placeholder="searchPlaceholder"
           class="pxd-mention--search h-7 min-w-0 text-sm flex-1 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"
           @input="onSearchInput"

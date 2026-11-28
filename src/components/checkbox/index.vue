@@ -7,6 +7,7 @@ import { computed, shallowRef } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { useFormItem } from '../../composables/use-form-item.js'
 import { useCheckboxGroupContext } from '../../contexts/checkbox.js'
 import { getUniqueId } from '../../utils/helper.js'
 
@@ -27,8 +28,11 @@ const uniqueId = getUniqueId()
 const rootRef = shallowRef<HTMLElement>()
 
 const checkboxGroupContext = useCheckboxGroupContext()
+const formItem = useFormItem()
 
-const isDisabled = computed(() => props.disabled || checkboxGroupContext?.props.disabled || false)
+const isDisabled = computed(
+  () => props.disabled || checkboxGroupContext?.disabled || formItem?.disabled || false,
+)
 
 const { modelValue, change } = useModelValue(
   checkboxGroupContext?.props ?? props,

@@ -26,6 +26,7 @@ const notify = useAgentChange(emits)
 const {
   id: controlId,
   invalid: isInvalid,
+  disabled: isDisabled,
   required: isRequired,
   describedBy,
   labelId,
@@ -33,6 +34,7 @@ const {
   id: () => props.id,
   fallbackId: getUniqueId('p-checkbox-group'),
   invalid: () => props.invalid,
+  disabled: () => props.disabled,
 })
 
 useAgentNode({
@@ -53,7 +55,13 @@ useAgentNode({
   },
 })
 
-provideCheckboxGroupContext({ props, emits })
+provideCheckboxGroupContext({
+  props,
+  emits,
+  get disabled() {
+    return isDisabled.value
+  },
+})
 </script>
 
 <template>
@@ -65,6 +73,7 @@ provideCheckboxGroupContext({ props, emits })
     aria-multiselectable="true"
     :id="controlId"
     :aria-invalid="isInvalid || undefined"
+    :aria-disabled="isDisabled || undefined"
     :aria-required="isRequired || undefined"
     :aria-describedby="describedBy || undefined"
     :aria-labelledby="labelId || undefined"

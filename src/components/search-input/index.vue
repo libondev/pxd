@@ -4,6 +4,7 @@ import LoaderCircleIcon from '@gdsicon/vue/loader-circle'
 import MagnifyingGlassIcon from '@gdsicon/vue/magnifying-glass'
 import { shallowRef } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useForwardRefExpose } from '../../composables/_internal/use-forward-ref-expose.js'
 import { isCompositionKeydown } from '../../utils/event.js'
 import PInput from '../input/index.vue'
@@ -18,13 +19,18 @@ const emits = defineEmits<SearchInputEmits>()
 
 const inputRef = shallowRef<InstanceType<typeof PInput>>()
 
+const { disabled: isDisabled, readonly: isReadonly } = useFormControl({
+  disabled: () => props.disabled,
+  readonly: () => props.readonly,
+})
+
 useAgentNode({
   name: 'search-input',
   state: () => ({
     value: props.modelValue ?? '',
     loading: props.loading ?? false,
-    disabled: props.disabled ?? false,
-    readonly: props.readonly ?? false,
+    disabled: isDisabled.value,
+    readonly: isReadonly.value,
   }),
   actions: {
     setValue: (value) => {

@@ -110,7 +110,7 @@ const stopList = computed(() => {
 })
 
 const markList = computed(() => {
-  const { marks, min, max, disabled } = props
+  const { marks, min, max } = props
 
   if (!marks) {
     return []
@@ -140,7 +140,7 @@ const markList = computed(() => {
             : index === entries.length - 1
               ? 'end'
               : 'center',
-      disabled,
+      disabled: isDisabled.value,
     }),
   }))
 })
@@ -170,7 +170,7 @@ const labelShiftList = computed(() => [
 const trackStyle = computed(() => ({
   left: `${startPercentage.value}%`,
   width: `${endPercentage.value - startPercentage.value}%`,
-  backgroundColor: props.disabled
+  backgroundColor: isDisabled.value
     ? 'var(--color-gray-alpha-400)'
     : getFallbackValue(props.variant, VARIANT_COLORS, 'primary'),
 }))
@@ -180,7 +180,7 @@ const configProvider = useConfigProvider()
 const thumbList = computed(() => {
   const base = {
     size: props.size || configProvider.size,
-    disabled: props.disabled,
+    disabled: isDisabled.value,
   }
   const [start, end] = valueRange.value
   const endThumb = {
@@ -210,6 +210,7 @@ const thumbList = computed(() => {
 const {
   id: controlId,
   invalid: isInvalid,
+  disabled: isDisabled,
   required: isRequired,
   describedBy,
   labelId,
@@ -217,6 +218,7 @@ const {
   id: () => props.id,
   fallbackId: getUniqueId('p-slider'),
   invalid: () => props.invalid,
+  disabled: () => props.disabled,
 })
 const { attrs, classes } = useTailwindVariant(
   {
@@ -235,7 +237,7 @@ const { attrs, classes } = useTailwindVariant(
   {
     selection: () => ({
       size: props.size || configProvider.size,
-      disabled: props.disabled,
+      disabled: isDisabled.value,
     }),
   },
 )
@@ -246,7 +248,7 @@ useAgentNode({
     value: activeValue.value ?? props.min,
     min: props.min,
     max: props.max,
-    disabled: props.disabled ?? false,
+    disabled: isDisabled.value,
   }),
   actions: {
     setValue: (value) => {
@@ -367,7 +369,7 @@ function updateValueFromPosition(clientX: number) {
   }
 }
 function handleMove(ev: PointerEvent) {
-  if (activeThumb.value === null || props.disabled) {
+  if (activeThumb.value === null || isDisabled.value) {
     return
   }
 
@@ -377,7 +379,7 @@ function handleMove(ev: PointerEvent) {
 }
 
 function startDragging(ev: PointerEvent, index: ThumbIndex) {
-  if (!sliderRef.value || props.disabled || activeThumb.value !== null) {
+  if (!sliderRef.value || isDisabled.value || activeThumb.value !== null) {
     return
   }
 
@@ -452,7 +454,7 @@ function initModelValue() {
 }
 
 function onThumbKeydown(ev: KeyboardEvent, index: ThumbIndex) {
-  if (props.disabled) {
+  if (isDisabled.value) {
     return
   }
 
@@ -487,7 +489,7 @@ function onThumbKeydown(ev: KeyboardEvent, index: ThumbIndex) {
 }
 
 function selectMark(value: number) {
-  if (props.disabled) {
+  if (isDisabled.value) {
     return
   }
 
@@ -560,7 +562,7 @@ onBeforeUnmount(stopDragging)
           :aria-valuemax="thumb.index === 0 ? valueRange[1] : max"
           :aria-valuenow="thumb.value"
           aria-orientation="horizontal"
-          :aria-disabled="disabled"
+          :aria-disabled="isDisabled"
           :aria-invalid="isInvalid || undefined"
           :aria-required="isRequired || undefined"
           :aria-describedby="describedBy || undefined"
@@ -589,7 +591,7 @@ onBeforeUnmount(stopDragging)
         :key="mark.value"
         type="button"
         tabindex="-1"
-        :disabled="disabled"
+        :disabled="isDisabled"
         :class="[
           mark.classes,
           mark.value <= valueRange[1] ? activeMarkClasses : inactiveMarkClasses,

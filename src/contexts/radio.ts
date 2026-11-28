@@ -6,6 +6,7 @@ export interface RadioGroupContext {
   name: string
   props: RadioGroupProps
   emits: EmitFn<RadioGroupEmits>
+  disabled?: boolean
 }
 
 export const [provideRadioGroupContext, useRadioGroupContext] = createContext<RadioGroupContext>(

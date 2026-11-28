@@ -71,7 +71,22 @@ const hasValue = computed(() => {
 
   return props.multiple ? Array.isArray(value) && value.length > 0 : !isNil(value) && value !== ''
 })
-const showClear = computed(() => props.clearable && hasValue.value && !props.disabled)
+
+const {
+  id: controlId,
+  invalid: isInvalid,
+  disabled: isDisabled,
+  required: isRequired,
+  describedBy,
+  labelId,
+} = useFormControl({
+  id: () => props.id,
+  fallbackId: triggerId,
+  invalid: () => props.invalid,
+  disabled: () => props.disabled,
+})
+
+const showClear = computed(() => props.clearable && hasValue.value && !isDisabled.value)
 
 const notify = useAgentChange(emits)
 // Resolved from the full options so a selected item that the filter drops still has a label.
@@ -91,18 +106,6 @@ const translatedLabel = computed(() => {
 const configProvider = useConfigProvider()
 
 const computedSize = computed(() => props.size || configProvider.size)
-
-const {
-  id: controlId,
-  invalid: isInvalid,
-  required: isRequired,
-  describedBy,
-  labelId,
-} = useFormControl({
-  id: () => props.id,
-  fallbackId: triggerId,
-  invalid: () => props.invalid,
-})
 
 const attrs = useAttrs()
 
@@ -196,7 +199,7 @@ function clear() {
 }
 
 function onTriggerKeydown(event: KeyboardEvent) {
-  if (props.disabled) {
+  if (isDisabled.value) {
     return
   }
 
@@ -267,7 +270,7 @@ watch(listOptions, async () => {
       :match-width="matchWidth"
       :keep-height="filterable"
       :initial-focus="filterable"
-      :disabled="disabled"
+      :disabled="isDisabled"
       :content-class="POPOVER_PANEL_CLASS"
       @wrapper-keydown="onKeydown"
     >
@@ -285,7 +288,7 @@ watch(listOptions, async () => {
         :variant="variant"
         :shape="shape"
         :size="computedSize"
-        :disabled="disabled"
+        :disabled="isDisabled"
         @keydown="onTriggerKeydown"
       >
         <template v-if="$slots.prefix" #prefix>
@@ -331,7 +334,7 @@ watch(listOptions, async () => {
             inputmode="search"
             :aria-controls="listId"
             :aria-expanded="popoverVisible"
-            :aria-disabled="disabled"
+            :aria-disabled="isDisabled"
             :aria-activedescendant="listRef?.activeItemId"
             :placeholder="searchPlaceholder"
             class="pxd-select--search h-7 min-w-0 text-sm flex-1 appearance-none border-none bg-transparent font-inherit text-foreground outline-none"

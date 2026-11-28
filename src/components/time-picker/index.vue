@@ -5,6 +5,7 @@ import ClockIcon from '@gdsicon/vue/clock'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useFieldAttrs } from '../../composables/_internal/use-field-attrs.js'
+import { useFormControl } from '../../composables/_internal/use-form-control.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { PRESET_MEDIA_QUERIES, useMediaQuery } from '../../composables/use-media-query.js'
 import { POPOVER_PANEL_CLASS } from '../../constants/popover-panel.js'
@@ -61,6 +62,9 @@ const configProvider = useConfigProvider()
 
 const isSheet = useMediaQuery(PRESET_MEDIA_QUERIES.IS_XS)
 const { fieldAttrs, popoverAttrs } = useFieldAttrs()
+const { disabled: isDisabled } = useFormControl({
+  disabled: () => props.disabled,
+})
 const { modelValue, change } = useModelValue(props, emits, {
   get() {
     return dayjsDateTime.value ? dayjsDateTime.value.format(props.labelFormat ?? 'HH:mm:ss') : ''
@@ -278,7 +282,7 @@ onBeforeUnmount(() => {
     v-model="popoverVisible"
     class="pxd-time-picker w-full"
     trigger="click"
-    :disabled="disabled"
+    :disabled="isDisabled"
     v-bind="popoverAttrs"
     :toggle-on-trigger="false"
     :content-class="POPOVER_PANEL_CLASS"
@@ -290,7 +294,7 @@ onBeforeUnmount(() => {
       :id="id"
       :size="size"
       :invalid="invalid"
-      :disabled="disabled"
+      :disabled="isDisabled"
       :readonly="isSheet"
       :clearable="clearable"
       :model-value="modelValue"

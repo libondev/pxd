@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
 import { useTailwindVariant } from '../../composables/_internal/use-tailwind-variant.js'
+import { useFormItem } from '../../composables/use-form-item.js'
 import { useRadioGroupContext } from '../../contexts/radio.js'
 import { getUniqueId } from '../../utils/helper.js'
 
@@ -21,7 +22,11 @@ const radioGroupContext = useRadioGroupContext()
 
 const radioGroupName = radioGroupContext?.name ?? getUniqueId()
 
-const isDisabled = computed(() => props.disabled || radioGroupContext?.props.disabled || false)
+const formItem = useFormItem()
+
+const isDisabled = computed(
+  () => props.disabled || radioGroupContext?.disabled || formItem?.disabled || false,
+)
 
 const { modelValue, change } = useModelValue(
   radioGroupContext?.props ?? props,

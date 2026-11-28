@@ -5,6 +5,7 @@ import { createContext } from '../utils/_internal/context.js'
 export interface CheckboxGroupContext {
   props: CheckboxGroupProps
   emits: EmitFn<CheckboxGroupEmits>
+  disabled?: boolean
 }
 
 export const [provideCheckboxGroupContext, useCheckboxGroupContext] =
