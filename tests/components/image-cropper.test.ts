@@ -3,6 +3,7 @@ import type { VueWrapper } from '@vue/test-utils'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
+import ImageCropper from '../../src/components/image-cropper/index.vue'
 import {
   completeCrop,
   fitCrop,
@@ -14,8 +15,7 @@ import {
   shownSize,
   zoomCrop,
   zoomOf,
-} from '../../src/components/image-cropper/geometry'
-import ImageCropper from '../../src/components/image-cropper/index.vue'
+} from '../../src/utils/_internal/image-cropper'
 import { installResizeObserverMock } from '../helpers/setup'
 
 const LIMITS = { minWidth: 1, minHeight: 1, maxZoom: 10 }

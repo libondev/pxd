@@ -29,13 +29,9 @@ import { notifyAgentChange } from '../../agent/report.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { cancelableChangeDetailsFor } from '../../composables/_internal/use-change-details.js'
 import { useResizeObserver } from '../../composables/use-resize-observer.js'
-import { caf, raf } from '../../utils/event.js'
-import PButton from '../button/index.vue'
-import PCheckerboard from '../checkerboard/index.vue'
-import PSpinner from '../spinner/index.vue'
-import { cropImageElement } from './crop.js'
 import {
   completeCrop,
+  cropImageElement,
   fitCrop,
   flipCrop,
   initialCrop,
@@ -53,7 +49,11 @@ import {
   type ImageCropperLimits,
   type ImageCropperRect,
   type ImageCropperResizeHandle,
-} from './geometry.js'
+} from '../../utils/_internal/image-cropper.js'
+import { caf, raf } from '../../utils/event.js'
+import PButton from '../button/index.vue'
+import PCheckerboard from '../checkerboard/index.vue'
+import PSpinner from '../spinner/index.vue'
 
 interface ImageCropperChangeAt {
   reason: ImageCropperCropChangeReason
