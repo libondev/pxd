@@ -70,6 +70,23 @@ describe('select', () => {
     wrapper.unmount()
   })
 
+  it('should apply the trigger class to the trigger button only', () => {
+    const wrapper = mount(Select, {
+      props: { options, triggerClass: 'h-12 rounded-full' },
+    })
+
+    const root = wrapper.find('.pxd-select')
+    const triggerButton = wrapper.find('.pxd-button')
+
+    expect(root.classes()).not.toContain('h-12')
+    expect(root.classes()).not.toContain('rounded-full')
+    expect(triggerButton.classes()).toContain('h-12')
+    expect(triggerButton.classes()).toContain('rounded-full')
+    expect(triggerButton.classes()).toContain('text-gray-600')
+
+    wrapper.unmount()
+  })
+
   it('should put caller attributes and listeners on the trigger button', async () => {
     let clickTarget: EventTarget | null = null
     const onClick = vi.fn((event: Event) => {

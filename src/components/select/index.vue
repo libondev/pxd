@@ -273,7 +273,7 @@ watch(listOptions, async () => {
     >
       <PButton
         ref="buttonRef"
-        class="relative max-w-full justify-between [font-size:inherit]! text-inherit"
+        class="relative max-w-full [&>[data-button-content]]:flex-1 [&>[data-button-content]]:justify-start"
         align="left"
         full-width
         :id="controlId"
@@ -281,7 +281,7 @@ watch(listOptions, async () => {
         :aria-required="isRequired || undefined"
         :aria-describedby="describedBy || undefined"
         :aria-labelledby="labelId ? `${labelId} ${valueId}` : undefined"
-        :class="{ 'text-gray-600': !translatedLabel, 'pe-8': showClear }"
+        :class="[triggerClass, { 'text-gray-600': !translatedLabel, 'pe-8': showClear }]"
         :variant="variant"
         :shape="shape"
         :size="computedSize"

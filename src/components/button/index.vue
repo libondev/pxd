@@ -135,7 +135,7 @@ useAgentNode({
     <PSpinner v-if="!iconOnly && loading" />
     <slot v-else-if="!loading" name="prefix" />
 
-    <span class="min-w-0 flex items-center whitespace-nowrap">
+    <span data-button-content class="min-w-0 flex items-center whitespace-nowrap">
       <PSpinner v-if="iconOnly && loading" />
       <slot v-else>{{ text }}</slot>
     </span>

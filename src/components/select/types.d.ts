@@ -1,6 +1,6 @@
 import type { ButtonVariant } from '../../types/components/button'
 import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
-import type { ComponentSizeWithXs, ComponentShape } from '../../types/shared/props'
+import type { ComponentClass, ComponentSizeWithXs, ComponentShape } from '../../types/shared/props'
 import type {
   ListFilterMethodFn,
   ListModelValue,
@@ -15,6 +15,7 @@ export interface SelectProps {
   size?: ComponentSizeWithXs
   id?: string
   shape?: ComponentShape
+  triggerClass?: ComponentClass
   variant?: ButtonVariant
   invalid?: boolean
   options?: ListOptions

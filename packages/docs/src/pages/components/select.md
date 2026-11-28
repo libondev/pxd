@@ -251,6 +251,7 @@ const options = [
 | variant | `ButtonVariant` | - | Visual style of the trigger button, e.g. `primary` or `ghost` |
 | size | `'sm' \| 'md' \| 'lg'` | - | Size of the trigger button, falls back to the config provider size |
 | shape | `'default' \| 'square' \| 'rounded'` | - | Trigger button shape: `default`, `square` or `rounded` |
+| trigger-class | `ComponentClass` | - | Extra classes merged into the trigger button |
 | options | `ListOptions` | - | Options to display, entries with `type: 'group'` render as groups |
 | disabled | `boolean` | - | Disable the trigger and stop the menu from opening |
 | invalid | `boolean` | - | Show the invalid border and focus ring on the trigger |
