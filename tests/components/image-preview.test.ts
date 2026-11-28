@@ -86,7 +86,7 @@ describe('image-preview', () => {
   it('renders a thumbnail per image', () => {
     const wrapper = mountImagePreview()
 
-    expect(wrapper.attributes('data-image-preview')).toBeDefined()
+    expect(wrapper.find('[data-image-preview]').exists()).toBe(true)
     expect(wrapper.findAll('button')).toHaveLength(3)
     expect(wrapper.findAll('img')).toHaveLength(3)
     expect(wrapper.findAll('img')[0].attributes('src')).toBe(IMAGES[0].src)
@@ -134,6 +134,7 @@ describe('image-preview', () => {
     const wrapper = mountImagePreview({ mode: 'viewer' })
 
     expect(wrapper.props('mode')).toBe('viewer')
+    expect(wrapper.find('[data-image-preview]').exists()).toBe(false)
     expect(wrapper.findAll('button')).toHaveLength(0)
 
     ;(wrapper.vm as unknown as { open: (index: number) => void }).open(2)

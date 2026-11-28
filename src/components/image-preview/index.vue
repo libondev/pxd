@@ -399,166 +399,164 @@ defineExpose({
 </script>
 
 <template>
-  <div data-image-preview v-bind="$attrs">
-    <div v-if="mode !== 'viewer'" class="gap-2 flex flex-wrap">
-      <button
-        v-for="item in items"
-        :key="item.index"
-        type="button"
-        :aria-label="item.image.alt || `Preview image ${item.index + 1}`"
-        class="size-20 p-0 shrink-0 cursor-pointer appearance-none overflow-hidden rounded-lg border-0 bg-gray-100 self-focus-ring"
-        @click="open(item.index)"
+  <div v-if="mode !== 'viewer'" data-image-preview class="gap-2 flex flex-wrap" v-bind="$attrs">
+    <button
+      v-for="item in items"
+      :key="item.index"
+      type="button"
+      :aria-label="item.image.alt || `Preview image ${item.index + 1}`"
+      class="size-20 p-0 shrink-0 cursor-pointer appearance-none overflow-hidden rounded-lg border-0 bg-gray-100 self-focus-ring"
+      @click="open(item.index)"
+    >
+      <slot
+        name="item"
+        :image="item.image"
+        :index="item.index"
+        :src="item.src"
+        :status="item.status"
       >
-        <slot
-          name="item"
-          :image="item.image"
-          :index="item.index"
+        <img
+          v-if="item.src"
           :src="item.src"
-          :status="item.status"
-        >
-          <img
-            v-if="item.src"
-            :src="item.src"
-            alt=""
-            loading="lazy"
-            decoding="async"
-            fetchpriority="low"
-            crossorigin="anonymous"
-            class="size-full object-cover"
-          />
-        </slot>
-      </button>
-    </div>
+          alt=""
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+          crossorigin="anonymous"
+          class="size-full object-cover"
+        />
+      </slot>
+    </button>
+  </div>
 
-    <PClientTeleport to="body">
-      <dialog
-        :ref="setDialogRef"
-        class="pxd-dialog inset-0 m-0 p-0 pointer-events-auto fixed size-full max-h-full max-w-full overflow-visible border-0 bg-transparent text-inherit outline-none backdrop:hidden"
-        :data-closing="isClosing || undefined"
-        :aria-label="dialogLabel"
-        @cancel="onCancel"
-        @close="onNativeClose"
-        @keydown="onKeydown"
-        @submit="onDialogSubmit"
-      >
-        <Transition name="pxd-transition--fade" appear @after-leave="onAfterLeave">
+  <PClientTeleport to="body">
+    <dialog
+      :ref="setDialogRef"
+      class="pxd-dialog inset-0 m-0 p-0 pointer-events-auto fixed size-full max-h-full max-w-full overflow-visible border-0 bg-transparent text-inherit outline-none backdrop:hidden"
+      :data-closing="isClosing || undefined"
+      :aria-label="dialogLabel"
+      @cancel="onCancel"
+      @close="onNativeClose"
+      @keydown="onKeydown"
+      @submit="onDialogSubmit"
+    >
+      <Transition name="pxd-transition--fade" appear @after-leave="onAfterLeave">
+        <div
+          v-if="isVisible"
+          ref="panelRef"
+          data-image-preview-dialog
+          :aria-label="dialogLabel"
+          class="pxd-image-preview--dialog inset-0 text-white pointer-events-auto fixed flex flex-col bg-background-100/80 outline-none select-none"
+          @click="onBackdropClick"
+        >
           <div
-            v-if="isVisible"
-            ref="panelRef"
-            data-image-preview-dialog
-            :aria-label="dialogLabel"
-            class="pxd-image-preview--dialog inset-0 text-white pointer-events-auto fixed flex flex-col bg-background-100/80 outline-none select-none"
+            data-image-preview-stage
+            class="min-h-0 relative flex-1 touch-none overflow-hidden"
+            :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'"
+            @pointerdown="onPointerDown"
+            @wheel.prevent="onWheel"
             @click="onBackdropClick"
           >
-            <div
-              data-image-preview-stage
-              class="min-h-0 relative flex-1 touch-none overflow-hidden"
-              :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'"
-              @pointerdown="onPointerDown"
-              @wheel.prevent="onWheel"
-              @click="onBackdropClick"
-            >
-              <template v-if="currentItem">
-                <img
-                  v-if="currentItem.src"
-                  :key="currentItem.src"
-                  :src="currentItem.src"
-                  :alt="currentItem.image.alt || `Image ${currentIndex + 1}`"
-                  draggable="false"
-                  class="size-full object-contain"
-                  :style="imageStyle"
-                />
+            <template v-if="currentItem">
+              <img
+                v-if="currentItem.src"
+                :key="currentItem.src"
+                :src="currentItem.src"
+                :alt="currentItem.image.alt || `Image ${currentIndex + 1}`"
+                draggable="false"
+                class="size-full object-contain"
+                :style="imageStyle"
+              />
 
-                <slot
-                  v-else-if="currentItem.status === 'loading'"
-                  name="loading"
-                  :index="currentIndex"
-                  :item="currentItem.image"
-                >
-                  <span class="flex size-full items-center justify-center">
-                    <PSpinner class="text-2xl text-white/70" />
-                  </span>
-                </slot>
+              <slot
+                v-else-if="currentItem.status === 'loading'"
+                name="loading"
+                :index="currentIndex"
+                :item="currentItem.image"
+              >
+                <span class="flex size-full items-center justify-center">
+                  <PSpinner class="text-2xl text-white/70" />
+                </span>
+              </slot>
 
-                <slot v-else name="error" :index="currentIndex" :item="currentItem.image">
-                  <span class="text-sm text-white/70 flex size-full items-center justify-center">
-                    Failed to load image
-                  </span>
-                </slot>
-              </template>
-            </div>
+              <slot v-else name="error" :index="currentIndex" :item="currentItem.image">
+                <span class="text-sm text-white/70 flex size-full items-center justify-center">
+                  Failed to load image
+                </span>
+              </slot>
+            </template>
+          </div>
 
-            <span
-              v-if="images.length > 1"
-              data-image-preview-counter
-              aria-live="polite"
-              class="top-4 left-4 text-sm text-white/80 absolute"
-            >
-              {{ currentIndex + 1 }} / {{ images.length }}
+          <span
+            v-if="images.length > 1"
+            data-image-preview-counter
+            aria-live="polite"
+            class="top-4 left-4 text-sm text-white/80 absolute"
+          >
+            {{ currentIndex + 1 }} / {{ images.length }}
+          </span>
+
+          <button
+            type="button"
+            :aria-label="configProvider.locale.interaction.close"
+            class="top-10 right-10 absolute"
+            :class="CONTROL_CLASS"
+            @click="close"
+          >
+            <CrossIcon class="size-em" />
+          </button>
+
+          <button
+            v-if="images.length > 1"
+            type="button"
+            aria-label="Previous image"
+            class="left-4"
+            :class="ARROW_CLASS"
+            @click="switchBy(-1)"
+          >
+            <ChevronLeftIcon class="size-5" />
+          </button>
+
+          <button
+            v-if="images.length > 1"
+            type="button"
+            aria-label="Next image"
+            class="right-4"
+            :class="ARROW_CLASS"
+            @click="switchBy(1)"
+          >
+            <ChevronRightIcon class="size-5" />
+          </button>
+
+          <div
+            class="bottom-4 p-1 gap-0.5 backdrop-blur-sm absolute left-1/2 flex -translate-x-1/2 items-center rounded-lg bg-gray-alpha-700"
+          >
+            <button type="button" aria-label="Zoom out" :class="CONTROL_CLASS" @click="zoomOut">
+              <MagnifyingGlassMinusIcon class="size-em" />
+            </button>
+
+            <span data-image-preview-zoom class="min-w-12 text-sm text-center tabular-nums">
+              {{ zoomPercent }}
             </span>
 
-            <button
-              type="button"
-              :aria-label="configProvider.locale.interaction.close"
-              class="top-10 right-10 absolute"
-              :class="CONTROL_CLASS"
-              @click="close"
-            >
-              <CrossIcon class="size-em" />
+            <button type="button" aria-label="Zoom in" :class="CONTROL_CLASS" @click="zoomIn">
+              <MagnifyingGlassPlusIcon class="size-em" />
             </button>
 
-            <button
-              v-if="images.length > 1"
-              type="button"
-              aria-label="Previous image"
-              class="left-4"
-              :class="ARROW_CLASS"
-              @click="switchBy(-1)"
-            >
-              <ChevronLeftIcon class="size-5" />
+            <button type="button" aria-label="Rotate" :class="CONTROL_CLASS" @click="rotate">
+              <RotateClockwiseIcon class="size-em" />
             </button>
 
-            <button
-              v-if="images.length > 1"
-              type="button"
-              aria-label="Next image"
-              class="right-4"
-              :class="ARROW_CLASS"
-              @click="switchBy(1)"
-            >
-              <ChevronRightIcon class="size-5" />
+            <button type="button" aria-label="Reset" :class="CONTROL_CLASS" @click="reset">
+              <RefreshCounterClockwiseIcon class="size-em" />
             </button>
 
-            <div
-              class="bottom-4 p-1 gap-0.5 backdrop-blur-sm absolute left-1/2 flex -translate-x-1/2 items-center rounded-lg bg-gray-alpha-700"
-            >
-              <button type="button" aria-label="Zoom out" :class="CONTROL_CLASS" @click="zoomOut">
-                <MagnifyingGlassMinusIcon class="size-em" />
-              </button>
-
-              <span data-image-preview-zoom class="min-w-12 text-sm text-center tabular-nums">
-                {{ zoomPercent }}
-              </span>
-
-              <button type="button" aria-label="Zoom in" :class="CONTROL_CLASS" @click="zoomIn">
-                <MagnifyingGlassPlusIcon class="size-em" />
-              </button>
-
-              <button type="button" aria-label="Rotate" :class="CONTROL_CLASS" @click="rotate">
-                <RotateClockwiseIcon class="size-em" />
-              </button>
-
-              <button type="button" aria-label="Reset" :class="CONTROL_CLASS" @click="reset">
-                <RefreshCounterClockwiseIcon class="size-em" />
-              </button>
-
-              <button type="button" aria-label="Download" :class="CONTROL_CLASS" @click="download">
-                <DownloadIcon class="size-em" />
-              </button>
-            </div>
+            <button type="button" aria-label="Download" :class="CONTROL_CLASS" @click="download">
+              <DownloadIcon class="size-em" />
+            </button>
           </div>
-        </Transition>
-      </dialog>
-    </PClientTeleport>
-  </div>
+        </div>
+      </Transition>
+    </dialog>
+  </PClientTeleport>
 </template>
