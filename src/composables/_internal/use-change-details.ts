@@ -2,7 +2,7 @@ import type { ChangeAt, ChangeDetails, ChangeReason, ChangeSource } from '../../
 
 interface ChangeCause {
   source?: ChangeSource
-  reason?: string
+  reason?: ChangeReason
 }
 
 // Reasons a person's action produces. A write that names one of these happened in front of
@@ -96,7 +96,7 @@ export function resolveChangeSource(at?: ChangeAt): ChangeSource | undefined {
   return INTERACTION_REASONS.has(at.reason) ? 'user' : 'programmatic'
 }
 
-export function changeDetails(reason?: string): ChangeDetails {
+export function changeDetails(reason?: ChangeReason): ChangeDetails {
   return {
     source: cause?.source,
     reason: reason ?? cause?.reason,
@@ -104,15 +104,17 @@ export function changeDetails(reason?: string): ChangeDetails {
   }
 }
 
-export function changeDetailsFor(at?: ChangeAt): ChangeDetails {
+export function changeDetailsFor<R extends ChangeReason = ChangeReason>(
+  at?: ChangeAt<R>,
+): ChangeDetails<R> {
   return {
     source: resolveChangeSource(at),
-    reason: at?.reason ?? cause?.reason,
+    reason: (at?.reason ?? cause?.reason) as R | undefined,
     canceled: false,
   }
 }
 
-export function cancelableChangeDetails(reason?: string): ChangeDetails {
+export function cancelableChangeDetails(reason?: ChangeReason): ChangeDetails {
   const details = changeDetails(reason)
   let canceled = false
 
@@ -127,7 +129,9 @@ export function cancelableChangeDetails(reason?: string): ChangeDetails {
   }
 }
 
-export function cancelableChangeDetailsFor(at?: ChangeAt): ChangeDetails {
+export function cancelableChangeDetailsFor<R extends ChangeReason = ChangeReason>(
+  at?: ChangeAt<R>,
+): ChangeDetails<R> {
   const details = changeDetailsFor(at)
   let canceled = false
 

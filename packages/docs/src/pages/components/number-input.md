@@ -206,7 +206,7 @@ const value = ref(0)
 | --- | --- | --- |
 | blur | `(event: FocusEvent) => void` | Emitted when the input loses focus, after the value has been rounded to the precision and clamped back into range. |
 | focus | `(event: FocusEvent) => void` | Emitted when the input gains focus. |
-| change | `(value: number \| null, details: ChangeDetails) => void` | Emitted when the inner input reports a committed change, on blur after an edit, on Enter, or when `Escape` clears the field. |
+| change | `(value: number \| null, details: ChangeDetails<NumberInputChangeReason>) => void` | Emitted when the inner input reports a committed change, on blur after an edit, on Enter, or when `Escape` clears the field. |
 | update:model-value | `(value: number \| null) => void` | Emitted whenever the component writes a new value, from typing, the step controls, the arrow keys, `Escape`, or blur clamping. |
 
 ## Slots

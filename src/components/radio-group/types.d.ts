@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentOption, ComponentValue } from '../../types/shared/props'
+
+export type RadioGroupChangeReason = Extract<ChangeReason, 'api' | 'item-press'>
 
 export interface RadioGroupProps {
   disabled?: boolean
@@ -12,6 +14,6 @@ export interface RadioGroupProps {
 export type RadioGroupChangeValue = ComponentValue
 
 export interface RadioGroupEmits {
-  change: [RadioGroupChangeValue, details: ChangeDetails]
+  change: [RadioGroupChangeValue, details: ChangeDetails<RadioGroupChangeReason>]
   'update:model-value': [RadioGroupChangeValue]
 }

@@ -1,5 +1,10 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentDirection } from '../../types/shared/props'
+
+export type ResizableChangeReason = Extract<
+  ChangeReason,
+  'api' | 'settle' | 'step' | 'trigger-press'
+>
 
 export type ResizableDblclickAction = 'reset' | 'fold'
 
@@ -17,7 +22,7 @@ export interface ResizableProps {
 }
 
 export interface ResizableEmits {
-  change: [number[], details: ChangeDetails]
+  change: [number[], details: ChangeDetails<ResizableChangeReason>]
   reset: [number[]]
   'update:collapsed': [boolean]
   'update:model-value': [number[]]

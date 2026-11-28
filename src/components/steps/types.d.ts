@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentDirection, ComponentText, ComponentSize } from '../../types/shared/props'
+
+export type StepsChangeReason = Extract<ChangeReason, 'api' | 'item-press'>
 
 export type StepsStatus = 'process' | 'finish' | 'error' | 'wait'
 
@@ -21,6 +23,6 @@ export interface StepsProps {
 }
 
 export interface StepsEmits {
-  change: [number, details: ChangeDetails]
+  change: [number, details: ChangeDetails<StepsChangeReason>]
   'update:model-value': [number]
 }

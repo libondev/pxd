@@ -1,5 +1,10 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentSize, ComponentDateTimeValue } from '../../types/shared/props'
+
+export type TimePickerChangeReason = Extract<
+  ChangeReason,
+  'api' | 'cleared' | 'item-press' | 'outside-press' | 'trigger-press' | 'typed'
+>
 
 export interface DateTimePreset<T = Date> {
   label: string
@@ -22,6 +27,6 @@ export interface TimePickerProps {
 }
 
 export interface TimePickerEmits {
-  change: [ComponentDateTimeValue, details: ChangeDetails]
+  change: [ComponentDateTimeValue, details: ChangeDetails<TimePickerChangeReason>]
   'update:model-value': [ComponentDateTimeValue]
 }

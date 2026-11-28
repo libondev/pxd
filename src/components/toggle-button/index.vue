@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ChangeAt } from '../../types/shared/change'
-import type { ToggleButtonProps, ToggleButtonEmits } from './types'
+import type { ToggleButtonChangeReason, ToggleButtonProps, ToggleButtonEmits } from './types'
 import { computed } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
 import { useModelValue } from '../../composables/_internal/use-model-value.js'
@@ -117,7 +117,7 @@ if (!toggleButtonGroupContext?.props.options?.length) {
   })
 }
 
-function applyChecked(checked: boolean, at: ChangeAt) {
+function applyChecked(checked: boolean, at: ChangeAt<ToggleButtonChangeReason>) {
   const context = toggleButtonGroupContext
 
   if (!context) {

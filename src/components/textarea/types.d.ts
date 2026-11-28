@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentText, ComponentSizeWithXs } from '../../types/shared/props'
+
+export type TextareaChangeReason = Extract<ChangeReason, 'api' | 'typed'>
 
 export interface TextareaProps {
   id?: string
@@ -24,7 +26,7 @@ export type TextareaChangeValue = string | number
 
 export interface TextareaEmits {
   'update:model-value': [TextareaChangeValue]
-  change: [TextareaChangeValue, details: ChangeDetails]
+  change: [TextareaChangeValue, details: ChangeDetails<TextareaChangeReason>]
   focus: [FocusEvent]
   blur: [FocusEvent]
 }

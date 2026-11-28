@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import type { ChangeReason } from '../../types/shared/change'
 import type { ListOptionSelected } from '../list/types'
-import type { CommandMenuEmits, CommandMenuProps } from './types'
+import type { CommandMenuCloseReason, CommandMenuEmits, CommandMenuProps } from './types'
 import { nextTick, shallowRef, watch } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
@@ -34,7 +33,7 @@ const uniqueId = getUniqueId()
 const listId = getUniqueId('command-menu-list')
 
 // The dialog says which way it closed; the menu passes that on instead of assuming.
-let closeReason: ChangeReason = 'close-press'
+let closeReason: CommandMenuCloseReason = 'close-press'
 
 const filterKeyword = shallowRef('')
 const listRef = shallowRef<InstanceType<typeof PList>>()
@@ -75,7 +74,7 @@ useAgentNode({
   },
 })
 
-function onDialogClose(reason: ChangeReason) {
+function onDialogClose(reason: CommandMenuCloseReason) {
   closeReason = reason
   emits('close', reason)
 }
@@ -99,7 +98,7 @@ function showModal() {
   emits('show')
 }
 
-function closeModal(reason: ChangeReason = 'close-press') {
+function closeModal(reason: CommandMenuCloseReason = 'close-press') {
   emits('close', reason)
   change(false, { reason })
 }

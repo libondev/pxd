@@ -1,6 +1,8 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentPosition } from '../../types/shared/props'
 import type { ListModelValue, ListOptions } from '../list/types'
+
+export type MenuChangeReason = Extract<ChangeReason, 'item-press'>
 
 export interface MenuProps {
   options?: ListOptions
@@ -12,6 +14,6 @@ export interface MenuProps {
 }
 
 export interface MenuEmits {
-  change: [ListModelValue, details: ChangeDetails]
+  change: [ListModelValue, details: ChangeDetails<MenuChangeReason>]
   'update:model-value': [ListModelValue]
 }

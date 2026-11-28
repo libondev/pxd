@@ -1,4 +1,6 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
+
+export type ActiveGraphChangeReason = Extract<ChangeReason, 'api' | 'item-press'>
 
 interface FieldNames {
   date: string
@@ -20,7 +22,7 @@ export interface ActiveGraphProps {
 }
 
 export interface ActiveGraphEmits {
-  change: [string, details: ChangeDetails]
+  change: [string, details: ChangeDetails<ActiveGraphChangeReason>]
 }
 
 export interface ActiveGraphCellData {

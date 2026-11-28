@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ChangeAt } from '../../types/shared/change'
-import type { StepsOption, StepsEmits, StepsProps, StepsStatus } from './types'
+import type { StepsChangeReason, StepsOption, StepsEmits, StepsProps, StepsStatus } from './types'
 import { computed } from 'vue'
 import { optionItems } from '../../agent/items.js'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
@@ -105,7 +105,7 @@ function resolveStatus(option: StepsOption, index: number): StepsStatus {
   return 'wait'
 }
 
-function select(index: number, at: ChangeAt = { reason: 'item-press' }) {
+function select(index: number, at: ChangeAt<StepsChangeReason> = { reason: 'item-press' }) {
   const option = props.options[index]
 
   if (!props.clickable || !option || option.disabled || index === activeIndex.value) {

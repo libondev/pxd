@@ -1,6 +1,8 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentClass, ComponentSize } from '../../types/shared/props'
 import type { ListFilterMethodFn, ListOptionSelected, ListOptions } from '../list/types'
+
+export type MentionChangeReason = Extract<ChangeReason, 'typed'>
 
 export type MentionRemoteFilterFn = (
   query: string,
@@ -71,7 +73,7 @@ export interface MentionSelectPayload {
 }
 
 export interface MentionEmits {
-  change: [string, details: ChangeDetails]
+  change: [string, details: ChangeDetails<MentionChangeReason>]
   submit: [string]
   select: [MentionSelectPayload]
   'mention-click': [MentionClickPayload]

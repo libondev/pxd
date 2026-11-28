@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentText } from '../../types/shared/props'
+
+export type SwitchItemChangeReason = Extract<ChangeReason, 'item-press'>
 
 export interface SwitchItemProps {
   label?: ComponentText
@@ -11,6 +13,6 @@ export interface SwitchItemProps {
 export type SwitchItemChangeValue = string | number
 
 export interface SwitchItemEmits {
-  change: [SwitchItemChangeValue, details: ChangeDetails]
+  change: [SwitchItemChangeValue, details: ChangeDetails<SwitchItemChangeReason>]
   'update:model-value': [SwitchItemChangeValue]
 }

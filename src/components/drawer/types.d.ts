@@ -1,6 +1,8 @@
 import type { OverlayCloseReason } from '../../composables/_internal/use-dialog-layer'
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { BasePosition, ComponentClass, ComponentText } from '../../types/shared/props'
+
+export type DrawerChangeReason = Extract<ChangeReason, OverlayCloseReason | 'api'>
 
 export interface DrawerProps {
   heading?: ComponentText
@@ -25,7 +27,7 @@ export interface DrawerEmits {
   show: []
   hide: []
   close: [reason: OverlayCloseReason]
-  change: [boolean, details: ChangeDetails]
+  change: [boolean, details: ChangeDetails<DrawerChangeReason>]
   'outside-click': [PointerEvent]
   'visible-change': [visible: boolean]
   'update:model-value': [visible: boolean]

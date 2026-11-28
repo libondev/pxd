@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentSizeWithXs } from '../../types/shared/props'
+
+export type PinInputChangeReason = Extract<ChangeReason, 'api' | 'typed'>
 
 export type PinInputMode =
   | 'numeric'
@@ -25,6 +27,6 @@ export interface PinInputProps {
 export type PinInputChangeValue = string
 
 export interface PinInputEmits {
-  change: [PinInputChangeValue, details: ChangeDetails]
+  change: [PinInputChangeValue, details: ChangeDetails<PinInputChangeReason>]
   'update:model-value': [PinInputChangeValue]
 }

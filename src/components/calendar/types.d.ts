@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentDateTimeValue } from '../../types/shared/props'
+
+export type CalendarChangeReason = Extract<ChangeReason, 'item-press'>
 
 export interface CalendarPanelInfo {
   year: number
@@ -27,6 +29,6 @@ export interface CalendarProps {
 
 export interface CalendarEmits {
   'panel-change': [info: CalendarPanelInfo]
-  change: [ComponentDateTimeValue, details: ChangeDetails]
+  change: [ComponentDateTimeValue, details: ChangeDetails<CalendarChangeReason>]
   'update:model-value': [ComponentDateTimeValue]
 }

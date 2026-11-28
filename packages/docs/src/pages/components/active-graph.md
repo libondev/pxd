@@ -257,7 +257,7 @@ const data = [
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(date: string, details: ChangeDetails) => void` | Emitted when a date cell is clicked. |
+| change | `(date: string, details: ChangeDetails<ActiveGraphChangeReason>) => void` | Emitted when a date cell is clicked. |
 
 ## Slots
 

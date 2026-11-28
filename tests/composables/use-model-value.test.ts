@@ -65,11 +65,11 @@ describe('useModelValue', () => {
   it('should report the cause being dispatched', () => {
     const { modelValue, emits } = setup(undefined)
 
-    withChangeDetails({ source: 'agent', reason: 'set-value' }, () => {
+    withChangeDetails({ source: 'agent', reason: 'api' }, () => {
       modelValue.value = 'changed'
     })
 
-    expect(detailsOf(emits)).toMatchObject({ source: 'agent', reason: 'set-value' })
+    expect(detailsOf(emits)).toMatchObject({ source: 'agent', reason: 'api' })
     expect(modelValue.value).toBe('changed')
   })
 

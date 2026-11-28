@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ChangeAt } from '../../types/shared/change'
-import type { TimePickerEmits, TimePickerProps } from './types'
+import type { TimePickerChangeReason, TimePickerEmits, TimePickerProps } from './types'
 import ClockIcon from '@gdsicon/vue/clock'
 import { onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
@@ -195,7 +195,7 @@ function formatEmittedValue() {
   return dayjsDateTime.value.format(props.valueFormat)
 }
 
-function updateModelValue(at: ChangeAt) {
+function updateModelValue(at: ChangeAt<TimePickerChangeReason>) {
   const nextValue = formatEmittedValue()
 
   if (committedValue.value === nextValue) {

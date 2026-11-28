@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentBeforeChange, ComponentSize } from '../../types/shared/props'
+
+export type ToggleChangeReason = Extract<ChangeReason, 'api' | 'trigger-press'>
 
 export type ToggleValueType = boolean | number | string | undefined
 
@@ -20,6 +22,6 @@ export interface ToggleProps {
 export type ToggleChangeValue = boolean | number | string
 
 export interface ToggleEmits {
-  change: [ToggleChangeValue, details: ChangeDetails]
+  change: [ToggleChangeValue, details: ChangeDetails<ToggleChangeReason>]
   'update:model-value': [ToggleChangeValue]
 }

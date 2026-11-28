@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentOption, ComponentSize } from '../../types/shared/props'
+
+export type SwitchChangeReason = Extract<ChangeReason, 'api' | 'item-press'>
 
 export interface SwitchProps {
   disabled?: boolean
@@ -14,6 +16,6 @@ export interface SwitchProps {
 export type SwitchChangeValue = string | number
 
 export interface SwitchEmits {
-  change: [SwitchChangeValue, details: ChangeDetails]
+  change: [SwitchChangeValue, details: ChangeDetails<SwitchChangeReason>]
   'update:model-value': [SwitchChangeValue]
 }

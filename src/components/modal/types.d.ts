@@ -1,6 +1,8 @@
 import type { OverlayCloseReason } from '../../composables/_internal/use-dialog-layer'
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentClass, ComponentText } from '../../types/shared/props'
+
+export type ModalChangeReason = Extract<ChangeReason, OverlayCloseReason | 'api'>
 
 export interface ModalProps {
   heading?: ComponentText
@@ -24,7 +26,7 @@ export interface ModalEmits {
   show: []
   hide: []
   close: [reason: OverlayCloseReason]
-  change: [boolean, details: ChangeDetails]
+  change: [boolean, details: ChangeDetails<ModalChangeReason>]
   'outside-click': [PointerEvent]
   'visible-change': [visible: boolean]
   'update:model-value': [visible: boolean]

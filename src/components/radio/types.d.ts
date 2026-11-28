@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentText, ComponentValue } from '../../types/shared/props'
+
+export type RadioChangeReason = Extract<ChangeReason, 'api' | 'item-press'>
 
 export interface RadioProps {
   label?: ComponentText
@@ -11,6 +13,6 @@ export interface RadioProps {
 export type RadioChangeValue = ComponentValue
 
 export interface RadioEmits {
-  change: [RadioChangeValue, details: ChangeDetails]
+  change: [RadioChangeValue, details: ChangeDetails<RadioChangeReason>]
   'update:model-value': [RadioChangeValue]
 }

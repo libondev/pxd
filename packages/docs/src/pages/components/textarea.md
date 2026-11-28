@@ -102,6 +102,6 @@ const outsideValue = ref('Hello')
 | Name | Type | Description |
 | --- | --- | --- |
 | update:model-value | `(value: string \| number) => void` | Emitted on every keystroke that changes the text. |
-| change | `(value: string \| number, details: ChangeDetails) => void` | Emitted when the field is committed, as the browser fires its native `change` event. |
+| change | `(value: string \| number, details: ChangeDetails<TextareaChangeReason>) => void` | Emitted when the field is committed, as the browser fires its native `change` event. |
 | focus | `(event: FocusEvent) => void` | Emitted when the textarea gains focus. |
 | blur | `(event: FocusEvent) => void` | Emitted when the textarea loses focus. |

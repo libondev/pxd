@@ -1,10 +1,12 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type {
   ComponentSizeWithXxs,
   ComponentValue,
   ComponentOption,
   ResponsiveValue,
 } from '../../types/shared/props'
+
+export type ToggleButtonGroupChangeReason = Extract<ChangeReason, 'api' | 'item-press'>
 
 export interface ToggleButtonGroupProps {
   gap?: ResponsiveValue<string | number>
@@ -19,6 +21,6 @@ export interface ToggleButtonGroupProps {
 export type ToggleButtonGroupChangeValue = ComponentValue | ComponentValue[]
 
 export interface ToggleButtonGroupEmits {
-  change: [ToggleButtonGroupChangeValue, details: ChangeDetails]
+  change: [ToggleButtonGroupChangeValue, details: ChangeDetails<ToggleButtonGroupChangeReason>]
   'update:model-value': [ToggleButtonGroupChangeValue]
 }

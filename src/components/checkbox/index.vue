@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ChangeAt } from '../../types/shared/change'
-import type { CheckboxEmits, CheckboxProps } from './types'
+import type { CheckboxChangeReason, CheckboxEmits, CheckboxProps } from './types'
 import CheckIcon from '@gdsicon/vue/check'
 import MinusIcon from '@gdsicon/vue/minus'
 import { computed, shallowRef } from 'vue'
@@ -114,7 +114,7 @@ if (!checkboxGroupContext?.props.options?.length) {
   })
 }
 
-function setChecked(checked: boolean, at: ChangeAt) {
+function setChecked(checked: boolean, at: ChangeAt<CheckboxChangeReason>) {
   if (Array.isArray(modelValue.value)) {
     change(
       checked

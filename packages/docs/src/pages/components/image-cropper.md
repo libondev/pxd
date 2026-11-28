@@ -288,7 +288,7 @@ const committed = ref()
 | load | `(size: ImageCropperNaturalSize) => void` | Emitted when the image loads, with its natural size. |
 | error | `(event: Event) => void` | Emitted when the image fails to load. |
 
-`ImageCropperCropChangeDetails` extends `ChangeDetails` and adds a `reason` such as `'drag'`, `'step-key'`, `'wheel'`, `'rotate-press'` or `'api'`.
+`ImageCropperCropChangeDetails` extends `ChangeDetails<ImageCropperCropChangeReason>` and adds a `reason` such as `'drag'`, `'step-key'`, `'wheel'`, `'rotate-press'` or `'api'`.
 
 ## Slots
 

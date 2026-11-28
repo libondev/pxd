@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentSize, ComponentOption } from '../../types/shared/props'
+
+export type EffortSliderChangeReason = Extract<ChangeReason, 'api' | 'settle' | 'step'>
 
 export interface EffortSliderProps {
   options: Array<ComponentOption | string>
@@ -12,6 +14,6 @@ export interface EffortSliderProps {
 }
 
 export interface EffortSliderEmits {
-  change: [string | number, details: ChangeDetails]
+  change: [string | number, details: ChangeDetails<EffortSliderChangeReason>]
   'update:model-value': [string | number]
 }

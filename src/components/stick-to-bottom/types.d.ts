@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentClass, ComponentDirection } from '../../types/shared/props'
+
+export type StickToBottomChangeReason = Extract<ChangeReason, 'sync'>
 
 export interface StickToBottomProps {
   disabled?: boolean
@@ -13,5 +15,5 @@ export interface StickToBottomProps {
 }
 
 export interface StickToBottomEmits {
-  change: [isAtBottom: boolean, details: ChangeDetails]
+  change: [isAtBottom: boolean, details: ChangeDetails<StickToBottomChangeReason>]
 }

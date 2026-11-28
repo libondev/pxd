@@ -297,7 +297,7 @@ as expected.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(option: ListOptionSelected, details: ChangeDetails) => void` | Emitted when an option is selected. |
+| change | `(option: ListOptionSelected, details: ChangeDetails<ListChangeReason>) => void` | Emitted when an option is selected. |
 | update:model-value | `(value: ListModelValue) => void` | Emitted when the selection changes. |
 | retry | `() => void` | Emitted when the error message is clicked. |
 

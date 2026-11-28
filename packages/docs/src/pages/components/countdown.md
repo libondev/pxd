@@ -282,7 +282,7 @@ const active = ref(false)
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(enabled: boolean, details: ChangeDetails) => void` | Emitted when the `enabled` prop changes. |
+| change | `(enabled: boolean, details: ChangeDetails<CountdownChangeReason>) => void` | Emitted when the `enabled` prop changes. |
 | reset | `() => void` | Emitted when the countdown is restarted from its initial time. |
 | finish | `() => void` | Emitted when the countdown reaches its end. |
 

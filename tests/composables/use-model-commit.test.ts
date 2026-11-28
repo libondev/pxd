@@ -50,14 +50,14 @@ describe('useModelCommit', () => {
     const emits = vi.fn()
     const { commit } = useModelCommit(props, emits)
 
-    withChangeDetails({ source: 'agent', reason: 'set-value' }, () => {
+    withChangeDetails({ source: 'agent', reason: 'api' }, () => {
       commit('typed')
     })
 
     expect(emits).toHaveBeenCalledWith(
       'change',
       'typed',
-      expect.objectContaining({ source: 'agent', reason: 'set-value', canceled: false }),
+      expect.objectContaining({ source: 'agent', reason: 'api', canceled: false }),
     )
   })
 

@@ -98,7 +98,7 @@ const options = [
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: ListModelValue, details: ChangeDetails) => void` | Emitted when an option is selected from the dropdown. |
+| change | `(value: ListModelValue, details: ChangeDetails<SplitButtonChangeReason>) => void` | Emitted when an option is selected from the dropdown. |
 | main-click | `() => void` | Emitted when the primary button is clicked. |
 | update:model-value | `(value: ListModelValue) => void` | Emitted right after `change` with the selected value. |
 

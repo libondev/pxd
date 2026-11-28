@@ -1,4 +1,4 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type {
   ComponentAs,
   ComponentClass,
@@ -6,6 +6,8 @@ import type {
   ComponentValue,
 } from '../../types/shared/props'
 import type { Component } from 'vue'
+
+export type ListChangeReason = Extract<ChangeReason, 'api' | 'item-press'>
 
 export interface ListOption {
   as?: ComponentAs
@@ -60,7 +62,7 @@ export interface ListProps {
 }
 
 export interface ListEmits {
-  change: [ListOptionSelected, details: ChangeDetails]
+  change: [ListOptionSelected, details: ChangeDetails<ListChangeReason>]
   'update:model-value': [ListModelValue]
   retry: []
 }

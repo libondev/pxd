@@ -169,7 +169,7 @@ const options = ref([
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(detail: TodoListChangeDetail, details: ChangeDetails) => void` | Emitted when an item moves to another status. |
+| change | `(detail: TodoListChangeDetail, details: ChangeDetails<TodoListChangeReason>) => void` | Emitted when an item moves to another status. |
 | update:model-value | `(options: TodoListOption[]) => void` | Emitted together with `change`, carrying the next list state. |
 
 `detail` reports which item moved and what the whole list becomes:

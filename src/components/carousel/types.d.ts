@@ -1,10 +1,12 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type {
   BasePosition,
   ComponentDirection,
   ComponentText,
   ComponentValue,
 } from '../../types/shared/props'
+
+export type CarouselChangeReason = Extract<ChangeReason, 'item-press' | 'api' | 'sync'>
 
 export interface CarouselOption {
   /** Rendered as the slide content when no `item` slot is provided. */
@@ -38,5 +40,5 @@ export interface CarouselMove {
 }
 
 export interface CarouselEmits {
-  change: [index: number, details: ChangeDetails]
+  change: [index: number, details: ChangeDetails<CarouselChangeReason>]
 }

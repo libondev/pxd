@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentSizeWithXs, ComponentClass } from '../../types/shared/props'
+
+export type InputChangeReason = Extract<ChangeReason, 'api' | 'cleared' | 'typed'>
 
 export interface InputProps {
   size?: ComponentSizeWithXs
@@ -35,7 +37,7 @@ export interface InputProps {
 
 export interface InputEmits {
   click: [MouseEvent]
-  change: [string, details: ChangeDetails]
+  change: [string, details: ChangeDetails<InputChangeReason>]
   focus: [FocusEvent]
   blur: [FocusEvent]
   keydown: [KeyboardEvent]

@@ -165,7 +165,7 @@ function append() {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(isAtBottom: boolean, details: ChangeDetails) => void` | Emitted when the at-bottom state changes. |
+| change | `(isAtBottom: boolean, details: ChangeDetails<StickToBottomChangeReason>) => void` | Emitted when the at-bottom state changes. |
 
 ## Slots
 

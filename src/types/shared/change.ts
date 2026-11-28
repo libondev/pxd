@@ -32,16 +32,16 @@ export type ChangeReason =
   | 'sync'
 
 /** What a write says about itself: why it happened, and the event that caused it, if any. */
-export interface ChangeAt {
-  reason: ChangeReason
+export interface ChangeAt<R extends ChangeReason = ChangeReason> {
+  reason: R
   event?: Event
 }
 
-export interface ChangeDetails {
+export interface ChangeDetails<R extends ChangeReason = ChangeReason> {
   /** Who changed it, when the write can say. */
   source?: ChangeSource
   /** Why it changed, when the write names a reason. */
-  reason?: string
+  reason?: R
   /** Refuses the write. Only present on components that own the write. */
   cancel?: () => void
   /** Whether `cancel()` was called. */

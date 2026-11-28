@@ -194,7 +194,7 @@ const options = [{ heading: 'Cart' }, { heading: 'Payment' }, { heading: 'Done' 
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(value: number, details: ChangeDetails) => void` | Emitted when the current step changes. |
+| change | `(value: number, details: ChangeDetails<StepsChangeReason>) => void` | Emitted when the current step changes. |
 | update:model-value | `(value: number) => void` | Emitted together with `change`. |
 
 ## Slots

@@ -48,7 +48,7 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   trigger: [string]
-  change: [string, details: ChangeDetails]
+  change: [string, details: ChangeDetails<'typed'>]
   submit: [string]
   query: [string]
   'query-end': []

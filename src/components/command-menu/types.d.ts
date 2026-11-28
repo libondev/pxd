@@ -1,3 +1,4 @@
+import type { OverlayCloseReason } from '../../composables/_internal/use-dialog-layer'
 import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type {
   ListFilterMethodFn,
@@ -5,6 +6,10 @@ import type {
   ListOptionSelected,
   ListRemoteFilterFn,
 } from '../list/types'
+
+export type CommandMenuCloseReason = Extract<ChangeReason, OverlayCloseReason | 'item-press'>
+
+export type CommandMenuChangeReason = CommandMenuCloseReason | 'trigger-press' | 'api'
 
 export interface CommandMenuProps {
   width?: string | number
@@ -21,9 +26,9 @@ export interface CommandMenuProps {
 
 export interface CommandMenuEmits {
   'update:model-value': [boolean]
-  change: [boolean, details: ChangeDetails]
+  change: [boolean, details: ChangeDetails<CommandMenuChangeReason>]
   select: [item: ListOptionSelected]
-  close: [reason: ChangeReason]
+  close: [reason: CommandMenuCloseReason]
   show: []
   hide: []
 }

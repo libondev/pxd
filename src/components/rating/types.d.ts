@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentSizeWithXs } from '../../types/shared/props'
+
+export type RatingChangeReason = Extract<ChangeReason, 'api' | 'settle' | 'step'>
 
 export interface RatingProps {
   modelValue?: number
@@ -16,6 +18,6 @@ export interface RatingProps {
 export type RatingChangeValue = number
 
 export interface RatingEmits {
-  change: [RatingChangeValue, details: ChangeDetails]
+  change: [RatingChangeValue, details: ChangeDetails<RatingChangeReason>]
   'update:model-value': [RatingChangeValue]
 }

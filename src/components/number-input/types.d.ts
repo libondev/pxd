@@ -1,4 +1,6 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
+
+export type NumberInputChangeReason = Extract<ChangeReason, 'api' | 'cleared' | 'typed'>
 
 export interface NumberInputProps {
   min?: number
@@ -20,7 +22,7 @@ export interface NumberInputProps {
 export interface NumberInputEmits {
   blur: [FocusEvent]
   focus: [FocusEvent]
-  change: [NumberInputProps['modelValue'], details: ChangeDetails]
+  change: [NumberInputProps['modelValue'], details: ChangeDetails<NumberInputChangeReason>]
   'update:model-value': [NumberInputProps['modelValue']]
 }
 

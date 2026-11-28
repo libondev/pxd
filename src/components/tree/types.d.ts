@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentClass, ComponentText, ComponentValue } from '../../types/shared/props'
+
+export type TreeChangeReason = Extract<ChangeReason, 'item-press'>
 
 export interface TreeOption {
   value?: ComponentValue
@@ -147,7 +149,7 @@ export interface TreeEmits {
   'update:model-value': [TreeModelValue]
   'update:data': [TreeOptions]
   move: [TreeMoveDetail]
-  change: [TreeChangeDetail, details: ChangeDetails]
+  change: [TreeChangeDetail, details: ChangeDetails<TreeChangeReason>]
   'update:expandedKeys': [ComponentValue[]]
   expand: [TreeNodeDetail]
   collapse: [TreeNodeDetail]

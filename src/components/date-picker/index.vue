@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ChangeAt } from '../../types/shared/change'
 import type { ComponentDateTimeValue } from '../../types/shared/props'
-import type { DatePickerEmits, DatePickerProps } from './types'
+import type { DatePickerChangeReason, DatePickerEmits, DatePickerProps } from './types'
 import CalendarIcon from '@gdsicon/vue/calendar'
 import { computed, shallowRef, watch } from 'vue'
 import { useAgentNode } from '../../composables/_internal/use-agent-node.js'
@@ -86,7 +86,7 @@ function isSameCommittedDate(date: dayjs.Dayjs | null) {
 
   return date.isSame(dayjsDateTime.value, 'day')
 }
-function commitDate(date: dayjs.Dayjs | null, at: ChangeAt) {
+function commitDate(date: dayjs.Dayjs | null, at: ChangeAt<DatePickerChangeReason>) {
   const shouldEmit = !isSameCommittedDate(date)
 
   dayjsDateTime.value = date

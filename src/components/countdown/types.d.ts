@@ -1,4 +1,6 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
+
+export type CountdownChangeReason = Extract<ChangeReason, 'sync'>
 
 export interface CountdownProps {
   /**
@@ -43,7 +45,7 @@ export interface CountdownProps {
 }
 
 export interface CountdownEmits {
-  change: [enabled: boolean, details: ChangeDetails]
+  change: [enabled: boolean, details: ChangeDetails<CountdownChangeReason>]
   reset: []
   finish: []
 }

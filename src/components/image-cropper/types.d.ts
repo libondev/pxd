@@ -39,7 +39,7 @@ export interface ImageCropperNaturalSize {
   height: number
 }
 
-export interface ImageCropperCropChangeDetails extends ChangeDetails {
+export interface ImageCropperCropChangeDetails extends ChangeDetails<ImageCropperCropChangeReason> {
   reason: ImageCropperCropChangeReason
 }
 

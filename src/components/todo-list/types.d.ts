@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentText, ComponentSize } from '../../types/shared/props'
+
+export type TodoListChangeReason = Extract<ChangeReason, 'item-press'>
 
 export type TodoListStatus = 'pending' | 'in_progress' | 'completed' | 'canceled'
 export type TodoListVariant = 'default' | 'simple'
@@ -43,6 +45,6 @@ export interface TodoListProps {
 }
 
 export interface TodoListEmits {
-  change: [TodoListChangeDetail, details: ChangeDetails]
+  change: [TodoListChangeDetail, details: ChangeDetails<TodoListChangeReason>]
   'update:model-value': [TodoListOption[]]
 }

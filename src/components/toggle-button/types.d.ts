@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentText, ComponentSizeWithXxs, ComponentValue } from '../../types/shared/props'
+
+export type ToggleButtonChangeReason = Extract<ChangeReason, 'api' | 'item-press'>
 
 export type ToggleButtonModelValue = ComponentValue | boolean
 
@@ -16,6 +18,6 @@ export interface ToggleButtonProps {
 export type ToggleButtonChangeValue = ToggleButtonModelValue | ToggleButtonModelValue[]
 
 export interface ToggleButtonEmits {
-  change: [ToggleButtonChangeValue, details: ChangeDetails]
+  change: [ToggleButtonChangeValue, details: ChangeDetails<ToggleButtonChangeReason>]
   'update:model-value': [ToggleButtonChangeValue]
 }

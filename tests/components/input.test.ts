@@ -232,7 +232,7 @@ describe('input', () => {
     })
     const input = wrapper.find('input')
 
-    withChangeDetails({ source: 'agent', reason: 'set-value' }, () => {
+    withChangeDetails({ source: 'agent', reason: 'api' }, () => {
       input.element.value = 'typed'
       input.element.dispatchEvent(new Event('change'))
     })

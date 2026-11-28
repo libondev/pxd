@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentPosition, ComponentText } from '../../types/shared/props'
+
+export type TourChangeReason = Extract<ChangeReason, 'item-press'>
 
 export interface TourStep {
   target?: string | HTMLElement | (() => HTMLElement | null)
@@ -23,7 +25,7 @@ export interface TourProps {
 export interface TourEmits {
   'update:model-value': [boolean]
   'update:current': [number]
-  change: [index: number, details: ChangeDetails]
+  change: [index: number, details: ChangeDetails<TourChangeReason>]
   finish: []
   skip: []
   error: [error: unknown, index: number]

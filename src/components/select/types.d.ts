@@ -1,5 +1,5 @@
 import type { ButtonVariant } from '../../types/components/button'
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentSizeWithXs, ComponentShape } from '../../types/shared/props'
 import type {
   ListFilterMethodFn,
@@ -8,6 +8,8 @@ import type {
   ListOptions,
   ListRemoteFilterFn,
 } from '../list/types'
+
+export type SelectChangeReason = Extract<ChangeReason, 'cleared' | 'item-press'>
 
 export interface SelectProps {
   size?: ComponentSizeWithXs
@@ -32,7 +34,7 @@ export interface SelectProps {
 }
 
 export interface SelectEmits {
-  change: [ListModelValue, details: ChangeDetails]
+  change: [ListModelValue, details: ChangeDetails<SelectChangeReason>]
   'update:model-value': [ListModelValue]
   retry: []
 }

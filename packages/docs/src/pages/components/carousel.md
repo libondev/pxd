@@ -174,7 +174,7 @@ const slides = [{ value: 1, label: 'Slide 1' }, { value: 2, label: 'Slide 2' }, 
 
 | Name | Type | Description |
 | --- | --- | --- |
-| change | `(index: number, details: ChangeDetails) => void` | Emitted after the carousel has moved to another slide. |
+| change | `(index: number, details: ChangeDetails<CarouselChangeReason>) => void` | Emitted after the carousel has moved to another slide. |
 
 ## Slots
 

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { ChangeReason } from '../../types/shared/change'
-import type { CarouselEmits, CarouselMove, CarouselProps } from './types'
+import type { CarouselChangeReason, CarouselEmits, CarouselMove, CarouselProps } from './types'
 import type { CSSProperties } from 'vue'
 import ChevronRightIcon from '@gdsicon/vue/chevron-right'
 import { computed, nextTick, onBeforeUnmount, shallowRef, useSlots, watch } from 'vue'
@@ -146,7 +145,7 @@ useAgentNode({
   },
 })
 
-function setIndex(value: number, reason: ChangeReason): void {
+function setIndex(value: number, reason: CarouselChangeReason): void {
   currentIndex.value = value
   notify(value, changeDetailsFor({ reason }))
   startCycle()
@@ -177,7 +176,7 @@ function enqueue(task: () => Promise<number | null>): Promise<number | null> {
   return result
 }
 
-async function step(direction: 1 | -1, reason: ChangeReason): Promise<number | null> {
+async function step(direction: 1 | -1, reason: CarouselChangeReason): Promise<number | null> {
   const count = slideCount.value
 
   if (count <= 1 || !canStep(direction)) {
@@ -195,15 +194,15 @@ async function step(direction: 1 | -1, reason: ChangeReason): Promise<number | n
   return to
 }
 
-function next(reason: ChangeReason = 'item-press'): Promise<number | null> {
+function next(reason: CarouselChangeReason = 'item-press'): Promise<number | null> {
   return enqueue(() => step(1, reason))
 }
 
-function prev(reason: ChangeReason = 'item-press'): Promise<number | null> {
+function prev(reason: CarouselChangeReason = 'item-press'): Promise<number | null> {
   return enqueue(() => step(-1, reason))
 }
 
-function goTo(target: number, reason: ChangeReason = 'item-press'): Promise<number | null> {
+function goTo(target: number, reason: CarouselChangeReason = 'item-press'): Promise<number | null> {
   return enqueue(async () => {
     const from = currentIndex.value
     const to = normalizeIndex(target)

@@ -1,5 +1,7 @@
-import type { ChangeDetails } from '../../types/shared/change'
+import type { ChangeDetails, ChangeReason } from '../../types/shared/change'
 import type { ComponentSize, ComponentVariant } from '../../types/shared/props'
+
+export type SliderChangeReason = Extract<ChangeReason, 'api' | 'item-press' | 'settle'>
 
 export interface SliderProps {
   min?: number
@@ -20,6 +22,6 @@ export interface SliderProps {
 export type SliderChangeValue = number | number[]
 
 export interface SliderEmits {
-  change: [SliderChangeValue, details: ChangeDetails]
+  change: [SliderChangeValue, details: ChangeDetails<SliderChangeReason>]
   'update:model-value': [SliderChangeValue]
 }
