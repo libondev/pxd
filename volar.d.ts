@@ -57,6 +57,7 @@ declare module 'vue' {
     PHueText: (typeof import('pxd/components/hue-text'))['default']
     PImageCompare: (typeof import('pxd/components/image-compare'))['default']
     PImageCropper: (typeof import('pxd/components/image-cropper'))['default']
+    PImageGenerate: (typeof import('pxd/components/image-generate'))['default']
     PImagePreview: (typeof import('pxd/components/image-preview'))['default']
     PInput: (typeof import('pxd/components/input'))['default']
     PIntersectionObserver: (typeof import('pxd/components/intersection-observer'))['default']

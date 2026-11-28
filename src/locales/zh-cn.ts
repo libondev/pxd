@@ -117,6 +117,13 @@ const zhCN = {
   message: {
     notifications: '通知',
   },
+  imageGenerate: {
+    generate: '生成',
+    regenerate: '重新生成',
+    retry: '重试',
+    failed: '生成失败',
+    progress: '生成进度',
+  },
 } satisfies Locale
 
 export default zhCN

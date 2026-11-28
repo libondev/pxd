@@ -171,9 +171,17 @@
     "title": "Hue Text",
     "description": "Colors text deterministically from its own content. The same string always resolves to the same color, so a name, an ID or a tag keeps a stable identity across…"
   },
+  "/components/image-compare": {
+    "title": "Image Compare",
+    "description": "Compare two versions of the same image with a draggable divider. The leading slot fills the side before the divider and the trailing slot fills the side after …"
+  },
   "/components/image-cropper": {
     "title": "Image Cropper",
     "description": "Choose the part of an image to keep by moving and resizing a selection, or by panning and zooming the image under a fixed frame."
+  },
+  "/components/image-generate": {
+    "title": "Image Generate",
+    "description": "Show an AI image generation request: an empty frame with a generate action, progress while it runs, the result, and a retry state."
   },
   "/components/image-preview": {
     "title": "Image Preview",

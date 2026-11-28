@@ -102,6 +102,13 @@ const enUS = {
   message: {
     notifications: 'Notifications',
   },
+  imageGenerate: {
+    generate: 'Generate',
+    regenerate: 'Regenerate',
+    retry: 'Try again',
+    failed: 'Generation failed',
+    progress: 'Generation progress',
+  },
 }
 
 export type Locale = typeof enUS

@@ -225,6 +225,11 @@
     "category": "Form"
   },
   {
+    "camelized": "Image Generate",
+    "name": "image-generate",
+    "category": "AI"
+  },
+  {
     "camelized": "Image Preview",
     "name": "image-preview",
     "category": "Data Display"
